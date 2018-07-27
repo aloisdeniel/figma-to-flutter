@@ -1,0 +1,9 @@
+name: flutter_figma_generator
+version: 0.1.0
+description: a tool for generating Flutter widgets from Figma components.
+dependencies:
+  http:
+  vector_math:
+  yaml:
+  source_gen: 0.8.3
+  code_builder: 3.1.1 

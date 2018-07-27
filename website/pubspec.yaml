@@ -1,0 +1,15 @@
+name: webapp
+description: A website for Figma to Flutter code generator.
+
+environment:
+  sdk: '>=2.0.0-dev.67.0 <2.0.0'
+
+dependencies:
+  js: any
+  http_server: 0.9.7 
+  flutter_figma_generator:
+    path: ../src
+
+dev_dependencies:
+  build_runner: ^0.9.0 
+  build_web_compilers: ^0.4.0

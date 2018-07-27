@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="scaffolded-by" content="https://github.com/google/stagehand">
+    <title>webapp</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="favicon.ico">
+    <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+    <script>
+      function updateCode(code) {
+        console.log("Prettyfying code...");
+        document.getElementById("result").innerHTML = PR.prettyPrintOne(code);
+      }
+    </script>
+    <script defer src="main.js"></script>
+</head>
+
+<body>
+
+  <div id="form">
+    <h3>params</h3>
+    <p style="display: flex; flex-direction: row;">
+      <span>authentication model -</span>
+      <input id="token" type="text" placeholder="enter value" style="flex-grow: 1; margin-left: 10px; margin-right: 10px;">
+    </p>
+    <p style="display: flex; flex-direction: row;">
+      <span>file_key  -</span>
+      <input id="fileKey" type="text" placeholder="enter value" style="flex-grow: 1; margin-left: 10px; margin-right: 10px;">
+    </p>
+    <button id="submit">Submit</button>
+
+    <h3>components</h3>
+    <ul id="components"></ul>
+  </div>
+
+    <!--  -->
+    <pre id="result" class="prettyprint linenums lang-dart"></pre>
+
+</body>
+</html>

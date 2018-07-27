@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="scaffolded-by" content="https://github.com/google/stagehand">
     <title>webapp</title>
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
     <link rel="icon" href="favicon.ico">
     <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
@@ -21,24 +22,36 @@
 
 <body>
 
-  <div id="form">
-    <h3>params</h3>
-    <p style="display: flex; flex-direction: row;">
-      <span>authentication model -</span>
+  <div  class="row" />
+  <div class="column">
+    <div  id="form" >
+    <img src="logo.svg" />
+
+    <p>To use the API explorer you need to use a Personal Access Token. You can generate one from the <a href="https://www.figma.com/developers/explorer#files-endpoint">API Explorer</a>. To get your file identifier, simply extract it from url.</p>
+
+    <h3>file</h3>
+    <div class="field">
+      <span>authentication token -</span>
       <input id="token" type="text" placeholder="enter value" style="flex-grow: 1; margin-left: 10px; margin-right: 10px;">
-    </p>
-    <p style="display: flex; flex-direction: row;">
+    </div>
+    <div class="field">
       <span>file_key  -</span>
       <input id="fileKey" type="text" placeholder="enter value" style="flex-grow: 1; margin-left: 10px; margin-right: 10px;">
-    </p>
-    <button id="submit">Submit</button>
+    </div>
+    <button id="submit">Get components</button>
 
     <h3>components</h3>
+
+    <p>Select the component you want to generate Flutter widgets for.</a></p>
+
     <ul id="components"></ul>
+  </div>
   </div>
 
     <!--  -->
-    <pre id="result" class="prettyprint linenums lang-dart"></pre>
-
+    <div class="column">
+      <pre id="result" class="prettyprint linenums lang-dart"></pre>
+    </div>
+</div>
 </body>
 </html>

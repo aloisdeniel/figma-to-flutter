@@ -20,9 +20,16 @@ void main() {
   var fileKey = querySelector('#fileKey') as InputElement;
   var result = querySelector('#result');
 
+  token.value = window.localStorage['token'];
+  fileKey.value = window.localStorage['fileKey'];
+
   Future downloadFile() async {
     try {
       print("Starting download...");
+
+      window.localStorage['token'] = token.value;
+      window.localStorage['fileKey'] = fileKey.value;
+
       var api = FigmaApiGenerator(BrowserClient(), token.value);
       print("Starting request...");
       var file = await api.getFile(fileKey.value);

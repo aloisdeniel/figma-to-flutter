@@ -8,8 +8,10 @@ The easiest way is to use the [online tool](http://aloisdeniel.github.com/figma-
 
 ## Roadmap
 
-- **Build time generator** : creating a generator for updating widgets at build time (like `built_value`).
-- **Drawing**
+- [ ] **Build time generator** : creating a generator for updating widgets at build time (like `built_value`).
+- [ ] **Semantics**
+- [ ] **Should repaint**
+- [ ] **Drawing**
     - [ ] Fills
     - [ ] `GRADIENT_ANGULAR`
     - [ ] `GRADIENT_DIAMOND`

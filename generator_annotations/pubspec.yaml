@@ -1,0 +1,6 @@
+name: figma_to_flutter_generator_annotations
+description: Annotations for the build generator that converts Figma files to Flutter widgets.
+authors:
+- Aloïs Deniel <alois.deniel@outlook.com>
+environment:
+  sdk: '>=2.0.0-dev <3.0.0'

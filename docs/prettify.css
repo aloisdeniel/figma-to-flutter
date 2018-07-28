@@ -1,0 +1,10 @@
+.prettyprint{
+    font-family:Menlo,Bitstream Vera Sans Mono,DejaVu Sans Mono,Monaco,Consolas,monospace;
+    font-size: 11px;
+    border:0!important
+}
+
+.pln{color:#ebf8ff}
+ol.linenums{margin-top:0;margin-bottom:0;color:#686E7E}
+li.L0,li.L1,li.L2,li.L3,li.L4,li.L5,li.L6,li.L7,li.L8,li.L9{padding-left:1em;background-color:transparent;list-style-type:decimal}
+@media screen{.str{color:#F24E1E}.kwd{color:#A259FF}.com{color:#686E7E}.typ{color:#1ABCFE}.lit{color: #0ACF83}.pun{color:#ebf8ff}.opn{color:#ebf8ff}.clo{color:#ebf8ff}.tag{color:#0ACF83}.atn{color:#0ACF83}.atv{color:#0ACF83}.dec{color:#0ACF83}.var{color:#0ACF83}.fun{color:#1ABCFE}}

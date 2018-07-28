@@ -69,27 +69,66 @@ button {
 
 h3 {
   margin-top: 40px;
-  font-size: 14px;
+  font-size: 20px;
   color: #555;
 }
 
-ul {
+#components {
   margin: 0px;
+  margin-top: 10px;
   padding: 0px;
 }
 
-li {
-  text-align: left;
-  width:80%;
-  padding-top: 10px;
-  padding-left: 10px;
-  padding-bottom: 10px;
-  margin-left: 10%;
-  margin-right: 10%;
-  background: #eee;
-  border-radius: 4px;
+pre.prettyprint {
+  border: 0px;
+  padding: 10px;
+  background: transparent;
+}
+
+.column.result {
+  background: #2F323A;
+}
+
+.not-visible {
+  display: none;
+}
+
+.component {
+  cursor: pointer;
   list-style: none;
   margin-top: 10px;
-  font-size: 20px;
-  font-weight: bold;
+  opacity: 0.35;
 }
+
+.component.selected {
+  opacity: 1.0;
+}
+
+.component img {
+  width: 18px;
+  height: 18px;
+  display: block;
+  float:left;
+  margin-right: 10px;
+}
+
+.component h2 {
+  font-size: 16px;
+}
+.component .checkbox {
+  margin: 0px;
+  width: 18px;
+  height: 18px;
+  display: block;
+  background-color: #eeeeee;
+  border-radius: 3px;
+  float:right;
+  margin-left: 10px;
+}
+.component .checkbox img {
+  display: none;
+}
+.component.selected .checkbox img {
+  display: inline;
+}
+

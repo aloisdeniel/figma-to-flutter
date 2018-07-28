@@ -233,7 +233,7 @@ class FigmaWidgetGenerator {
     _document["components"].forEach((ck,cv) {
       components.forEach((k,v) {
         if(cv["name"] == v) {
-          widgets[k] = _findNode(_document["document"], ck);
+          widgets[toWidgetName(k)] = _findNode(_document["document"], ck);
         }
       });
     });

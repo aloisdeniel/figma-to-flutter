@@ -1,5 +1,7 @@
 name: figma_to_flutter
 version: 0.1.0
+authors:
+- Aloïs Deniel <alois.deniel@outlook.com>
 description: a tool for generating Flutter widgets from Figma components.
 dependencies:
   http:

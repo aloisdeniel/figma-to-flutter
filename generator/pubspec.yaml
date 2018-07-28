@@ -1,0 +1,23 @@
+name: figma_to_flutter_generator
+description: A build generator for converting Figma files to Flutter widgets.
+authors:
+- Aloïs Deniel <alois.deniel@outlook.com>
+environment:
+  sdk: '>=2.0.0-dev <3.0.0'
+
+dependencies:
+  analyzer: ^0.32.1
+  analyzer_plugin: '0.0.1-alpha.3'
+  build: ^0.12.0
+  build_config: ^0.3.1
+  built_collection: '>=2.0.0 <4.0.0'
+  figma_to_flutter: 
+
+dev_dependencies:
+  build_test: ^0.10.0
+  build_runner: ^0.9.0
+  test: ^1.0.0
+
+dependency_overrides:
+  figma_to_flutter:
+    path: ../src

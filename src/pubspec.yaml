@@ -1,4 +1,4 @@
-name: flutter_figma_generator
+name: figma_to_flutter
 version: 0.1.0
 description: a tool for generating Flutter widgets from Figma components.
 dependencies:

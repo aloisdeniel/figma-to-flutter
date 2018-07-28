@@ -3,9 +3,9 @@ description: A new Flutter project.
 
 dependencies:
   path_drawing:
-  flutter_figma_generator:
+  figma_to_flutter:
     path: ../src
-  flutter:
+  flutter: 
     sdk: flutter
 
   # The following adds the Cupertino Icons font to your application.

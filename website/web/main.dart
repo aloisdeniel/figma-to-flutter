@@ -5,8 +5,7 @@ import 'package:js/js.dart';
 import 'dart:async';
 import 'dart:html';
 
-import 'package:flutter_figma_generator/flutter_figma_generator.dart';
-import 'package:flutter_figma_generator/widgets.dart';
+import 'package:figma_to_flutter/figma_to_flutter.dart';
 import 'package:http/browser_client.dart';
 
 @JS()

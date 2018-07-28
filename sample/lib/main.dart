@@ -18,18 +18,10 @@ class _HomeState extends State<Home> {
   CustomPainter _createPainter() {
     _i++;
     switch(_i) {
-      case 1: return LandscapeEffectsPainter(LandscapeEffectsText(
-          sUUN: "TEST"
-      ));
-      case 2: return ConstraintsNestedPainter();
-      case 3: return Fill1Painter();
-      case 4: return Text1Painter(Text1Text());
-      case 5: return Text2Painter(Text2Text());
-      case 6: return Text3Painter(Text3Text());
-      case 7: return Text4Painter(Text4Text());
+      case 1: return LogoPainter();
       default:
         _i  = 0;
-        return _createPainter();
+        return _createPainter(); 
     }
   }
 

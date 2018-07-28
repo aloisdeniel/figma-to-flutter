@@ -1,0 +1,9 @@
+name: figma_to_flutter_cli
+description: A cli for converting Figma files to Flutter widgets.
+
+environment:
+  sdk: '>=2.0.0-dev.67.0 <2.0.0'
+  
+dependencies:
+  figma_to_flutter:
+    path: ../src

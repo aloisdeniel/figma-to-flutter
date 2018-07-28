@@ -7,7 +7,7 @@ environment:
 dependencies:
   js: any
   http_server: 0.9.7 
-  flutter_figma_generator:
+  figma_to_flutter:
     path: ../src
 
 dev_dependencies:

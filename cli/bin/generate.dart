@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:flutter_figma_generator/flutter_figma_generator.dart';
+import 'package:figma_to_flutter/figma_to_flutter.dart';
 import 'package:http/http.dart';
 
 void main() async {
@@ -12,5 +12,5 @@ void main() async {
   });
   
   // Writing to file
-  await (new File("lib/widgets/sample.g.dart")).writeAsString(code);
+  await (new File("sample/lib/widgets/sample.g.dart")).writeAsString(code);
 }

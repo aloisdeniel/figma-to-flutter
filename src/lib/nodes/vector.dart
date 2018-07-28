@@ -29,8 +29,8 @@ class VectorGenerator {
 
     result.add(new Code("var transform = $transform;"));
 
-    var fillMaps = map["fills"];
-    var strokeMaps = map["strokes"];
+    var fillMaps = map["fills"].where((f) => map["visible"] == null || map['visible'] == true);
+    var strokeMaps = map["strokes"].where((f) => map["visible"] == null || map['visible'] == true);
 
     if(!fillMaps.isEmpty) {
       var fills = "[" + fillMaps.map((f) => this._paint.generate(f)).join(", ") + "]";

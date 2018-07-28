@@ -109,58 +109,61 @@ class NodeGenerator {
 
   List<Code> generate(dynamic map, dynamic parent) {
 
-    var name = map["name"];
-
     var result = List<Code>();
 
-    result.add(Code(""));
-    result.add(Code("// ${name}"));
+    var visible = map["visible"];
+    if(visible == null || visible == true) {
+      var name = map["name"];
 
-    var methodName = "draw_" + map["id"].replaceAll(":", "_").replaceAll(";","__");
-    print(methodName);
-    result.add(Code("var $methodName = (Canvas canvas, Rect container) {"));
+      result.add(Code(""));
+      result.add(Code("// ${name}"));
 
-    // Transform
+      var methodName = "draw_" + map["id"].replaceAll(":", "_").replaceAll(";","__");
+      print(methodName);
+      result.add(Code("var $methodName = (Canvas canvas, Rect container) {"));
 
-    var container = _toPoint(parent["size"]);
-    var frame = _createFrame(map, container);
-    var relativeTransform = _createTransform(map);
-    result.add(Code("var frame = ${frame};"));
+      // Transform
 
-    result.add(Code("canvas.save();"));
-    result.add(Code("canvas.transform(${relativeTransform});"));
+      var container = _toPoint(parent["size"]);
+      var frame = _createFrame(map, container);
+      var relativeTransform = _createTransform(map);
+      result.add(Code("var frame = ${frame};"));
 
-    switch(map["type"] as String)
-    {
-        case 'RECT':
-        case 'VECTOR':
-        case 'ELLIPSE':
-        case 'RECTANGLE':
-        case 'REGULAR_POLYGON':
-        case 'BOOLEAN_OPERATION':
-        case 'STAR':
-          result.addAll(_vector.generate(map));
-          break;
+      result.add(Code("canvas.save();"));
+      result.add(Code("canvas.transform(${relativeTransform});"));
 
-        case 'GROUP':
-          result.addAll(_group.generate(map));
-          break;
+      switch(map["type"] as String)
+      {
+          case 'RECT':
+          case 'VECTOR':
+          case 'ELLIPSE':
+          case 'RECTANGLE':
+          case 'REGULAR_POLYGON':
+          case 'BOOLEAN_OPERATION':
+          case 'STAR':
+            result.addAll(_vector.generate(map));
+            break;
 
-        case 'FRAME':
-        case 'COMPONENT':
-        case 'INSTANCE':
-          result.addAll(_frame.generate(map));
-          break;
+          case 'GROUP':
+            result.addAll(_group.generate(map));
+            break;
 
-        case 'TEXT':
-          result.addAll(_text.generate(map));
-          break;
+          case 'FRAME':
+          case 'COMPONENT':
+          case 'INSTANCE':
+            result.addAll(_frame.generate(map));
+            break;
+
+          case 'TEXT':
+            result.addAll(_text.generate(map));
+            break;
+      }
+
+      result.add(Code("canvas.restore();"));
+      result.add(Code("};"));
+
+      result.add(Code("$methodName(canvas,frame);"));
     }
-
-    result.add(Code("canvas.restore();"));
-    result.add(Code("};"));
-
-    result.add(Code("$methodName(canvas,frame);"));
 
     return result;
   }

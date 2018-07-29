@@ -1,5 +1,6 @@
 
 import 'package:code_builder/code_builder.dart';
+import 'package:figma_to_flutter/context.dart';
 import 'node.dart';
 
 class GroupGenerator {
@@ -8,13 +9,9 @@ class GroupGenerator {
 
   GroupGenerator(this._node);
 
-  List<Code> generate(dynamic map) {
-    var result = List<Code>();
+  void generate(BuildContext context, dynamic map) {
     map["children"].forEach((x) {
-       var code = this._node.generate(x,map);
-       result.addAll(code);
+       this._node.generate(context,x,map);
     });
-
-    return result;
   }
 }

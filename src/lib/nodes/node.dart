@@ -2,6 +2,10 @@
 import 'dart:math';
 
 import 'package:code_builder/code_builder.dart';
+import 'package:figma_to_flutter/context.dart';
+import 'package:figma_to_flutter/nodes/directive.dart';
+import 'package:figma_to_flutter/parsing/declaration.dart';
+import 'package:figma_to_flutter/tools/format.dart';
 import 'frame.dart';
 import 'vector.dart';
 import 'group.dart';
@@ -17,12 +21,13 @@ class NodeGenerator {
   VectorGenerator _vector;
   GroupGenerator _group;
   TextGenerator _text;
+  final DirectiveGenerator _directive;
 
-  NodeGenerator(ColorGenerator color, PaintGenerator paint, PathGenerator path, TextStyleGenerator textStyle, ParagraphStyleGenerator paragraphStyle) {
+  NodeGenerator(this._directive, ColorGenerator color, PaintGenerator paint, PathGenerator path, TextStyleGenerator textStyle, ParagraphStyleGenerator paragraphStyle) {
     _group = GroupGenerator(this);
     _frame = FrameGenerator(color, this);
     _vector = VectorGenerator(paint, path);
-    _text = TextGenerator(paint, color, textStyle, paragraphStyle);
+    _text = TextGenerator(color, textStyle, paragraphStyle);
   }
 
   Code _createTransform(dynamic map) {
@@ -107,64 +112,79 @@ class NodeGenerator {
     return Code("Rect.fromLTWH($x, $y, $w, $h)");
   }
 
-  List<Code> generate(dynamic map, dynamic parent) {
+  void _generateData(BuildContext context, dynamic map) {
+      var declaration = Declaration.parse(map["name"]);
+      context.addData(declaration.name, map["type"]);
+  }
 
-    var result = List<Code>();
+  void generate(BuildContext context, dynamic map, dynamic parent) {
+    var declaration = Declaration.parse(map["name"]);
+    var varName = toVariableName(declaration.name);
 
-    var visible = map["visible"];
-    if(visible == null || visible == true) {
-      var name = map["name"];
-
-      result.add(Code(""));
-      result.add(Code("// ${name}"));
-
-      var methodName = "draw_" + map["id"].replaceAll(":", "_").replaceAll(";","__");
-      print(methodName);
-      result.add(Code("var $methodName = (Canvas canvas, Rect container) {"));
-
-      // Transform
-
-      var container = _toPoint(parent["size"]);
-      var frame = _createFrame(map, container);
-      var relativeTransform = _createTransform(map);
-      result.add(Code("var frame = ${frame};"));
-
-      result.add(Code("canvas.save();"));
-      result.add(Code("canvas.transform(${relativeTransform});"));
-
-      switch(map["type"] as String)
-      {
-          case 'RECT':
-          case 'VECTOR':
-          case 'ELLIPSE':
-          case 'RECTANGLE':
-          case 'REGULAR_POLYGON':
-          case 'BOOLEAN_OPERATION':
-          case 'STAR':
-            result.addAll(_vector.generate(map));
-            break;
-
-          case 'GROUP':
-            result.addAll(_group.generate(map));
-            break;
-
-          case 'FRAME':
-          case 'COMPONENT':
-          case 'INSTANCE':
-            result.addAll(_frame.generate(map));
-            break;
-
-          case 'TEXT':
-            result.addAll(_text.generate(map));
-            break;
-      }
-
-      result.add(Code("canvas.restore();"));
-      result.add(Code("};"));
-
-      result.add(Code("$methodName(canvas,frame);"));
+    // ignoring directives 
+    if(declaration is DirectiveItem) {
+      if(_directive.generate(context, map))
+        return;
     }
 
-    return result;
+    if(declaration is DynamicItem) {
+      _generateData(context, map);
+      var defaultIsVisible = (map["visible"] == null || map["visible"] == true).toString();
+      context.addPaint(["if(this.data?.$varName?.isVisible ?? $defaultIsVisible) {"]);
+    }
+
+   context.addPaint(["", "// ${map["name"]}"]);
+
+    var methodName = "draw_" + map["id"].replaceAll(":", "_").replaceAll(";","__");
+    print(methodName);
+   context.addPaint(["var $methodName = (Canvas canvas, Rect container) {"]);
+
+    // Transform
+
+    var container = _toPoint(parent["size"]);
+    var frame = _createFrame(map, container);
+    var relativeTransform = _createTransform(map);
+    context.addPaint(["var frame = ${frame};"]);
+
+    context.addPaint([
+      "canvas.save();",
+      "canvas.transform(${relativeTransform});"
+    ]);
+
+    switch(map["type"] as String)
+    {
+        case 'RECT':
+        case 'VECTOR':
+        case 'ELLIPSE':
+        case 'RECTANGLE':
+        case 'REGULAR_POLYGON':
+        case 'BOOLEAN_OPERATION':
+        case 'STAR':
+          _vector.generate(context, map);
+          break;
+
+        case 'GROUP':
+          _group.generate(context, map);
+          break;
+
+        case 'FRAME':
+        case 'COMPONENT':
+        case 'INSTANCE':
+          _frame.generate(context, map);
+          break;
+
+        case 'TEXT':
+          _text.generate(context, map);
+          break;
+      }
+      context.addPaint([
+        "canvas.restore();",
+        "};",
+        "$methodName(canvas,frame);",
+      ]);
+    
+    if(declaration is DynamicItem) {
+      context.addPaint(["}"]);
+    }
   }
 }

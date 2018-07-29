@@ -733,6 +733,29 @@
           }
         return false;
       },
+      _removeWhere$2: function(receiver, test, removeMatching) {
+        var retained, end, i, element, t1;
+        H.functionTypeCheck(test, {func: 1, ret: P.bool, args: [H.getTypeArgumentByIndex(receiver, 0)]});
+        retained = [];
+        end = receiver.length;
+        for (i = 0; i < end; ++i) {
+          element = receiver[i];
+          if (test.call$1(element))
+            retained.push(element);
+          if (receiver.length !== end)
+            throw H.wrapException(P.ConcurrentModificationError$(receiver));
+        }
+        t1 = retained.length;
+        if (t1 === end)
+          return;
+        this.set$length(receiver, t1);
+        for (i = 0; i < retained.length; ++i)
+          receiver[i] = retained[i];
+      },
+      where$1: function(receiver, f) {
+        var t1 = H.getTypeArgumentByIndex(receiver, 0);
+        return new H.WhereIterable(receiver, H.functionTypeCheck(f, {func: 1, ret: P.bool, args: [t1]}), [t1]);
+      },
       addAll$1: function(receiver, collection) {
         var t1;
         H.assertSubtype(collection, "$isIterable", [H.getTypeArgumentByIndex(receiver, 0)], "$asIterable");
@@ -2041,6 +2064,9 @@
           return t1.charCodeAt(0) == 0 ? t1 : t1;
         }
       },
+      where$1: function(_, test) {
+        return this.super$Iterable$where(0, H.functionTypeCheck(test, {func: 1, ret: P.bool, args: [H.getRuntimeTypeArgument(this, "ListIterable", 0)]}));
+      },
       map$1$1: function(_, f, $T) {
         var t1 = H.getRuntimeTypeArgument(this, "ListIterable", 0);
         return new H.MappedListIterable(this, H.functionTypeCheck(f, {func: 1, ret: $T, args: [t1]}), [t1, $T]);
@@ -2478,6 +2504,10 @@
       },
       join$1: function(_, separator) {
         return "";
+      },
+      where$1: function(_, test) {
+        H.functionTypeCheck(test, {func: 1, ret: P.bool, args: [H.getTypeArgumentByIndex(this, 0)]});
+        return this;
       },
       map$1$1: function(_, f, $T) {
         H.functionTypeCheck(f, {func: 1, ret: $T, args: [H.getTypeArgumentByIndex(this, 0)]});
@@ -4025,7 +4055,7 @@
     },
     _stringIdentity: [function(string) {
       return string;
-    }, "call$1", "_js_helper___stringIdentity$closure", 4, 0, 5],
+    }, "call$1", "_js_helper___stringIdentity$closure", 4, 0, 6],
     stringReplaceAllFuncUnchecked: function(receiver, pattern, onMatch, onNonMatch) {
       var t1, startIndex, t2, t3, t4, t5;
       t1 = J.getInterceptor(pattern);
@@ -4284,7 +4314,7 @@
       "^": "Object;dartException,stackTrace<"
     },
     unwrapException_saveStackTrace: {
-      "^": "Closure:14;ex",
+      "^": "Closure:17;ex",
       call$1: function(error) {
         if (!!J.getInterceptor(error).$isError)
           if (error.$thrownJsError == null)
@@ -4729,19 +4759,19 @@
       }
     },
     initHooks_closure: {
-      "^": "Closure:14;getTag",
+      "^": "Closure:17;getTag",
       call$1: function(o) {
         return this.getTag(o);
       }
     },
     initHooks_closure0: {
-      "^": "Closure:125;getUnknownTag",
+      "^": "Closure:84;getUnknownTag",
       call$2: function(o, tag) {
         return this.getUnknownTag(o, tag);
       }
     },
     initHooks_closure1: {
-      "^": "Closure:82;prototypeForTag",
+      "^": "Closure:57;prototypeForTag",
       call$1: function(tag) {
         return this.prototypeForTag(H.stringTypeCheck(tag));
       }
@@ -5423,7 +5453,7 @@
       return new P._StreamIterator(H.assertSubtype(stream, "$isStream", [$T], "$asStream"), false, [$T]);
     },
     _nullDataHandler: [function(value) {
-    }, "call$1", "async___nullDataHandler$closure", 4, 0, 26],
+    }, "call$1", "async___nullDataHandler$closure", 4, 0, 25],
     _nullErrorHandler: [function(error, stackTrace) {
       var t1;
       H.interceptedTypeCheck(stackTrace, "$isStackTrace");
@@ -5432,7 +5462,7 @@
       P._rootHandleUncaughtError(null, null, t1, error, stackTrace);
     }, function(error) {
       return P._nullErrorHandler(error, null);
-    }, "call$2", "call$1", "async___nullErrorHandler$closure", 4, 2, 21],
+    }, "call$2", "call$1", "async___nullErrorHandler$closure", 4, 2, 26],
     _nullDoneHandler: [function() {
     }, "call$0", "async___nullDoneHandler$closure", 0, 0, 1],
     _runUserCode: function(userCode, onSuccess, onError, $T) {
@@ -5554,7 +5584,7 @@
       P._scheduleAsyncCallback(f);
     },
     _AsyncRun__initializeScheduleImmediate_internalCallback: {
-      "^": "Closure:3;_box_0",
+      "^": "Closure:4;_box_0",
       call$1: function(_) {
         var t1, f;
         t1 = this._box_0;
@@ -5564,7 +5594,7 @@
       }
     },
     _AsyncRun__initializeScheduleImmediate_closure: {
-      "^": "Closure:118;_box_0,div,span",
+      "^": "Closure:91;_box_0,div,span",
       call$1: function(callback) {
         var t1, t2;
         this._box_0.storedCallback = H.functionTypeCheck(callback, {func: 1, ret: -1});
@@ -5650,19 +5680,19 @@
       }
     },
     _awaitOnObject_closure: {
-      "^": "Closure:4;bodyFunction",
+      "^": "Closure:5;bodyFunction",
       call$1: function(result) {
         return this.bodyFunction.call$2(0, result);
       }
     },
     _awaitOnObject_closure0: {
-      "^": "Closure:30;bodyFunction",
+      "^": "Closure:38;bodyFunction",
       call$2: function(error, stackTrace) {
         this.bodyFunction.call$2(1, new H.ExceptionAndStackTrace(error, H.interceptedTypeCheck(stackTrace, "$isStackTrace")));
       }
     },
     _wrapJsFunctionForAsync_closure: {
-      "^": "Closure:87;$protected",
+      "^": "Closure:73;$protected",
       call$2: function(errorCode, result) {
         this.$protected(H.intTypeCheck(errorCode), result);
       }
@@ -5776,7 +5806,7 @@
         this._completeError$2(error, stackTrace);
       }, function(error) {
         return this.completeError$2(error, null);
-      }, "completeError$1", "call$2", "call$1", "get$completeError", 4, 2, 21],
+      }, "completeError$1", "call$2", "call$1", "get$completeError", 4, 2, 26],
       $isCompleter: 1
     },
     _AsyncCompleter: {
@@ -5804,7 +5834,7 @@
         t1._complete$1(value);
       }, function($receiver) {
         return this.complete$1($receiver, null);
-      }, "complete$0", "call$1", "call$0", "get$complete", 1, 2, 44],
+      }, "complete$0", "call$1", "call$0", "get$complete", 1, 2, 31],
       _completeError$2: function(error, stackTrace) {
         this.future._completeError$2(error, stackTrace);
       }
@@ -5964,7 +5994,7 @@
         P._Future__propagateToListeners(this, listeners);
       }, function(error) {
         return this._completeError$2(error, null);
-      }, "_completeError$1", "call$2", "call$1", "get$_completeError", 4, 2, 21],
+      }, "_completeError$1", "call$2", "call$1", "get$_completeError", 4, 2, 26],
       _asyncComplete$1: function(value) {
         var t1;
         H.futureOrCheck(value, {futureOr: 1, type: H.getTypeArgumentByIndex(this, 0)});
@@ -6156,7 +6186,7 @@
       }
     },
     _Future__chainForeignFuture_closure: {
-      "^": "Closure:3;target",
+      "^": "Closure:4;target",
       call$1: function(value) {
         var t1 = this.target;
         t1._state = 0;
@@ -6164,7 +6194,7 @@
       }
     },
     _Future__chainForeignFuture_closure0: {
-      "^": "Closure:61;target",
+      "^": "Closure:105;target",
       call$2: function(error, stackTrace) {
         this.target._completeError$2(error, H.interceptedTypeCheck(stackTrace, "$isStackTrace"));
       },
@@ -6245,7 +6275,7 @@
       }
     },
     _Future__propagateToListeners_handleWhenCompleteCallback_closure: {
-      "^": "Closure:79;originalSource",
+      "^": "Closure:50;originalSource",
       call$1: function(_) {
         return this.originalSource;
       }
@@ -6302,6 +6332,10 @@
     },
     Stream: {
       "^": "Object;$ti",
+      where$1: function(_, test) {
+        var t1 = H.getRuntimeTypeArgument(this, "Stream", 0);
+        return new P._WhereStream(H.functionTypeCheck(test, {func: 1, ret: P.bool, args: [t1]}), this, [t1]);
+      },
       map$1$1: function(_, convert, $S) {
         var t1 = H.getRuntimeTypeArgument(this, "Stream", 0);
         return new P._MapStream(H.functionTypeCheck(convert, {func: 1, ret: $S, args: [t1]}), this, [t1, $S]);
@@ -6401,7 +6435,7 @@
       }
     },
     Stream_join_closure1: {
-      "^": "Closure:3;result",
+      "^": "Closure:4;result",
       call$1: function(e) {
         this.result._completeError$1(e);
       }
@@ -6426,13 +6460,13 @@
       }
     },
     Stream_contains__closure: {
-      "^": "Closure:12;element,needle",
+      "^": "Closure:15;element,needle",
       call$0: function() {
         return J.$eq$(this.element, this.needle);
       }
     },
     Stream_contains__closure0: {
-      "^": "Closure:93;_box_0,future",
+      "^": "Closure:62;_box_0,future",
       call$1: function(isMatch) {
         if (H.boolTypeCheck(isMatch))
           P._cancelAndValue(this._box_0.subscription, this.future, true);
@@ -6460,7 +6494,7 @@
       }
     },
     Stream_forEach__closure0: {
-      "^": "Closure:3;",
+      "^": "Closure:4;",
       call$1: function(_) {
       }
     },
@@ -7006,7 +7040,7 @@
       }
     },
     _cancelAndErrorClosure_closure: {
-      "^": "Closure:30;subscription,future",
+      "^": "Closure:38;subscription,future",
       call$2: function(error, stackTrace) {
         P._cancelAndError(this.subscription, this.future, error, H.interceptedTypeCheck(stackTrace, "$isStackTrace"));
       }
@@ -7080,10 +7114,10 @@
       },
       _handleData$1: [function(data) {
         this._stream._handleData$2(H.assertSubtypeOfRuntimeType(data, H.getRuntimeTypeArgument(this, "_ForwardingStreamSubscription", 0)), this);
-      }, "call$1", "get$_handleData", 4, 0, 26],
+      }, "call$1", "get$_handleData", 4, 0, 25],
       _handleError$2: [function(error, stackTrace) {
         this._stream._handleError$3(error, H.interceptedTypeCheck(stackTrace, "$isStackTrace"), this);
-      }, "call$2", "get$_handleError", 8, 0, 124],
+      }, "call$2", "get$_handleError", 8, 0, 76],
       _handleDone$0: [function() {
         H.assertSubtype(this, "$is_EventSink", [H.getRuntimeTypeArgument(this._stream, "_ForwardingStream", 1)], "$as_EventSink")._close$0();
       }, "call$0", "get$_handleDone", 0, 0, 1],
@@ -7109,6 +7143,29 @@
           t2._ForwardingStreamSubscription$5(_stream, onData, onError, onDone, cancelOnError, $S, $T);
           return t2;
         }
+      }
+    },
+    _WhereStream: {
+      "^": "_ForwardingStream;_test,_async$_source,$ti",
+      _handleData$2: function(inputEvent, sink) {
+        var satisfies, e, s, exception;
+        H.assertSubtypeOfRuntimeType(inputEvent, H.getTypeArgumentByIndex(this, 0));
+        H.assertSubtype(sink, "$is_EventSink", this.$ti, "$as_EventSink");
+        satisfies = null;
+        try {
+          satisfies = this._test.call$1(inputEvent);
+        } catch (exception) {
+          e = H.unwrapException(exception);
+          s = H.getTraceFromException(exception);
+          P._addErrorWithReplacement(sink, e, s);
+          return;
+        }
+        if (satisfies)
+          sink._async$_add$1(inputEvent);
+      },
+      $asStream: null,
+      $as_ForwardingStream: function($T) {
+        return [$T, $T];
       }
     },
     _MapStream: {
@@ -7772,7 +7829,7 @@
       }
     },
     _LinkedCustomHashMap_closure: {
-      "^": "Closure:25;K",
+      "^": "Closure:11;K",
       call$1: function(v) {
         return H.checkSubtypeOfRuntimeType(v, this.K);
       }
@@ -8328,6 +8385,10 @@
         t1 = P.StringBuffer__writeAll("", receiver, separator);
         return t1.charCodeAt(0) == 0 ? t1 : t1;
       },
+      where$1: function(receiver, test) {
+        var t1 = H.getRuntimeTypeArgumentIntercepted(this, receiver, "ListMixin", 0);
+        return new H.WhereIterable(receiver, H.functionTypeCheck(test, {func: 1, ret: P.bool, args: [t1]}), [t1]);
+      },
       map$1$1: function(receiver, f, $T) {
         var t1 = H.getRuntimeTypeArgumentIntercepted(this, receiver, "ListMixin", 0);
         return new H.MappedListIterable(receiver, H.functionTypeCheck(f, {func: 1, ret: $T, args: [t1]}), [t1, $T]);
@@ -8525,7 +8586,7 @@
       "^": "MapMixin;"
     },
     MapBase_mapToString_closure: {
-      "^": "Closure:13;_box_0,result",
+      "^": "Closure:16;_box_0,result",
       call$2: function(k, v) {
         var t1, t2;
         t1 = this._box_0;
@@ -8669,6 +8730,10 @@
       toString$0: function(_) {
         return P.IterableBase_iterableToFullString(this, "{", "}");
       },
+      where$1: function(_, f) {
+        var t1 = H.getRuntimeTypeArgument(this, "SetMixin", 0);
+        return new H.WhereIterable(this, H.functionTypeCheck(f, {func: 1, ret: P.bool, args: [t1]}), [t1]);
+      },
       forEach$1: function(_, f) {
         var t1;
         H.functionTypeCheck(f, {func: 1, ret: -1, args: [H.getRuntimeTypeArgument(this, "SetMixin", 0)]});
@@ -8765,7 +8830,7 @@
     },
     _defaultToEncodable: [function(object) {
       return object.toJson$0();
-    }, "call$1", "convert___defaultToEncodable$closure", 4, 0, 14],
+    }, "call$1", "convert___defaultToEncodable$closure", 4, 0, 17],
     _JsonMap: {
       "^": "MapBase;_original,_processed,0_data",
       $index: function(_, key) {
@@ -9303,7 +9368,7 @@
         if (typeof t3 !== "number")
           return H.iae(t3);
         this._bufferIndex = t4 + t3;
-      }, "call$1", "get$add", 5, 0, 26],
+      }, "call$1", "get$add", 5, 0, 25],
       close$0: [function(_) {
         this._callback.call$1(C.NativeUint8List_methods.sublist$2(this._convert$_buffer, 0, this._bufferIndex));
       }, "call$0", "get$close", 1, 0, 1]
@@ -9575,7 +9640,7 @@
       }
     },
     _JsonStringifier_writeMap_closure: {
-      "^": "Closure:13;_box_0,keyValueList",
+      "^": "Closure:16;_box_0,keyValueList",
       call$2: function(key, value) {
         var t1, t2;
         if (typeof key !== "string")
@@ -9983,7 +10048,7 @@
       }
     },
     _Utf8Decoder_convert_scanOneByteCharacters: {
-      "^": "Closure:123;endIndex",
+      "^": "Closure:97;endIndex",
       call$2: function(units, from) {
         var to, t1, i, unit;
         H.assertSubtype(units, "$isList", [P.int], "$asList");
@@ -9999,7 +10064,7 @@
       }
     },
     _Utf8Decoder_convert_addSingleBytes: {
-      "^": "Closure:129;$this,startIndex,endIndex,codeUnits",
+      "^": "Closure:64;$this,startIndex,endIndex,codeUnits",
       call$2: function(from, to) {
         this.$this._stringSink._contents += P.String_String$fromCharCodes(this.codeUnits, from, to);
       }
@@ -10333,7 +10398,7 @@
     Uri_decodeComponent: [function(encodedComponent) {
       H.stringTypeCheck(encodedComponent);
       return P._Uri__uriDecode(encodedComponent, 0, encodedComponent.length, C.Utf8Codec_false, false);
-    }, "call$1", "core_Uri_decodeComponent$closure", 4, 0, 5],
+    }, "call$1", "core_Uri_decodeComponent$closure", 4, 0, 6],
     Uri__parseIPv4Address: function(host, start, end) {
       var error, result, t1, i, partStart, partIndex, char, part, partIndex0;
       error = new P.Uri__parseIPv4Address_error(host);
@@ -11170,7 +11235,7 @@
         this._contents += H.S(obj) + "\n";
       }, function() {
         return this.writeln$1("");
-      }, "writeln$0", "call$1", "call$0", "get$writeln", 0, 2, 44],
+      }, "writeln$0", "call$1", "call$0", "get$writeln", 0, 2, 31],
       toString$0: function(_) {
         var t1 = this._contents;
         return t1.charCodeAt(0) == 0 ? t1 : t1;
@@ -11207,13 +11272,13 @@
       "^": "Object;"
     },
     Uri__parseIPv4Address_error: {
-      "^": "Closure:116;host",
+      "^": "Closure:113;host",
       call$2: function(msg, position) {
         throw H.wrapException(P.FormatException$("Illegal IPv4 address, " + msg, this.host, position));
       }
     },
     Uri_parseIPv6Address_error: {
-      "^": "Closure:113;host",
+      "^": "Closure:116;host",
       call$2: function(msg, position) {
         throw H.wrapException(P.FormatException$("Illegal IPv6 address, " + msg, this.host, position));
       },
@@ -11222,7 +11287,7 @@
       }
     },
     Uri_parseIPv6Address_parseHex: {
-      "^": "Closure:105;error,host",
+      "^": "Closure:118;error,host",
       call$2: function(start, end) {
         var value;
         if (end - start > 4)
@@ -12211,7 +12276,7 @@
       }
     },
     _Uri__Uri$notSimple_closure: {
-      "^": "Closure:19;uri,portStart",
+      "^": "Closure:23;uri,portStart",
       call$1: function(_) {
         var t1 = this.portStart;
         if (typeof t1 !== "number")
@@ -12220,7 +12285,7 @@
       }
     },
     _Uri__checkNonWindowsPathReservedCharacters_closure: {
-      "^": "Closure:19;argumentError",
+      "^": "Closure:23;argumentError",
       call$1: function(segment) {
         H.stringTypeCheck(segment);
         if (J.contains$1$asx(segment, "/"))
@@ -12231,7 +12296,7 @@
       }
     },
     _Uri__makePath_closure: {
-      "^": "Closure:5;",
+      "^": "Closure:6;",
       call$1: function(s) {
         return P._Uri__uriEncode(C.List_qg40, H.stringTypeCheck(s), C.Utf8Codec_false, false);
       }
@@ -12319,13 +12384,13 @@
       }
     },
     _createTables_closure: {
-      "^": "Closure:97;",
+      "^": "Closure:58;",
       call$1: function(_) {
         return new Uint8Array(96);
       }
     },
     _createTables_build: {
-      "^": "Closure:91;tables",
+      "^": "Closure:61;tables",
       call$2: function(state, defaultTransition) {
         var t1 = this.tables;
         if (state >= t1.length)
@@ -12336,7 +12401,7 @@
       }
     },
     _createTables_setChars: {
-      "^": "Closure:31;",
+      "^": "Closure:39;",
       call$3: function(target, chars, transition) {
         var t1, i, t2;
         for (t1 = chars.length, i = 0; i < t1; ++i) {
@@ -12348,7 +12413,7 @@
       }
     },
     _createTables_setRange: {
-      "^": "Closure:31;",
+      "^": "Closure:39;",
       call$3: function(target, range, transition) {
         var i, n, t1;
         for (i = C.JSString_methods._codeUnitAt$1(range, 0), n = C.JSString_methods._codeUnitAt$1(range, 1); i <= n; ++i) {
@@ -12835,13 +12900,13 @@
       return t1.bindUnaryCallbackGuarded$1$1(callback, $T);
     },
     promiseToFuture_closure: {
-      "^": "Closure:4;completer,T",
+      "^": "Closure:5;completer,T",
       call$1: function(promiseValue) {
         return this.completer.complete$1(0, H.futureOrCheck(promiseValue, {futureOr: 1, type: this.T}));
       }
     },
     promiseToFuture_closure0: {
-      "^": "Closure:4;completer",
+      "^": "Closure:5;completer",
       call$1: function(promiseError) {
         return this.completer.completeError$1(promiseError);
       }
@@ -12929,7 +12994,7 @@
       "^": "Interceptor;",
       text$0: [function(receiver) {
         return W.promiseToFuture(receiver.text(), P.String);
-      }, "call$0", "get$text", 1, 0, 89],
+      }, "call$0", "get$text", 1, 0, 63],
       "%": ";Body"
     },
     BodyElement: {
@@ -13475,7 +13540,7 @@
       },
       setRequestHeader$2: [function(receiver, $name, value) {
         return receiver.setRequestHeader(H.stringTypeCheck($name), H.stringTypeCheck(value));
-      }, "call$2", "get$setRequestHeader", 9, 0, 33],
+      }, "call$2", "get$setRequestHeader", 9, 0, 48],
       $isHttpRequest: 1,
       "%": "XMLHttpRequest"
     },
@@ -13909,7 +13974,7 @@
       "^": "Interceptor;",
       text$0: [function(receiver) {
         return receiver.text();
-      }, "call$0", "get$text", 1, 0, 6],
+      }, "call$0", "get$text", 1, 0, 7],
       "%": "PushMessageData"
     },
     QuoteElement: {
@@ -14029,7 +14094,7 @@
       "%": "Storage"
     },
     Storage_keys_closure: {
-      "^": "Closure:33;keys",
+      "^": "Closure:48;keys",
       call$2: function(k, v) {
         return C.JSArray_methods.add$1(this.keys, k);
       }
@@ -14425,7 +14490,7 @@
       }
     },
     _EventStreamSubscription_closure: {
-      "^": "Closure:84;onData",
+      "^": "Closure:78;onData",
       call$1: function(e) {
         return this.onData.call$1(H.interceptedTypeCheck(e, "$isEvent"));
       }
@@ -14636,7 +14701,7 @@
       }
     },
     _AcceptStructuredClone_walk_closure: {
-      "^": "Closure:83;_box_0,$this",
+      "^": "Closure:79;_box_0,$this",
       call$2: function(key, value) {
         var t1, t2;
         t1 = this._box_0.copy;
@@ -14657,13 +14722,13 @@
       }
     },
     convertNativePromiseToDartFuture_closure: {
-      "^": "Closure:4;completer",
+      "^": "Closure:5;completer",
       call$1: function(result) {
         return this.completer.complete$1(0, result);
       }
     },
     convertNativePromiseToDartFuture_closure0: {
-      "^": "Closure:4;completer",
+      "^": "Closure:5;completer",
       call$1: function(result) {
         return this.completer.completeError$1(result);
       }
@@ -14679,7 +14744,7 @@
         if (t1.test(value))
           return value;
         throw H.wrapException(P.ArgumentError$value(value, "value", "Not a valid class token"));
-      }, "call$1", "get$_validateToken", 4, 0, 5],
+      }, "call$1", "get$_validateToken", 4, 0, 6],
       toString$0: function(_) {
         return this.readClasses$0().join$1(0, " ");
       },
@@ -14703,6 +14768,13 @@
       },
       map$1: function($receiver, f) {
         return this.map$1$1($receiver, f, null);
+      },
+      where$1: function(_, f) {
+        var t1, t2;
+        H.functionTypeCheck(f, {func: 1, ret: P.bool, args: [P.String]});
+        t1 = this.readClasses$0();
+        t2 = H.getRuntimeTypeArgument(t1, "SetMixin", 0);
+        return new H.WhereIterable(t1, H.functionTypeCheck(f, {func: 1, ret: P.bool, args: [t2]}), [t2]);
       },
       get$isEmpty: function(_) {
         return this.readClasses$0()._collection$_length === 0;
@@ -14778,20 +14850,20 @@
       }
     },
     CssClassSetImpl_add_closure: {
-      "^": "Closure:80;value",
+      "^": "Closure:82;value",
       call$1: function(s) {
         return H.assertSubtype(s, "$isSet", [P.String], "$asSet").add$1(0, this.value);
       }
     },
     CssClassSetImpl_addAll_closure: {
-      "^": "Closure:38;$this,iterable",
+      "^": "Closure:44;$this,iterable",
       call$1: function(s) {
         var t1 = P.String;
         return H.assertSubtype(s, "$isSet", [t1], "$asSet").addAll$1(0, J.map$1$1$ax(this.iterable, this.$this.get$_validateToken(), t1));
       }
     },
     CssClassSetImpl_clear_closure: {
-      "^": "Closure:38;",
+      "^": "Closure:44;",
       call$1: function(s) {
         return H.assertSubtype(s, "$isSet", [P.String], "$asSet").clear$0(0);
       }
@@ -14874,19 +14946,19 @@
       }
     },
     FilteredElementList__iterable_closure: {
-      "^": "Closure:78;",
+      "^": "Closure:86;",
       call$1: function(n) {
         return !!J.getInterceptor(H.interceptedTypeCheck(n, "$isNode")).$isElement;
       }
     },
     FilteredElementList__iterable_closure0: {
-      "^": "Closure:76;",
+      "^": "Closure:88;",
       call$1: function(n) {
         return H.interceptedTypeCast(H.interceptedTypeCheck(n, "$isNode"), "$isElement");
       }
     },
     FilteredElementList_removeRange_closure: {
-      "^": "Closure:4;",
+      "^": "Closure:5;",
       call$1: function(el) {
         return J.remove$0$ax(el);
       }
@@ -20144,7 +20216,7 @@
       },
       reportError$3: [function(errorCode, offset, $arguments) {
         this._scanner$_errorListener.onError$1(0, V.AnalysisError$(this.source, offset, 1, errorCode, H.assertSubtype($arguments, "$isList", [P.Object], "$asList")));
-      }, "call$3", "get$reportError", 12, 0, 73],
+      }, "call$3", "get$reportError", 12, 0, 89],
       setSourceStart$2: function(line, column) {
         var offset, t1, i;
         offset = this._readerOffset;
@@ -20226,7 +20298,7 @@
       return P.String_String$fromCharCodes(H.setRuntimeTypeInfo([((offset & 2147483647) >>> 10) + 55296, (offset & 1023) + 56320], [P.int]), 0, null);
     },
     formatList_closure: {
-      "^": "Closure:20;$arguments",
+      "^": "Closure:27;$arguments",
       call$1: function(match) {
         var index, t1, arg;
         index = P.int_parse(match.group$1(1), null, null);
@@ -26407,7 +26479,7 @@
       }
     },
     Parser_parseArgumentList_isLikelyMissingComma: {
-      "^": "Closure:12;$this,leftParenthesis",
+      "^": "Closure:15;$this,leftParenthesis",
       call$0: function() {
         var t1, t2;
         t1 = this.$this;
@@ -26428,14 +26500,14 @@
       }
     },
     Parser_parseBlock_isEndOfBlock: {
-      "^": "Closure:12;$this",
+      "^": "Closure:15;$this",
       call$0: function() {
         var type = this.$this._currentToken.type;
         return type === C.TokenType_Emx || type === C.TokenType_2ty;
       }
     },
     Parser_parseCompilationUnit2_parseDirective: {
-      "^": "Closure:63;_box_0,$this,keyword,commentAndMetadata,directives",
+      "^": "Closure:93;_box_0,$this,keyword,commentAndMetadata,directives",
       call$0: function() {
         var t1, t2, importKeyword, libraryUri, configurations, deferredToken, asToken, prefix, t3, nextToken, combinators, semicolon, exportKeyword, t4, t5, t6, t7, keyword, libraryName, partKeyword, partUri;
         t1 = this.keyword;
@@ -26562,7 +26634,7 @@
       }
     },
     Parser_parseSwitchStatement_atEndOrNextMember: {
-      "^": "Closure:12;$this",
+      "^": "Closure:15;$this",
       call$0: function() {
         var type, keyword, t1;
         t1 = this.$this;
@@ -26574,7 +26646,7 @@
       }
     },
     Parser__parseUri_isKeywordAfterUri: {
-      "^": "Closure:43;",
+      "^": "Closure:30;",
       call$1: function(token) {
         var t1, t2;
         if (token.get$lexeme() !== "as") {
@@ -26593,7 +26665,7 @@
       }
     },
     Parser__parseUri_isValidInUri: {
-      "^": "Closure:43;",
+      "^": "Closure:30;",
       call$1: function(token) {
         var type = token.type;
         return type === C.TokenType_gg4 || type === C.TokenType_sBE || type === C.TokenType_wCI || type === C.TokenType_cv8 || type === C.TokenType_j7J || type === C.TokenType_Vyt || type === C.TokenType_q1z;
@@ -26763,6 +26835,14 @@
       toList$0: function($receiver) {
         return this.toList$1$growable($receiver, true);
       },
+      where$1: function(_, test) {
+        var t1, t2;
+        H.functionTypeCheck(test, {func: 1, ret: P.bool, args: [H.getTypeArgumentByIndex(this, 0)]});
+        t1 = this._copy_on_write_list$_list;
+        t1.toString;
+        t2 = H.getTypeArgumentByIndex(t1, 0);
+        return new H.WhereIterable(t1, H.functionTypeCheck(test, {func: 1, ret: P.bool, args: [t2]}), [t2]);
+      },
       $indexSet: function(_, index, element) {
         var t1;
         H.intTypeCheck(index);
@@ -26881,6 +26961,14 @@
       map$1: function($receiver, f) {
         return this.map$1$1($receiver, f, null);
       },
+      where$1: function(_, test) {
+        var t1, t2;
+        H.functionTypeCheck(test, {func: 1, ret: P.bool, args: [H.getTypeArgumentByIndex(this, 0)]});
+        t1 = this._list;
+        t1.toString;
+        t2 = H.getTypeArgumentByIndex(t1, 0);
+        return new H.WhereIterable(t1, H.functionTypeCheck(test, {func: 1, ret: P.bool, args: [t2]}), [t2]);
+      },
       contains$1: function(_, element) {
         var t1 = this._list;
         return (t1 && C.JSArray_methods).contains$1(t1, element);
@@ -26984,6 +27072,17 @@
         this._list = H.assertSubtype(result, "$isList", this.$ti, "$asList");
         this._listOwner = null;
       },
+      where$1: function(_, test) {
+        var t1;
+        H.functionTypeCheck(test, {func: 1, ret: P.bool, args: [H.getTypeArgumentByIndex(this, 0)]});
+        t1 = this.get$_safeList();
+        t1.toString;
+        H.functionTypeCheck(test, {func: 1, ret: P.bool, args: [H.getTypeArgumentByIndex(t1, 0)]});
+        if (typeof t1 !== "object" || t1 === null || !!t1.fixed$length)
+          H.throwExpression(P.UnsupportedError$("retainWhere"));
+        (t1 && C.JSArray_methods)._removeWhere$2(t1, test, false);
+        return;
+      },
       get$_safeList: function() {
         if (this._listOwner != null) {
           this._list = H.assertSubtype(P.List_List$from(this._list, true, H.getTypeArgumentByIndex(this, 0)), "$isList", this.$ti, "$asList");
@@ -27033,7 +27132,7 @@
       return 536870911 & hash + ((16383 & hash) << 15);
     },
     closure: {
-      "^": "Closure:64;",
+      "^": "Closure:49;",
       call$1: function(className) {
         var t1 = new P.StringBuffer("");
         t1._contents = className;
@@ -27590,20 +27689,20 @@
       }
     },
     DartEmitter_visitClass_closure: {
-      "^": "Closure:10;_box_0,$this",
+      "^": "Closure:13;_box_0,$this",
       call$1: function(a) {
         return this.$this.visitAnnotation$2(H.interceptedTypeCheck(a, "$isExpression"), this._box_0.output);
       }
     },
     DartEmitter_visitClass_closure0: {
-      "^": "Closure:22;",
+      "^": "Closure:21;",
       call$1: function(r) {
         H.interceptedTypeCheck(r, "$isReference");
         return r.get$type(r);
       }
     },
     DartEmitter_visitClass_closure1: {
-      "^": "Closure:23;$this",
+      "^": "Closure:19;$this",
       call$1: function(m) {
         var t1;
         H.interceptedTypeCheck(m, "$isReference");
@@ -27613,7 +27712,7 @@
       }
     },
     DartEmitter_visitClass_closure2: {
-      "^": "Closure:23;$this",
+      "^": "Closure:19;$this",
       call$1: function(m) {
         var t1;
         H.interceptedTypeCheck(m, "$isReference");
@@ -27623,7 +27722,7 @@
       }
     },
     DartEmitter_visitClass_closure3: {
-      "^": "Closure:62;_box_0,$this,spec",
+      "^": "Closure:123;_box_0,$this,spec",
       call$1: function(c) {
         var t1 = this._box_0;
         this.$this.visitConstructor$3(H.interceptedTypeCheck(c, "$isConstructor"), this.spec.name, t1.output);
@@ -27631,7 +27730,7 @@
       }
     },
     DartEmitter_visitClass_closure4: {
-      "^": "Closure:58;_box_0,$this",
+      "^": "Closure:124;_box_0,$this",
       call$1: function(f) {
         var t1 = this._box_0;
         this.$this.visitField$2(H.interceptedTypeCheck(f, "$isField"), t1.output);
@@ -27639,7 +27738,7 @@
       }
     },
     DartEmitter_visitClass_closure5: {
-      "^": "Closure:57;_box_0,$this",
+      "^": "Closure:125;_box_0,$this",
       call$1: function(m) {
         var t1;
         H.interceptedTypeCheck(m, "$isMethod");
@@ -27651,57 +27750,57 @@
       }
     },
     DartEmitter_visitConstructor_closure: {
-      "^": "Closure:10;_box_0,$this",
+      "^": "Closure:13;_box_0,$this",
       call$1: function(a) {
         return this.$this.visitAnnotation$2(H.interceptedTypeCheck(a, "$isExpression"), this._box_0.output);
       }
     },
     DartEmitter_visitConstructor_closure0: {
-      "^": "Closure:50;",
+      "^": "Closure:32;",
       call$1: function(p) {
         return H.interceptedTypeCheck(p, "$isParameter").named;
       }
     },
     DartEmitter_visitField_closure: {
-      "^": "Closure:10;_box_0,$this",
+      "^": "Closure:13;_box_0,$this",
       call$1: function(a) {
         return this.$this.visitAnnotation$2(H.interceptedTypeCheck(a, "$isExpression"), this._box_0.output);
       }
     },
     DartEmitter_visitMethod_closure: {
-      "^": "Closure:10;_box_0,$this",
+      "^": "Closure:13;_box_0,$this",
       call$1: function(a) {
         return this.$this.visitAnnotation$2(H.interceptedTypeCheck(a, "$isExpression"), this._box_0.output);
       }
     },
     DartEmitter_visitMethod_closure0: {
-      "^": "Closure:22;",
+      "^": "Closure:21;",
       call$1: function(r) {
         H.interceptedTypeCheck(r, "$isReference");
         return r.get$type(r);
       }
     },
     DartEmitter_visitMethod_closure1: {
-      "^": "Closure:50;",
+      "^": "Closure:32;",
       call$1: function(p) {
         return H.interceptedTypeCheck(p, "$isParameter").named;
       }
     },
     DartEmitter__visitParameter_closure: {
-      "^": "Closure:10;$this,output",
+      "^": "Closure:13;$this,output",
       call$1: function(a) {
         return this.$this.visitAnnotation$2(H.interceptedTypeCheck(a, "$isExpression"), this.output);
       }
     },
     DartEmitter_visitType_closure: {
-      "^": "Closure:22;",
+      "^": "Closure:21;",
       call$1: function(r) {
         H.interceptedTypeCheck(r, "$isReference");
         return r.get$type(r);
       }
     },
     DartEmitter_visitTypeParameters_closure: {
-      "^": "Closure:23;$this",
+      "^": "Closure:19;$this",
       call$1: function(s) {
         return H.interceptedTypeCheck(s, "$isReference").accept$1$1(0, this.$this, P.StringSink);
       }
@@ -28046,7 +28145,7 @@
       visitStaticCode$2: function(code, output) {
         if (output == null)
           output = new P.StringBuffer("");
-        output._contents += code.code;
+        output._contents += H.S(code.code);
         return output;
       }
     },
@@ -28210,16 +28309,6 @@
         t2.add$2(t1, "name", this.name);
         t2.add$2(t1, "redirect", this.redirect);
         return t2.toString$0(t1);
-      },
-      static: {
-        _$Constructor__$Constructor: function(updates) {
-          var t1;
-          H.functionTypeCheck(updates, {func: 1, ret: -1, args: [Y.ConstructorBuilder]});
-          t1 = D.Parameter;
-          t1 = new Y._$ConstructorBuilder(S.ListBuilder_ListBuilder(C.List_empty, B.Expression), S.ListBuilder_ListBuilder(C.List_empty, P.String), S.ListBuilder_ListBuilder(C.List_empty, t1), S.ListBuilder_ListBuilder(C.List_empty, t1), S.ListBuilder_ListBuilder(C.List_empty, X.Code), false, false, false, null, null);
-          updates.call$1(t1);
-          return t1.build$0();
-        }
       }
     },
     _$ConstructorBuilder: {
@@ -28577,7 +28666,7 @@
       }
     },
     ExpressionEmitter_visitInvokeExpression_closure1: {
-      "^": "Closure:19;_box_0,$this,expression",
+      "^": "Closure:23;_box_0,$this,expression",
       call$1: function($name) {
         var t1, t2, t3;
         H.stringTypeCheck($name);
@@ -29351,9 +29440,6 @@
     }
   }], ["code_builder.src.specs.reference", "package:code_builder/src/specs/reference.dart",, U, {
     "^": "",
-    refer: function(symbol, url) {
-      return new U.Reference(url, symbol);
-    },
     Reference: {
       "^": "Expression;url>,symbol<",
       accept$1$2: function(_, visitor, context, $R) {
@@ -29363,16 +29449,19 @@
         return this.accept$1$2($receiver, visitor, null, $R);
       },
       get$hashCode: function(_) {
-        return C.JSString_methods.get$hashCode(H.S(this.url) + "#" + this.symbol);
+        return C.JSString_methods.get$hashCode(H.S(this.url) + "#" + H.S(this.symbol));
       },
       $eq: function(_, o) {
-        var t1;
+        var t1, t2;
         if (o == null)
           return false;
         t1 = J.getInterceptor(o);
         if (!!t1.$isReference) {
           t1.get$url(o);
-          t1 = o.get$symbol() === this.symbol;
+          t1 = o.get$symbol();
+          t2 = this.symbol;
+          t2 = t1 == null ? t2 == null : t1 === t2;
+          t1 = t2;
         } else
           t1 = false;
         return t1;
@@ -29688,7 +29777,7 @@
       }
     },
     _isToStringVisiting_closure: {
-      "^": "Closure:25;o",
+      "^": "Closure:11;o",
       call$1: function(e) {
         return this.o === e;
       }
@@ -30018,7 +30107,7 @@
       }
     },
     ArgumentSublist_ArgumentSublist_closure: {
-      "^": "Closure:49;",
+      "^": "Closure:33;",
       call$1: function(arg) {
         return !J.getInterceptor(H.interceptedTypeCheck(arg, "$isExpression0")).$isNamedExpression;
       }
@@ -30272,7 +30361,7 @@
       }
     },
     CallChainVisitor_CallChainVisitor_flatten: {
-      "^": "Closure:48;_box_0,calls",
+      "^": "Closure:34;_box_0,calls",
       call$1: function(expression) {
         var $call, t1;
         this._box_0.target = expression;
@@ -30292,7 +30381,7 @@
       }
     },
     CallChainVisitor_CallChainVisitor_closure: {
-      "^": "Closure:49;",
+      "^": "Closure:33;",
       call$1: function($call) {
         var t1;
         H.interceptedTypeCheck($call, "$isExpression0");
@@ -30937,7 +31026,7 @@
       }
     },
     ChunkBuilder__activateRule_closure: {
-      "^": "Closure:15;rule",
+      "^": "Closure:18;rule",
       call$1: function(outer) {
         H.interceptedTypeCheck(outer, "$isRule");
         if (!outer.get$splitsOnInnerRules())
@@ -30946,7 +31035,7 @@
       }
     },
     ChunkBuilder__hardenRules_walkConstraints: {
-      "^": "Closure:3;",
+      "^": "Closure:4;",
       call$1: function(rule) {
         var t1, other;
         rule.harden$0();
@@ -31055,7 +31144,7 @@
       return $.useAnsiColors ? ansiEscape : "";
     },
     dumpChunks_addSpans: {
-      "^": "Closure:47;spanSet",
+      "^": "Closure:35;spanSet",
       call$1: function(chunks) {
         var t1, t2, _i, chunk;
         H.assertSubtype(chunks, "$isList", [E.Chunk], "$asList");
@@ -31068,13 +31157,13 @@
       }
     },
     dumpChunks_closure: {
-      "^": "Closure:42;",
+      "^": "Closure:36;",
       call$1: function(chunk) {
         return H.interceptedTypeCheck(chunk, "$isChunk")._rule;
       }
     },
     dumpChunks_closure0: {
-      "^": "Closure:18;",
+      "^": "Closure:20;",
       call$1: function(rule) {
         return H.interceptedTypeCheck(rule, "$isRule") != null;
       }
@@ -31163,43 +31252,43 @@
       }
     },
     dumpChunks_addChunk_closure: {
-      "^": "Closure:6;chunk",
+      "^": "Closure:7;chunk",
       call$0: function() {
         return "$" + this.chunk._rule.get$cost();
       }
     },
     dumpChunks_addChunk_closure0: {
-      "^": "Closure:6;constrainedRules",
+      "^": "Closure:7;constrainedRules",
       call$0: function() {
         return "-> " + this.constrainedRules.join$1(0, " ");
       }
     },
     dumpChunks_addChunk_closure1: {
-      "^": "Closure:6;chunk",
+      "^": "Closure:7;chunk",
       call$0: function() {
         return "indent " + H.S(this.chunk._indent);
       }
     },
     dumpChunks_addChunk_closure2: {
-      "^": "Closure:6;chunk",
+      "^": "Closure:7;chunk",
       call$0: function() {
         return "nest " + H.S(this.chunk._nesting);
       }
     },
     dumpChunks_addChunk_closure3: {
-      "^": "Closure:6;",
+      "^": "Closure:7;",
       call$0: function() {
         return "flush";
       }
     },
     dumpChunks_addChunk_closure4: {
-      "^": "Closure:6;",
+      "^": "Closure:7;",
       call$0: function() {
         return "divide";
       }
     },
     dumpLines_writeIndent: {
-      "^": "Closure:4;buffer",
+      "^": "Closure:5;buffer",
       call$1: function(indent) {
         var t1;
         if (typeof indent !== "number")
@@ -31210,7 +31299,7 @@
       }
     },
     dumpLines_writeChunksUnsplit: {
-      "^": "Closure:47;buffer",
+      "^": "Closure:35;buffer",
       call$1: function(chunks) {
         var t1, t2, _i, chunk;
         H.assertSubtype(chunks, "$isList", [E.Chunk], "$asList");
@@ -31381,13 +31470,13 @@
       }
     },
     LineSplitter_closure: {
-      "^": "Closure:42;",
+      "^": "Closure:36;",
       call$1: function(chunk) {
         return H.interceptedTypeCheck(chunk, "$isChunk")._rule;
       }
     },
     LineSplitter_closure0: {
-      "^": "Closure:18;",
+      "^": "Closure:20;",
       call$1: function(rule) {
         return H.interceptedTypeCheck(rule, "$isRule") != null;
       }
@@ -31886,7 +31975,7 @@
       }
     },
     SolveState_expand_closure: {
-      "^": "Closure:15;_box_0",
+      "^": "Closure:18;_box_0",
       call$1: function(rule) {
         var t1, t2, mustSplitRules;
         t1 = this._box_0;
@@ -31901,7 +31990,7 @@
       }
     },
     SolveState_expand_closure0: {
-      "^": "Closure:15;",
+      "^": "Closure:18;",
       call$1: function(_) {
       }
     },
@@ -32641,13 +32730,13 @@
       }
     },
     Rule_forgetUnusedRules_closure: {
-      "^": "Closure:18;",
+      "^": "Closure:20;",
       call$1: function(rule) {
         return H.interceptedTypeCheck(rule, "$isRule").index != null;
       }
     },
     Rule_allConstrainedRules_visit: {
-      "^": "Closure:15;$this",
+      "^": "Closure:18;$this",
       call$1: function(rule) {
         var t1;
         H.interceptedTypeCheck(rule, "$isRule");
@@ -34566,10 +34655,10 @@
       }, "call$0", "get$oneOrTwoNewlines", 0, 0, 1],
       split$0: [function(_) {
         return this.builder.split$1$space(0, true);
-      }, "call$0", "get$split", 1, 0, 40],
+      }, "call$0", "get$split", 1, 0, 37],
       zeroSplit$0: [function() {
         return this.builder.split$0(0);
-      }, "call$0", "get$zeroSplit", 0, 0, 40],
+      }, "call$0", "get$zeroSplit", 0, 0, 37],
       soloSplit$1: [function(cost) {
         var rule = O.Rule$(cost);
         this.builder.startRule$1(rule);
@@ -34783,7 +34872,7 @@
       }
     },
     SourceVisitor_visitBinaryExpression_traverse: {
-      "^": "Closure:48;$this,precedence",
+      "^": "Closure:34;$this,precedence",
       call$1: function(e) {
         var t1, t2, t3;
         t1 = J.getInterceptor(e);
@@ -34925,13 +35014,13 @@
       }
     },
     SourceVisitor_visitFormalParameterList_closure: {
-      "^": "Closure:39;",
+      "^": "Closure:43;",
       call$1: function(param) {
         return !J.getInterceptor(H.interceptedTypeCheck(param, "$isFormalParameter")).$isDefaultFormalParameter;
       }
     },
     SourceVisitor_visitFormalParameterList_closure0: {
-      "^": "Closure:39;",
+      "^": "Closure:43;",
       call$1: function(param) {
         return !!J.getInterceptor(H.interceptedTypeCheck(param, "$isFormalParameter")).$isDefaultFormalParameter;
       }
@@ -35191,7 +35280,7 @@
       }
     },
     SourceVisitor__containsLineComments_hasLineCommentBefore: {
-      "^": "Closure:25;",
+      "^": "Closure:11;",
       call$1: function(token) {
         var comment = token._precedingComment;
         for (; comment != null; comment = comment.next)
@@ -35283,7 +35372,7 @@
         return this.name;
       }
     }
-  }], ["", "package:flutter_figma_generator/api.dart",, A, {
+  }], ["", "package:figma_to_flutter/api.dart",, A, {
     "^": "",
     FigmaApiGenerator: {
       "^": "Object;authToken,http",
@@ -35314,7 +35403,7 @@
         return P._asyncStartSync($async$getFile$1, $async$completer);
       }
     }
-  }], ["", "package:flutter_figma_generator/base/color.dart",, K, {
+  }], ["", "package:figma_to_flutter/base/color.dart",, K, {
     "^": "",
     ColorGenerator: {
       "^": "Object;",
@@ -35334,7 +35423,7 @@
         return this.generate$2$opacity(map, 1);
       }
     }
-  }], ["", "package:flutter_figma_generator/base/paint.dart",, M, {
+  }], ["", "package:figma_to_flutter/base/paint.dart",, M, {
     "^": "",
     PaintGenerator: {
       "^": "Object;_paint$_color",
@@ -35395,18 +35484,18 @@
       }
     },
     PaintGenerator_generate_closure: {
-      "^": "Closure:14;",
+      "^": "Closure:17;",
       call$1: function(x) {
         return J.toDouble$0$n(J.$index$asx(x, "position"));
       }
     },
     PaintGenerator_generate_closure0: {
-      "^": "Closure:28;$this,opacity",
+      "^": "Closure:24;$this,opacity",
       call$1: function(x) {
         return this.$this._paint$_color.generate$2$opacity(J.$index$asx(x, "color"), this.opacity);
       }
     }
-  }], ["", "package:flutter_figma_generator/base/path.dart",, D, {
+  }], ["", "package:figma_to_flutter/base/path.dart",, D, {
     "^": "",
     PathGenerator: {
       "^": "Object;_path$_index,_catalog",
@@ -35513,17 +35602,20 @@
           t16 = t16._list;
           (t16 && C.JSArray_methods).add$1(t16, t18);
         }
-        t1 = t8.get$fields();
-        t2 = H.assertSubtypeOfRuntimeType(F._$Field__$Field(new D.PathGenerator_buildCatalog_closure0()), H.getTypeArgumentByIndex(t1, 0));
-        if (t2 == null)
-          H.throwExpression(P.ArgumentError$("null element"));
-        t1 = t1.get$_safeList();
-        (t1 && C.JSArray_methods).add$1(t1, t2);
-        t2 = t8.get$constructors();
-        t1 = H.assertSubtypeOfRuntimeType(Y._$Constructor__$Constructor(new D.PathGenerator_buildCatalog_closure1(constructorBody)), H.getTypeArgumentByIndex(t2, 0));
-        if (t1 == null)
+        t2 = t8.get$fields();
+        t3 = H.assertSubtypeOfRuntimeType(F._$Field__$Field(new D.PathGenerator_buildCatalog_closure0()), H.getTypeArgumentByIndex(t2, 0));
+        if (t3 == null)
           H.throwExpression(P.ArgumentError$("null element"));
         t2 = t2.get$_safeList();
+        (t2 && C.JSArray_methods).add$1(t2, t3);
+        t3 = t8.get$constructors();
+        t2 = D.Parameter;
+        t1 = new Y._$ConstructorBuilder(S.ListBuilder_ListBuilder(C.List_empty, t6), S.ListBuilder_ListBuilder(C.List_empty, t4), S.ListBuilder_ListBuilder(C.List_empty, t2), S.ListBuilder_ListBuilder(C.List_empty, t2), S.ListBuilder_ListBuilder(C.List_empty, t1), false, false, false, null, null);
+        H.functionTypeCheck(new D.PathGenerator_buildCatalog_closure1(constructorBody), {func: 1, ret: -1, args: [Y.ConstructorBuilder]}).call$1(t1);
+        t1 = H.assertSubtypeOfRuntimeType(t1.build$0(), H.getTypeArgumentByIndex(t3, 0));
+        if (t1 == null)
+          H.throwExpression(P.ArgumentError$("null element"));
+        t2 = t3.get$_safeList();
         (t2 && C.JSArray_methods).add$1(t2, t1);
         return t8.build$0();
       },
@@ -35595,7 +35687,7 @@
       }
     },
     PathGenerator_buildCatalog_closure: {
-      "^": "Closure:16;i",
+      "^": "Closure:8;i",
       call$1: function(b) {
         var t1 = "path_" + this.i;
         b.get$_field$_$this();
@@ -35606,7 +35698,7 @@
       }
     },
     PathGenerator_buildCatalog_closure0: {
-      "^": "Closure:16;",
+      "^": "Closure:8;",
       call$1: function(b) {
         b.get$_field$_$this();
         b.name = "instance";
@@ -35622,7 +35714,7 @@
       }
     },
     PathGenerator_buildCatalog_closure1: {
-      "^": "Closure:37;constructorBody",
+      "^": "Closure:80;constructorBody",
       call$1: function(b) {
         var t1 = this.constructorBody.build$0();
         b.get$_constructor$_$this();
@@ -35633,11 +35725,11 @@
     PathGenerator__addPath_closure: {
       "^": "Closure:81;$this",
       call$1: function(c) {
-        return new X.StaticCode(this.$this._generateCommand$1(H.interceptedTypeCheck(c, "$isPathSegmentData")).code + ";");
+        return new X.StaticCode(J.$add$ansx(this.$this._generateCommand$1(H.interceptedTypeCheck(c, "$isPathSegmentData")).code, ";"));
       }
     },
     PathGenerator__addPath_closure0: {
-      "^": "Closure:11;_box_0,$this",
+      "^": "Closure:9;_box_0,$this",
       call$1: function(b) {
         var t1 = "_build_" + this.$this._path$_index;
         b.get$_method$_$this();
@@ -35653,7 +35745,7 @@
       }
     },
     PathGenerator__addPath__closure: {
-      "^": "Closure:36;_box_0",
+      "^": "Closure:83;_box_0",
       call$1: function(c) {
         var t1, t2, t3, t4;
         t1 = c.get$statements();
@@ -35671,7 +35763,7 @@
         return t1;
       }
     }
-  }], ["", "package:flutter_figma_generator/base/text_styles.dart",, Z, {
+  }], ["", "package:figma_to_flutter/base/text_styles.dart",, Z, {
     "^": "",
     TextStyleGenerator: {
       "^": "Object;",
@@ -35686,7 +35778,7 @@
         J.toDouble$0$n(t1.$index(map, "lineHeightPx"));
         J.toDouble$0$n(t1.$index(map, "letterSpacing"));
         fontWeight = J.toInt$0$n(t1.$index(map, "fontWeight"));
-        return new X.StaticCode("ui.TextStyle(" + ("fontFamily: '" + H.S(fontFamily) + "',") + ("color: " + color + ",") + ("fontSize: " + H.S(fontSize) + ",") + ("wordSpacing: " + H.S(fontSize) + ",fontWeight: FontWeight.w" + fontWeight + ",") + ")");
+        return new X.StaticCode("ui.TextStyle(" + ("fontFamily: '" + H.S(fontFamily) + "',") + ("color: " + H.S(color) + ",") + ("fontSize: " + H.S(fontSize) + ",") + ("wordSpacing: " + H.S(fontSize) + ",fontWeight: FontWeight.w" + fontWeight + ",") + ")");
       }
     },
     ParagraphStyleGenerator: {
@@ -35704,45 +35796,830 @@
         }
       }
     }
-  }], ["", "package:flutter_figma_generator/nodes/frame.dart",, A, {
+  }], ["", "package:figma_to_flutter/context.dart",, M, {
+    "^": "",
+    BuildContext: {
+      "^": "Object;0_hasData,0_widget,0_customPainter,0_customPainterData,0_customPainterDataConstructor,0_paintBody",
+      addData$2: function($name, type) {
+        var _box_0, propertyName, t1, t2;
+        _box_0 = {};
+        propertyName = B.toVariableName($name);
+        _box_0.className = null;
+        switch (type) {
+          case "RECT":
+          case "VECTOR":
+          case "ELLIPSE":
+          case "RECTANGLE":
+          case "REGULAR_POLYGON":
+          case "BOOLEAN_OPERATION":
+          case "STAR":
+            _box_0.className = "VectorData";
+            break;
+          case "TEXT":
+            _box_0.className = "TextData";
+            break;
+          default:
+            _box_0.className = "Data";
+            break;
+        }
+        t1 = this._customPainterData.get$fields();
+        t2 = H.assertSubtypeOfRuntimeType(F._$Field__$Field(new M.BuildContext_addData_closure(_box_0, propertyName)), H.getTypeArgumentByIndex(t1, 0));
+        if (t2 == null)
+          H.throwExpression(P.ArgumentError$("null element"));
+        t1 = t1.get$_safeList();
+        (t1 && C.JSArray_methods).add$1(t1, t2);
+        t2 = this._customPainterDataConstructor.get$optionalParameters();
+        t1 = H.assertSubtypeOfRuntimeType(D._$Parameter__$Parameter(new M.BuildContext_addData_closure0(propertyName)), H.getTypeArgumentByIndex(t2, 0));
+        if (t1 == null)
+          H.throwExpression(P.ArgumentError$("null element"));
+        t2 = t2.get$_safeList();
+        (t2 && C.JSArray_methods).add$1(t2, t1);
+        this._hasData = true;
+        return this;
+      },
+      addPaint$1: function(statements) {
+        var t1, t2, t3;
+        H.assertSubtype(statements, "$isList", [P.String], "$asList");
+        t1 = this._paintBody.get$statements();
+        t2 = X.Code;
+        t3 = H.getTypeArgumentByIndex(statements, 0);
+        t2 = H.assertSubtype(new H.MappedListIterable(statements, H.functionTypeCheck(new M.BuildContext_addPaint_closure(), {func: 1, ret: t2, args: [t3]}), [t3, t2]), "$isIterable", [H.getTypeArgumentByIndex(t1, 0)], "$asIterable");
+        t1._checkElements$1(t2);
+        t1 = t1.get$_safeList();
+        (t1 && C.JSArray_methods).addAll$1(t1, t2);
+        return this;
+      },
+      _buildWidget$0: function() {
+        var t1, t2, $constructor, t3, body, args, build;
+        t1 = D.Parameter;
+        t2 = X.Code;
+        $constructor = new Y._$ConstructorBuilder(S.ListBuilder_ListBuilder(C.List_empty, B.Expression), S.ListBuilder_ListBuilder(C.List_empty, P.String), S.ListBuilder_ListBuilder(C.List_empty, t1), S.ListBuilder_ListBuilder(C.List_empty, t1), S.ListBuilder_ListBuilder(C.List_empty, t2), false, false, false, null, null);
+        if (this._hasData) {
+          t1 = $constructor.get$optionalParameters();
+          t3 = H.assertSubtypeOfRuntimeType(D._$Parameter__$Parameter(new M.BuildContext__buildWidget_closure()), H.getTypeArgumentByIndex(t1, 0));
+          if (t3 == null)
+            H.throwExpression(P.ArgumentError$("null element"));
+          t1 = t1.get$_safeList();
+          (t1 && C.JSArray_methods).add$1(t1, t3);
+          t3 = this._widget.get$fields();
+          t1 = H.assertSubtypeOfRuntimeType(F._$Field__$Field(new M.BuildContext__buildWidget_closure0(this)), H.getTypeArgumentByIndex(t3, 0));
+          if (t1 == null)
+            H.throwExpression(P.ArgumentError$("null element"));
+          t3 = t3.get$_safeList();
+          (t3 && C.JSArray_methods).add$1(t3, t1);
+        }
+        t1 = this._widget.get$constructors();
+        t3 = H.assertSubtypeOfRuntimeType($constructor.build$0(), H.getTypeArgumentByIndex(t1, 0));
+        if (t3 == null)
+          H.throwExpression(P.ArgumentError$("null element"));
+        t1 = t1.get$_safeList();
+        (t1 && C.JSArray_methods).add$1(t1, t3);
+        body = new X._$BlockBuilder(S.ListBuilder_ListBuilder(C.List_empty, t2));
+        args = this._hasData ? "data" : "";
+        t1 = body.get$statements();
+        t2 = this._customPainter;
+        t2.get$_$this();
+        t2 = H.assertSubtypeOfRuntimeType(new X.StaticCode("return CustomPaint(painter: " + H.S(t2.name) + "(" + args + "));"), H.getTypeArgumentByIndex(t1, 0));
+        t1 = t1.get$_safeList();
+        (t1 && C.JSArray_methods).add$1(t1, t2);
+        build = D._$Method__$Method(new M.BuildContext__buildWidget_closure1(body));
+        t2 = this._widget.get$methods();
+        H.assertSubtypeOfRuntimeType(build, H.getTypeArgumentByIndex(t2, 0));
+        if (build == null)
+          H.throwExpression(P.ArgumentError$("null element"));
+        t1 = t2.get$_safeList();
+        (t1 && C.JSArray_methods).add$1(t1, build);
+        return this._widget.build$0();
+      },
+      _buildCustomPainter$0: function() {
+        var semanticsBuilder, shouldRepaint, shouldRebuildSemantics, paint, t1, $constructor, t2;
+        semanticsBuilder = D._$Method__$Method(new M.BuildContext__buildCustomPainter_closure());
+        shouldRepaint = D._$Method__$Method(new M.BuildContext__buildCustomPainter_closure0(this));
+        shouldRebuildSemantics = D._$Method__$Method(new M.BuildContext__buildCustomPainter_closure1(this));
+        paint = D._$Method__$Method(new M.BuildContext__buildCustomPainter_closure2(this));
+        t1 = D.Parameter;
+        $constructor = new Y._$ConstructorBuilder(S.ListBuilder_ListBuilder(C.List_empty, B.Expression), S.ListBuilder_ListBuilder(C.List_empty, P.String), S.ListBuilder_ListBuilder(C.List_empty, t1), S.ListBuilder_ListBuilder(C.List_empty, t1), S.ListBuilder_ListBuilder(C.List_empty, X.Code), false, false, false, null, null);
+        if (this._hasData) {
+          t1 = $constructor.get$optionalParameters();
+          t2 = H.assertSubtypeOfRuntimeType(D._$Parameter__$Parameter(new M.BuildContext__buildCustomPainter_closure3()), H.getTypeArgumentByIndex(t1, 0));
+          if (t2 == null)
+            H.throwExpression(P.ArgumentError$("null element"));
+          t1 = t1.get$_safeList();
+          (t1 && C.JSArray_methods).add$1(t1, t2);
+          t2 = this._customPainter.get$fields();
+          t1 = H.assertSubtypeOfRuntimeType(F._$Field__$Field(new M.BuildContext__buildCustomPainter_closure4(this)), H.getTypeArgumentByIndex(t2, 0));
+          if (t1 == null)
+            H.throwExpression(P.ArgumentError$("null element"));
+          t2 = t2.get$_safeList();
+          (t2 && C.JSArray_methods).add$1(t2, t1);
+        }
+        t1 = this._customPainter.get$constructors();
+        t2 = H.assertSubtypeOfRuntimeType($constructor.build$0(), H.getTypeArgumentByIndex(t1, 0));
+        if (t2 == null)
+          H.throwExpression(P.ArgumentError$("null element"));
+        t1 = t1.get$_safeList();
+        (t1 && C.JSArray_methods).add$1(t1, t2);
+        t2 = this._customPainter.get$methods();
+        t1 = H.assertSubtype(H.setRuntimeTypeInfo([paint, semanticsBuilder, shouldRebuildSemantics, shouldRepaint], [D.Method]), "$isIterable", [H.getTypeArgumentByIndex(t2, 0)], "$asIterable");
+        t2._checkElements$1(t1);
+        t2 = t2.get$_safeList();
+        (t2 && C.JSArray_methods).addAll$1(t2, t1);
+        return this._customPainter.build$0();
+      }
+    },
+    BuildContext_addData_closure: {
+      "^": "Closure:8;_box_0,propertyName",
+      call$1: function(b) {
+        var t1;
+        b.get$_field$_$this();
+        b.name = this.propertyName;
+        b.get$_field$_$this();
+        b.modifier = C.FieldModifier_1;
+        t1 = this._box_0.className;
+        b.get$_field$_$this();
+        b.type = new U.Reference(null, t1);
+        return b;
+      }
+    },
+    BuildContext_addData_closure0: {
+      "^": "Closure:3;propertyName",
+      call$1: function(p) {
+        var t1 = "this." + this.propertyName;
+        p.get$_method$_$this();
+        p.name = t1;
+        p.get$_method$_$this();
+        p.named = true;
+        return p;
+      }
+    },
+    BuildContext_addPaint_closure: {
+      "^": "Closure:129;",
+      call$1: function(c) {
+        return new X.StaticCode(H.stringTypeCheck(c));
+      }
+    },
+    BuildContext__buildWidget_closure: {
+      "^": "Closure:3;",
+      call$1: function(p) {
+        p.get$_method$_$this();
+        p.name = "this.data";
+        p.get$_method$_$this();
+        p.toThis;
+        return p;
+      }
+    },
+    BuildContext__buildWidget_closure0: {
+      "^": "Closure:8;$this",
+      call$1: function(b) {
+        var t1;
+        b.get$_field$_$this();
+        b.name = "data";
+        b.get$_field$_$this();
+        b.modifier = C.FieldModifier_1;
+        t1 = this.$this._customPainterData;
+        t1.get$_$this();
+        t1 = t1.name;
+        b.get$_field$_$this();
+        b.type = new U.Reference(null, t1);
+        return b;
+      }
+    },
+    BuildContext__buildWidget_closure1: {
+      "^": "Closure:9;body",
+      call$1: function(b) {
+        var t1, t2;
+        b.get$_method$_$this();
+        b.name = "build";
+        t1 = b.get$annotations();
+        t2 = H.assertSubtypeOfRuntimeType(new B.CodeExpression(new X.StaticCode("override")), H.getTypeArgumentByIndex(t1, 0));
+        t1 = t1.get$_safeList();
+        (t1 && C.JSArray_methods).add$1(t1, t2);
+        b.get$_method$_$this();
+        b.returns = new U.Reference(null, "Widget");
+        t2 = b.get$requiredParameters();
+        t1 = H.assertSubtypeOfRuntimeType(D._$Parameter__$Parameter(new M.BuildContext__buildWidget__closure()), H.getTypeArgumentByIndex(t2, 0));
+        if (t1 == null)
+          H.throwExpression(P.ArgumentError$("null element"));
+        t2 = t2.get$_safeList();
+        (t2 && C.JSArray_methods).add$1(t2, t1);
+        t1 = this.body.build$0();
+        b.get$_method$_$this();
+        b.body = t1;
+        return b;
+      }
+    },
+    BuildContext__buildWidget__closure: {
+      "^": "Closure:3;",
+      call$1: function(b) {
+        b.get$_method$_$this();
+        b.name = "context";
+        b.get$_method$_$this();
+        b.type = new U.Reference(null, "BuildContext");
+        return b;
+      }
+    },
+    BuildContext__buildCustomPainter_closure: {
+      "^": "Closure:9;",
+      call$1: function(b) {
+        var t1, t2;
+        b.get$_method$_$this();
+        b.name = "semanticsBuilder";
+        t1 = b.get$annotations();
+        t2 = H.assertSubtypeOfRuntimeType(new B.CodeExpression(new X.StaticCode("override")), H.getTypeArgumentByIndex(t1, 0));
+        t1 = t1.get$_safeList();
+        (t1 && C.JSArray_methods).add$1(t1, t2);
+        b.get$_method$_$this();
+        b.type = C.MethodType_0;
+        b.get$_method$_$this();
+        b.returns = new U.Reference(null, "SemanticsBuilderCallback");
+        b.get$_method$_$this();
+        b.body = new X.StaticCode("return (Size size) => [];");
+        return b;
+      }
+    },
+    BuildContext__buildCustomPainter_closure0: {
+      "^": "Closure:9;$this",
+      call$1: function(b) {
+        var t1, t2;
+        b.get$_method$_$this();
+        b.name = "shouldRepaint";
+        t1 = b.get$annotations();
+        t2 = H.assertSubtypeOfRuntimeType(new B.CodeExpression(new X.StaticCode("override")), H.getTypeArgumentByIndex(t1, 0));
+        t1 = t1.get$_safeList();
+        (t1 && C.JSArray_methods).add$1(t1, t2);
+        b.get$_method$_$this();
+        b.returns = new U.Reference(null, "bool");
+        t2 = b.get$requiredParameters();
+        t1 = H.assertSubtypeOfRuntimeType(D._$Parameter__$Parameter(new M.BuildContext__buildCustomPainter__closure2(this.$this)), H.getTypeArgumentByIndex(t2, 0));
+        if (t1 == null)
+          H.throwExpression(P.ArgumentError$("null element"));
+        t2 = t2.get$_safeList();
+        (t2 && C.JSArray_methods).add$1(t2, t1);
+        b.get$_method$_$this();
+        b.body = new X.StaticCode("return false;");
+        return b;
+      }
+    },
+    BuildContext__buildCustomPainter__closure2: {
+      "^": "Closure:3;$this",
+      call$1: function(b) {
+        var t1;
+        b.get$_method$_$this();
+        b.name = "oldDelegate";
+        t1 = this.$this._customPainter;
+        t1.get$_$this();
+        t1 = t1.name;
+        b.get$_method$_$this();
+        b.type = new U.Reference(null, t1);
+        return b;
+      }
+    },
+    BuildContext__buildCustomPainter_closure1: {
+      "^": "Closure:9;$this",
+      call$1: function(b) {
+        var t1, t2;
+        b.get$_method$_$this();
+        b.name = "shouldRebuildSemantics";
+        t1 = b.get$annotations();
+        t2 = H.assertSubtypeOfRuntimeType(new B.CodeExpression(new X.StaticCode("override")), H.getTypeArgumentByIndex(t1, 0));
+        t1 = t1.get$_safeList();
+        (t1 && C.JSArray_methods).add$1(t1, t2);
+        b.get$_method$_$this();
+        b.returns = new U.Reference(null, "bool");
+        t2 = b.get$requiredParameters();
+        t1 = H.assertSubtypeOfRuntimeType(D._$Parameter__$Parameter(new M.BuildContext__buildCustomPainter__closure1(this.$this)), H.getTypeArgumentByIndex(t2, 0));
+        if (t1 == null)
+          H.throwExpression(P.ArgumentError$("null element"));
+        t2 = t2.get$_safeList();
+        (t2 && C.JSArray_methods).add$1(t2, t1);
+        b.get$_method$_$this();
+        b.body = new X.StaticCode("return false;");
+        return b;
+      }
+    },
+    BuildContext__buildCustomPainter__closure1: {
+      "^": "Closure:3;$this",
+      call$1: function(b) {
+        var t1;
+        b.get$_method$_$this();
+        b.name = "oldDelegate";
+        t1 = this.$this._customPainter;
+        t1.get$_$this();
+        t1 = t1.name;
+        b.get$_method$_$this();
+        b.type = new U.Reference(null, t1);
+        return b;
+      }
+    },
+    BuildContext__buildCustomPainter_closure2: {
+      "^": "Closure:9;$this",
+      call$1: function(b) {
+        var t1, t2;
+        b.get$_method$_$this();
+        b.name = "paint";
+        t1 = b.get$annotations();
+        t2 = H.assertSubtypeOfRuntimeType(new B.CodeExpression(new X.StaticCode("override")), H.getTypeArgumentByIndex(t1, 0));
+        t1 = t1.get$_safeList();
+        (t1 && C.JSArray_methods).add$1(t1, t2);
+        b.get$_method$_$this();
+        b.returns = new U.Reference(null, "void");
+        t2 = this.$this._paintBody.build$0();
+        b.get$_method$_$this();
+        b.body = t2;
+        t2 = b.get$requiredParameters();
+        t1 = H.assertSubtypeOfRuntimeType(D._$Parameter__$Parameter(new M.BuildContext__buildCustomPainter__closure()), H.getTypeArgumentByIndex(t2, 0));
+        if (t1 == null)
+          H.throwExpression(P.ArgumentError$("null element"));
+        t2 = t2.get$_safeList();
+        (t2 && C.JSArray_methods).add$1(t2, t1);
+        t1 = b.get$requiredParameters();
+        t2 = H.assertSubtypeOfRuntimeType(D._$Parameter__$Parameter(new M.BuildContext__buildCustomPainter__closure0()), H.getTypeArgumentByIndex(t1, 0));
+        if (t2 == null)
+          H.throwExpression(P.ArgumentError$("null element"));
+        t1 = t1.get$_safeList();
+        (t1 && C.JSArray_methods).add$1(t1, t2);
+        return b;
+      }
+    },
+    BuildContext__buildCustomPainter__closure: {
+      "^": "Closure:3;",
+      call$1: function(p) {
+        p.get$_method$_$this();
+        p.name = "canvas";
+        p.get$_method$_$this();
+        p.type = new U.Reference(null, "Canvas");
+        return p;
+      }
+    },
+    BuildContext__buildCustomPainter__closure0: {
+      "^": "Closure:3;",
+      call$1: function(p) {
+        p.get$_method$_$this();
+        p.name = "size";
+        p.get$_method$_$this();
+        p.type = new U.Reference(null, "Size");
+        return p;
+      }
+    },
+    BuildContext__buildCustomPainter_closure3: {
+      "^": "Closure:3;",
+      call$1: function(p) {
+        p.get$_method$_$this();
+        p.name = "this.data";
+        p.get$_method$_$this();
+        p.toThis;
+        return p;
+      }
+    },
+    BuildContext__buildCustomPainter_closure4: {
+      "^": "Closure:8;$this",
+      call$1: function(b) {
+        var t1;
+        b.get$_field$_$this();
+        b.name = "data";
+        b.get$_field$_$this();
+        b.modifier = C.FieldModifier_1;
+        t1 = this.$this._customPainterData;
+        t1.get$_$this();
+        t1 = t1.name;
+        b.get$_field$_$this();
+        b.type = new U.Reference(null, t1);
+        return b;
+      }
+    }
+  }], ["", "package:figma_to_flutter/file.dart",, Y, {
+    "^": "",
+    FigmaWidgetGenerator: {
+      "^": "Object;0_component,0_path,0_node,_document",
+      _createDataClasses$0: function() {
+        var result, t1, t2, t3, t4, t5, t6, builder, t7, t8, $constructor, t9, t10;
+        result = H.setRuntimeTypeInfo([], [X.Class]);
+        t1 = B.Expression;
+        t2 = P.String;
+        t3 = U.Reference;
+        t4 = Y.Constructor;
+        t5 = D.Method;
+        t6 = F.Field;
+        builder = new X._$ClassBuilder(false, S.ListBuilder_ListBuilder(C.List_empty, t1), S.ListBuilder_ListBuilder(C.List_empty, t2), S.ListBuilder_ListBuilder(C.List_empty, t3), S.ListBuilder_ListBuilder(C.List_empty, t3), S.ListBuilder_ListBuilder(C.List_empty, t3), S.ListBuilder_ListBuilder(C.List_empty, t4), S.ListBuilder_ListBuilder(C.List_empty, t5), S.ListBuilder_ListBuilder(C.List_empty, t6), null, null, null);
+        builder.get$_$this();
+        builder.name = "Data";
+        t7 = D.Parameter;
+        t8 = X.Code;
+        $constructor = new Y._$ConstructorBuilder(S.ListBuilder_ListBuilder(C.List_empty, t1), S.ListBuilder_ListBuilder(C.List_empty, t2), S.ListBuilder_ListBuilder(C.List_empty, t7), S.ListBuilder_ListBuilder(C.List_empty, t7), S.ListBuilder_ListBuilder(C.List_empty, t8), false, false, false, null, null);
+        t9 = $constructor.get$optionalParameters();
+        t10 = H.assertSubtypeOfRuntimeType(D._$Parameter__$Parameter(new Y.FigmaWidgetGenerator__createDataClasses_closure()), H.getTypeArgumentByIndex(t9, 0));
+        if (t10 == null)
+          H.throwExpression(P.ArgumentError$("null element"));
+        t9 = t9.get$_safeList();
+        (t9 && C.JSArray_methods).add$1(t9, t10);
+        t10 = builder.get$fields();
+        t9 = H.assertSubtypeOfRuntimeType(F._$Field__$Field(new Y.FigmaWidgetGenerator__createDataClasses_closure0()), H.getTypeArgumentByIndex(t10, 0));
+        if (t9 == null)
+          H.throwExpression(P.ArgumentError$("null element"));
+        t10 = t10.get$_safeList();
+        (t10 && C.JSArray_methods).add$1(t10, t9);
+        t9 = builder.get$constructors();
+        t10 = H.assertSubtypeOfRuntimeType($constructor.build$0(), H.getTypeArgumentByIndex(t9, 0));
+        if (t10 == null)
+          H.throwExpression(P.ArgumentError$("null element"));
+        t9 = t9.get$_safeList();
+        (t9 && C.JSArray_methods).add$1(t9, t10);
+        C.JSArray_methods.add$1(result, builder.build$0());
+        builder = new X._$ClassBuilder(false, S.ListBuilder_ListBuilder(C.List_empty, t1), S.ListBuilder_ListBuilder(C.List_empty, t2), S.ListBuilder_ListBuilder(C.List_empty, t3), S.ListBuilder_ListBuilder(C.List_empty, t3), S.ListBuilder_ListBuilder(C.List_empty, t3), S.ListBuilder_ListBuilder(C.List_empty, t4), S.ListBuilder_ListBuilder(C.List_empty, t5), S.ListBuilder_ListBuilder(C.List_empty, t6), null, null, null);
+        builder.get$_$this();
+        builder.name = "TextData";
+        builder.get$_$this();
+        builder.extend = new U.Reference(null, "Data");
+        $constructor = new Y._$ConstructorBuilder(S.ListBuilder_ListBuilder(C.List_empty, t1), S.ListBuilder_ListBuilder(C.List_empty, t2), S.ListBuilder_ListBuilder(C.List_empty, t7), S.ListBuilder_ListBuilder(C.List_empty, t7), S.ListBuilder_ListBuilder(C.List_empty, t8), false, false, false, null, null);
+        t10 = $constructor.get$optionalParameters();
+        t9 = H.assertSubtypeOfRuntimeType(D._$Parameter__$Parameter(new Y.FigmaWidgetGenerator__createDataClasses_closure1()), H.getTypeArgumentByIndex(t10, 0));
+        if (t9 == null)
+          H.throwExpression(P.ArgumentError$("null element"));
+        t10 = t10.get$_safeList();
+        (t10 && C.JSArray_methods).add$1(t10, t9);
+        t9 = $constructor.get$optionalParameters();
+        t10 = H.assertSubtypeOfRuntimeType(D._$Parameter__$Parameter(new Y.FigmaWidgetGenerator__createDataClasses_closure2()), H.getTypeArgumentByIndex(t9, 0));
+        if (t10 == null)
+          H.throwExpression(P.ArgumentError$("null element"));
+        t9 = t9.get$_safeList();
+        (t9 && C.JSArray_methods).add$1(t9, t10);
+        t10 = $constructor.get$initializers();
+        t9 = H.assertSubtypeOfRuntimeType(new X.StaticCode("super(isVisible: isVisible)"), H.getTypeArgumentByIndex(t10, 0));
+        t10 = t10.get$_safeList();
+        (t10 && C.JSArray_methods).add$1(t10, t9);
+        t9 = builder.get$fields();
+        t10 = H.assertSubtypeOfRuntimeType(F._$Field__$Field(new Y.FigmaWidgetGenerator__createDataClasses_closure3()), H.getTypeArgumentByIndex(t9, 0));
+        if (t10 == null)
+          H.throwExpression(P.ArgumentError$("null element"));
+        t9 = t9.get$_safeList();
+        (t9 && C.JSArray_methods).add$1(t9, t10);
+        t10 = builder.get$constructors();
+        t9 = H.assertSubtypeOfRuntimeType($constructor.build$0(), H.getTypeArgumentByIndex(t10, 0));
+        if (t9 == null)
+          H.throwExpression(P.ArgumentError$("null element"));
+        t10 = t10.get$_safeList();
+        (t10 && C.JSArray_methods).add$1(t10, t9);
+        C.JSArray_methods.add$1(result, builder.build$0());
+        builder = new X._$ClassBuilder(false, S.ListBuilder_ListBuilder(C.List_empty, t1), S.ListBuilder_ListBuilder(C.List_empty, t2), S.ListBuilder_ListBuilder(C.List_empty, t3), S.ListBuilder_ListBuilder(C.List_empty, t3), S.ListBuilder_ListBuilder(C.List_empty, t3), S.ListBuilder_ListBuilder(C.List_empty, t4), S.ListBuilder_ListBuilder(C.List_empty, t5), S.ListBuilder_ListBuilder(C.List_empty, t6), null, null, null);
+        builder.get$_$this();
+        builder.name = "VectorData";
+        builder.get$_$this();
+        builder.extend = new U.Reference(null, "Data");
+        $constructor = new Y._$ConstructorBuilder(S.ListBuilder_ListBuilder(C.List_empty, t1), S.ListBuilder_ListBuilder(C.List_empty, t2), S.ListBuilder_ListBuilder(C.List_empty, t7), S.ListBuilder_ListBuilder(C.List_empty, t7), S.ListBuilder_ListBuilder(C.List_empty, t8), false, false, false, null, null);
+        t8 = $constructor.get$optionalParameters();
+        t7 = H.assertSubtypeOfRuntimeType(D._$Parameter__$Parameter(new Y.FigmaWidgetGenerator__createDataClasses_closure4()), H.getTypeArgumentByIndex(t8, 0));
+        if (t7 == null)
+          H.throwExpression(P.ArgumentError$("null element"));
+        t1 = t8.get$_safeList();
+        (t1 && C.JSArray_methods).add$1(t1, t7);
+        t7 = $constructor.get$initializers();
+        t1 = H.assertSubtypeOfRuntimeType(new X.StaticCode("super(isVisible: isVisible)"), H.getTypeArgumentByIndex(t7, 0));
+        t2 = t7.get$_safeList();
+        (t2 && C.JSArray_methods).add$1(t2, t1);
+        t1 = builder.get$constructors();
+        t2 = H.assertSubtypeOfRuntimeType($constructor.build$0(), H.getTypeArgumentByIndex(t1, 0));
+        if (t2 == null)
+          H.throwExpression(P.ArgumentError$("null element"));
+        t1 = t1.get$_safeList();
+        (t1 && C.JSArray_methods).add$1(t1, t2);
+        C.JSArray_methods.add$1(result, builder.build$0());
+        return result;
+      },
+      _generateWidgets$1: function(widgets) {
+        var classes, t1;
+        H.assertSubtype(widgets, "$isMap", [P.String, null], "$asMap");
+        classes = H.setRuntimeTypeInfo([], [X.Class]);
+        widgets.forEach$1(0, new Y.FigmaWidgetGenerator__generateWidgets_closure(this, classes));
+        C.JSArray_methods.add$1(classes, this._path.buildCatalog$0());
+        C.JSArray_methods.addAll$1(classes, this._createDataClasses$0());
+        t1 = new O._$LibraryBuilder(S.ListBuilder_ListBuilder(C.List_empty, R.Spec), S.ListBuilder_ListBuilder(C.List_empty, U.Directive0));
+        H.functionTypeCheck(new Y.FigmaWidgetGenerator__generateWidgets_closure0(classes), {func: 1, ret: -1, args: [O.LibraryBuilder]}).call$1(t1);
+        return t1.build$0();
+      },
+      _findNode$2: function(map, id) {
+        var t1, children, found;
+        t1 = J.getInterceptor$asx(map);
+        P.print(H.S(id) + " => " + H.S(t1.$index(map, "id")));
+        if (J.$eq$(t1.$index(map, "id"), id))
+          return map;
+        children = t1.$index(map, "children");
+        if (children != null)
+          for (t1 = J.get$iterator$ax(H.listSuperNativeTypeCheck(children, "$isIterable")); t1.moveNext$0();) {
+            found = this._findNode$2(t1.get$current(), id);
+            if (found != null)
+              return found;
+          }
+        return;
+      },
+      generateComponents$1: function(components) {
+        var t1, widgets, library, t2, t3, errorListener, t4, reader, stringSource, scanner, startToken, t5, t6, parser, node, visitor, t7, t8, t9, t10, t11, result, selectionStart, selectionEnd, selectionLength, output;
+        t1 = P.String;
+        H.assertSubtype(components, "$isMap", [t1, t1], "$asMap");
+        widgets = P.LinkedHashMap_LinkedHashMap$_empty(t1, null);
+        J.forEach$1$ax(J.$index$asx(this._document, "components"), new Y.FigmaWidgetGenerator_generateComponents_closure(this, components, widgets));
+        library = this._generateWidgets$1(widgets);
+        t1 = P.LinkedHashSet_LinkedHashSet(null, null, null, Q.StyleFix);
+        t2 = new U.DartFormatter(null, 80, 0, t1);
+        library.toString;
+        t3 = H.assertSubtype(new D.DartEmitter(C.C__NullAllocator), "$isSpecVisitor", [P.StringSink], "$asSpecVisitor").visitLibrary$2(library, null).toString$0(0);
+        t3 = A.SourceCode$(t3, true, null, null, null);
+        errorListener = new Y.ErrorListener(H.setRuntimeTypeInfo([], [V.AnalysisError]));
+        t4 = t3.text;
+        reader = D.CharSequenceReader$(t4);
+        stringSource = new O.StringSource(t4, t3.uri, null, Date.now());
+        scanner = Z.Scanner_Scanner$fasta(stringSource, errorListener, reader.getContents$0(), reader.get$offset(reader));
+        startToken = scanner.tokenize$0();
+        t5 = scanner.lineStarts;
+        if (t5.length < 1)
+          H.throwExpression(P.ArgumentError$("lineStarts must be non-empty"));
+        if (t5.length > 1)
+          if (J.$ge$n(t5[1], 2)) {
+            if (1 >= t5.length)
+              return H.ioore(t5, 1);
+            t6 = J.$sub$n(t5[1], 2);
+            if (t6 >>> 0 !== t6 || t6 >= t4.length)
+              return H.ioore(t4, t6);
+            t6 = t4[t6] === "\r";
+          } else
+            t6 = false;
+        else
+          t6 = false;
+        if (t6)
+          t2.lineEnding = "\r\n";
+        else
+          t2.lineEnding = "\n";
+        errorListener.throwIfErrors$0();
+        parser = X.Parser_Parser(stringSource, errorListener, null);
+        parser.set$enableOptionalNewAndConst(true);
+        node = parser.parseCompilationUnit$1(startToken);
+        errorListener.throwIfErrors$0();
+        visitor = new F.SourceVisitor(t2, new E.LineInfo(t5, 0), t3, false, false, 0, H.setRuntimeTypeInfo([], [P.bool]), H.setRuntimeTypeInfo([], [O.MetadataRule]), P.LinkedHashMap_LinkedHashMap$_empty(L.Token, B.ArgumentSublist));
+        t5 = O.Rule;
+        t6 = [t5];
+        t7 = H.setRuntimeTypeInfo([], t6);
+        t5 = P.LinkedHashSet_LinkedHashSet(null, null, null, t5);
+        t6 = H.setRuntimeTypeInfo([], t6);
+        t8 = H.setRuntimeTypeInfo([], [E.OpenSpan]);
+        t9 = H.setRuntimeTypeInfo([0], [P.int]);
+        t10 = $.FastHash__nextId + 1 & 268435455;
+        $.FastHash__nextId = t10;
+        t10 = new F.NestingBuilder(t9, new M.NestingLevel(null, 0, t10));
+        t9 = H.setRuntimeTypeInfo([], [M.NestingLevel]);
+        t11 = H.setRuntimeTypeInfo([], [E.Chunk]);
+        t10.indent$1(0);
+        C.JSArray_methods.add$1(t9, t10.get$currentNesting());
+        visitor.builder = new S.ChunkBuilder(t2, null, t3, t11, C.Whitespace_none, t7, t5, t6, t8, t10, t9, false, 0);
+        visitor.visit$1(node);
+        visitor.writePrecedingCommentsAndNewlines$1(node.endToken.next);
+        t9 = visitor.builder;
+        t9._writeHardSplit$0();
+        t9._divideChunks$0();
+        if ($.traceChunkBuilder) {
+          A.log(H.S($.$get$_green()) + "\nBuilt:" + H.S($.$get$_none()));
+          A.dumpChunks(0, t9._chunks);
+          A.log(null);
+        }
+        t2 = t9._formatter;
+        t3 = new P.StringBuffer("");
+        result = new A.LineWriter(t3, t9._chunks, t2.lineEnding, t2.pageWidth, 0, P.LinkedHashMap_LinkedHashMap$_empty(A._BlockKey, A.FormatResult)).writeLines$2$isCompilationUnit(t2.indent, true);
+        t2 = t9._source;
+        if (t2.selectionStart != null) {
+          selectionStart = result.selectionStart;
+          selectionEnd = result.selectionEnd;
+          if (selectionStart == null)
+            selectionStart = t3._contents.length;
+          selectionLength = (selectionEnd == null ? t3._contents.length : selectionEnd) - selectionStart;
+        } else {
+          selectionStart = null;
+          selectionLength = null;
+        }
+        output = A.SourceCode$(result.text, true, selectionLength, selectionStart, t2.uri);
+        if (t1._collection$_length === 0 && !M.equalIgnoringWhitespace(t4, output.text))
+          H.throwExpression(new A.UnexpectedOutputException(t4, output.text));
+        return output.text;
+      }
+    },
+    FigmaWidgetGenerator__createDataClasses_closure: {
+      "^": "Closure:3;",
+      call$1: function(p) {
+        p.get$_method$_$this();
+        p.name = "this.isVisible";
+        p.get$_method$_$this();
+        p.named = true;
+        p.get$_method$_$this();
+        p.toThis;
+        return p;
+      }
+    },
+    FigmaWidgetGenerator__createDataClasses_closure0: {
+      "^": "Closure:8;",
+      call$1: function(b) {
+        b.get$_field$_$this();
+        b.name = "isVisible";
+        b.get$_field$_$this();
+        b.modifier = C.FieldModifier_1;
+        b.get$_field$_$this();
+        b.type = new U.Reference(null, "bool");
+        return b;
+      }
+    },
+    FigmaWidgetGenerator__createDataClasses_closure1: {
+      "^": "Closure:3;",
+      call$1: function(p) {
+        p.get$_method$_$this();
+        p.name = "isVisible";
+        p.get$_method$_$this();
+        p.named = true;
+        p.get$_method$_$this();
+        p.toThis;
+        return p;
+      }
+    },
+    FigmaWidgetGenerator__createDataClasses_closure2: {
+      "^": "Closure:3;",
+      call$1: function(p) {
+        p.get$_method$_$this();
+        p.name = "this.text";
+        p.get$_method$_$this();
+        p.named = true;
+        p.get$_method$_$this();
+        p.toThis;
+        return p;
+      }
+    },
+    FigmaWidgetGenerator__createDataClasses_closure3: {
+      "^": "Closure:8;",
+      call$1: function(b) {
+        b.get$_field$_$this();
+        b.name = "text";
+        b.get$_field$_$this();
+        b.modifier = C.FieldModifier_1;
+        b.get$_field$_$this();
+        b.type = new U.Reference(null, "String");
+        return b;
+      }
+    },
+    FigmaWidgetGenerator__createDataClasses_closure4: {
+      "^": "Closure:3;",
+      call$1: function(p) {
+        p.get$_method$_$this();
+        p.name = "isVisible";
+        p.get$_method$_$this();
+        p.named = true;
+        p.get$_method$_$this();
+        p.toThis;
+        return p;
+      }
+    },
+    FigmaWidgetGenerator__generateWidgets_closure: {
+      "^": "Closure:40;$this,classes",
+      call$2: function(k, node) {
+        var t1, context, className, t2, widgetName, t3, t4, t5, t6, t7, t8, t9, relativeTransform, result;
+        H.stringTypeCheck(k);
+        t1 = this.$this._component;
+        context = new M.BuildContext();
+        className = M.ReCase$(k)._getPascalCase$0();
+        t2 = P.RegExp_RegExp("[^a-zA-Z0-9]", true, false);
+        widgetName = H.stringReplaceAllUnchecked(className, t2, "_");
+        t2 = B.Expression;
+        t3 = P.String;
+        t4 = U.Reference;
+        t5 = Y.Constructor;
+        t6 = D.Method;
+        t7 = F.Field;
+        t8 = new X._$ClassBuilder(false, S.ListBuilder_ListBuilder(C.List_empty, t2), S.ListBuilder_ListBuilder(C.List_empty, t3), S.ListBuilder_ListBuilder(C.List_empty, t4), S.ListBuilder_ListBuilder(C.List_empty, t4), S.ListBuilder_ListBuilder(C.List_empty, t4), S.ListBuilder_ListBuilder(C.List_empty, t5), S.ListBuilder_ListBuilder(C.List_empty, t6), S.ListBuilder_ListBuilder(C.List_empty, t7), null, null, null);
+        t8.get$_$this();
+        t8.name = widgetName;
+        t8.get$_$this();
+        t8.extend = new U.Reference(null, "StatelessWidget");
+        context._widget = t8;
+        t8 = new X._$ClassBuilder(false, S.ListBuilder_ListBuilder(C.List_empty, t2), S.ListBuilder_ListBuilder(C.List_empty, t3), S.ListBuilder_ListBuilder(C.List_empty, t4), S.ListBuilder_ListBuilder(C.List_empty, t4), S.ListBuilder_ListBuilder(C.List_empty, t4), S.ListBuilder_ListBuilder(C.List_empty, t5), S.ListBuilder_ListBuilder(C.List_empty, t6), S.ListBuilder_ListBuilder(C.List_empty, t7), null, null, null);
+        t9 = widgetName + "Painter";
+        t8.get$_$this();
+        t8.name = t9;
+        t8.get$_$this();
+        t8.extend = new U.Reference(null, "CustomPainter");
+        context._customPainter = t8;
+        t8 = X.Code;
+        context._paintBody = new X._$BlockBuilder(S.ListBuilder_ListBuilder(C.List_empty, t8));
+        t7 = new X._$ClassBuilder(false, S.ListBuilder_ListBuilder(C.List_empty, t2), S.ListBuilder_ListBuilder(C.List_empty, t3), S.ListBuilder_ListBuilder(C.List_empty, t4), S.ListBuilder_ListBuilder(C.List_empty, t4), S.ListBuilder_ListBuilder(C.List_empty, t4), S.ListBuilder_ListBuilder(C.List_empty, t5), S.ListBuilder_ListBuilder(C.List_empty, t6), S.ListBuilder_ListBuilder(C.List_empty, t7), null, null, null);
+        t6 = widgetName + "Data";
+        t7.get$_$this();
+        t7.name = t6;
+        context._customPainterData = t7;
+        t7 = D.Parameter;
+        context._customPainterDataConstructor = new Y._$ConstructorBuilder(S.ListBuilder_ListBuilder(C.List_empty, t2), S.ListBuilder_ListBuilder(C.List_empty, t3), S.ListBuilder_ListBuilder(C.List_empty, t7), S.ListBuilder_ListBuilder(C.List_empty, t7), S.ListBuilder_ListBuilder(C.List_empty, t8), false, false, false, null, null);
+        t8 = J.getInterceptor$ax(node);
+        t8.$indexSet(node, "constraints", P.LinkedHashMap_LinkedHashMap$_literal(["horizontal", "LEFT_RIGHT", "vertical", "TOP_BOTTOM"], t3, t3));
+        relativeTransform = t8.$index(node, "relativeTransform");
+        t8 = J.getInterceptor$asx(relativeTransform);
+        t7 = J.toDouble$0$n(J.$index$asx(t8.$index(relativeTransform, 0), 2));
+        t8 = J.toDouble$0$n(J.$index$asx(t8.$index(relativeTransform, 1), 2));
+        context.addPaint$1(H.setRuntimeTypeInfo(["canvas.drawColor(Colors.transparent, BlendMode.screen);", "var frame = Offset.zero & size;", "canvas.translate(" + H.S(-1 * t7) + ", " + H.S(-1 * t8) + ");"], [t3]));
+        t1._component$_node.generate$3(context, node, node);
+        result = H.setRuntimeTypeInfo([], [X.Class]);
+        if (context._hasData) {
+          t1 = context._customPainterData.get$constructors();
+          t2 = H.assertSubtypeOfRuntimeType(context._customPainterDataConstructor.build$0(), H.getTypeArgumentByIndex(t1, 0));
+          if (t2 == null)
+            H.throwExpression(P.ArgumentError$("null element"));
+          t1 = t1.get$_safeList();
+          (t1 && C.JSArray_methods).add$1(t1, t2);
+          C.JSArray_methods.add$1(result, context._customPainterData.build$0());
+        }
+        C.JSArray_methods.add$1(result, context._buildWidget$0());
+        C.JSArray_methods.add$1(result, context._buildCustomPainter$0());
+        t1 = H.setRuntimeTypeInfo(result.slice(0), [H.getTypeArgumentByIndex(result, 0)]);
+        C.JSArray_methods.addAll$1(this.classes, t1);
+      }
+    },
+    FigmaWidgetGenerator__generateWidgets_closure0: {
+      "^": "Closure:87;classes",
+      call$1: function(b) {
+        var t1, t2;
+        t1 = b.get$directives();
+        t2 = H.assertSubtype(H.setRuntimeTypeInfo([U.Directive_Directive$import("dart:typed_data", null, C.List_empty0, C.List_empty0), U.Directive_Directive$import("package:flutter/material.dart", null, C.List_empty0, C.List_empty0), U.Directive_Directive$import("dart:ui", "ui", C.List_empty0, C.List_empty0)], [U.Directive0]), "$isIterable", [H.getTypeArgumentByIndex(t1, 0)], "$asIterable");
+        t1._checkElements$1(t2);
+        t1 = t1.get$_safeList();
+        (t1 && C.JSArray_methods).addAll$1(t1, t2);
+        t2 = b.get$body(b);
+        t1 = H.assertSubtype(this.classes, "$isIterable", [H.getTypeArgumentByIndex(t2, 0)], "$asIterable");
+        t2._checkElements$1(t1);
+        t2 = t2.get$_safeList();
+        (t2 && C.JSArray_methods).addAll$1(t2, t1);
+        return b;
+      }
+    },
+    FigmaWidgetGenerator_generateComponents_closure: {
+      "^": "Closure:16;$this,components,widgets",
+      call$2: function(ck, cv) {
+        this.components.forEach$1(0, new Y.FigmaWidgetGenerator_generateComponents__closure(this.$this, cv, this.widgets, ck));
+      }
+    },
+    FigmaWidgetGenerator_generateComponents__closure: {
+      "^": "Closure:41;$this,cv,widgets,ck",
+      call$2: function(k, v) {
+        var className, t1, t2;
+        H.stringTypeCheck(k);
+        H.stringTypeCheck(v);
+        if (J.$eq$(J.$index$asx(this.cv, "name"), v)) {
+          className = M.ReCase$(k)._getPascalCase$0();
+          t1 = P.RegExp_RegExp("[^a-zA-Z0-9]", true, false);
+          t2 = this.$this;
+          this.widgets.$indexSet(0, H.stringReplaceAllUnchecked(className, t1, "_"), t2._findNode$2(J.$index$asx(t2._document, "document"), H.stringTypeCheck(this.ck)));
+        }
+      }
+    }
+  }], ["", "package:figma_to_flutter/nodes/component.dart",, G, {
+    "^": "",
+    ComponentGenerator: {
+      "^": "Object;_component$_node"
+    }
+  }], ["", "package:figma_to_flutter/nodes/directive.dart",, U, {
+    "^": "",
+    DirectiveGenerator: {
+      "^": "Object;",
+      generate$2: function(context, map) {
+        var t1 = J.getInterceptor$asx(map);
+        if (H.interceptedTypeCast(L.Declaration_parse(H.stringTypeCheck(t1.$index(map, "name"))), "$isDirectiveItem").directive === "tap" && J.$eq$(t1.$index(map, "type"), "RECTANGLE"))
+          return true;
+        return false;
+      }
+    }
+  }], ["", "package:figma_to_flutter/nodes/frame.dart",, A, {
     "^": "",
     FrameGenerator: {
       "^": "Object;_frame$_color,_frame$_node",
-      generate$1: function(map) {
-        var result, t1;
-        result = H.setRuntimeTypeInfo([], [X.Code]);
-        t1 = J.getInterceptor$asx(map);
-        C.JSArray_methods.add$1(result, new X.StaticCode("canvas.drawRect(Offset.zero & frame.size, " + ("(Paint()..color = " + this._frame$_color.generate$1(t1.$index(map, "backgroundColor")).toString$0(0) + ")") + ");"));
-        J.forEach$1$ax(t1.$index(map, "children"), new A.FrameGenerator_generate_closure(this, map, result));
-        return result;
+      generate$2: function(context, map) {
+        var t1 = J.getInterceptor$asx(map);
+        context.addPaint$1(H.setRuntimeTypeInfo(["canvas.drawRect(Offset.zero & frame.size, " + ("(Paint()..color = " + this._frame$_color.generate$1(t1.$index(map, "backgroundColor")).toString$0(0) + ")") + ");"], [P.String]));
+        J.forEach$1$ax(t1.$index(map, "children"), new A.FrameGenerator_generate_closure(this, context, map));
       }
     },
     FrameGenerator_generate_closure: {
-      "^": "Closure:3;$this,map,result",
+      "^": "Closure:4;$this,context,map",
       call$1: function(x) {
-        C.JSArray_methods.addAll$1(this.result, this.$this._frame$_node.generate$2(x, this.map));
+        this.$this._frame$_node.generate$3(this.context, x, this.map);
       }
     }
-  }], ["", "package:flutter_figma_generator/nodes/group.dart",, O, {
+  }], ["", "package:figma_to_flutter/nodes/group.dart",, O, {
     "^": "",
     GroupGenerator: {
       "^": "Object;_group$_node",
-      generate$1: function(map) {
-        var result = H.setRuntimeTypeInfo([], [X.Code]);
-        J.forEach$1$ax(J.$index$asx(map, "children"), new O.GroupGenerator_generate_closure(this, map, result));
-        return result;
+      generate$2: function(context, map) {
+        J.forEach$1$ax(J.$index$asx(map, "children"), new O.GroupGenerator_generate_closure(this, context, map));
       }
     },
     GroupGenerator_generate_closure: {
-      "^": "Closure:3;$this,map,result",
+      "^": "Closure:4;$this,context,map",
       call$1: function(x) {
-        C.JSArray_methods.addAll$1(this.result, this.$this._group$_node.generate$2(x, this.map));
+        this.$this._group$_node.generate$3(this.context, x, this.map);
       }
     }
-  }], ["", "package:flutter_figma_generator/nodes/node.dart",, B, {
+  }], ["", "package:figma_to_flutter/nodes/node.dart",, B, {
     "^": "",
     NodeGenerator: {
-      "^": "Object;0_frame,0_vector,0_group,0_text",
+      "^": "Object;0_frame,0_vector,0_group,0_text,_directive",
       _toPoint$1: function(map) {
         var t1, w, h;
         t1 = J.getInterceptor$asx(map);
@@ -35754,98 +36631,108 @@
           h = t1.$index(map, "y");
         return new P.Point(J.toDouble$0$n(w), J.toDouble$0$n(h), [P.num]);
       },
-      generate$2: function(map, $parent) {
-        var t1, $name, result, t2, methodName, orginalContainerSize, size, relativeTransform, vx, vy, vw, vh, constraints, horizontal, vertical, x, y, w, h, t3, transform, row0, row1, a, b, d, e;
+      generate$3: function(context, map, $parent) {
+        var t1, declaration, varName, t2, t3, defaultIsVisible, t4, methodName, orginalContainerSize, size, relativeTransform, vx, vy, vw, vh, constraints, horizontal, vertical, x, y, w, h, t5, transform, row0, row1, a, b, d, e;
         t1 = J.getInterceptor$asx(map);
-        $name = t1.$index(map, "name");
-        result = H.setRuntimeTypeInfo([], [X.Code]);
-        C.JSArray_methods.add$1(result, new X.StaticCode(""));
-        C.JSArray_methods.add$1(result, new X.StaticCode("// " + H.S($name)));
-        t2 = J.replaceAll$2$s(t1.$index(map, "id"), ":", "_");
-        methodName = "draw_" + H.stringReplaceAllUnchecked(t2, ";", "__");
+        declaration = L.Declaration_parse(H.stringTypeCheck(t1.$index(map, "name")));
+        varName = B.toVariableName(declaration.get$name(declaration));
+        if (!!declaration.$isDirectiveItem)
+          if (this._directive.generate$2(context, map))
+            return;
+        t2 = !!declaration.$isDynamicItem;
+        if (t2) {
+          declaration = L.Declaration_parse(H.stringTypeCheck(t1.$index(map, "name")));
+          context.addData$2(declaration.get$name(declaration), H.stringTypeCheck(t1.$index(map, "type")));
+          t3 = t1.$index(map, "visible") == null || J.$eq$(t1.$index(map, "visible"), true);
+          defaultIsVisible = String(t3);
+          context.addPaint$1(H.setRuntimeTypeInfo(["if(this.data?." + varName + "?.isVisible ?? " + defaultIsVisible + ") {"], [P.String]));
+        }
+        t3 = [P.String];
+        context.addPaint$1(H.setRuntimeTypeInfo(["", "// " + H.S(t1.$index(map, "name"))], t3));
+        t4 = J.replaceAll$2$s(t1.$index(map, "id"), ":", "_");
+        methodName = "draw_" + H.stringReplaceAllUnchecked(t4, ";", "__");
         P.print(methodName);
-        C.JSArray_methods.add$1(result, new X.StaticCode("var " + methodName + " = (Canvas canvas, Rect container) {"));
+        context.addPaint$1(H.setRuntimeTypeInfo(["var " + methodName + " = (Canvas canvas, Rect container) {"], t3));
         orginalContainerSize = H.assertSubtype(this._toPoint$1(J.$index$asx($parent, "size")), "$isPoint", [P.num], "$asPoint");
         size = this._toPoint$1(t1.$index(map, "size"));
         relativeTransform = t1.$index(map, "relativeTransform");
-        t2 = J.getInterceptor$asx(relativeTransform);
-        vx = J.toDouble$0$n(J.$index$asx(t2.$index(relativeTransform, 0), 2));
-        vy = J.toDouble$0$n(J.$index$asx(t2.$index(relativeTransform, 1), 2));
+        t4 = J.getInterceptor$asx(relativeTransform);
+        vx = J.toDouble$0$n(J.$index$asx(t4.$index(relativeTransform, 0), 2));
+        vy = J.toDouble$0$n(J.$index$asx(t4.$index(relativeTransform, 1), 2));
         vw = size.x;
         vh = size.y;
         constraints = t1.$index(map, "constraints");
-        t2 = J.getInterceptor$asx(constraints);
-        horizontal = t2.$index(constraints, "horizontal");
-        vertical = t2.$index(constraints, "vertical");
+        t4 = J.getInterceptor$asx(constraints);
+        horizontal = t4.$index(constraints, "horizontal");
+        vertical = t4.$index(constraints, "vertical");
         x = H.S(vx);
         y = H.S(vy);
         w = H.S(vw);
         h = H.S(vh);
         switch (horizontal) {
           case "RIGHT":
-            t2 = orginalContainerSize.x;
-            if (typeof t2 !== "number")
-              return t2.$sub();
-            x = "(container.width - (" + H.S(t2 - vx) + "))";
+            t4 = orginalContainerSize.x;
+            if (typeof t4 !== "number")
+              return t4.$sub();
+            x = "(container.width - (" + H.S(t4 - vx) + "))";
             break;
           case "LEFT_RIGHT":
-            t2 = orginalContainerSize.x;
-            if (typeof t2 !== "number")
-              return t2.$sub();
+            t4 = orginalContainerSize.x;
+            if (typeof t4 !== "number")
+              return t4.$sub();
             if (typeof vw !== "number")
               return H.iae(vw);
-            w = "(container.width - (" + H.S(vx + (t2 - vx - vw)) + "))";
+            w = "(container.width - (" + H.S(vx + (t4 - vx - vw)) + "))";
             break;
           case "CENTER":
             if (typeof vw !== "number")
               return vw.$div();
-            t2 = vw / 2;
-            t3 = orginalContainerSize.x;
-            if (typeof t3 !== "number")
-              return t3.$div();
-            x = "((container.width / 2.0) - " + H.S(t3 / 2 - (vx + t2)) + " - " + H.S(t2) + ")";
+            t4 = vw / 2;
+            t5 = orginalContainerSize.x;
+            if (typeof t5 !== "number")
+              return t5.$div();
+            x = "((container.width / 2.0) - " + H.S(t5 / 2 - (vx + t4)) + " - " + H.S(t4) + ")";
             break;
         }
         switch (vertical) {
           case "BOTTOM":
-            t2 = orginalContainerSize.y;
-            if (typeof t2 !== "number")
-              return t2.$sub();
-            y = "(container.height - (" + H.S(t2 - vy) + "))";
+            t4 = orginalContainerSize.y;
+            if (typeof t4 !== "number")
+              return t4.$sub();
+            y = "(container.height - (" + H.S(t4 - vy) + "))";
             break;
           case "TOP_BOTTOM":
-            t2 = orginalContainerSize.y;
-            if (typeof t2 !== "number")
-              return t2.$sub();
+            t4 = orginalContainerSize.y;
+            if (typeof t4 !== "number")
+              return t4.$sub();
             if (typeof vh !== "number")
               return H.iae(vh);
-            h = "(container.height - (" + H.S(vy + (t2 - vy - vh)) + "))";
+            h = "(container.height - (" + H.S(vy + (t4 - vy - vh)) + "))";
             break;
           case "CENTER":
             if (typeof vh !== "number")
               return vh.$div();
-            t2 = vh / 2;
-            t3 = orginalContainerSize.y;
-            if (typeof t3 !== "number")
-              return t3.$div();
-            y = "((container.height / 2.0) - " + H.S(t3 / 2 - (vy + t2)) + " - " + H.S(t2) + ")";
+            t4 = vh / 2;
+            t5 = orginalContainerSize.y;
+            if (typeof t5 !== "number")
+              return t5.$div();
+            y = "((container.height / 2.0) - " + H.S(t5 / 2 - (vy + t4)) + " - " + H.S(t4) + ")";
             break;
         }
-        t2 = "Rect.fromLTWH(" + x + ", " + y + ", " + w + ", " + h + ")";
+        t4 = "Rect.fromLTWH(" + x + ", " + y + ", " + w + ", " + h + ")";
         transform = t1.$index(map, "relativeTransform");
-        t3 = J.getInterceptor$asx(transform);
-        row0 = t3.$index(transform, 0);
-        row1 = t3.$index(transform, 1);
-        t3 = J.getInterceptor$asx(row0);
-        a = J.toDouble$0$n(t3.$index(row0, 0));
-        b = J.toDouble$0$n(t3.$index(row0, 1));
-        t3 = J.getInterceptor$asx(row1);
-        d = J.toDouble$0$n(t3.$index(row1, 0));
-        e = J.toDouble$0$n(t3.$index(row1, 1));
-        t3 = "Float64List.fromList([" + C.JSArray_methods.join$1(H.setRuntimeTypeInfo([C.JSNumber_methods.toString$0(a), C.JSNumber_methods.toString$0(d), "0.0", "0.0", C.JSNumber_methods.toString$0(b), C.JSNumber_methods.toString$0(e), "0.0", "0.0", "0.0", "0.0", "1.0", "0.0", "frame.left", "frame.top", "0.0", "1.0"], [P.String]), ", ") + "])";
-        C.JSArray_methods.add$1(result, new X.StaticCode("var frame = " + new X.StaticCode(t2).toString$0(0) + ";"));
-        C.JSArray_methods.add$1(result, new X.StaticCode("canvas.save();"));
-        C.JSArray_methods.add$1(result, new X.StaticCode("canvas.transform(" + new X.StaticCode(t3).toString$0(0) + ");"));
+        t5 = J.getInterceptor$asx(transform);
+        row0 = t5.$index(transform, 0);
+        row1 = t5.$index(transform, 1);
+        t5 = J.getInterceptor$asx(row0);
+        a = J.toDouble$0$n(t5.$index(row0, 0));
+        b = J.toDouble$0$n(t5.$index(row0, 1));
+        t5 = J.getInterceptor$asx(row1);
+        d = J.toDouble$0$n(t5.$index(row1, 0));
+        e = J.toDouble$0$n(t5.$index(row1, 1));
+        t5 = "Float64List.fromList([" + C.JSArray_methods.join$1(H.setRuntimeTypeInfo([C.JSNumber_methods.toString$0(a), C.JSNumber_methods.toString$0(d), "0.0", "0.0", C.JSNumber_methods.toString$0(b), C.JSNumber_methods.toString$0(e), "0.0", "0.0", "0.0", "0.0", "1.0", "0.0", "frame.left", "frame.top", "0.0", "1.0"], t3), ", ") + "])";
+        context.addPaint$1(H.setRuntimeTypeInfo(["var frame = " + new X.StaticCode(t4).toString$0(0) + ";"], t3));
+        context.addPaint$1(H.setRuntimeTypeInfo(["canvas.save();", "canvas.transform(" + new X.StaticCode(t5).toString$0(0) + ");"], t3));
         switch (H.stringTypeCast(t1.$index(map, "type"))) {
           case "RECT":
           case "VECTOR":
@@ -35854,88 +36741,86 @@
           case "REGULAR_POLYGON":
           case "BOOLEAN_OPERATION":
           case "STAR":
-            C.JSArray_methods.addAll$1(result, this._vector.generate$1(map));
+            this._vector.generate$2(context, map);
             break;
           case "GROUP":
-            C.JSArray_methods.addAll$1(result, this._group.generate$1(map));
+            this._group.generate$2(context, map);
             break;
           case "FRAME":
           case "COMPONENT":
           case "INSTANCE":
-            C.JSArray_methods.addAll$1(result, this._frame.generate$1(map));
+            this._frame.generate$2(context, map);
             break;
           case "TEXT":
-            C.JSArray_methods.addAll$1(result, this._text.generate$1(map));
+            this._text.generate$2(context, map);
             break;
         }
-        C.JSArray_methods.add$1(result, new X.StaticCode("canvas.restore();"));
-        C.JSArray_methods.add$1(result, new X.StaticCode("};"));
-        C.JSArray_methods.add$1(result, new X.StaticCode(methodName + "(canvas,frame);"));
-        return result;
+        context.addPaint$1(H.setRuntimeTypeInfo(["canvas.restore();", "};", methodName + "(canvas,frame);"], t3));
+        if (t2)
+          context.addPaint$1(H.setRuntimeTypeInfo(["}"], t3));
       }
     }
-  }], ["", "package:flutter_figma_generator/nodes/text.dart",, L, {
+  }], ["", "package:figma_to_flutter/nodes/text.dart",, L, {
     "^": "",
     TextGenerator: {
-      "^": "Object;_text$_paint,_color,_textStyle,_paragraphStyle",
-      generate$1: function(map) {
-        var result, t1, characters, color, defaultStyle, t2, fontSize, textAlignHorizontal, fontFamily, fontWeight, characterStyleOverrides, varName, styleId, slice, i, t3, newStyleId;
-        result = H.setRuntimeTypeInfo([], [X.Code]);
+      "^": "Object;_color,_textStyle,_paragraphStyle",
+      generate$2: function(context, map) {
+        var t1, declaration, varName, characters, color, defaultStyle, t2, t3, fontSize, textAlignHorizontal, fontFamily, fontWeight, characterStyleOverrides, t4, styleId, slice, i, t5, newStyleId;
         t1 = J.getInterceptor$asx(map);
+        declaration = L.Declaration_parse(H.stringTypeCheck(t1.$index(map, "name")));
+        varName = B.toVariableName(declaration.get$name(declaration));
         characters = H.stringTypeCast(t1.$index(map, "characters"));
         color = this._color.generate$1(J.$index$asx(J.get$first$ax(t1.$index(map, "fills")), "color"));
         defaultStyle = t1.$index(map, "style");
-        C.JSArray_methods.add$1(result, new X.StaticCode("var style_0 = " + this._textStyle.generate$2(defaultStyle, color.code).toString$0(0) + ";"));
-        J.forEach$1$ax(t1.$index(map, "styleOverrideTable"), new L.TextGenerator_generate_closure(this, defaultStyle, result));
-        t2 = J.getInterceptor$asx(defaultStyle);
-        fontSize = J.toDouble$0$n(t2.$index(defaultStyle, "fontSize"));
-        textAlignHorizontal = this._paragraphStyle._generateTextAlign$1(H.stringTypeCast(t2.$index(defaultStyle, "textAlignHorizontal")));
-        H.stringTypeCast(t2.$index(defaultStyle, "textAlignVertical"));
-        fontFamily = H.stringTypeCast(t2.$index(defaultStyle, "fontFamily"));
-        J.toDouble$0$n(t2.$index(defaultStyle, "letterSpacing"));
-        J.toDouble$0$n(t2.$index(defaultStyle, "lineHeightPx"));
-        J.toDouble$0$n(t2.$index(defaultStyle, "letterSpacing"));
-        fontWeight = J.toInt$0$n(t2.$index(defaultStyle, "fontWeight"));
-        C.JSArray_methods.add$1(result, new X.StaticCode("var paragraphStyle = " + new X.StaticCode("ui.ParagraphStyle(" + ("fontFamily: '" + H.S(fontFamily) + "',") + ("textAlign: " + textAlignHorizontal + ",") + ("fontSize: " + H.S(fontSize) + ",") + ("fontWeight: FontWeight.w" + fontWeight + ",") + ")").toString$0(0) + ";"));
-        C.JSArray_methods.add$1(result, new X.StaticCode("var paragraphBuilder = ui.ParagraphBuilder(paragraphStyle)..pushStyle(style_0);"));
+        t2 = [P.String];
+        context.addPaint$1(H.setRuntimeTypeInfo(["var style_0 = " + this._textStyle.generate$2(defaultStyle, color.code).toString$0(0) + ";"], t2));
+        J.forEach$1$ax(t1.$index(map, "styleOverrideTable"), new L.TextGenerator_generate_closure(this, defaultStyle, context));
+        t3 = J.getInterceptor$asx(defaultStyle);
+        fontSize = J.toDouble$0$n(t3.$index(defaultStyle, "fontSize"));
+        textAlignHorizontal = this._paragraphStyle._generateTextAlign$1(H.stringTypeCast(t3.$index(defaultStyle, "textAlignHorizontal")));
+        H.stringTypeCast(t3.$index(defaultStyle, "textAlignVertical"));
+        fontFamily = H.stringTypeCast(t3.$index(defaultStyle, "fontFamily"));
+        J.toDouble$0$n(t3.$index(defaultStyle, "letterSpacing"));
+        J.toDouble$0$n(t3.$index(defaultStyle, "lineHeightPx"));
+        J.toDouble$0$n(t3.$index(defaultStyle, "letterSpacing"));
+        fontWeight = J.toInt$0$n(t3.$index(defaultStyle, "fontWeight"));
+        context.addPaint$1(H.setRuntimeTypeInfo(["var paragraphStyle = " + new X.StaticCode("ui.ParagraphStyle(" + ("fontFamily: '" + H.S(fontFamily) + "',") + ("textAlign: " + textAlignHorizontal + ",") + ("fontSize: " + H.S(fontSize) + ",") + ("fontWeight: FontWeight.w" + fontWeight + ",") + ")").toString$0(0) + ";", "var paragraphBuilder = ui.ParagraphBuilder(paragraphStyle)..pushStyle(style_0);"], t2));
         characterStyleOverrides = t1.$index(map, "characterStyleOverrides");
-        varName = V.toVariableName(H.stringTypeCheck(t1.$index(map, "name")));
-        C.JSArray_methods.add$1(result, new X.StaticCode("if(this.text." + varName + " == null) {"));
-        t1 = J.getInterceptor$asx(characterStyleOverrides);
-        if (H.boolTypeCheck(t1.get$isEmpty(characterStyleOverrides)))
-          C.JSArray_methods.add$1(result, new X.StaticCode('paragraphBuilder.addText("' + H.S(characters) + '");'));
+        t1 = !!declaration.$isDynamicItem;
+        if (t1)
+          context.addPaint$1(H.setRuntimeTypeInfo(["if(this.data?." + varName + "?.text == null) {"], t2));
+        t3 = J.getInterceptor$asx(characterStyleOverrides);
+        if (H.boolTypeCheck(t3.get$isEmpty(characterStyleOverrides)))
+          context.addPaint$1(H.setRuntimeTypeInfo(['paragraphBuilder.addText("' + H.S(characters) + '");'], t2));
         else {
-          for (t2 = characters.length, styleId = "0", slice = "", i = 0; i < t2; ++i) {
-            t3 = H.numTypeCheck(t1.get$length(characterStyleOverrides));
-            if (typeof t3 !== "number")
-              return H.iae(t3);
-            newStyleId = i < t3 ? J.toString$0$(t1.$index(characterStyleOverrides, i)) : "0";
+          for (t4 = characters.length, styleId = "0", slice = "", i = 0; i < t4; ++i) {
+            t5 = H.numTypeCheck(t3.get$length(characterStyleOverrides));
+            if (typeof t5 !== "number")
+              return H.iae(t5);
+            newStyleId = i < t5 ? J.toString$0$(t3.$index(characterStyleOverrides, i)) : "0";
             if (newStyleId !== styleId) {
               if (slice.length !== 0)
-                C.JSArray_methods.add$1(result, new X.StaticCode('paragraphBuilder.addText("' + slice + '");'));
+                context.addPaint$1(H.setRuntimeTypeInfo(['paragraphBuilder.addText("' + slice + '");'], t2));
               styleId = J.toString$0$(newStyleId);
-              C.JSArray_methods.add$1(result, new X.StaticCode("paragraphBuilder.pushStyle(style_" + styleId + ");"));
+              context.addPaint$1(H.setRuntimeTypeInfo(["paragraphBuilder.pushStyle(style_" + styleId + ");"], t2));
               slice = "";
             }
             slice += characters[i];
           }
           if (slice.length !== 0)
-            C.JSArray_methods.add$1(result, new X.StaticCode('paragraphBuilder.addText("' + slice + '");'));
+            context.addPaint$1(H.setRuntimeTypeInfo(['paragraphBuilder.addText("' + slice + '");'], t2));
         }
-        C.JSArray_methods.add$1(result, new X.StaticCode("}"));
-        C.JSArray_methods.add$1(result, new X.StaticCode("else {"));
-        if (!H.boolTypeCheck(t1.get$isEmpty(characterStyleOverrides)))
-          C.JSArray_methods.add$1(result, new X.StaticCode("paragraphBuilder.pushStyle(style_" + H.S(t1.$index(characterStyleOverrides, 0)) + ");"));
-        C.JSArray_methods.add$1(result, new X.StaticCode("paragraphBuilder.addText(this.text." + varName + ");"));
-        C.JSArray_methods.add$1(result, new X.StaticCode("}"));
-        C.JSArray_methods.add$1(result, new X.StaticCode("var paragraph = paragraphBuilder.build();"));
-        C.JSArray_methods.add$1(result, new X.StaticCode("paragraph.layout(new ui.ParagraphConstraints(width: frame.width));"));
-        C.JSArray_methods.add$1(result, new X.StaticCode("canvas.drawParagraph(paragraph, Offset.zero);"));
-        return result;
+        if (t1) {
+          context.addPaint$1(H.setRuntimeTypeInfo(["} else {"], t2));
+          if (!H.boolTypeCheck(t3.get$isEmpty(characterStyleOverrides)))
+            context.addPaint$1(H.setRuntimeTypeInfo(["paragraphBuilder.pushStyle(style_" + H.S(t3.$index(characterStyleOverrides, 0)) + ");"], t2));
+          context.addPaint$1(H.setRuntimeTypeInfo(["paragraphBuilder.addText(this.data." + varName + ".text);", "}"], t2));
+        }
+        context.addPaint$1(H.setRuntimeTypeInfo(["var paragraph = paragraphBuilder.build();", "paragraph.layout(new ui.ParagraphConstraints(width: frame.width));", "canvas.drawParagraph(paragraph, Offset.zero);"], t2));
       }
     },
     TextGenerator_generate_closure: {
-      "^": "Closure:13;$this,defaultStyle,result",
+      "^": "Closure:16;$this,defaultStyle,context",
       call$2: function(key, value) {
         var map, t1, style;
         map = P.LinkedHashMap__makeEmpty();
@@ -35944,73 +36829,124 @@
         map.addAll$1(0, value);
         t1 = this.$this;
         style = t1._textStyle.generate$2(map, t1._color.generate$1(J.$index$asx(J.get$first$ax(J.$index$asx(value, "fills")), "color")).code);
-        C.JSArray_methods.add$1(this.result, new X.StaticCode("var style_" + H.S(key) + " = " + style.toString$0(0) + ";"));
+        this.context.addPaint$1(H.setRuntimeTypeInfo(["var style_" + H.S(key) + " = " + style.toString$0(0) + ";"], [P.String]));
       }
     }
-  }], ["", "package:flutter_figma_generator/nodes/vector.dart",, Y, {
+  }], ["", "package:figma_to_flutter/nodes/vector.dart",, Y, {
     "^": "",
     VectorGenerator: {
       "^": "Object;_paint,_vector$_path",
-      generate$1: function(map) {
-        var t1, result, t2, t3, t4, w, h, sx, sy, fillMaps, strokeMaps, fills, fillGeometry, strokes, strokeGeometry;
-        t1 = X.Code;
-        result = H.setRuntimeTypeInfo([], [t1]);
-        t2 = J.getInterceptor$asx(map);
-        t3 = t2.$index(map, "size");
-        t4 = J.getInterceptor$asx(t3);
-        w = t4.$index(t3, "width");
+      generate$2: function(context, map) {
+        var t1, t2, t3, w, h, sx, sy, fillMaps, strokeMaps, fills, fillGeometry, strokes, strokeGeometry;
+        t1 = J.getInterceptor$asx(map);
+        t2 = t1.$index(map, "size");
+        t3 = J.getInterceptor$asx(t2);
+        w = t3.$index(t2, "width");
         if (w == null)
-          w = t4.$index(t3, "x");
-        h = t4.$index(t3, "height");
+          w = t3.$index(t2, "x");
+        h = t3.$index(t2, "height");
         if (h == null)
-          h = t4.$index(t3, "y");
-        t3 = J.toDouble$0$n(w);
-        t4 = J.toDouble$0$n(h);
-        sx = "(frame.width / " + H.S(t3) + ")";
-        sy = "(frame.height / " + H.S(t4) + ")";
-        C.JSArray_methods.add$1(result, new X.StaticCode("var transform = " + ("Float64List.fromList([" + sx + ", 0.0, 0.0, 0.0, 0.0, " + sy + ", 0.0, 0.0, 0.0, 0.0, 1.0, 0.0,0.0, 0.0, 0.0, 1.0])") + ";"));
-        fillMaps = t2.$index(map, "fills");
-        strokeMaps = t2.$index(map, "strokes");
-        t3 = J.getInterceptor$asx(fillMaps);
-        if (!H.boolTypeCheck(t3.get$isEmpty(fillMaps))) {
-          fills = "[" + H.stringTypeCheck(J.join$1$ax(t3.map$1(fillMaps, new Y.VectorGenerator_generate_closure(this)), ", ")) + "]";
-          fillGeometry = "[" + H.stringTypeCheck(J.join$1$ax(J.map$1$ax(t2.$index(map, "fillGeometry"), new Y.VectorGenerator_generate_closure0(this)), ", ")) + "]";
-          C.JSArray_methods.addAll$1(result, H.setRuntimeTypeInfo([new X.StaticCode("var fills = " + fills + ";"), new X.StaticCode("var fillGeometry = " + fillGeometry + ";"), new X.StaticCode("fills.forEach((paint) {"), new X.StaticCode("fillGeometry.forEach((path) {"), new X.StaticCode("canvas.drawPath(path, paint);"), new X.StaticCode("});"), new X.StaticCode("});")], [t1]));
+          h = t3.$index(t2, "y");
+        t2 = J.toDouble$0$n(w);
+        t3 = J.toDouble$0$n(h);
+        sx = "(frame.width / " + H.S(t2) + ")";
+        sy = "(frame.height / " + H.S(t3) + ")";
+        t3 = [P.String];
+        context.addPaint$1(H.setRuntimeTypeInfo(["var transform = " + ("Float64List.fromList([" + sx + ", 0.0, 0.0, 0.0, 0.0, " + sy + ", 0.0, 0.0, 0.0, 0.0, 1.0, 0.0,0.0, 0.0, 0.0, 1.0])") + ";"], t3));
+        fillMaps = J.where$1$ax(t1.$index(map, "fills"), new Y.VectorGenerator_generate_closure(map));
+        strokeMaps = J.where$1$ax(t1.$index(map, "strokes"), new Y.VectorGenerator_generate_closure0(map));
+        if (!H.boolTypeCheck(fillMaps.get$isEmpty(fillMaps))) {
+          fills = "[" + H.stringTypeCheck(fillMaps.map$1(0, new Y.VectorGenerator_generate_closure1(this)).join$1(0, ", ")) + "]";
+          fillGeometry = "[" + H.stringTypeCheck(J.join$1$ax(J.map$1$ax(t1.$index(map, "fillGeometry"), new Y.VectorGenerator_generate_closure2(this)), ", ")) + "]";
+          context.addPaint$1(H.setRuntimeTypeInfo(["var fills = " + fills + ";", "var fillGeometry = " + fillGeometry + ";", "fills.forEach((paint) {", "fillGeometry.forEach((path) {", "canvas.drawPath(path, paint);", "});", "});"], t3));
         }
-        t3 = J.getInterceptor$asx(strokeMaps);
-        if (!H.boolTypeCheck(t3.get$isEmpty(strokeMaps))) {
-          strokes = "[" + H.stringTypeCheck(J.join$1$ax(t3.map$1(strokeMaps, new Y.VectorGenerator_generate_closure1(this)), ", ")) + "]";
-          strokeGeometry = "[" + H.stringTypeCheck(J.join$1$ax(J.map$1$ax(t2.$index(map, "strokeGeometry"), new Y.VectorGenerator_generate_closure2(this)), ", ")) + "]";
-          C.JSArray_methods.addAll$1(result, H.setRuntimeTypeInfo([new X.StaticCode("var strokes = " + strokes + ";"), new X.StaticCode("var strokeGeometry = " + strokeGeometry + ";"), new X.StaticCode("strokes.forEach((paint) {"), new X.StaticCode("strokeGeometry.forEach((path) {"), new X.StaticCode("canvas.drawPath(path, paint);"), new X.StaticCode("});"), new X.StaticCode("});")], [t1]));
+        if (!H.boolTypeCheck(strokeMaps.get$isEmpty(strokeMaps))) {
+          strokes = "[" + H.stringTypeCheck(strokeMaps.map$1(0, new Y.VectorGenerator_generate_closure3(this)).join$1(0, ", ")) + "]";
+          strokeGeometry = "[" + H.stringTypeCheck(J.join$1$ax(J.map$1$ax(t1.$index(map, "strokeGeometry"), new Y.VectorGenerator_generate_closure4(this)), ", ")) + "]";
+          context.addPaint$1(H.setRuntimeTypeInfo(["var strokes = " + strokes + ";", "var strokeGeometry = " + strokeGeometry + ";", "strokes.forEach((paint) {", "strokeGeometry.forEach((path) {", "canvas.drawPath(path, paint);", "});", "});"], t3));
         }
-        return result;
       }
     },
     VectorGenerator_generate_closure: {
-      "^": "Closure:28;$this",
+      "^": "Closure:11;map",
       call$1: function(f) {
-        return this.$this._paint.generate$1(f);
+        var t1, t2;
+        t1 = this.map;
+        t2 = J.getInterceptor$asx(t1);
+        return t2.$index(t1, "visible") == null || J.$eq$(t2.$index(t1, "visible"), true);
       }
     },
     VectorGenerator_generate_closure0: {
-      "^": "Closure:35;$this",
+      "^": "Closure:11;map",
       call$1: function(f) {
-        return "_PathCatalog.instance.path_" + this.$this._vector$_path._addPath$1(f) + ".transform(transform)";
+        var t1, t2;
+        t1 = this.map;
+        t2 = J.getInterceptor$asx(t1);
+        return t2.$index(t1, "visible") == null || J.$eq$(t2.$index(t1, "visible"), true);
       }
     },
     VectorGenerator_generate_closure1: {
-      "^": "Closure:28;$this",
+      "^": "Closure:24;$this",
       call$1: function(f) {
         return this.$this._paint.generate$1(f);
       }
     },
     VectorGenerator_generate_closure2: {
-      "^": "Closure:35;$this",
+      "^": "Closure:42;$this",
+      call$1: function(f) {
+        return "_PathCatalog.instance.path_" + this.$this._vector$_path._addPath$1(f) + ".transform(transform)";
+      }
+    },
+    VectorGenerator_generate_closure3: {
+      "^": "Closure:24;$this",
+      call$1: function(f) {
+        return this.$this._paint.generate$1(f);
+      }
+    },
+    VectorGenerator_generate_closure4: {
+      "^": "Closure:42;$this",
       call$1: function(f) {
         return "_PathCatalog.instance.path_" + this.$this._vector$_path._addPath$1(f) + ".transform(transform)";
       }
     }
-  }], ["", "package:flutter_figma_generator/parsing/parse_path.dart",, A, {
+  }], ["", "package:figma_to_flutter/parsing/declaration.dart",, L, {
+    "^": "",
+    Declaration_parse: function(value) {
+      var i;
+      if (value == null)
+        return new L.StaticItem(null);
+      if (C.JSString_methods.startsWith$1(value, "$"))
+        return new L.DynamicItem(C.JSString_methods.substring$1(value, 1));
+      if (C.JSString_methods.startsWith$1(value, "#")) {
+        value = C.JSString_methods.substring$1(value, 1);
+        i = C.JSString_methods.indexOf$1(value, "(");
+        return new L.DirectiveItem(C.JSString_methods.substring$2(value, 0, i), L.Declaration_parse(C.JSString_methods.substring$2(value, i + 1, value.length - 1)));
+      }
+      return new L.StaticItem(value);
+    },
+    Declaration0: {
+      "^": "Object;"
+    },
+    StaticItem: {
+      "^": "Declaration0;_declaration$_name",
+      get$name: function(_) {
+        return this._declaration$_name;
+      }
+    },
+    DynamicItem: {
+      "^": "Declaration0;_declaration$_name",
+      get$name: function(_) {
+        return this._declaration$_name;
+      }
+    },
+    DirectiveItem: {
+      "^": "Declaration0;directive,item",
+      get$name: function(_) {
+        var t1 = this.item;
+        return t1.get$name(t1);
+      }
+    }
+  }], ["", "package:figma_to_flutter/parsing/parse_path.dart",, A, {
     "^": "",
     PointHelper_blendPoints: function(p1, p2) {
       var t1, t2, t3, t4, t5;
@@ -36811,7 +37747,7 @@
         return new P.Point(t3 * t4 + t5 * t6 + t2[12], t2[1] * t4 + t2[5] * t6 + t2[13], t1);
       }
     }
-  }], ["", "package:flutter_figma_generator/tools/case.dart",, V, {
+  }], ["", "package:figma_to_flutter/tools/format.dart",, B, {
     "^": "",
     toVariableName: function($name) {
       var t1 = P.RegExp_RegExp("[^a-zA-Z0-9]", true, false);
@@ -36820,506 +37756,6 @@
       if (0 >= $name.length)
         return H.ioore($name, 0);
       return $name[0].toLowerCase() + C.JSString_methods.substring$1($name, 1);
-    }
-  }], ["", "package:flutter_figma_generator/widgets.dart",, O, {
-    "^": "",
-    FigmaWidgetGenerator: {
-      "^": "Object;0_node,0_path,_document",
-      _generatePaint$1: function(map) {
-        var t1, t2, relativeTransform;
-        t1 = P.String;
-        t2 = J.getInterceptor$ax(map);
-        t2.$indexSet(map, "constraints", P.LinkedHashMap_LinkedHashMap$_literal(["horizontal", "LEFT_RIGHT", "vertical", "TOP_BOTTOM"], t1, t1));
-        relativeTransform = t2.$index(map, "relativeTransform");
-        t2 = J.getInterceptor$asx(relativeTransform);
-        return D._$Method__$Method(new O.FigmaWidgetGenerator__generatePaint_closure(X._$Block__$Block(new O.FigmaWidgetGenerator__generatePaint_closure0(-1 * J.toDouble$0$n(J.$index$asx(t2.$index(relativeTransform, 0), 2)), -1 * J.toDouble$0$n(J.$index$asx(t2.$index(relativeTransform, 1), 2)), this._node.generate$2(map, map)))));
-      },
-      _addProperties$2: function(builder, map) {
-        var result, t1, varName, t2, children;
-        result = H.setRuntimeTypeInfo([], [P.String]);
-        t1 = J.getInterceptor$asx(map);
-        if (J.$eq$(t1.$index(map, "type"), "TEXT")) {
-          varName = V.toVariableName(H.stringTypeCheck(t1.$index(map, "name")));
-          t1 = builder.get$fields();
-          t2 = H.assertSubtypeOfRuntimeType(F._$Field__$Field(new O.FigmaWidgetGenerator__addProperties_closure(varName)), H.getTypeArgumentByIndex(t1, 0));
-          if (t2 == null)
-            H.throwExpression(P.ArgumentError$("null element"));
-          t1 = t1.get$_safeList();
-          (t1 && C.JSArray_methods).add$1(t1, t2);
-          C.JSArray_methods.add$1(result, varName);
-        } else {
-          children = t1.$index(map, "children");
-          if (children != null)
-            J.forEach$1$ax(children, new O.FigmaWidgetGenerator__addProperties_closure0(this, result, builder));
-        }
-        return result;
-      },
-      _generateText$2: function(className, map) {
-        var t1, builder, properties, t2, t3, t4;
-        t1 = U.Reference;
-        builder = new X._$ClassBuilder(false, S.ListBuilder_ListBuilder(C.List_empty, B.Expression), S.ListBuilder_ListBuilder(C.List_empty, P.String), S.ListBuilder_ListBuilder(C.List_empty, t1), S.ListBuilder_ListBuilder(C.List_empty, t1), S.ListBuilder_ListBuilder(C.List_empty, t1), S.ListBuilder_ListBuilder(C.List_empty, Y.Constructor), S.ListBuilder_ListBuilder(C.List_empty, D.Method), S.ListBuilder_ListBuilder(C.List_empty, F.Field), null, null, null);
-        t1 = J.$add$ansx(className, "Text");
-        builder.get$_$this();
-        builder.name = t1;
-        properties = this._addProperties$2(builder, map);
-        t1 = D.Parameter;
-        t2 = H.getTypeArgumentByIndex(properties, 0);
-        t3 = H.functionTypeCheck(new O.FigmaWidgetGenerator__generateText_closure(), {func: 1, ret: t1, args: [t2]});
-        t4 = builder.get$constructors();
-        t1 = H.assertSubtypeOfRuntimeType(Y._$Constructor__$Constructor(new O.FigmaWidgetGenerator__generateText_closure0(new H.MappedListIterable(properties, t3, [t2, t1]))), H.getTypeArgumentByIndex(t4, 0));
-        if (t1 == null)
-          H.throwExpression(P.ArgumentError$("null element"));
-        t2 = t4.get$_safeList();
-        (t2 && C.JSArray_methods).add$1(t2, t1);
-        if (properties.length === 0)
-          return;
-        return builder.build$0();
-      },
-      _generateCustomPainter$3: function(className, map, hasText) {
-        var t1, t2, t3, t4, builder, semanticsBuilder, shouldRepaint, $constructor;
-        t1 = B.Expression;
-        t2 = P.String;
-        t3 = U.Reference;
-        t4 = D.Method;
-        builder = new X._$ClassBuilder(false, S.ListBuilder_ListBuilder(C.List_empty, t1), S.ListBuilder_ListBuilder(C.List_empty, t2), S.ListBuilder_ListBuilder(C.List_empty, t3), S.ListBuilder_ListBuilder(C.List_empty, t3), S.ListBuilder_ListBuilder(C.List_empty, t3), S.ListBuilder_ListBuilder(C.List_empty, Y.Constructor), S.ListBuilder_ListBuilder(C.List_empty, t4), S.ListBuilder_ListBuilder(C.List_empty, F.Field), null, null, null);
-        semanticsBuilder = D._$Method__$Method(new O.FigmaWidgetGenerator__generateCustomPainter_closure());
-        shouldRepaint = D._$Method__$Method(new O.FigmaWidgetGenerator__generateCustomPainter_closure0(className));
-        D._$Method__$Method(new O.FigmaWidgetGenerator__generateCustomPainter_closure1(className));
-        t3 = D.Parameter;
-        $constructor = new Y._$ConstructorBuilder(S.ListBuilder_ListBuilder(C.List_empty, t1), S.ListBuilder_ListBuilder(C.List_empty, t2), S.ListBuilder_ListBuilder(C.List_empty, t3), S.ListBuilder_ListBuilder(C.List_empty, t3), S.ListBuilder_ListBuilder(C.List_empty, X.Code), false, false, false, null, null);
-        if (hasText) {
-          t1 = $constructor.get$requiredParameters();
-          t2 = H.assertSubtypeOfRuntimeType(D._$Parameter__$Parameter(new O.FigmaWidgetGenerator__generateCustomPainter_closure2()), H.getTypeArgumentByIndex(t1, 0));
-          if (t2 == null)
-            H.throwExpression(P.ArgumentError$("null element"));
-          t1 = t1.get$_safeList();
-          (t1 && C.JSArray_methods).add$1(t1, t2);
-          t2 = builder.get$fields();
-          t1 = H.assertSubtypeOfRuntimeType(F._$Field__$Field(new O.FigmaWidgetGenerator__generateCustomPainter_closure3(className)), H.getTypeArgumentByIndex(t2, 0));
-          if (t1 == null)
-            H.throwExpression(P.ArgumentError$("null element"));
-          t2 = t2.get$_safeList();
-          (t2 && C.JSArray_methods).add$1(t2, t1);
-        }
-        t1 = H.S(className) + "Painter";
-        builder.get$_$this();
-        builder.name = t1;
-        t1 = $.$get$_Types_CustomPainter();
-        builder.get$_$this();
-        builder.extend = t1;
-        t1 = builder.get$constructors();
-        t2 = H.assertSubtypeOfRuntimeType($constructor.build$0(), H.getTypeArgumentByIndex(t1, 0));
-        if (t2 == null)
-          H.throwExpression(P.ArgumentError$("null element"));
-        t1 = t1.get$_safeList();
-        (t1 && C.JSArray_methods).add$1(t1, t2);
-        t2 = builder.get$methods();
-        t4 = H.assertSubtype(H.setRuntimeTypeInfo([this._generatePaint$1(map), semanticsBuilder, shouldRepaint], [t4]), "$isIterable", [H.getTypeArgumentByIndex(t2, 0)], "$asIterable");
-        t2._checkElements$1(t4);
-        t2 = t2.get$_safeList();
-        (t2 && C.JSArray_methods).addAll$1(t2, t4);
-        return builder.build$0();
-      },
-      _generateWidgets$1: function(widgets) {
-        var classes, t1;
-        H.assertSubtype(widgets, "$isMap", [P.String, null], "$asMap");
-        classes = H.setRuntimeTypeInfo([], [X.Class]);
-        widgets.forEach$1(0, new O.FigmaWidgetGenerator__generateWidgets_closure(this, classes));
-        C.JSArray_methods.add$1(classes, this._path.buildCatalog$0());
-        t1 = new O._$LibraryBuilder(S.ListBuilder_ListBuilder(C.List_empty, R.Spec), S.ListBuilder_ListBuilder(C.List_empty, U.Directive0));
-        H.functionTypeCheck(new O.FigmaWidgetGenerator__generateWidgets_closure0(classes), {func: 1, ret: -1, args: [O.LibraryBuilder]}).call$1(t1);
-        return t1.build$0();
-      },
-      _findNode$2: function(map, id) {
-        var t1, children, found;
-        t1 = J.getInterceptor$asx(map);
-        P.print(H.S(id) + " => " + H.S(t1.$index(map, "id")));
-        if (J.$eq$(t1.$index(map, "id"), id))
-          return map;
-        children = t1.$index(map, "children");
-        if (children != null)
-          for (t1 = J.get$iterator$ax(H.listSuperNativeTypeCheck(children, "$isIterable")); t1.moveNext$0();) {
-            found = this._findNode$2(t1.get$current(), id);
-            if (found != null)
-              return found;
-          }
-        return;
-      },
-      generateComponents$1: function(components) {
-        var t1, widgets, library, t2, t3, errorListener, t4, reader, stringSource, scanner, startToken, t5, t6, parser, node, visitor, t7, t8, t9, t10, t11, result, selectionStart, selectionEnd, selectionLength, output;
-        t1 = P.String;
-        H.assertSubtype(components, "$isMap", [t1, t1], "$asMap");
-        widgets = P.LinkedHashMap_LinkedHashMap$_empty(t1, null);
-        J.forEach$1$ax(J.$index$asx(this._document, "components"), new O.FigmaWidgetGenerator_generateComponents_closure(this, components, widgets));
-        library = this._generateWidgets$1(widgets);
-        t1 = P.LinkedHashSet_LinkedHashSet(null, null, null, Q.StyleFix);
-        t2 = new U.DartFormatter(null, 80, 0, t1);
-        library.toString;
-        t3 = H.assertSubtype(new D.DartEmitter(C.C__NullAllocator), "$isSpecVisitor", [P.StringSink], "$asSpecVisitor").visitLibrary$2(library, null).toString$0(0);
-        t3 = A.SourceCode$(t3, true, null, null, null);
-        errorListener = new Y.ErrorListener(H.setRuntimeTypeInfo([], [V.AnalysisError]));
-        t4 = t3.text;
-        reader = D.CharSequenceReader$(t4);
-        stringSource = new O.StringSource(t4, t3.uri, null, Date.now());
-        scanner = Z.Scanner_Scanner$fasta(stringSource, errorListener, reader.getContents$0(), reader.get$offset(reader));
-        startToken = scanner.tokenize$0();
-        t5 = scanner.lineStarts;
-        if (t5.length < 1)
-          H.throwExpression(P.ArgumentError$("lineStarts must be non-empty"));
-        if (t5.length > 1)
-          if (J.$ge$n(t5[1], 2)) {
-            if (1 >= t5.length)
-              return H.ioore(t5, 1);
-            t6 = J.$sub$n(t5[1], 2);
-            if (t6 >>> 0 !== t6 || t6 >= t4.length)
-              return H.ioore(t4, t6);
-            t6 = t4[t6] === "\r";
-          } else
-            t6 = false;
-        else
-          t6 = false;
-        if (t6)
-          t2.lineEnding = "\r\n";
-        else
-          t2.lineEnding = "\n";
-        errorListener.throwIfErrors$0();
-        parser = X.Parser_Parser(stringSource, errorListener, null);
-        parser.set$enableOptionalNewAndConst(true);
-        node = parser.parseCompilationUnit$1(startToken);
-        errorListener.throwIfErrors$0();
-        visitor = new F.SourceVisitor(t2, new E.LineInfo(t5, 0), t3, false, false, 0, H.setRuntimeTypeInfo([], [P.bool]), H.setRuntimeTypeInfo([], [O.MetadataRule]), P.LinkedHashMap_LinkedHashMap$_empty(L.Token, B.ArgumentSublist));
-        t5 = O.Rule;
-        t6 = [t5];
-        t7 = H.setRuntimeTypeInfo([], t6);
-        t5 = P.LinkedHashSet_LinkedHashSet(null, null, null, t5);
-        t6 = H.setRuntimeTypeInfo([], t6);
-        t8 = H.setRuntimeTypeInfo([], [E.OpenSpan]);
-        t9 = H.setRuntimeTypeInfo([0], [P.int]);
-        t10 = $.FastHash__nextId + 1 & 268435455;
-        $.FastHash__nextId = t10;
-        t10 = new F.NestingBuilder(t9, new M.NestingLevel(null, 0, t10));
-        t9 = H.setRuntimeTypeInfo([], [M.NestingLevel]);
-        t11 = H.setRuntimeTypeInfo([], [E.Chunk]);
-        t10.indent$1(0);
-        C.JSArray_methods.add$1(t9, t10.get$currentNesting());
-        visitor.builder = new S.ChunkBuilder(t2, null, t3, t11, C.Whitespace_none, t7, t5, t6, t8, t10, t9, false, 0);
-        visitor.visit$1(node);
-        visitor.writePrecedingCommentsAndNewlines$1(node.endToken.next);
-        t9 = visitor.builder;
-        t9._writeHardSplit$0();
-        t9._divideChunks$0();
-        if ($.traceChunkBuilder) {
-          A.log(H.S($.$get$_green()) + "\nBuilt:" + H.S($.$get$_none()));
-          A.dumpChunks(0, t9._chunks);
-          A.log(null);
-        }
-        t2 = t9._formatter;
-        t3 = new P.StringBuffer("");
-        result = new A.LineWriter(t3, t9._chunks, t2.lineEnding, t2.pageWidth, 0, P.LinkedHashMap_LinkedHashMap$_empty(A._BlockKey, A.FormatResult)).writeLines$2$isCompilationUnit(t2.indent, true);
-        t2 = t9._source;
-        if (t2.selectionStart != null) {
-          selectionStart = result.selectionStart;
-          selectionEnd = result.selectionEnd;
-          if (selectionStart == null)
-            selectionStart = t3._contents.length;
-          selectionLength = (selectionEnd == null ? t3._contents.length : selectionEnd) - selectionStart;
-        } else {
-          selectionStart = null;
-          selectionLength = null;
-        }
-        output = A.SourceCode$(result.text, true, selectionLength, selectionStart, t2.uri);
-        if (t1._collection$_length === 0 && !M.equalIgnoringWhitespace(t4, output.text))
-          H.throwExpression(new A.UnexpectedOutputException(t4, output.text));
-        return output.text;
-      }
-    },
-    FigmaWidgetGenerator__generatePaint_closure0: {
-      "^": "Closure:36;vx,vy,statements",
-      call$1: function(b) {
-        var t1, t2, t3, t4;
-        t1 = b.get$statements();
-        t2 = [H.getTypeArgumentByIndex(t1, 0)];
-        t3 = H.assertSubtype(H.setRuntimeTypeInfo([new X.StaticCode("canvas.drawColor(Colors.transparent, BlendMode.screen);"), new X.StaticCode("var frame = Offset.zero & size;"), new X.StaticCode("canvas.translate(" + H.S(this.vx) + ", " + H.S(this.vy) + ");")], [X.Code]), "$isIterable", t2, "$asIterable");
-        t1._checkElements$1(t3);
-        t4 = t1.get$_safeList();
-        (t4 && C.JSArray_methods).addAll$1(t4, t3);
-        t2 = H.assertSubtype(this.statements, "$isIterable", t2, "$asIterable");
-        t1._checkElements$1(t2);
-        t3 = t1.get$_safeList();
-        (t3 && C.JSArray_methods).addAll$1(t3, t2);
-        return t1;
-      }
-    },
-    FigmaWidgetGenerator__generatePaint_closure: {
-      "^": "Closure:11;block",
-      call$1: function(b) {
-        var t1, t2;
-        b.get$_method$_$this();
-        b.name = "paint";
-        t1 = b.get$annotations();
-        t2 = H.assertSubtypeOfRuntimeType(new B.CodeExpression(new X.StaticCode("override")), H.getTypeArgumentByIndex(t1, 0));
-        t1 = t1.get$_safeList();
-        (t1 && C.JSArray_methods).add$1(t1, t2);
-        t2 = $.$get$_Types_Void();
-        b.get$_method$_$this();
-        b.returns = t2;
-        b.get$_method$_$this();
-        b.body = this.block;
-        t2 = b.get$requiredParameters();
-        t1 = H.assertSubtypeOfRuntimeType(D._$Parameter__$Parameter(new O.FigmaWidgetGenerator__generatePaint__closure()), H.getTypeArgumentByIndex(t2, 0));
-        if (t1 == null)
-          H.throwExpression(P.ArgumentError$("null element"));
-        t2 = t2.get$_safeList();
-        (t2 && C.JSArray_methods).add$1(t2, t1);
-        t1 = b.get$requiredParameters();
-        t2 = H.assertSubtypeOfRuntimeType(D._$Parameter__$Parameter(new O.FigmaWidgetGenerator__generatePaint__closure0()), H.getTypeArgumentByIndex(t1, 0));
-        if (t2 == null)
-          H.throwExpression(P.ArgumentError$("null element"));
-        t1 = t1.get$_safeList();
-        (t1 && C.JSArray_methods).add$1(t1, t2);
-        return b;
-      }
-    },
-    FigmaWidgetGenerator__generatePaint__closure: {
-      "^": "Closure:7;",
-      call$1: function(p) {
-        var t1;
-        p.get$_method$_$this();
-        p.name = "canvas";
-        t1 = $.$get$_Types_Canvas();
-        p.get$_method$_$this();
-        p.type = t1;
-        return p;
-      }
-    },
-    FigmaWidgetGenerator__generatePaint__closure0: {
-      "^": "Closure:7;",
-      call$1: function(p) {
-        var t1;
-        p.get$_method$_$this();
-        p.name = "size";
-        t1 = $.$get$_Types_Size();
-        p.get$_method$_$this();
-        p.type = t1;
-        return p;
-      }
-    },
-    FigmaWidgetGenerator__addProperties_closure: {
-      "^": "Closure:16;varName",
-      call$1: function(b) {
-        b.get$_field$_$this();
-        b.name = this.varName;
-        b.get$_field$_$this();
-        b.modifier = C.FieldModifier_1;
-        b.get$_field$_$this();
-        b.type = new U.Reference(null, "String");
-        return b;
-      }
-    },
-    FigmaWidgetGenerator__addProperties_closure0: {
-      "^": "Closure:3;$this,result,builder",
-      call$1: function(c) {
-        C.JSArray_methods.addAll$1(this.result, this.$this._addProperties$2(this.builder, c));
-      }
-    },
-    FigmaWidgetGenerator__generateText_closure: {
-      "^": "Closure:86;",
-      call$1: function(f) {
-        return D._$Parameter__$Parameter(new O.FigmaWidgetGenerator__generateText__closure(H.stringTypeCheck(f)));
-      }
-    },
-    FigmaWidgetGenerator__generateText__closure: {
-      "^": "Closure:7;f",
-      call$1: function(p) {
-        var t1 = "this." + H.S(this.f);
-        p.get$_method$_$this();
-        p.name = t1;
-        p.get$_method$_$this();
-        p.named = true;
-        return p;
-      }
-    },
-    FigmaWidgetGenerator__generateText_closure0: {
-      "^": "Closure:37;parameters",
-      call$1: function(b) {
-        var t1, t2;
-        t1 = b.get$optionalParameters();
-        t2 = H.assertSubtype(this.parameters, "$isIterable", [H.getTypeArgumentByIndex(t1, 0)], "$asIterable");
-        t1._checkElements$1(t2);
-        t1 = t1.get$_safeList();
-        (t1 && C.JSArray_methods).addAll$1(t1, t2);
-        return b;
-      }
-    },
-    FigmaWidgetGenerator__generateCustomPainter_closure: {
-      "^": "Closure:11;",
-      call$1: function(b) {
-        var t1, t2;
-        b.get$_method$_$this();
-        b.name = "semanticsBuilder";
-        t1 = b.get$annotations();
-        t2 = H.assertSubtypeOfRuntimeType(new B.CodeExpression(new X.StaticCode("override")), H.getTypeArgumentByIndex(t1, 0));
-        t1 = t1.get$_safeList();
-        (t1 && C.JSArray_methods).add$1(t1, t2);
-        b.get$_method$_$this();
-        b.type = C.MethodType_0;
-        t2 = $.$get$_Types_SemanticsBuilderCallback();
-        b.get$_method$_$this();
-        b.returns = t2;
-        b.get$_method$_$this();
-        b.body = new X.StaticCode("return (Size size) => [];");
-        return b;
-      }
-    },
-    FigmaWidgetGenerator__generateCustomPainter_closure0: {
-      "^": "Closure:11;className",
-      call$1: function(b) {
-        var t1, t2;
-        b.get$_method$_$this();
-        b.name = "shouldRepaint";
-        t1 = b.get$annotations();
-        t2 = H.assertSubtypeOfRuntimeType(new B.CodeExpression(new X.StaticCode("override")), H.getTypeArgumentByIndex(t1, 0));
-        t1 = t1.get$_safeList();
-        (t1 && C.JSArray_methods).add$1(t1, t2);
-        t2 = $.$get$_Types_Bool();
-        b.get$_method$_$this();
-        b.returns = t2;
-        t2 = b.get$requiredParameters();
-        t1 = H.assertSubtypeOfRuntimeType(D._$Parameter__$Parameter(new O.FigmaWidgetGenerator__generateCustomPainter__closure0(this.className)), H.getTypeArgumentByIndex(t2, 0));
-        if (t1 == null)
-          H.throwExpression(P.ArgumentError$("null element"));
-        t2 = t2.get$_safeList();
-        (t2 && C.JSArray_methods).add$1(t2, t1);
-        b.get$_method$_$this();
-        b.body = new X.StaticCode("return false;");
-        return b;
-      }
-    },
-    FigmaWidgetGenerator__generateCustomPainter__closure0: {
-      "^": "Closure:7;className",
-      call$1: function(b) {
-        var t1;
-        b.get$_method$_$this();
-        b.name = "oldDelegate";
-        t1 = H.S(this.className) + "Painter";
-        b.get$_method$_$this();
-        b.type = new U.Reference(null, t1);
-        return b;
-      }
-    },
-    FigmaWidgetGenerator__generateCustomPainter_closure1: {
-      "^": "Closure:11;className",
-      call$1: function(b) {
-        var t1, t2;
-        b.get$_method$_$this();
-        b.name = "shouldRebuildSemantics";
-        t1 = b.get$annotations();
-        t2 = H.assertSubtypeOfRuntimeType(new B.CodeExpression(new X.StaticCode("override")), H.getTypeArgumentByIndex(t1, 0));
-        t1 = t1.get$_safeList();
-        (t1 && C.JSArray_methods).add$1(t1, t2);
-        t2 = $.$get$_Types_Bool();
-        b.get$_method$_$this();
-        b.returns = t2;
-        t2 = b.get$requiredParameters();
-        t1 = H.assertSubtypeOfRuntimeType(D._$Parameter__$Parameter(new O.FigmaWidgetGenerator__generateCustomPainter__closure(this.className)), H.getTypeArgumentByIndex(t2, 0));
-        if (t1 == null)
-          H.throwExpression(P.ArgumentError$("null element"));
-        t2 = t2.get$_safeList();
-        (t2 && C.JSArray_methods).add$1(t2, t1);
-        b.get$_method$_$this();
-        b.body = new X.StaticCode("return false;");
-        return b;
-      }
-    },
-    FigmaWidgetGenerator__generateCustomPainter__closure: {
-      "^": "Closure:7;className",
-      call$1: function(b) {
-        var t1;
-        b.get$_method$_$this();
-        b.name = "oldDelegate";
-        t1 = H.S(this.className) + "Painter";
-        b.get$_method$_$this();
-        b.type = new U.Reference(null, t1);
-        return b;
-      }
-    },
-    FigmaWidgetGenerator__generateCustomPainter_closure2: {
-      "^": "Closure:7;",
-      call$1: function(p) {
-        p.get$_method$_$this();
-        p.name = "this.text";
-        p.get$_method$_$this();
-        p.toThis;
-        return p;
-      }
-    },
-    FigmaWidgetGenerator__generateCustomPainter_closure3: {
-      "^": "Closure:16;className",
-      call$1: function(b) {
-        var t1;
-        b.get$_field$_$this();
-        b.name = "text";
-        b.get$_field$_$this();
-        b.modifier = C.FieldModifier_1;
-        t1 = H.S(this.className) + "Text";
-        b.get$_field$_$this();
-        b.type = new U.Reference(null, t1);
-        return b;
-      }
-    },
-    FigmaWidgetGenerator__generateWidgets_closure: {
-      "^": "Closure:34;$this,classes",
-      call$2: function(k, node) {
-        var t1, text, hasText;
-        H.stringTypeCheck(k);
-        t1 = this.$this;
-        text = t1._generateText$2(k, node);
-        hasText = text != null;
-        if (hasText)
-          C.JSArray_methods.add$1(this.classes, text);
-        C.JSArray_methods.add$1(this.classes, t1._generateCustomPainter$3(k, node, hasText));
-      }
-    },
-    FigmaWidgetGenerator__generateWidgets_closure0: {
-      "^": "Closure:88;classes",
-      call$1: function(b) {
-        var t1, t2;
-        t1 = b.get$directives();
-        t2 = H.assertSubtype(H.setRuntimeTypeInfo([U.Directive_Directive$import("dart:typed_data", null, C.List_empty0, C.List_empty0), U.Directive_Directive$import("package:flutter/material.dart", null, C.List_empty0, C.List_empty0), U.Directive_Directive$import("dart:ui", "ui", C.List_empty0, C.List_empty0)], [U.Directive0]), "$isIterable", [H.getTypeArgumentByIndex(t1, 0)], "$asIterable");
-        t1._checkElements$1(t2);
-        t1 = t1.get$_safeList();
-        (t1 && C.JSArray_methods).addAll$1(t1, t2);
-        t2 = b.get$body(b);
-        t1 = H.assertSubtype(this.classes, "$isIterable", [H.getTypeArgumentByIndex(t2, 0)], "$asIterable");
-        t2._checkElements$1(t1);
-        t2 = t2.get$_safeList();
-        (t2 && C.JSArray_methods).addAll$1(t2, t1);
-        return b;
-      }
-    },
-    FigmaWidgetGenerator_generateComponents_closure: {
-      "^": "Closure:13;$this,components,widgets",
-      call$2: function(ck, cv) {
-        this.components.forEach$1(0, new O.FigmaWidgetGenerator_generateComponents__closure(this.$this, cv, this.widgets, ck));
-      }
-    },
-    FigmaWidgetGenerator_generateComponents__closure: {
-      "^": "Closure:32;$this,cv,widgets,ck",
-      call$2: function(k, v) {
-        var rc, t1, t2, t3, className;
-        H.stringTypeCheck(k);
-        H.stringTypeCheck(v);
-        if (J.$eq$(J.$index$asx(this.cv, "name"), v)) {
-          rc = M.ReCase$(k);
-          t1 = rc._words;
-          t2 = P.String;
-          t3 = H.getTypeArgumentByIndex(t1, 0);
-          className = C.JSArray_methods.join$1(new H.MappedListIterable(t1, H.functionTypeCheck(rc.get$_upperCaseFirstLetter(), {func: 1, ret: t2, args: [t3]}), [t3, t2]).toList$0(0), "");
-          t2 = P.RegExp_RegExp("[^a-zA-Z0-9]", true, false);
-          t1 = this.$this;
-          this.widgets.$indexSet(0, H.stringReplaceAllUnchecked(className, t2, "_"), t1._findNode$2(J.$index$asx(t1._document, "document"), H.stringTypeCheck(this.ck)));
-        }
-      }
     }
   }], ["", "package:front_end/src/base/errors.dart",, A, {
     "^": "",
@@ -37374,7 +37810,7 @@
     _withArgumentsAsciiControlCharacter: [function(codePoint) {
       H.intTypeCheck(codePoint);
       return new B.Message(C.Code_UCF, "The control character " + ("U+" + C.JSString_methods.padLeft$2(J.toRadixString$1$n(codePoint, 16).toUpperCase(), 4, "0")) + " can only be used in strings and comments.", null, P.LinkedHashMap_LinkedHashMap$_literal(["codePoint", codePoint], P.String, null));
-    }, "call$1", "fasta_codes___withArgumentsAsciiControlCharacter$closure", 4, 0, 41],
+    }, "call$1", "fasta_codes___withArgumentsAsciiControlCharacter$closure", 4, 0, 47],
     _withArgumentsBuiltInIdentifierAsType: [function(token) {
       H.interceptedTypeCheck(token, "$isToken");
       return new B.Message(C.Code_uXf, "The built-in identifier '" + H.S(token.get$lexeme()) + "' can't be used as a type.", "Try correcting the name to match an existing type.", P.LinkedHashMap_LinkedHashMap$_literal(["token", token], P.String, null));
@@ -37386,7 +37822,7 @@
     _withArgumentsConstFieldWithoutInitializer: [function($name) {
       H.stringTypeCheck($name);
       return new B.Message(C.Code_cQL, "The const variable '" + H.S($name) + "' must be initialized.", "Try adding an initializer ('= <expression>') to the declaration.", P.LinkedHashMap_LinkedHashMap$_literal(["name", $name], P.String, null));
-    }, "call$1", "fasta_codes___withArgumentsConstFieldWithoutInitializer$closure", 4, 0, 9],
+    }, "call$1", "fasta_codes___withArgumentsConstFieldWithoutInitializer$closure", 4, 0, 12],
     _withArgumentsDuplicatedModifier: [function(token) {
       H.interceptedTypeCheck(token, "$isToken");
       return new B.Message(C.Code_7pq, "The modifier '" + H.S(token.get$lexeme()) + "' was already specified.", "Try removing all but one occurance of the modifier.", P.LinkedHashMap_LinkedHashMap$_literal(["token", token], P.String, null));
@@ -37394,11 +37830,11 @@
     _withArgumentsExpectedAfterButGot: [function(string) {
       H.stringTypeCheck(string);
       return new B.Message(C.Code_4QF, "Expected '" + H.S(string) + "' after this.", null, P.LinkedHashMap_LinkedHashMap$_literal(["string", string], P.String, null));
-    }, "call$1", "fasta_codes___withArgumentsExpectedAfterButGot$closure", 4, 0, 9],
+    }, "call$1", "fasta_codes___withArgumentsExpectedAfterButGot$closure", 4, 0, 12],
     _withArgumentsExpectedButGot: [function(string) {
       H.stringTypeCheck(string);
       return new B.Message(C.Code_MdF, "Expected '" + H.S(string) + "' before this.", null, P.LinkedHashMap_LinkedHashMap$_literal(["string", string], P.String, null));
-    }, "call$1", "fasta_codes___withArgumentsExpectedButGot$closure", 4, 0, 9],
+    }, "call$1", "fasta_codes___withArgumentsExpectedButGot$closure", 4, 0, 12],
     _withArgumentsExpectedClassBody: [function(token) {
       H.interceptedTypeCheck(token, "$isToken");
       return new B.Message(C.Code_NOA, "Expected a class body, but got '" + H.S(token.get$lexeme()) + "'.", null, P.LinkedHashMap_LinkedHashMap$_literal(["token", token], P.String, null));
@@ -37430,7 +37866,7 @@
     _withArgumentsExpectedToken: [function(string) {
       H.stringTypeCheck(string);
       return new B.Message(C.Code_fRV, "Expected to find '" + H.S(string) + "'.", null, P.LinkedHashMap_LinkedHashMap$_literal(["string", string], P.String, null));
-    }, "call$1", "fasta_codes___withArgumentsExpectedToken$closure", 4, 0, 9],
+    }, "call$1", "fasta_codes___withArgumentsExpectedToken$closure", 4, 0, 12],
     _withArgumentsExpectedType: [function(token) {
       H.interceptedTypeCheck(token, "$isToken");
       return new B.Message(C.Code_7Ap, "Expected a type, but got '" + H.S(token.get$lexeme()) + "'.", null, P.LinkedHashMap_LinkedHashMap$_literal(["token", token], P.String, null));
@@ -37444,7 +37880,7 @@
     _withArgumentsFinalFieldWithoutInitializer: [function($name) {
       H.stringTypeCheck($name);
       return new B.Message(C.Code_kyk, "The final variable '" + H.S($name) + "' must be initialized.", "Try adding an initializer ('= <expression>') to the declaration.", P.LinkedHashMap_LinkedHashMap$_literal(["name", $name], P.String, null));
-    }, "call$1", "fasta_codes___withArgumentsFinalFieldWithoutInitializer$closure", 4, 0, 9],
+    }, "call$1", "fasta_codes___withArgumentsFinalFieldWithoutInitializer$closure", 4, 0, 12],
     _withArgumentsInvalidOperator: [function(token) {
       H.interceptedTypeCheck(token, "$isToken");
       return new B.Message(C.Code_8eb, "The string '" + H.S(token.get$lexeme()) + "' isn't a user-definable operator.", null, P.LinkedHashMap_LinkedHashMap$_literal(["token", token], P.String, null));
@@ -37459,7 +37895,7 @@
     _withArgumentsNonAsciiWhitespace: [function(codePoint) {
       H.intTypeCheck(codePoint);
       return new B.Message(C.Code_ynK, "The non-ASCII space character " + ("U+" + C.JSString_methods.padLeft$2(J.toRadixString$1$n(codePoint, 16).toUpperCase(), 4, "0")) + " can only be used in strings and comments.", null, P.LinkedHashMap_LinkedHashMap$_literal(["codePoint", codePoint], P.String, null));
-    }, "call$1", "fasta_codes___withArgumentsNonAsciiWhitespace$closure", 4, 0, 41],
+    }, "call$1", "fasta_codes___withArgumentsNonAsciiWhitespace$closure", 4, 0, 47],
     _withArgumentsUnexpectedToken: [function(token) {
       H.interceptedTypeCheck(token, "$isToken");
       return new B.Message(C.Code_qd9, "Unexpected token '" + H.S(token.get$lexeme()) + "'.", null, P.LinkedHashMap_LinkedHashMap$_literal(["token", token], P.String, null));
@@ -42141,7 +42577,7 @@
         if (t2 < 0 || t2 >= t1.length)
           return H.ioore(t1, t2);
         return t1[t2];
-      }, "call$1", "get$next", 4, 0, 27],
+      }, "call$1", "get$next", 4, 0, 22],
       nextCapital$1: function(c) {
         return;
       }
@@ -42157,7 +42593,7 @@
         if (t2 < 0 || t2 >= t1.length)
           return H.ioore(t1, t2);
         return t1[t2];
-      }, "call$1", "get$next", 4, 0, 27],
+      }, "call$1", "get$next", 4, 0, 22],
       nextCapital$1: function(c) {
         var t1, t2;
         t1 = this.table;
@@ -42173,7 +42609,7 @@
       "^": "Object;keyword<",
       next$1: [function(c) {
         return;
-      }, "call$1", "get$next", 4, 0, 27],
+      }, "call$1", "get$next", 4, 0, 22],
       nextCapital$1: function(c) {
         return;
       },
@@ -42321,19 +42757,19 @@
       }
     },
     defaultRecoveryStrategy_recoverExponent: {
-      "^": "Closure:8;_box_0",
+      "^": "Closure:10;_box_0",
       call$0: function() {
         return this._box_0.errorTail.next;
       }
     },
     defaultRecoveryStrategy_recoverString: {
-      "^": "Closure:8;_box_0",
+      "^": "Closure:10;_box_0",
       call$0: function() {
         return this._box_0.errorTail.next;
       }
     },
     defaultRecoveryStrategy_recoverHexDigit: {
-      "^": "Closure:8;_box_0",
+      "^": "Closure:10;_box_0",
       call$0: function() {
         var t1, t2;
         t1 = this._box_0;
@@ -42345,19 +42781,19 @@
       }
     },
     defaultRecoveryStrategy_recoverStringInterpolation: {
-      "^": "Closure:8;_box_0",
+      "^": "Closure:10;_box_0",
       call$0: function() {
         return this._box_0.errorTail.next;
       }
     },
     defaultRecoveryStrategy_recoverComment: {
-      "^": "Closure:8;_box_0",
+      "^": "Closure:10;_box_0",
       call$0: function() {
         return U.skipToEof(this._box_0.errorTail);
       }
     },
     defaultRecoveryStrategy_recoverUnmatched: {
-      "^": "Closure:8;_box_0",
+      "^": "Closure:10;_box_0",
       call$0: function() {
         return this._box_0.errorTail.next;
       }
@@ -42689,6 +43125,10 @@
       },
       join$1: function(_, separator) {
         return this._unsupported$1("join");
+      },
+      where$1: function(_, f) {
+        H.functionTypeCheck(f, {func: 1, ret: P.bool, args: [H.getTypeArgumentByIndex(this, 0)]});
+        return H.assertSubtype(this._unsupported$1("where"), "$isIterable", this.$ti, "$asIterable");
       },
       _unsupported$1: function(method) {
         return H.throwExpression(P.UnsupportedError$(method));
@@ -43829,7 +44269,7 @@
       }
     },
     BrowserClient_send_closure: {
-      "^": "Closure:17;xhr,completer,request",
+      "^": "Closure:14;xhr,completer,request",
       call$1: function(_) {
         var t1, blob, reader, t2, t3, t4, t5;
         H.interceptedTypeCheck(_, "$isProgressEvent");
@@ -43847,7 +44287,7 @@
       }
     },
     BrowserClient_send__closure: {
-      "^": "Closure:17;reader,completer,xhr,request",
+      "^": "Closure:14;reader,completer,xhr,request",
       call$1: function(_) {
         var body, t1, t2, t3, t4, t5, t6;
         H.interceptedTypeCheck(_, "$isProgressEvent");
@@ -43866,13 +44306,13 @@
       }
     },
     BrowserClient_send__closure0: {
-      "^": "Closure:17;completer,request",
+      "^": "Closure:14;completer,request",
       call$1: function(error) {
         this.completer.completeError$2(new E.ClientException(J.toString$0$(H.interceptedTypeCheck(error, "$isProgressEvent")), this.request.url), P.StackTrace_current());
       }
     },
     BrowserClient_send_closure0: {
-      "^": "Closure:17;completer,request",
+      "^": "Closure:14;completer,request",
       call$1: function(_) {
         H.interceptedTypeCheck(_, "$isProgressEvent");
         this.completer.completeError$2(new E.ClientException("XMLHttpRequest error.", this.request.url), P.StackTrace_current());
@@ -44093,7 +44533,7 @@
       }
     },
     CaseInsensitiveMap$from_closure: {
-      "^": "Closure:5;",
+      "^": "Closure:6;",
       call$1: function(key) {
         return H.stringTypeCheck(key).toLowerCase();
       }
@@ -44212,7 +44652,7 @@
       }
     },
     MediaType_toString_closure: {
-      "^": "Closure:32;buffer",
+      "^": "Closure:41;buffer",
       call$2: function(attribute, value) {
         var t1, t2;
         H.stringTypeCheck(attribute);
@@ -44233,7 +44673,7 @@
       }
     },
     MediaType_toString__closure: {
-      "^": "Closure:20;",
+      "^": "Closure:27;",
       call$1: function(match) {
         return C.JSString_methods.$add("\\", match.$index(0, 0));
       }
@@ -44247,7 +44687,7 @@
       return H.stringReplaceAllFuncUnchecked(J.substring$2$s(string, 1, string.length - 1), $.$get$_quotedPair(), H.functionTypeCheck(new N.expectQuotedString_closure(), {func: 1, ret: P.String, args: [P.Match]}), null);
     },
     expectQuotedString_closure: {
-      "^": "Closure:20;",
+      "^": "Closure:27;",
       call$1: function(match) {
         return match.$index(0, 1);
       }
@@ -44541,25 +44981,25 @@
       }
     },
     Context_join_closure: {
-      "^": "Closure:24;",
+      "^": "Closure:28;",
       call$1: function(part) {
         return H.stringTypeCheck(part) != null;
       }
     },
     Context_joinAll_closure: {
-      "^": "Closure:24;",
+      "^": "Closure:28;",
       call$1: function(part) {
         return H.stringTypeCheck(part) !== "";
       }
     },
     Context_split_closure: {
-      "^": "Closure:24;",
+      "^": "Closure:28;",
       call$1: function(part) {
         return H.stringTypeCheck(part).length !== 0;
       }
     },
     _validateArgList_closure: {
-      "^": "Closure:5;",
+      "^": "Closure:6;",
       call$1: function(arg) {
         H.stringTypeCheck(arg);
         return arg == null ? "null" : '"' + arg + '"';
@@ -45005,7 +45445,17 @@
       _upperCaseFirstLetter$1: [function(word) {
         H.stringTypeCheck(word);
         return J.getInterceptor$s(word).substring$2(word, 0, 1).toUpperCase() + C.JSString_methods.substring$1(word, 1).toLowerCase();
-      }, "call$1", "get$_upperCaseFirstLetter", 4, 0, 5],
+      }, "call$1", "get$_upperCaseFirstLetter", 4, 0, 6],
+      _getPascalCase$1$separator: function(separator) {
+        var t1, t2, t3;
+        t1 = this._words;
+        t2 = P.String;
+        t3 = H.getTypeArgumentByIndex(t1, 0);
+        return C.JSArray_methods.join$1(new H.MappedListIterable(t1, H.functionTypeCheck(this.get$_upperCaseFirstLetter(), {func: 1, ret: t2, args: [t3]}), [t3, t2]).toList$0(0), separator);
+      },
+      _getPascalCase$0: function() {
+        return this._getPascalCase$1$separator("");
+      },
       static: {
         ReCase$: function(text) {
           var t1 = new M.ReCase(P.RegExp_RegExp("[A-Z]", true, false), P.RegExp_RegExp("[ ./_\\-]", true, false), H.setRuntimeTypeInfo([], [P.String]));
@@ -46040,9 +46490,9 @@
       }
     },
     main_generateCode: {
-      "^": "Closure:46;_box_0",
+      "^": "Closure:45;_box_0",
       call$0: function() {
-        var $async$goto = 0, $async$completer = P._makeAsyncAwaitCompleter(null), $async$self = this, t1, widgets, generator, color, t2, t3, code;
+        var $async$goto = 0, $async$completer = P._makeAsyncAwaitCompleter(null), $async$self = this, t1, widgets, generator, color, t2, code;
         var $async$call$0 = P._wrapJsFunctionForAsync(function($async$errorCode, $async$result) {
           if ($async$errorCode === 1)
             return P._asyncRethrow($async$result, $async$completer);
@@ -46054,7 +46504,7 @@
                 t1 = P.String;
                 widgets = new H.JsLinkedHashMap(0, 0, [t1, t1]);
                 C.JSArray_methods.forEach$1($.$get$selectedComponents(), new R.main_generateCode_closure(widgets));
-                generator = new O.FigmaWidgetGenerator($async$self._box_0.file);
+                generator = new Y.FigmaWidgetGenerator($async$self._box_0.file);
                 color = new K.ColorGenerator();
                 t2 = U.Reference;
                 t2 = new X._$ClassBuilder(false, S.ListBuilder_ListBuilder(C.List_empty, B.Expression), S.ListBuilder_ListBuilder(C.List_empty, t1), S.ListBuilder_ListBuilder(C.List_empty, t2), S.ListBuilder_ListBuilder(C.List_empty, t2), S.ListBuilder_ListBuilder(C.List_empty, t2), S.ListBuilder_ListBuilder(C.List_empty, Y.Constructor), S.ListBuilder_ListBuilder(C.List_empty, D.Method), S.ListBuilder_ListBuilder(C.List_empty, F.Field), null, null, null);
@@ -46062,13 +46512,13 @@
                 t2.name = "_PathCatalog";
                 t2 = new D.PathGenerator(0, t2);
                 generator._path = t2;
-                t1 = new M.PaintGenerator(color);
-                t3 = new B.NodeGenerator();
-                t3._group = new O.GroupGenerator(t3);
-                t3._frame = new A.FrameGenerator(color, t3);
-                t3._vector = new Y.VectorGenerator(t1, t2);
-                t3._text = new L.TextGenerator(t1, color, new Z.TextStyleGenerator(), new Z.ParagraphStyleGenerator());
-                generator._node = t3;
+                t1 = new B.NodeGenerator(new U.DirectiveGenerator());
+                t1._group = new O.GroupGenerator(t1);
+                t1._frame = new A.FrameGenerator(color, t1);
+                t1._vector = new Y.VectorGenerator(new M.PaintGenerator(color), t2);
+                t1._text = new L.TextGenerator(color, new Z.TextStyleGenerator(), new Z.ParagraphStyleGenerator());
+                generator._node = t1;
+                generator._component = new G.ComponentGenerator(t1);
                 $async$goto = 2;
                 return P._asyncAwait(generator.generateComponents$1(widgets), $async$call$0);
               case 2:
@@ -46083,7 +46533,7 @@
       }
     },
     main_generateCode_closure: {
-      "^": "Closure:3;widgets",
+      "^": "Closure:4;widgets",
       call$1: function(s) {
         H.stringTypeCheck(s);
         this.widgets.$indexSet(0, s, s);
@@ -46143,7 +46593,7 @@
       }
     },
     main_downloadFile: {
-      "^": "Closure:46;_box_0,token,fileKey,fileTitle,sectionComponents,createComponentLi,components",
+      "^": "Closure:45;_box_0,token,fileKey,fileTitle,sectionComponents,createComponentLi,components",
       call$0: function() {
         var $async$goto = 0, $async$completer = P._makeAsyncAwaitCompleter(null), $async$handler = 1, $async$currentError, $async$next = [], $async$self = this, api, lis, e, t1, t2, t3, file, exception, $async$exception;
         var $async$call$0 = P._wrapJsFunctionForAsync(function($async$errorCode, $async$result) {
@@ -46209,7 +46659,7 @@
       }
     },
     main_downloadFile_closure: {
-      "^": "Closure:34;createComponentLi,lis",
+      "^": "Closure:40;createComponentLi,lis",
       call$2: function(k, v) {
         var widgetName, li;
         H.stringTypeCheck(k);
@@ -46219,14 +46669,14 @@
       }
     },
     main_closure: {
-      "^": "Closure:45;downloadFile",
+      "^": "Closure:46;downloadFile",
       call$1: function(c) {
         H.interceptedTypeCheck(c, "$isMouseEvent");
         this.downloadFile.call$0();
       }
     },
     main_closure0: {
-      "^": "Closure:45;generateCode",
+      "^": "Closure:46;generateCode",
       call$1: function(c) {
         H.interceptedTypeCheck(c, "$isMouseEvent");
         this.generateCode.call$0();
@@ -46579,6 +47029,9 @@
   };
   J.trim$0$s = function(receiver) {
     return J.getInterceptor$s(receiver).trim$0(receiver);
+  };
+  J.where$1$ax = function(receiver, a0) {
+    return J.getInterceptor$ax(receiver).where$1(receiver, a0);
   };
   J.get$hashCode$ = function(receiver) {
     return J.getInterceptor(receiver).get$hashCode(receiver);
@@ -47588,19 +48041,7 @@
     return A._color("\x1b[1m");
   }, "_bold", "_capitalPattern", "$get$_capitalPattern", function() {
     return P.RegExp_RegExp("^_?[A-Z].*[a-z]", true, false);
-  }, "_capitalPattern", "_Types_Bool", "$get$_Types_Bool", function() {
-    return U.refer("bool", null);
-  }, "_Types_Bool", "_Types_Void", "$get$_Types_Void", function() {
-    return U.refer("void", null);
-  }, "_Types_Void", "_Types_Size", "$get$_Types_Size", function() {
-    return U.refer("Size", null);
-  }, "_Types_Size", "_Types_Canvas", "$get$_Types_Canvas", function() {
-    return U.refer("Canvas", null);
-  }, "_Types_Canvas", "_Types_CustomPainter", "$get$_Types_CustomPainter", function() {
-    return U.refer("CustomPainter", null);
-  }, "_Types_CustomPainter", "_Types_SemanticsBuilderCallback", "$get$_Types_SemanticsBuilderCallback", function() {
-    return U.refer("SemanticsBuilderCallback", null);
-  }, "_Types_SemanticsBuilderCallback", "StringToken_canonicalizer", "$get$StringToken_canonicalizer", function() {
+  }, "_capitalPattern", "StringToken_canonicalizer", "$get$StringToken_canonicalizer", function() {
     var t1 = new Array(8192);
     t1.fixed$length = Array;
     return new D.StringCanonicalizer(8192, 0, H.setRuntimeTypeInfo(t1, [D.Node0]));
@@ -47646,7 +48087,7 @@
   Isolate = Isolate.$finishIsolateConstructor(Isolate);
   $ = new Isolate();
   init.metadata = [];
-  init.types = [{func: 1, ret: P.Null}, {func: 1, ret: -1}, {func: 1, ret: B.Message, args: [L.Token]}, {func: 1, ret: P.Null, args: [,]}, {func: 1, ret: -1, args: [,]}, {func: 1, ret: P.String, args: [P.String]}, {func: 1, ret: P.String}, {func: 1, ret: -1, args: [D.ParameterBuilder]}, {func: 1, ret: L.Token}, {func: 1, ret: B.Message, args: [P.String]}, {func: 1, ret: -1, args: [B.Expression]}, {func: 1, ret: -1, args: [D.MethodBuilder]}, {func: 1, ret: P.bool}, {func: 1, ret: P.Null, args: [,,]}, {func: 1, args: [,]}, {func: 1, ret: P.Null, args: [O.Rule]}, {func: 1, ret: -1, args: [F.FieldBuilder]}, {func: 1, ret: P.Null, args: [W.ProgressEvent]}, {func: 1, ret: P.bool, args: [O.Rule]}, {func: 1, ret: P.Null, args: [P.String]}, {func: 1, ret: P.String, args: [P.Match]}, {func: 1, ret: -1, args: [P.Object], opt: [P.StackTrace]}, {func: 1, ret: U.Reference, args: [U.Reference]}, {func: 1, ret: P.StringSink, args: [U.Reference]}, {func: 1, ret: P.bool, args: [P.String]}, {func: 1, ret: P.bool, args: [,]}, {func: 1, ret: -1, args: [P.Object]}, {func: 1, ret: U.KeywordState0, args: [P.int]}, {func: 1, ret: X.Code, args: [,]}, {func: 1, ret: -1, args: [{func: 1, ret: -1}]}, {func: 1, ret: P.Null, args: [, P.StackTrace]}, {func: 1, ret: -1, args: [P.Uint8List, P.String, P.int]}, {func: 1, ret: P.Null, args: [P.String, P.String]}, {func: 1, ret: -1, args: [P.String, P.String]}, {func: 1, ret: P.Null, args: [P.String,,]}, {func: 1, ret: P.String, args: [,]}, {func: 1, ret: -1, args: [X.BlockBuilder]}, {func: 1, ret: -1, args: [Y.ConstructorBuilder]}, {func: 1, ret: -1, args: [[P.Set, P.String]]}, {func: 1, ret: P.bool, args: [Y.FormalParameter]}, {func: 1, ret: E.Chunk}, {func: 1, ret: B.Message, args: [P.int]}, {func: 1, ret: O.Rule, args: [E.Chunk]}, {func: 1, ret: P.bool, args: [L.Token]}, {func: 1, ret: -1, opt: [P.Object]}, {func: 1, ret: P.Null, args: [W.MouseEvent]}, {func: 1, ret: P.Future}, {func: 1, ret: P.Null, args: [[P.List, E.Chunk]]}, {func: 1, ret: P.Null, args: [Y.Expression0]}, {func: 1, ret: P.bool, args: [Y.Expression0]}, {func: 1, ret: P.bool, args: [D.Parameter]}, {func: 1, ret: P.Null, args: [X.Code]}, {func: 1, ret: -1, args: [U.DirectiveBuilder]}, {func: 1, ret: P.Null, args: [U.Reference]}, {func: 1, ret: P.Null, args: [R.Spec]}, {func: 1, ret: -1, args: [E.TypeReferenceBuilder]}, {func: 1, ret: P.bool, args: [Y.NamedExpression]}, {func: 1, ret: P.Null, args: [D.Method]}, {func: 1, ret: P.Null, args: [F.Field]}, {func: 1, ret: -1, args: [O.Rule]}, {func: 1, ret: P.bool, args: [E.SourceComment]}, {func: 1, ret: P.Null, args: [,], opt: [,]}, {func: 1, ret: P.Null, args: [Y.Constructor]}, {func: 1, ret: Y.Directive}, {func: 1, ret: Y.IndentingBuiltValueToStringHelper, args: [P.String]}, {func: 1, ret: P.Null, args: [[P.List, E.Chunk], P.String, P.int]}, {func: 1, ret: P.Null, args: [, {func: 1, ret: P.String}]}, {func: 1, ret: P.String, named: {color: P.bool}}, {func: 1, ret: P.Object, args: [P.int]}, {func: 1, ret: P.int, args: [O.Rule]}, {func: 1, ret: P.Null, args: [P.int]}, {func: 1, ret: P.Null, args: [O.Rule, P.int]}, {func: 1, ret: P.String, args: [O.Rule]}, {func: 1, ret: -1, args: [A.ScannerErrorCode, P.int, [P.List, P.Object]]}, {func: 1, ret: O.Rule, opt: [P.int]}, {func: 1, ret: -1, args: [L.Token], named: {after: {func: 1}, before: {func: 1}}}, {func: 1, ret: W.Element, args: [W.Node]}, {func: 1, ret: P.Null, args: [Y.Statement]}, {func: 1, ret: P.bool, args: [W.Node]}, {func: 1, ret: P._Future, args: [,]}, {func: 1, ret: P.bool, args: [[P.Set, P.String]]}, {func: 1, ret: X.Code, args: [A.PathSegmentData]}, {func: 1, args: [P.String]}, {func: 1, args: [,,]}, {func: 1, ret: -1, args: [W.Event]}, {func: 1, ret: L.Token, args: [[P.List, P.int], L.Token, [P.List, P.int]]}, {func: 1, ret: D.Parameter, args: [P.String]}, {func: 1, ret: P.Null, args: [P.int,,]}, {func: 1, ret: -1, args: [O.LibraryBuilder]}, {func: 1, ret: [P.Future, P.String]}, {func: 1, ret: P.int, args: [P.String, P.String]}, {func: 1, ret: P.Uint8List, args: [,,]}, {func: 1, ret: L.Token, args: [S.NonAsciiIdentifierToken]}, {func: 1, ret: P.Null, args: [P.bool]}, {func: 1, ret: -1, args: [A.ScannerErrorCode, [P.List, P.Object]]}, {func: 1, ret: L.Keyword}, {func: 1, ret: O.KeywordState, args: [P.int]}, {func: 1, ret: P.Uint8List, args: [P.int]}, {func: 1, ret: [P.Future, U.Response], args: [,], named: {headers: [P.Map, P.String, P.String]}}, {func: 1, ret: P.bool, args: [P.String, P.String]}, {func: 1, ret: P.int, args: [P.String]}, {func: 1, ret: -1, args: [[P.List, P.int]]}, {func: 1, ret: U.Response, args: [P.Uint8List]}, {func: 1, ret: P.bool, args: [P.Object]}, {func: 1, ret: R.MediaType}, {func: 1, ret: P.int, args: [P.int, P.int]}, {func: 1, ret: P.String, args: [P.int]}, {func: 1, ret: P.int, args: [P.int,,]}, {func: 1, ret: Y.FileSpan, args: [P.int], opt: [P.int]}, {func: 1, ret: P.String, args: [P.String], named: {color: null}}, {func: 1, ret: -1, args: [P.String], named: {length: P.int, match: P.Match, position: P.int}}, {func: 1, ret: P.int, args: [P.int, P.Object]}, {func: 1, ret: P.Null, args: [W.Element]}, {func: 1, ret: -1, args: [P.String], opt: [,]}, {func: 1, ret: W.LIElement, args: [P.String]}, {func: 1, ret: [P.Future, P.Null], args: [W.MouseEvent]}, {func: 1, ret: -1, args: [P.String, P.int]}, {func: 1, ret: P.int, args: [,,]}, {func: 1, ret: P.Null, args: [{func: 1, ret: -1}]}, {func: 1, ret: P.bool, args: [,,]}, {func: 1, ret: P.int, args: [,]}, {func: 1, ret: P.int, args: [P.Object]}, {func: 1, ret: P.bool, args: [P.Object, P.Object]}, {func: 1, ret: P.int, args: [[P.List, P.int], P.int]}, {func: 1, ret: -1, args: [, P.StackTrace]}, {func: 1, args: [, P.String]}, {func: 1, ret: B.Message, args: [P.String, P.int]}, {func: 1, ret: B.Message, args: [P.String, L.Token]}, {func: 1, ret: B.Message, args: [P.String, P.String]}, {func: 1, ret: -1, args: [P.int, P.int]}];
+  init.types = [{func: 1, ret: P.Null}, {func: 1, ret: -1}, {func: 1, ret: B.Message, args: [L.Token]}, {func: 1, ret: -1, args: [D.ParameterBuilder]}, {func: 1, ret: P.Null, args: [,]}, {func: 1, ret: -1, args: [,]}, {func: 1, ret: P.String, args: [P.String]}, {func: 1, ret: P.String}, {func: 1, ret: -1, args: [F.FieldBuilder]}, {func: 1, ret: -1, args: [D.MethodBuilder]}, {func: 1, ret: L.Token}, {func: 1, ret: P.bool, args: [,]}, {func: 1, ret: B.Message, args: [P.String]}, {func: 1, ret: -1, args: [B.Expression]}, {func: 1, ret: P.Null, args: [W.ProgressEvent]}, {func: 1, ret: P.bool}, {func: 1, ret: P.Null, args: [,,]}, {func: 1, args: [,]}, {func: 1, ret: P.Null, args: [O.Rule]}, {func: 1, ret: P.StringSink, args: [U.Reference]}, {func: 1, ret: P.bool, args: [O.Rule]}, {func: 1, ret: U.Reference, args: [U.Reference]}, {func: 1, ret: U.KeywordState0, args: [P.int]}, {func: 1, ret: P.Null, args: [P.String]}, {func: 1, ret: X.Code, args: [,]}, {func: 1, ret: -1, args: [P.Object]}, {func: 1, ret: -1, args: [P.Object], opt: [P.StackTrace]}, {func: 1, ret: P.String, args: [P.Match]}, {func: 1, ret: P.bool, args: [P.String]}, {func: 1, ret: -1, args: [{func: 1, ret: -1}]}, {func: 1, ret: P.bool, args: [L.Token]}, {func: 1, ret: -1, opt: [P.Object]}, {func: 1, ret: P.bool, args: [D.Parameter]}, {func: 1, ret: P.bool, args: [Y.Expression0]}, {func: 1, ret: P.Null, args: [Y.Expression0]}, {func: 1, ret: P.Null, args: [[P.List, E.Chunk]]}, {func: 1, ret: O.Rule, args: [E.Chunk]}, {func: 1, ret: E.Chunk}, {func: 1, ret: P.Null, args: [, P.StackTrace]}, {func: 1, ret: -1, args: [P.Uint8List, P.String, P.int]}, {func: 1, ret: P.Null, args: [P.String,,]}, {func: 1, ret: P.Null, args: [P.String, P.String]}, {func: 1, ret: P.String, args: [,]}, {func: 1, ret: P.bool, args: [Y.FormalParameter]}, {func: 1, ret: -1, args: [[P.Set, P.String]]}, {func: 1, ret: P.Future}, {func: 1, ret: P.Null, args: [W.MouseEvent]}, {func: 1, ret: B.Message, args: [P.int]}, {func: 1, ret: -1, args: [P.String, P.String]}, {func: 1, ret: Y.IndentingBuiltValueToStringHelper, args: [P.String]}, {func: 1, ret: P._Future, args: [,]}, {func: 1, ret: P.Null, args: [X.Code]}, {func: 1, ret: -1, args: [U.DirectiveBuilder]}, {func: 1, ret: P.Null, args: [U.Reference]}, {func: 1, ret: P.Null, args: [R.Spec]}, {func: 1, ret: -1, args: [E.TypeReferenceBuilder]}, {func: 1, ret: P.bool, args: [Y.NamedExpression]}, {func: 1, args: [P.String]}, {func: 1, ret: P.Uint8List, args: [P.int]}, {func: 1, ret: -1, args: [O.Rule]}, {func: 1, ret: P.bool, args: [E.SourceComment]}, {func: 1, ret: P.Uint8List, args: [,,]}, {func: 1, ret: P.Null, args: [P.bool]}, {func: 1, ret: [P.Future, P.String]}, {func: 1, ret: -1, args: [P.int, P.int]}, {func: 1, ret: P.Null, args: [[P.List, E.Chunk], P.String, P.int]}, {func: 1, ret: P.Null, args: [, {func: 1, ret: P.String}]}, {func: 1, ret: P.String, named: {color: P.bool}}, {func: 1, ret: P.Object, args: [P.int]}, {func: 1, ret: P.int, args: [O.Rule]}, {func: 1, ret: P.Null, args: [P.int]}, {func: 1, ret: P.Null, args: [O.Rule, P.int]}, {func: 1, ret: P.String, args: [O.Rule]}, {func: 1, ret: P.Null, args: [P.int,,]}, {func: 1, ret: O.Rule, opt: [P.int]}, {func: 1, ret: -1, args: [L.Token], named: {after: {func: 1}, before: {func: 1}}}, {func: 1, ret: -1, args: [, P.StackTrace]}, {func: 1, ret: P.Null, args: [Y.Statement]}, {func: 1, ret: -1, args: [W.Event]}, {func: 1, args: [,,]}, {func: 1, ret: -1, args: [Y.ConstructorBuilder]}, {func: 1, ret: X.Code, args: [A.PathSegmentData]}, {func: 1, ret: P.bool, args: [[P.Set, P.String]]}, {func: 1, ret: -1, args: [X.BlockBuilder]}, {func: 1, args: [, P.String]}, {func: 1, ret: L.Token, args: [[P.List, P.int], L.Token, [P.List, P.int]]}, {func: 1, ret: P.bool, args: [W.Node]}, {func: 1, ret: -1, args: [O.LibraryBuilder]}, {func: 1, ret: W.Element, args: [W.Node]}, {func: 1, ret: -1, args: [A.ScannerErrorCode, P.int, [P.List, P.Object]]}, {func: 1, ret: P.int, args: [P.String, P.String]}, {func: 1, ret: P.Null, args: [{func: 1, ret: -1}]}, {func: 1, ret: L.Token, args: [S.NonAsciiIdentifierToken]}, {func: 1, ret: Y.Directive}, {func: 1, ret: -1, args: [A.ScannerErrorCode, [P.List, P.Object]]}, {func: 1, ret: L.Keyword}, {func: 1, ret: O.KeywordState, args: [P.int]}, {func: 1, ret: P.int, args: [[P.List, P.int], P.int]}, {func: 1, ret: [P.Future, U.Response], args: [,], named: {headers: [P.Map, P.String, P.String]}}, {func: 1, ret: P.bool, args: [P.String, P.String]}, {func: 1, ret: P.int, args: [P.String]}, {func: 1, ret: -1, args: [[P.List, P.int]]}, {func: 1, ret: U.Response, args: [P.Uint8List]}, {func: 1, ret: P.bool, args: [P.Object]}, {func: 1, ret: R.MediaType}, {func: 1, ret: P.Null, args: [,], opt: [,]}, {func: 1, ret: P.String, args: [P.int]}, {func: 1, ret: P.int, args: [P.int,,]}, {func: 1, ret: Y.FileSpan, args: [P.int], opt: [P.int]}, {func: 1, ret: P.String, args: [P.String], named: {color: null}}, {func: 1, ret: -1, args: [P.String], named: {length: P.int, match: P.Match, position: P.int}}, {func: 1, ret: P.int, args: [P.int, P.Object]}, {func: 1, ret: P.Null, args: [W.Element]}, {func: 1, ret: -1, args: [P.String, P.int]}, {func: 1, ret: W.LIElement, args: [P.String]}, {func: 1, ret: [P.Future, P.Null], args: [W.MouseEvent]}, {func: 1, ret: -1, args: [P.String], opt: [,]}, {func: 1, ret: P.int, args: [,,]}, {func: 1, ret: P.int, args: [P.int, P.int]}, {func: 1, ret: P.bool, args: [,,]}, {func: 1, ret: P.int, args: [,]}, {func: 1, ret: P.int, args: [P.Object]}, {func: 1, ret: P.bool, args: [P.Object, P.Object]}, {func: 1, ret: P.Null, args: [Y.Constructor]}, {func: 1, ret: P.Null, args: [F.Field]}, {func: 1, ret: P.Null, args: [D.Method]}, {func: 1, ret: B.Message, args: [P.String, P.int]}, {func: 1, ret: B.Message, args: [P.String, L.Token]}, {func: 1, ret: B.Message, args: [P.String, P.String]}, {func: 1, ret: X.Code, args: [P.String]}];
   function convertToFastObject(properties) {
     function MyClass() {
     }

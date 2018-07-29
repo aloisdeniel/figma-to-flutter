@@ -4,6 +4,7 @@ import 'package:args/args.dart';
 import 'package:figma_to_flutter/figma_to_flutter.dart';
 import 'package:http/http.dart';
 
+
 void main(List<String> args) async {
 
   var parser = new ArgParser();
@@ -14,12 +15,17 @@ void main(List<String> args) async {
 
   var results = parser.parse(args);
 
+  // check
+  if(results["token"] == null) return print("a token must be provided");
+  if(results["output"] == null) return print("an ouput file path must be provided");
+  if(results["fileKey"] == null) return print("a fileKey must be provided");
+
   var api = FigmaApiGenerator(Client(), results["token"]);
   var file = await api.getFile(results["fileKey"]);
   var generator = FigmaWidgetGenerator(file);
 
   var widgets = Map<String,String>();
-  results["widget"].forEach((w) {
+  (results["widget"] ?? []).forEach((w) {
     widgets[w] = w;
   });
 

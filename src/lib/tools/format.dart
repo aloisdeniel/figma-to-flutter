@@ -9,7 +9,7 @@ String toVariableName(String name) {
   return name[0].toLowerCase() + name.substring(1);
 }
 
-String toWidgetName(String name) {
+String toClassName(String name) {
   var rc = new ReCase(name);
   var className = rc.pascalCase;
   return _removeSpecialChars(className);

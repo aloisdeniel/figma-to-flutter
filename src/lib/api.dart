@@ -1,11 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:code_builder/code_builder.dart';
-import 'package:dart_style/dart_style.dart';
 import 'package:http/http.dart';
-
-import 'widgets.dart';
 
 class FigmaApiGenerator {
 

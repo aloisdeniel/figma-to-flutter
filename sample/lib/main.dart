@@ -1,6 +1,3 @@
-import 'dart:convert';
-import 'dart:async' show Future;
-import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter/material.dart';
 import 'widgets/sample.g.dart';
 
@@ -13,23 +10,16 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   int _i = 0;
-  CustomPainter painter;
 
-  CustomPainter _createPainter() {
-    _i++;
+  Widget _createWidget() {
     switch(_i) {
-      case 1: return LogoPainter();
+      case 0: return Logo();
+      case 1: return TodoItem();
       default:
         _i  = 0;
-        return _createPainter(); 
+        return _createWidget(); 
     }
   }
-
-  @override
-    void initState() {
-      super.initState();
-      painter = _createPainter();
-    }
 
   @override
   Widget build(BuildContext context) {
@@ -37,15 +27,13 @@ class _HomeState extends State<Home> {
     return new Scaffold(
       body: Container(
             constraints: BoxConstraints.expand(),  
-            child: CustomPaint(
-              painter: painter,
-            ),
+            child: _createWidget(),
       ),
           floatingActionButton: new FloatingActionButton(
             child: new Icon(Icons.skip_next),
             onPressed: (){
               this.setState((){
-                painter = _createPainter();
+                _i++;
               });
             }
           ),

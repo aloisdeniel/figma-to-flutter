@@ -9,7 +9,6 @@ dependencies:
   args:
   figma_to_flutter:
 
-
 dependency_overrides:
   figma_to_flutter:
     path: ../src

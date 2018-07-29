@@ -5,5 +5,6 @@ class FigmaFile {
 
 class FigmaComponent {
   final String name;
-  const FigmaComponent(this.name);
+  final String generatedName;
+  const FigmaComponent(this.name, {this.generatedName = null});
 }

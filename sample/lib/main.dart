@@ -8,36 +8,42 @@ class Home extends StatefulWidget {
   _HomeState createState() => _HomeState();
 }
 
-class _HomeState extends State<Home> {
-  int _i = 0;
+class Todo {
+  bool isSelected = false;
+  final String title;
+  Todo(this.title);
+  void toggle() => this.isSelected = !this.isSelected;
+}
 
-  Widget _createWidget() {
-    switch(_i) {
-      case 0: return Logo();
-      case 1: return TodoItem();
-      default:
-        _i  = 0;
-        return _createWidget(); 
-    }
-  }
+class _HomeState extends State<Home> {
+
+  List<Todo> todos = [
+    Todo("a first example"),
+    Todo("a second one"),
+    Todo("an another"),
+  ];
 
   @override
   Widget build(BuildContext context) {
 
     return new Scaffold(
-      body: Container(
-            constraints: BoxConstraints.expand(),  
-            child: _createWidget(),
+      body: ListView.builder(
+        itemCount: todos.length,
+        itemBuilder: (b,i) => Container(
+          margin: EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0),
+            constraints: BoxConstraints.expand(height: 48.0),  
+            child: TodoItem(
+              data: TodoItemData(
+                title:  TextData(text: todos[i].title),
+                selected: VectorData(isVisible: todos[i].isSelected),
+              ),
+              onSelect: (){ 
+                print("selected"); 
+                this.setState(() => todos[i].toggle());
+              }),
       ),
-          floatingActionButton: new FloatingActionButton(
-            child: new Icon(Icons.skip_next),
-            onPressed: (){
-              this.setState((){
-                _i++;
-              });
-            }
-          ),
-    );
+         
+    ));
   }
 }
 

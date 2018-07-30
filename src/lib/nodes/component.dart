@@ -10,7 +10,7 @@ class ComponentGenerator {
 
   List<Class> generate(String name, dynamic map) {
 
-    var context = BuildContext(name);
+    var context = BuildContext(name, map);
 
     map["constraints"] = {
       "horizontal": "LEFT_RIGHT",

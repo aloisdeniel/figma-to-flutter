@@ -18,7 +18,6 @@ class TextStyleGenerator {
       "fontFamily: '$fontFamily'," +
       "color: $color," +
       "fontSize: $fontSize," +
-      "wordSpacing: $fontSize,"
       "fontWeight: FontWeight.w$fontWeight," +
     ")");
   }

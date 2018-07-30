@@ -35778,7 +35778,7 @@
         J.toDouble$0$n(t1.$index(map, "lineHeightPx"));
         J.toDouble$0$n(t1.$index(map, "letterSpacing"));
         fontWeight = J.toInt$0$n(t1.$index(map, "fontWeight"));
-        return new X.StaticCode("ui.TextStyle(" + ("fontFamily: '" + H.S(fontFamily) + "',") + ("color: " + H.S(color) + ",") + ("fontSize: " + H.S(fontSize) + ",") + ("wordSpacing: " + H.S(fontSize) + ",fontWeight: FontWeight.w" + fontWeight + ",") + ")");
+        return new X.StaticCode("ui.TextStyle(" + ("fontFamily: '" + H.S(fontFamily) + "',") + ("color: " + H.S(color) + ",") + ("fontSize: " + H.S(fontSize) + ",") + ("fontWeight: FontWeight.w" + fontWeight + ",") + ")");
       }
     },
     ParagraphStyleGenerator: {
@@ -35799,7 +35799,11 @@
   }], ["", "package:figma_to_flutter/context.dart",, M, {
     "^": "",
     BuildContext: {
-      "^": "Object;0_hasData,0_widget,0_customPainter,0_customPainterData,0_customPainterDataConstructor,0_paintBody",
+      "^": "Object;0_hasData,_rootNode,0_widget,0_customPainter,0_customPainterData,0_widgetConstructor,0_customPainterDataConstructor,0_paintBody,_childWidgets",
+      _toRectangle$1: function(map) {
+        var t1 = J.getInterceptor$asx(map);
+        return H.setRuntimeTypeInfo([J.toDouble$0$n(t1.$index(map, "x")), J.toDouble$0$n(t1.$index(map, "y")), J.toDouble$0$n(t1.$index(map, "width")), J.toDouble$0$n(t1.$index(map, "height"))], [P.double]);
+      },
       addData$2: function($name, type) {
         var _box_0, propertyName, t1, t2;
         _box_0 = {};
@@ -35849,40 +35853,48 @@
         (t1 && C.JSArray_methods).addAll$1(t1, t2);
         return this;
       },
-      _buildWidget$0: function() {
-        var t1, t2, $constructor, t3, body, args, build;
-        t1 = D.Parameter;
-        t2 = X.Code;
-        $constructor = new Y._$ConstructorBuilder(S.ListBuilder_ListBuilder(C.List_empty, B.Expression), S.ListBuilder_ListBuilder(C.List_empty, P.String), S.ListBuilder_ListBuilder(C.List_empty, t1), S.ListBuilder_ListBuilder(C.List_empty, t1), S.ListBuilder_ListBuilder(C.List_empty, t2), false, false, false, null, null);
-        if (this._hasData) {
-          t1 = $constructor.get$optionalParameters();
-          t3 = H.assertSubtypeOfRuntimeType(D._$Parameter__$Parameter(new M.BuildContext__buildWidget_closure()), H.getTypeArgumentByIndex(t1, 0));
-          if (t3 == null)
-            H.throwExpression(P.ArgumentError$("null element"));
-          t1 = t1.get$_safeList();
-          (t1 && C.JSArray_methods).add$1(t1, t3);
-          t3 = this._widget.get$fields();
-          t1 = H.assertSubtypeOfRuntimeType(F._$Field__$Field(new M.BuildContext__buildWidget_closure0(this)), H.getTypeArgumentByIndex(t3, 0));
-          if (t1 == null)
-            H.throwExpression(P.ArgumentError$("null element"));
-          t3 = t3.get$_safeList();
-          (t3 && C.JSArray_methods).add$1(t3, t1);
-        }
-        t1 = this._widget.get$constructors();
-        t3 = H.assertSubtypeOfRuntimeType($constructor.build$0(), H.getTypeArgumentByIndex(t1, 0));
-        if (t3 == null)
+      addWidgetField$2: function(type, $name) {
+        var t1, t2;
+        t1 = this._widgetConstructor.get$optionalParameters();
+        t2 = H.assertSubtypeOfRuntimeType(D._$Parameter__$Parameter(new M.BuildContext_addWidgetField_closure($name)), H.getTypeArgumentByIndex(t1, 0));
+        if (t2 == null)
           H.throwExpression(P.ArgumentError$("null element"));
         t1 = t1.get$_safeList();
-        (t1 && C.JSArray_methods).add$1(t1, t3);
-        body = new X._$BlockBuilder(S.ListBuilder_ListBuilder(C.List_empty, t2));
-        args = this._hasData ? "data" : "";
-        t1 = body.get$statements();
-        t2 = this._customPainter;
-        t2.get$_$this();
-        t2 = H.assertSubtypeOfRuntimeType(new X.StaticCode("return CustomPaint(painter: " + H.S(t2.name) + "(" + args + "));"), H.getTypeArgumentByIndex(t1, 0));
+        (t1 && C.JSArray_methods).add$1(t1, t2);
+        t2 = this._widget.get$fields();
+        t1 = H.assertSubtypeOfRuntimeType(F._$Field__$Field(new M.BuildContext_addWidgetField_closure0($name, type)), H.getTypeArgumentByIndex(t2, 0));
+        if (t1 == null)
+          H.throwExpression(P.ArgumentError$("null element"));
+        t2 = t2.get$_safeList();
+        (t2 && C.JSArray_methods).add$1(t2, t1);
+        return this;
+      },
+      _buildWidget$0: function() {
+        var t1, t2, body, args, customPaint, build;
+        if (this._hasData) {
+          t1 = this._customPainterData;
+          t1.get$_$this();
+          this.addWidgetField$2(t1.name, "data");
+        }
+        t1 = this._widget.get$constructors();
+        t2 = H.assertSubtypeOfRuntimeType(this._widgetConstructor.build$0(), H.getTypeArgumentByIndex(t1, 0));
+        if (t2 == null)
+          H.throwExpression(P.ArgumentError$("null element"));
         t1 = t1.get$_safeList();
         (t1 && C.JSArray_methods).add$1(t1, t2);
-        build = D._$Method__$Method(new M.BuildContext__buildWidget_closure1(body));
+        body = new X._$BlockBuilder(S.ListBuilder_ListBuilder(C.List_empty, X.Code));
+        args = this._hasData ? "data" : "";
+        t1 = this._customPainter;
+        t1.get$_$this();
+        customPaint = "CustomPaint(painter: " + H.S(t1.name) + "(" + args + ")";
+        t1 = this._childWidgets;
+        if (t1.length !== 0)
+          customPaint = customPaint + ", child: Material(type: MaterialType.transparency, child: Container(child:Stack(children:[" + C.JSArray_methods.join$1(t1, ", ") + "])))";
+        t1 = body.get$statements();
+        t2 = H.assertSubtypeOfRuntimeType(new X.StaticCode("return " + customPaint + ");"), H.getTypeArgumentByIndex(t1, 0));
+        t1 = t1.get$_safeList();
+        (t1 && C.JSArray_methods).add$1(t1, t2);
+        build = D._$Method__$Method(new M.BuildContext__buildWidget_closure(body));
         t2 = this._widget.get$methods();
         H.assertSubtypeOfRuntimeType(build, H.getTypeArgumentByIndex(t2, 0));
         if (build == null)
@@ -35958,33 +35970,32 @@
         return new X.StaticCode(H.stringTypeCheck(c));
       }
     },
-    BuildContext__buildWidget_closure: {
-      "^": "Closure:3;",
+    BuildContext_addWidgetField_closure: {
+      "^": "Closure:3;name",
       call$1: function(p) {
+        var t1 = "this." + this.name;
         p.get$_method$_$this();
-        p.name = "this.data";
+        p.name = t1;
+        p.get$_method$_$this();
+        p.named = true;
         p.get$_method$_$this();
         p.toThis;
         return p;
       }
     },
-    BuildContext__buildWidget_closure0: {
-      "^": "Closure:8;$this",
+    BuildContext_addWidgetField_closure0: {
+      "^": "Closure:8;name,type",
       call$1: function(b) {
-        var t1;
         b.get$_field$_$this();
-        b.name = "data";
+        b.name = this.name;
         b.get$_field$_$this();
         b.modifier = C.FieldModifier_1;
-        t1 = this.$this._customPainterData;
-        t1.get$_$this();
-        t1 = t1.name;
         b.get$_field$_$this();
-        b.type = new U.Reference(null, t1);
+        b.type = new U.Reference(null, this.type);
         return b;
       }
     },
-    BuildContext__buildWidget_closure1: {
+    BuildContext__buildWidget_closure: {
       "^": "Closure:9;body",
       call$1: function(b) {
         var t1, t2;
@@ -36474,48 +36485,49 @@
     FigmaWidgetGenerator__generateWidgets_closure: {
       "^": "Closure:40;$this,classes",
       call$2: function(k, node) {
-        var t1, context, className, t2, widgetName, t3, t4, t5, t6, t7, t8, t9, relativeTransform, result;
+        var t1, t2, context, className, t3, widgetName, t4, t5, t6, t7, t8, t9, t10, relativeTransform, result;
         H.stringTypeCheck(k);
         t1 = this.$this._component;
-        context = new M.BuildContext();
+        t2 = X.Code;
+        context = new M.BuildContext(node, H.setRuntimeTypeInfo([], [t2]));
         className = M.ReCase$(k)._getPascalCase$0();
-        t2 = P.RegExp_RegExp("[^a-zA-Z0-9]", true, false);
-        widgetName = H.stringReplaceAllUnchecked(className, t2, "_");
-        t2 = B.Expression;
-        t3 = P.String;
-        t4 = U.Reference;
-        t5 = Y.Constructor;
-        t6 = D.Method;
-        t7 = F.Field;
-        t8 = new X._$ClassBuilder(false, S.ListBuilder_ListBuilder(C.List_empty, t2), S.ListBuilder_ListBuilder(C.List_empty, t3), S.ListBuilder_ListBuilder(C.List_empty, t4), S.ListBuilder_ListBuilder(C.List_empty, t4), S.ListBuilder_ListBuilder(C.List_empty, t4), S.ListBuilder_ListBuilder(C.List_empty, t5), S.ListBuilder_ListBuilder(C.List_empty, t6), S.ListBuilder_ListBuilder(C.List_empty, t7), null, null, null);
+        t3 = P.RegExp_RegExp("[^a-zA-Z0-9]", true, false);
+        widgetName = H.stringReplaceAllUnchecked(className, t3, "_");
+        t3 = B.Expression;
+        t4 = P.String;
+        t5 = U.Reference;
+        t6 = Y.Constructor;
+        t7 = D.Method;
+        t8 = F.Field;
+        t9 = new X._$ClassBuilder(false, S.ListBuilder_ListBuilder(C.List_empty, t3), S.ListBuilder_ListBuilder(C.List_empty, t4), S.ListBuilder_ListBuilder(C.List_empty, t5), S.ListBuilder_ListBuilder(C.List_empty, t5), S.ListBuilder_ListBuilder(C.List_empty, t5), S.ListBuilder_ListBuilder(C.List_empty, t6), S.ListBuilder_ListBuilder(C.List_empty, t7), S.ListBuilder_ListBuilder(C.List_empty, t8), null, null, null);
+        t9.get$_$this();
+        t9.name = widgetName;
+        t9.get$_$this();
+        t9.extend = new U.Reference(null, "StatelessWidget");
+        context._widget = t9;
+        t9 = new X._$ClassBuilder(false, S.ListBuilder_ListBuilder(C.List_empty, t3), S.ListBuilder_ListBuilder(C.List_empty, t4), S.ListBuilder_ListBuilder(C.List_empty, t5), S.ListBuilder_ListBuilder(C.List_empty, t5), S.ListBuilder_ListBuilder(C.List_empty, t5), S.ListBuilder_ListBuilder(C.List_empty, t6), S.ListBuilder_ListBuilder(C.List_empty, t7), S.ListBuilder_ListBuilder(C.List_empty, t8), null, null, null);
+        t10 = widgetName + "Painter";
+        t9.get$_$this();
+        t9.name = t10;
+        t9.get$_$this();
+        t9.extend = new U.Reference(null, "CustomPainter");
+        context._customPainter = t9;
+        context._paintBody = new X._$BlockBuilder(S.ListBuilder_ListBuilder(C.List_empty, t2));
+        t8 = new X._$ClassBuilder(false, S.ListBuilder_ListBuilder(C.List_empty, t3), S.ListBuilder_ListBuilder(C.List_empty, t4), S.ListBuilder_ListBuilder(C.List_empty, t5), S.ListBuilder_ListBuilder(C.List_empty, t5), S.ListBuilder_ListBuilder(C.List_empty, t5), S.ListBuilder_ListBuilder(C.List_empty, t6), S.ListBuilder_ListBuilder(C.List_empty, t7), S.ListBuilder_ListBuilder(C.List_empty, t8), null, null, null);
+        t7 = widgetName + "Data";
         t8.get$_$this();
-        t8.name = widgetName;
-        t8.get$_$this();
-        t8.extend = new U.Reference(null, "StatelessWidget");
-        context._widget = t8;
-        t8 = new X._$ClassBuilder(false, S.ListBuilder_ListBuilder(C.List_empty, t2), S.ListBuilder_ListBuilder(C.List_empty, t3), S.ListBuilder_ListBuilder(C.List_empty, t4), S.ListBuilder_ListBuilder(C.List_empty, t4), S.ListBuilder_ListBuilder(C.List_empty, t4), S.ListBuilder_ListBuilder(C.List_empty, t5), S.ListBuilder_ListBuilder(C.List_empty, t6), S.ListBuilder_ListBuilder(C.List_empty, t7), null, null, null);
-        t9 = widgetName + "Painter";
-        t8.get$_$this();
-        t8.name = t9;
-        t8.get$_$this();
-        t8.extend = new U.Reference(null, "CustomPainter");
-        context._customPainter = t8;
-        t8 = X.Code;
-        context._paintBody = new X._$BlockBuilder(S.ListBuilder_ListBuilder(C.List_empty, t8));
-        t7 = new X._$ClassBuilder(false, S.ListBuilder_ListBuilder(C.List_empty, t2), S.ListBuilder_ListBuilder(C.List_empty, t3), S.ListBuilder_ListBuilder(C.List_empty, t4), S.ListBuilder_ListBuilder(C.List_empty, t4), S.ListBuilder_ListBuilder(C.List_empty, t4), S.ListBuilder_ListBuilder(C.List_empty, t5), S.ListBuilder_ListBuilder(C.List_empty, t6), S.ListBuilder_ListBuilder(C.List_empty, t7), null, null, null);
-        t6 = widgetName + "Data";
-        t7.get$_$this();
-        t7.name = t6;
-        context._customPainterData = t7;
-        t7 = D.Parameter;
-        context._customPainterDataConstructor = new Y._$ConstructorBuilder(S.ListBuilder_ListBuilder(C.List_empty, t2), S.ListBuilder_ListBuilder(C.List_empty, t3), S.ListBuilder_ListBuilder(C.List_empty, t7), S.ListBuilder_ListBuilder(C.List_empty, t7), S.ListBuilder_ListBuilder(C.List_empty, t8), false, false, false, null, null);
-        t8 = J.getInterceptor$ax(node);
-        t8.$indexSet(node, "constraints", P.LinkedHashMap_LinkedHashMap$_literal(["horizontal", "LEFT_RIGHT", "vertical", "TOP_BOTTOM"], t3, t3));
-        relativeTransform = t8.$index(node, "relativeTransform");
-        t8 = J.getInterceptor$asx(relativeTransform);
-        t7 = J.toDouble$0$n(J.$index$asx(t8.$index(relativeTransform, 0), 2));
-        t8 = J.toDouble$0$n(J.$index$asx(t8.$index(relativeTransform, 1), 2));
-        context.addPaint$1(H.setRuntimeTypeInfo(["canvas.drawColor(Colors.transparent, BlendMode.screen);", "var frame = Offset.zero & size;", "canvas.translate(" + H.S(-1 * t7) + ", " + H.S(-1 * t8) + ");"], [t3]));
+        t8.name = t7;
+        context._customPainterData = t8;
+        t8 = D.Parameter;
+        context._customPainterDataConstructor = new Y._$ConstructorBuilder(S.ListBuilder_ListBuilder(C.List_empty, t3), S.ListBuilder_ListBuilder(C.List_empty, t4), S.ListBuilder_ListBuilder(C.List_empty, t8), S.ListBuilder_ListBuilder(C.List_empty, t8), S.ListBuilder_ListBuilder(C.List_empty, t2), false, false, false, null, null);
+        context._widgetConstructor = new Y._$ConstructorBuilder(S.ListBuilder_ListBuilder(C.List_empty, t3), S.ListBuilder_ListBuilder(C.List_empty, t4), S.ListBuilder_ListBuilder(C.List_empty, t8), S.ListBuilder_ListBuilder(C.List_empty, t8), S.ListBuilder_ListBuilder(C.List_empty, t2), false, false, false, null, null);
+        t2 = J.getInterceptor$ax(node);
+        t2.$indexSet(node, "constraints", P.LinkedHashMap_LinkedHashMap$_literal(["horizontal", "LEFT_RIGHT", "vertical", "TOP_BOTTOM"], t4, t4));
+        relativeTransform = t2.$index(node, "relativeTransform");
+        t2 = J.getInterceptor$asx(relativeTransform);
+        t8 = J.toDouble$0$n(J.$index$asx(t2.$index(relativeTransform, 0), 2));
+        t2 = J.toDouble$0$n(J.$index$asx(t2.$index(relativeTransform, 1), 2));
+        context.addPaint$1(H.setRuntimeTypeInfo(["canvas.drawColor(Colors.transparent, BlendMode.screen);", "var frame = Offset.zero & size;", "canvas.translate(" + H.S(-1 * t8) + ", " + H.S(-1 * t2) + ");"], [t4]));
         t1._component$_node.generate$3(context, node, node);
         result = H.setRuntimeTypeInfo([], [X.Class]);
         if (context._hasData) {
@@ -36580,9 +36592,54 @@
     DirectiveGenerator: {
       "^": "Object;",
       generate$2: function(context, map) {
-        var t1 = J.getInterceptor$asx(map);
-        if (H.interceptedTypeCast(L.Declaration_parse(H.stringTypeCheck(t1.$index(map, "name"))), "$isDirectiveItem").directive === "tap" && J.$eq$(t1.$index(map, "type"), "RECTANGLE"))
+        var t1, declaration, t2, propertyName, rectangleCornerRadii, cornerRadius, instance, code, absoluteBoundingBox, rootAbsoluteBoundingBox, left, $top, width, height, t3, constraints, horizontal, vertical;
+        t1 = J.getInterceptor$asx(map);
+        declaration = H.interceptedTypeCast(L.Declaration_parse(H.stringTypeCheck(t1.$index(map, "name"))), "$isDirectiveItem");
+        if (declaration.directive === "tap" && J.$eq$(t1.$index(map, "type"), "RECTANGLE")) {
+          t2 = declaration.item;
+          propertyName = B.toVariableName(t2.get$name(t2));
+          rectangleCornerRadii = t1.$index(map, "rectangleCornerRadii");
+          cornerRadius = rectangleCornerRadii != null ? J.toDouble$0$n(J.$index$asx(rectangleCornerRadii, 0)) : 0;
+          instance = "InkWell(onTap: " + propertyName + ", borderRadius: BorderRadius.all(Radius.circular(" + H.S(cornerRadius) + ")))";
+          context.addWidgetField$2("GestureTapCallback", propertyName);
+          code = "Positioned(child: " + instance + ",";
+          absoluteBoundingBox = context._toRectangle$1(t1.$index(map, "absoluteBoundingBox"));
+          rootAbsoluteBoundingBox = context._toRectangle$1(J.$index$asx(context._rootNode, "absoluteBoundingBox"));
+          left = absoluteBoundingBox[0] - rootAbsoluteBoundingBox[0];
+          $top = absoluteBoundingBox[1] - rootAbsoluteBoundingBox[1];
+          width = absoluteBoundingBox[2];
+          height = absoluteBoundingBox[3];
+          t2 = rootAbsoluteBoundingBox[2];
+          t3 = rootAbsoluteBoundingBox[3];
+          constraints = t1.$index(map, "constraints");
+          t1 = J.getInterceptor$asx(constraints);
+          horizontal = t1.$index(constraints, "horizontal");
+          vertical = t1.$index(constraints, "vertical");
+          switch (horizontal) {
+            case "RIGHT":
+              code += "left: " + H.S(left) + ", width: " + H.S(width) + ",";
+              break;
+            case "LEFT_RIGHT":
+              code += "left: " + H.S(left) + ", right: " + H.S(t2 - (left + width)) + ",";
+              break;
+            case "CENTER":
+              code += "width: " + H.S(width) + ", height: " + H.S(height) + ",";
+              break;
+          }
+          switch (vertical) {
+            case "BOTTOM":
+              code += "top: " + H.S($top) + ", height: " + H.S(height) + ",";
+              break;
+            case "TOP_BOTTOM":
+              code += "top: " + H.S($top) + ", bottom: " + H.S(t3 - ($top + height)) + ",";
+              break;
+            case "CENTER":
+              code += "width: " + H.S(width) + ", height: " + H.S(height) + ",";
+              break;
+          }
+          C.JSArray_methods.add$1(context._childWidgets, new X.StaticCode(code + ")"));
           return true;
+        }
         return false;
       }
     }

@@ -9,7 +9,7 @@ class LogoData {
 }
 
 class Logo extends StatelessWidget {
-  Logo([this.data]);
+  Logo({this.data});
 
   final LogoData data;
 
@@ -707,21 +707,38 @@ class LogoPainter extends CustomPainter {
 }
 
 class TodoItemData {
-  TodoItemData({this.title, this.selected});
-
-  final TextData title;
+  TodoItemData({this.selected, this.title});
 
   final VectorData selected;
+
+  final TextData title;
 }
 
 class TodoItem extends StatelessWidget {
-  TodoItem([this.data]);
+  TodoItem({this.onSelect, this.data});
+
+  final GestureTapCallback onSelect;
 
   final TodoItemData data;
 
   @override
   Widget build(BuildContext context) {
-    return CustomPaint(painter: TodoItemPainter(data));
+    return CustomPaint(
+        painter: TodoItemPainter(data),
+        child: Material(
+            type: MaterialType.transparency,
+            child: Container(
+                child: Stack(children: [
+              Positioned(
+                child: InkWell(
+                    onTap: onSelect,
+                    borderRadius: BorderRadius.all(Radius.circular(9.0))),
+                left: 0.0,
+                right: 0.0,
+                top: 0.0,
+                bottom: 0.0,
+              )
+            ]))));
   }
 }
 
@@ -764,7 +781,8 @@ class TodoItemPainter extends CustomPainter {
 
 // Rectangle
       var draw_186_16 = (Canvas canvas, Rect container) {
-        var frame = Rect.fromLTWH(0.0, 0.0, 589.0, 87.0);
+        var frame = Rect.fromLTWH(
+            0.0, 0.0, (container.width - (0.0)), (container.height - (0.0)));
         canvas.save();
         canvas.transform(Float64List.fromList([
           1.0,
@@ -790,7 +808,7 @@ class TodoItemPainter extends CustomPainter {
           0.0,
           0.0,
           0.0,
-          (frame.height / 87.0),
+          (frame.height / 63.0),
           0.0,
           0.0,
           0.0,
@@ -812,11 +830,123 @@ class TodoItemPainter extends CustomPainter {
         canvas.restore();
       };
       draw_186_16(canvas, frame);
+
+// Ellipse
+      var draw_186_17 = (Canvas canvas, Rect container) {
+        var frame = Rect.fromLTWH(
+            17.0, ((container.height / 2.0) - 0.0 - 15.5), 31.0, 31.0);
+        canvas.save();
+        canvas.transform(Float64List.fromList([
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          frame.left,
+          frame.top,
+          0.0,
+          1.0
+        ]));
+        var transform = Float64List.fromList([
+          (frame.width / 31.0),
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          (frame.height / 31.0),
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]);
+        var fills = [(Paint()..color = Color.fromARGB(255, 255, 255, 255))];
+        var fillGeometry = [_PathCatalog.instance.path_10.transform(transform)];
+        fills.forEach((paint) {
+          fillGeometry.forEach((path) {
+            canvas.drawPath(path, paint);
+          });
+        });
+        canvas.restore();
+      };
+      draw_186_17(canvas, frame);
+      if (this.data?.selected?.isVisible ?? true) {
+// $selected
+        var draw_186_21 = (Canvas canvas, Rect container) {
+          var frame = Rect.fromLTWH(
+              23.199951171875,
+              ((container.height / 2.0) -
+                  -0.00001239776611328125 -
+                  9.300000190734863),
+              18.600000381469727,
+              18.600000381469727);
+          canvas.save();
+          canvas.transform(Float64List.fromList([
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            frame.left,
+            frame.top,
+            0.0,
+            1.0
+          ]));
+          var transform = Float64List.fromList([
+            (frame.width / 18.600000381469727),
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            (frame.height / 18.600000381469727),
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]);
+          var fills = [(Paint()..color = Color.fromARGB(255, 80, 182, 255))];
+          var fillGeometry = [
+            _PathCatalog.instance.path_11.transform(transform)
+          ];
+          fills.forEach((paint) {
+            fillGeometry.forEach((path) {
+              canvas.drawPath(path, paint);
+            });
+          });
+          canvas.restore();
+        };
+        draw_186_21(canvas, frame);
+      }
       if (this.data?.title?.isVisible ?? true) {
 // $title
-        var draw_186_18 = (Canvas canvas, Rect container) {
-          var frame = Rect.fromLTWH(96.0, 18.0, (container.width - (120.0)),
-              (container.height - (37.0)));
+        var draw_204_67 = (Canvas canvas, Rect container) {
+          var frame = Rect.fromLTWH(59.0, 18.0, (container.width - (107.0)),
+              (container.height - (35.0)));
           canvas.save();
           canvas.transform(Float64List.fromList([
             1.0,
@@ -838,16 +968,15 @@ class TodoItemPainter extends CustomPainter {
           ]));
           var style_0 = ui.TextStyle(
             fontFamily: 'Roboto',
-            color: Color.fromARGB(255, 98, 98, 98),
-            fontSize: 20.0,
-            wordSpacing: 20.0,
-            fontWeight: FontWeight.w400,
+            color: Color.fromARGB(255, 85, 85, 85),
+            fontSize: 16.0,
+            fontWeight: FontWeight.w300,
           );
           var paragraphStyle = ui.ParagraphStyle(
             fontFamily: 'Roboto',
             textAlign: TextAlign.left,
-            fontSize: 20.0,
-            fontWeight: FontWeight.w400,
+            fontSize: 16.0,
+            fontWeight: FontWeight.w300,
           );
           var paragraphBuilder = ui.ParagraphBuilder(paragraphStyle)
             ..pushStyle(style_0);
@@ -861,143 +990,8 @@ class TodoItemPainter extends CustomPainter {
           canvas.drawParagraph(paragraph, Offset.zero);
           canvas.restore();
         };
-        draw_186_18(canvas, frame);
+        draw_204_67(canvas, frame);
       }
-
-// Checkbox
-      var draw_186_27 = (Canvas canvas, Rect container) {
-        var frame = Rect.fromLTWH(22.0, 18.0, 50.0, 50.0);
-        canvas.save();
-        canvas.transform(Float64List.fromList([
-          1.0,
-          0.0,
-          0.0,
-          0.0,
-          0.0,
-          1.0,
-          0.0,
-          0.0,
-          0.0,
-          0.0,
-          1.0,
-          0.0,
-          frame.left,
-          frame.top,
-          0.0,
-          1.0
-        ]));
-
-// Ellipse
-        var draw_186_17 = (Canvas canvas, Rect container) {
-          var frame = Rect.fromLTWH(((container.width / 2.0) - 0.0 - 25.0),
-              ((container.height / 2.0) - 0.0 - 25.0), 50.0, 50.0);
-          canvas.save();
-          canvas.transform(Float64List.fromList([
-            1.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            1.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            1.0,
-            0.0,
-            frame.left,
-            frame.top,
-            0.0,
-            1.0
-          ]));
-          var transform = Float64List.fromList([
-            (frame.width / 50.0),
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            (frame.height / 50.0),
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            1.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            1.0
-          ]);
-          var fills = [(Paint()..color = Color.fromARGB(255, 255, 255, 255))];
-          var fillGeometry = [
-            _PathCatalog.instance.path_10.transform(transform)
-          ];
-          fills.forEach((paint) {
-            fillGeometry.forEach((path) {
-              canvas.drawPath(path, paint);
-            });
-          });
-          canvas.restore();
-        };
-        draw_186_17(canvas, frame);
-        if (this.data?.selected?.isVisible ?? true) {
-// $selected
-          var draw_186_21 = (Canvas canvas, Rect container) {
-            var frame = Rect.fromLTWH(((container.width / 2.0) - 0.0 - 15.0),
-                ((container.height / 2.0) - 0.0 - 15.0), 30.0, 30.0);
-            canvas.save();
-            canvas.transform(Float64List.fromList([
-              1.0,
-              0.0,
-              0.0,
-              0.0,
-              0.0,
-              1.0,
-              0.0,
-              0.0,
-              0.0,
-              0.0,
-              1.0,
-              0.0,
-              frame.left,
-              frame.top,
-              0.0,
-              1.0
-            ]));
-            var transform = Float64List.fromList([
-              (frame.width / 30.0),
-              0.0,
-              0.0,
-              0.0,
-              0.0,
-              (frame.height / 30.0),
-              0.0,
-              0.0,
-              0.0,
-              0.0,
-              1.0,
-              0.0,
-              0.0,
-              0.0,
-              0.0,
-              1.0
-            ]);
-            var fills = [(Paint()..color = Color.fromARGB(255, 80, 182, 255))];
-            var fillGeometry = [
-              _PathCatalog.instance.path_11.transform(transform)
-            ];
-            fills.forEach((paint) {
-              fillGeometry.forEach((path) {
-                canvas.drawPath(path, paint);
-              });
-            });
-            canvas.restore();
-          };
-          draw_186_21(canvas, frame);
-        }
-        canvas.restore();
-      };
-      draw_186_27(canvas, frame);
       canvas.restore();
     };
     draw_186_20(canvas, frame);
@@ -1186,11 +1180,11 @@ class _PathCatalog {
     path.cubicTo(0.0, 4.02943754196167, 4.02943754196167, 0.0, 9.0, 0.0);
     path.lineTo(580.0, 0.0);
     path.cubicTo(584.9705810546875, 0.0, 589.0, 4.02943754196167, 589.0, 9.0);
-    path.lineTo(589.0, 78.0);
+    path.lineTo(589.0, 54.0);
     path.cubicTo(
-        589.0, 82.97056579589844, 584.9705810546875, 87.0, 580.0, 87.0);
-    path.lineTo(9.0, 87.0);
-    path.cubicTo(4.02943754196167, 87.0, 0.0, 82.97056579589844, 0.0, 78.0);
+        589.0, 58.97056198120117, 584.9705810546875, 63.0, 580.0, 63.0);
+    path.lineTo(9.0, 63.0);
+    path.cubicTo(4.02943754196167, 63.0, 0.0, 58.97056198120117, 0.0, 54.0);
     path.lineTo(0.0, 9.0);
     path.close();
     return path;
@@ -1198,23 +1192,27 @@ class _PathCatalog {
 
   static Path _build_10() {
     var path = Path();
-    path.moveTo(50.0, 25.0);
-    path.cubicTo(50.0, 38.8071174621582, 38.8071174621582, 50.0, 25.0, 50.0);
-    path.cubicTo(11.19288158416748, 50.0, 0.0, 38.8071174621582, 0.0, 25.0);
-    path.cubicTo(0.0, 11.19288158416748, 11.19288158416748, 0.0, 25.0, 0.0);
-    path.cubicTo(38.8071174621582, 0.0, 50.0, 11.19288158416748, 50.0, 25.0);
+    path.moveTo(31.0, 15.5);
+    path.cubicTo(
+        31.0, 24.060413360595703, 24.060413360595703, 31.0, 15.5, 31.0);
+    path.cubicTo(6.939586162567139, 31.0, 0.0, 24.060413360595703, 0.0, 15.5);
+    path.cubicTo(0.0, 6.939586162567139, 6.939586162567139, 0.0, 15.5, 0.0);
+    path.cubicTo(24.060413360595703, 0.0, 31.0, 6.939586162567139, 31.0, 15.5);
     path.close();
     return path;
   }
 
   static Path _build_11() {
     var path = Path();
-    path.moveTo(30.0, 15.0);
+    path.moveTo(18.600000381469727, 9.300000190734863);
+    path.cubicTo(18.600000381469727, 14.436248779296875, 14.436248779296875,
+        18.600000381469727, 9.300000190734863, 18.600000381469727);
+    path.cubicTo(4.16375207901001, 18.600000381469727, 0.0, 14.436248779296875,
+        0.0, 9.300000190734863);
     path.cubicTo(
-        30.0, 23.284271240234375, 23.284271240234375, 30.0, 15.0, 30.0);
-    path.cubicTo(6.715728759765625, 30.0, 0.0, 23.284271240234375, 0.0, 15.0);
-    path.cubicTo(0.0, 6.715728759765625, 6.715728759765625, 0.0, 15.0, 0.0);
-    path.cubicTo(23.284271240234375, 0.0, 30.0, 6.715728759765625, 30.0, 15.0);
+        0.0, 4.16375207901001, 4.16375207901001, 0.0, 9.300000190734863, 0.0);
+    path.cubicTo(14.436248779296875, 0.0, 18.600000381469727, 4.16375207901001,
+        18.600000381469727, 9.300000190734863);
     path.close();
     return path;
   }

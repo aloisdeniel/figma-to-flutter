@@ -2,6 +2,7 @@
 import 'dart:math';
 
 import 'package:code_builder/code_builder.dart';
+import 'package:figma_to_flutter/base/effect.dart';
 import 'package:figma_to_flutter/context.dart';
 import 'package:figma_to_flutter/nodes/directive.dart';
 import 'package:figma_to_flutter/parsing/declaration.dart';
@@ -23,10 +24,10 @@ class NodeGenerator {
   TextGenerator _text;
   final DirectiveGenerator _directive;
 
-  NodeGenerator(this._directive, ColorGenerator color, PaintGenerator paint, PathGenerator path, TextStyleGenerator textStyle, ParagraphStyleGenerator paragraphStyle) {
+  NodeGenerator(this._directive, ColorGenerator color, PaintGenerator paint, EffectsGenerator effects, PathGenerator path, TextStyleGenerator textStyle, ParagraphStyleGenerator paragraphStyle) {
     _group = GroupGenerator(this);
     _frame = FrameGenerator(color, this);
-    _vector = VectorGenerator(paint, path);
+    _vector = VectorGenerator(paint, effects, path);
     _text = TextGenerator(color, textStyle, paragraphStyle);
   }
 

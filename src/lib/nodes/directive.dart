@@ -16,9 +16,19 @@ class DirectiveGenerator {
       }
 
       var instance = "InkWell(onTap: $propertyName, borderRadius: BorderRadius.all(Radius.circular($cornerRadius)))";
-      
+
       context.addWidgetField("GestureTapCallback", propertyName);
-      context.addChildWidget(propertyName, instance, map);
+      context.addChildWidget(instance, map);
+  }
+
+  void _widget(BuildContext context, DirectiveItem item, dynamic map) {
+
+      var propertyName = format.toVariableName(item.name);
+
+      var instance = "this.$propertyName";
+      
+      context.addWidgetField("Widget", propertyName);
+      context.addChildWidget(instance, map);
   }
 
   bool generate(BuildContext context, dynamic map) {
@@ -28,6 +38,12 @@ class DirectiveGenerator {
       _tap(context,declaration,map);
       return true;
     }
+
+    if(declaration.directive == "widget") {
+      _widget(context,declaration,map);
+      return true;
+    } 
+
     return false;
   }
 }

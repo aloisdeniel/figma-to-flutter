@@ -1,7 +1,9 @@
 
 import 'package:dart_style/dart_style.dart';
+import 'package:figma_to_flutter/base/effect.dart';
 import 'package:figma_to_flutter/nodes/component.dart';
 import 'package:figma_to_flutter/nodes/directive.dart';
+import 'package:figma_to_flutter/tools/code.dart';
 
 import 'base/color.dart';
 import 'base/paint.dart';
@@ -11,17 +13,17 @@ import 'nodes/node.dart';
 import 'tools/format.dart';
 import 'package:code_builder/code_builder.dart';
 
-class FigmaWidgetGenerator {
+class FigmaGenerator {
 
   ComponentGenerator _component;
   PathGenerator _path;
   NodeGenerator _node;
   dynamic _document;
 
-  FigmaWidgetGenerator(this._document) {
+  FigmaGenerator(this._document) {
     var color = ColorGenerator();
     _path = PathGenerator();
-    _node = NodeGenerator(DirectiveGenerator(), color, PaintGenerator(color), _path, TextStyleGenerator(), ParagraphStyleGenerator());
+    _node = NodeGenerator(DirectiveGenerator(), color, PaintGenerator(color), EffectsGenerator(color), _path, TextStyleGenerator(), ParagraphStyleGenerator());
     _component = ComponentGenerator(_node);
   }
 
@@ -43,6 +45,7 @@ class FigmaWidgetGenerator {
       ..type = refer("bool")
     ));
     builder.constructors.add(constructor.build());
+    addEqualsAndHashcode(builder, ["isVisible"]);
     result.add(builder.build());
 
     // TextData
@@ -65,6 +68,7 @@ class FigmaWidgetGenerator {
       ..type = refer("String")
     ));
     builder.constructors.add(constructor.build());
+    addEqualsAndHashcode(builder, ["isVisible", "text"]);
     result.add(builder.build());
 
     // VectorData
@@ -78,6 +82,7 @@ class FigmaWidgetGenerator {
         ..toThis));
     constructor.initializers.add(Code("super(isVisible: isVisible)"));
     builder.constructors.add(constructor.build());
+    addEqualsAndHashcode(builder, ["isVisible"]);
     result.add(builder.build());
 
     return result;

@@ -6,6 +6,15 @@ class LogoData {
   LogoData({this.topBar});
 
   final Data topBar;
+
+  @override
+  bool operator ==(o) => o is LogoData && topBar == o.topBar;
+  @override
+  int get hashcode {
+    int result = 17;
+    result = 37 * result + (this.topBar?.hashCode ?? 0);
+    return result;
+  }
 }
 
 class Logo extends StatelessWidget {
@@ -121,10 +130,10 @@ class LogoPainter extends CustomPainter {
             0.0,
             1.0
           ]);
-          var fills = [(Paint()..color = Color.fromARGB(255, 162, 89, 255))];
           var fillGeometry = [
             _PathCatalog.instance.path_0.transform(transform)
           ];
+          var fills = [(Paint()..color = Color.fromARGB(255, 162, 89, 255))];
           fills.forEach((paint) {
             fillGeometry.forEach((path) {
               canvas.drawPath(path, paint);
@@ -175,10 +184,10 @@ class LogoPainter extends CustomPainter {
             0.0,
             1.0
           ]);
-          var fills = [(Paint()..color = Color.fromARGB(255, 162, 89, 255))];
           var fillGeometry = [
             _PathCatalog.instance.path_1.transform(transform)
           ];
+          var fills = [(Paint()..color = Color.fromARGB(255, 162, 89, 255))];
           fills.forEach((paint) {
             fillGeometry.forEach((path) {
               canvas.drawPath(path, paint);
@@ -256,10 +265,10 @@ class LogoPainter extends CustomPainter {
             0.0,
             1.0
           ]);
-          var fills = [(Paint()..color = Color.fromARGB(255, 10, 207, 131))];
           var fillGeometry = [
             _PathCatalog.instance.path_2.transform(transform)
           ];
+          var fills = [(Paint()..color = Color.fromARGB(255, 10, 207, 131))];
           fills.forEach((paint) {
             fillGeometry.forEach((path) {
               canvas.drawPath(path, paint);
@@ -310,10 +319,10 @@ class LogoPainter extends CustomPainter {
             0.0,
             1.0
           ]);
-          var fills = [(Paint()..color = Color.fromARGB(255, 10, 207, 131))];
           var fillGeometry = [
             _PathCatalog.instance.path_3.transform(transform)
           ];
+          var fills = [(Paint()..color = Color.fromARGB(255, 10, 207, 131))];
           fills.forEach((paint) {
             fillGeometry.forEach((path) {
               canvas.drawPath(path, paint);
@@ -367,8 +376,8 @@ class LogoPainter extends CustomPainter {
           0.0,
           1.0
         ]);
-        var fills = [(Paint()..color = Color.fromARGB(255, 26, 188, 254))];
         var fillGeometry = [_PathCatalog.instance.path_4.transform(transform)];
+        var fills = [(Paint()..color = Color.fromARGB(255, 26, 188, 254))];
         fills.forEach((paint) {
           fillGeometry.forEach((path) {
             canvas.drawPath(path, paint);
@@ -470,10 +479,10 @@ class LogoPainter extends CustomPainter {
                 0.0,
                 1.0
               ]);
-              var fills = [(Paint()..color = Color.fromARGB(255, 242, 78, 30))];
               var fillGeometry = [
                 _PathCatalog.instance.path_5.transform(transform)
               ];
+              var fills = [(Paint()..color = Color.fromARGB(255, 242, 78, 30))];
               fills.forEach((paint) {
                 fillGeometry.forEach((path) {
                   canvas.drawPath(path, paint);
@@ -524,10 +533,10 @@ class LogoPainter extends CustomPainter {
                 0.0,
                 1.0
               ]);
-              var fills = [(Paint()..color = Color.fromARGB(255, 242, 78, 30))];
               var fillGeometry = [
                 _PathCatalog.instance.path_6.transform(transform)
               ];
+              var fills = [(Paint()..color = Color.fromARGB(255, 242, 78, 30))];
               fills.forEach((paint) {
                 fillGeometry.forEach((path) {
                   canvas.drawPath(path, paint);
@@ -608,11 +617,11 @@ class LogoPainter extends CustomPainter {
                 0.0,
                 1.0
               ]);
-              var fills = [
-                (Paint()..color = Color.fromARGB(255, 255, 114, 98))
-              ];
               var fillGeometry = [
                 _PathCatalog.instance.path_7.transform(transform)
+              ];
+              var fills = [
+                (Paint()..color = Color.fromARGB(255, 255, 114, 98))
               ];
               fills.forEach((paint) {
                 fillGeometry.forEach((path) {
@@ -664,11 +673,11 @@ class LogoPainter extends CustomPainter {
                 0.0,
                 1.0
               ]);
-              var fills = [
-                (Paint()..color = Color.fromARGB(255, 255, 114, 98))
-              ];
               var fillGeometry = [
                 _PathCatalog.instance.path_8.transform(transform)
+              ];
+              var fills = [
+                (Paint()..color = Color.fromARGB(255, 255, 114, 98))
               ];
               fills.forEach((paint) {
                 fillGeometry.forEach((path) {
@@ -697,11 +706,153 @@ class LogoPainter extends CustomPainter {
 
   @override
   bool shouldRebuildSemantics(LogoPainter oldDelegate) {
-    return false;
+    return oldDelegate.data != this.data;
   }
 
   @override
   bool shouldRepaint(LogoPainter oldDelegate) {
+    return oldDelegate.data != this.data;
+  }
+}
+
+class AddTodo extends StatelessWidget {
+  AddTodo({this.value});
+
+  final Widget value;
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomPaint(
+        painter: AddTodoPainter(),
+        child: Material(
+            type: MaterialType.transparency,
+            child: Container(
+                child: Stack(
+                    children: [
+              Positioned(
+                child: this.value,
+                left: 21.0,
+                right: 18.0,
+                top: -1.1368683772161603e-13,
+                bottom: 1.1368683772161603e-13,
+              )
+            ].where((x) => x != null).toList()))));
+  }
+}
+
+class AddTodoPainter extends CustomPainter {
+  AddTodoPainter();
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    canvas.drawColor(Colors.transparent, BlendMode.screen);
+    var frame = Offset.zero & size;
+    canvas.translate(-66.0, -324.0);
+
+// AddTodo
+    var draw_186_39 = (Canvas canvas, Rect container) {
+      var frame = Rect.fromLTWH(
+          66.0, 324.0, (container.width - (0.0)), (container.height - (0.0)));
+      canvas.save();
+      canvas.transform(Float64List.fromList([
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        frame.left,
+        frame.top,
+        0.0,
+        1.0
+      ]));
+      canvas.drawRect(Offset.zero & frame.size,
+          (Paint()..color = Color.fromARGB(0, 0, 0, 0)));
+
+// Rectangle
+      var draw_186_29 = (Canvas canvas, Rect container) {
+        var frame = Rect.fromLTWH(
+            0.0, 0.0, (container.width - (0.0)), (container.height - (0.0)));
+        canvas.save();
+        canvas.transform(Float64List.fromList([
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          frame.left,
+          frame.top,
+          0.0,
+          1.0
+        ]));
+        var transform = Float64List.fromList([
+          (frame.width / 589.0),
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          (frame.height / 96.0),
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]);
+        var fillGeometry = [_PathCatalog.instance.path_9.transform(transform)];
+        fillGeometry.forEach((path) {
+          var effectPaint = (Paint()
+            ..color = Color.fromARGB(26, 0, 0, 0)
+            ..maskFilter = MaskFilter.blur(
+                BlurStyle.normal, BoxShadow.convertRadiusToSigma(8.0)));
+          canvas.save();
+          canvas.translate(0.0, 2.0);
+          canvas.drawPath(path, effectPaint);
+          canvas.restore();
+        });
+        var fills = [(Paint()..color = Color.fromARGB(255, 255, 255, 255))];
+        fills.forEach((paint) {
+          fillGeometry.forEach((path) {
+            canvas.drawPath(path, paint);
+          });
+        });
+        canvas.restore();
+      };
+      draw_186_29(canvas, frame);
+      canvas.restore();
+    };
+    draw_186_39(canvas, frame);
+  }
+
+  @override
+  SemanticsBuilderCallback get semanticsBuilder {
+    return (Size size) => [];
+  }
+
+  @override
+  bool shouldRebuildSemantics(AddTodoPainter oldDelegate) {
+    return false;
+  }
+
+  @override
+  bool shouldRepaint(AddTodoPainter oldDelegate) {
     return false;
   }
 }
@@ -712,6 +863,17 @@ class TodoItemData {
   final VectorData selected;
 
   final TextData title;
+
+  @override
+  bool operator ==(o) =>
+      o is TodoItemData && selected == o.selected && title == o.title;
+  @override
+  int get hashcode {
+    int result = 17;
+    result = 37 * result + (this.selected?.hashCode ?? 0);
+    result = 37 * result + (this.title?.hashCode ?? 0);
+    return result;
+  }
 }
 
 class TodoItem extends StatelessWidget {
@@ -728,7 +890,8 @@ class TodoItem extends StatelessWidget {
         child: Material(
             type: MaterialType.transparency,
             child: Container(
-                child: Stack(children: [
+                child: Stack(
+                    children: [
               Positioned(
                 child: InkWell(
                     onTap: onSelect,
@@ -738,7 +901,7 @@ class TodoItem extends StatelessWidget {
                 top: 0.0,
                 bottom: 0.0,
               )
-            ]))));
+            ].where((x) => x != null).toList()))));
   }
 }
 
@@ -820,8 +983,18 @@ class TodoItemPainter extends CustomPainter {
           0.0,
           1.0
         ]);
+        var fillGeometry = [_PathCatalog.instance.path_10.transform(transform)];
+        fillGeometry.forEach((path) {
+          var effectPaint = (Paint()
+            ..color = Color.fromARGB(41, 0, 0, 0)
+            ..maskFilter = MaskFilter.blur(
+                BlurStyle.normal, BoxShadow.convertRadiusToSigma(6.0)));
+          canvas.save();
+          canvas.translate(0.0, 2.0);
+          canvas.drawPath(path, effectPaint);
+          canvas.restore();
+        });
         var fills = [(Paint()..color = Color.fromARGB(255, 242, 242, 242))];
-        var fillGeometry = [_PathCatalog.instance.path_9.transform(transform)];
         fills.forEach((paint) {
           fillGeometry.forEach((path) {
             canvas.drawPath(path, paint);
@@ -831,10 +1004,9 @@ class TodoItemPainter extends CustomPainter {
       };
       draw_186_16(canvas, frame);
 
-// Ellipse
-      var draw_186_17 = (Canvas canvas, Rect container) {
-        var frame = Rect.fromLTWH(
-            17.0, ((container.height / 2.0) - 0.0 - 15.5), 31.0, 31.0);
+// Group
+      var draw_226_3 = (Canvas canvas, Rect container) {
+        var frame = Rect.fromLTWH(17.0, 16.0, 31.0, 31.0);
         canvas.save();
         canvas.transform(Float64List.fromList([
           1.0,
@@ -854,44 +1026,11 @@ class TodoItemPainter extends CustomPainter {
           0.0,
           1.0
         ]));
-        var transform = Float64List.fromList([
-          (frame.width / 31.0),
-          0.0,
-          0.0,
-          0.0,
-          0.0,
-          (frame.height / 31.0),
-          0.0,
-          0.0,
-          0.0,
-          0.0,
-          1.0,
-          0.0,
-          0.0,
-          0.0,
-          0.0,
-          1.0
-        ]);
-        var fills = [(Paint()..color = Color.fromARGB(255, 255, 255, 255))];
-        var fillGeometry = [_PathCatalog.instance.path_10.transform(transform)];
-        fills.forEach((paint) {
-          fillGeometry.forEach((path) {
-            canvas.drawPath(path, paint);
-          });
-        });
-        canvas.restore();
-      };
-      draw_186_17(canvas, frame);
-      if (this.data?.selected?.isVisible ?? true) {
-// $selected
-        var draw_186_21 = (Canvas canvas, Rect container) {
+
+// Ellipse
+        var draw_186_17 = (Canvas canvas, Rect container) {
           var frame = Rect.fromLTWH(
-              23.199951171875,
-              ((container.height / 2.0) -
-                  -0.00001239776611328125 -
-                  9.300000190734863),
-              18.600000381469727,
-              18.600000381469727);
+              0.0, ((container.height / 2.0) - 0.0 - 15.5), 31.0, 31.0);
           canvas.save();
           canvas.transform(Float64List.fromList([
             1.0,
@@ -912,12 +1051,12 @@ class TodoItemPainter extends CustomPainter {
             1.0
           ]));
           var transform = Float64List.fromList([
-            (frame.width / 18.600000381469727),
+            (frame.width / 31.0),
             0.0,
             0.0,
             0.0,
             0.0,
-            (frame.height / 18.600000381469727),
+            (frame.height / 31.0),
             0.0,
             0.0,
             0.0,
@@ -929,10 +1068,10 @@ class TodoItemPainter extends CustomPainter {
             0.0,
             1.0
           ]);
-          var fills = [(Paint()..color = Color.fromARGB(255, 80, 182, 255))];
           var fillGeometry = [
             _PathCatalog.instance.path_11.transform(transform)
           ];
+          var fills = [(Paint()..color = Color.fromARGB(255, 255, 255, 255))];
           fills.forEach((paint) {
             fillGeometry.forEach((path) {
               canvas.drawPath(path, paint);
@@ -940,8 +1079,77 @@ class TodoItemPainter extends CustomPainter {
           });
           canvas.restore();
         };
-        draw_186_21(canvas, frame);
-      }
+        draw_186_17(canvas, frame);
+        if (this.data?.selected?.isVisible ?? true) {
+// $selected
+          var draw_186_21 = (Canvas canvas, Rect container) {
+            var frame = Rect.fromLTWH(
+                6.199951171875,
+                ((container.height / 2.0) -
+                    -0.00001239776611328125 -
+                    9.300000190734863),
+                18.600000381469727,
+                18.600000381469727);
+            canvas.save();
+            canvas.transform(Float64List.fromList([
+              1.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              1.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              1.0,
+              0.0,
+              frame.left,
+              frame.top,
+              0.0,
+              1.0
+            ]));
+            var transform = Float64List.fromList([
+              (frame.width / 18.600000381469727),
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              (frame.height / 18.600000381469727),
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              1.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]);
+            var fillGeometry = [
+              _PathCatalog.instance.path_12.transform(transform)
+            ];
+            fillGeometry.forEach((path) {
+              var effectPaint = (Paint()
+                ..color = Color.fromARGB(255, 80, 182, 255)
+                ..maskFilter = MaskFilter.blur(
+                    BlurStyle.normal, BoxShadow.convertRadiusToSigma(10.0)));
+              canvas.drawPath(path, effectPaint);
+            });
+            var fills = [(Paint()..color = Color.fromARGB(255, 80, 182, 255))];
+            fills.forEach((paint) {
+              fillGeometry.forEach((path) {
+                canvas.drawPath(path, paint);
+              });
+            });
+            canvas.restore();
+          };
+          draw_186_21(canvas, frame);
+        }
+        canvas.restore();
+      };
+      draw_226_3(canvas, frame);
       if (this.data?.title?.isVisible ?? true) {
 // $title
         var draw_204_67 = (Canvas canvas, Rect container) {
@@ -1004,11 +1212,249 @@ class TodoItemPainter extends CustomPainter {
 
   @override
   bool shouldRebuildSemantics(TodoItemPainter oldDelegate) {
-    return false;
+    return oldDelegate.data != this.data;
   }
 
   @override
   bool shouldRepaint(TodoItemPainter oldDelegate) {
+    return oldDelegate.data != this.data;
+  }
+}
+
+class TodoLogo extends StatelessWidget {
+  TodoLogo();
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomPaint(painter: TodoLogoPainter());
+  }
+}
+
+class TodoLogoPainter extends CustomPainter {
+  TodoLogoPainter();
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    canvas.drawColor(Colors.transparent, BlendMode.screen);
+    var frame = Offset.zero & size;
+    canvas.translate(-66.0, -41.0);
+
+// TodoLogo
+    var draw_186_44 = (Canvas canvas, Rect container) {
+      var frame = Rect.fromLTWH(
+          66.0, 41.0, (container.width - (0.0)), (container.height - (0.0)));
+      canvas.save();
+      canvas.transform(Float64List.fromList([
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        frame.left,
+        frame.top,
+        0.0,
+        1.0
+      ]));
+      canvas.drawRect(Offset.zero & frame.size,
+          (Paint()..color = Color.fromARGB(0, 0, 0, 0)));
+
+// Rectangle
+      var draw_186_40 = (Canvas canvas, Rect container) {
+        var frame = Rect.fromLTWH(
+            ((container.width / 2.0) - 12.447961807250977 - 30.052038192749023),
+            ((container.height / 2.0) -
+                -30.052038192749023 -
+                30.052038192749023),
+            60.10407638549805,
+            60.10407638549805);
+        canvas.save();
+        canvas.transform(Float64List.fromList([
+          0.7071067690849304,
+          -0.7071067690849304,
+          0.0,
+          0.0,
+          0.7071067690849304,
+          0.7071067690849304,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          frame.left,
+          frame.top,
+          0.0,
+          1.0
+        ]));
+        var transform = Float64List.fromList([
+          (frame.width / 60.10407638549805),
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          (frame.height / 60.10407638549805),
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]);
+        var fillGeometry = [_PathCatalog.instance.path_13.transform(transform)];
+        fillGeometry.forEach((path) {
+          var effectPaint = (Paint()
+            ..color = Color.fromARGB(255, 80, 182, 255)
+            ..maskFilter = MaskFilter.blur(
+                BlurStyle.normal, BoxShadow.convertRadiusToSigma(10.0)));
+          canvas.drawPath(path, effectPaint);
+        });
+        var fills = [(Paint()..color = Color.fromARGB(255, 80, 182, 255))];
+        fills.forEach((paint) {
+          fillGeometry.forEach((path) {
+            canvas.drawPath(path, paint);
+          });
+        });
+        canvas.restore();
+      };
+      draw_186_40(canvas, frame);
+
+// Vector
+      var draw_186_42 = (Canvas canvas, Rect container) {
+        var frame = Rect.fromLTWH(
+            ((container.width / 2.0) -
+                -6.6592254638671875 -
+                19.636276245117188),
+            ((container.height / 2.0) -
+                -11.781800270080566 -
+                13.147767066955566),
+            39.272552490234375,
+            26.295534133911133);
+        canvas.save();
+        canvas.transform(Float64List.fromList([
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          frame.left,
+          frame.top,
+          0.0,
+          1.0
+        ]));
+        var transform = Float64List.fromList([
+          (frame.width / 39.272552490234375),
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          (frame.height / 26.295534133911133),
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]);
+        var fillGeometry = [];
+        var strokes = [(Paint()..color = Color.fromARGB(255, 255, 255, 255))];
+        var strokeGeometry = [
+          _PathCatalog.instance.path_14.transform(transform)
+        ];
+        strokes.forEach((paint) {
+          strokeGeometry.forEach((path) {
+            canvas.drawPath(path, paint);
+          });
+        });
+        canvas.restore();
+      };
+      draw_186_42(canvas, frame);
+
+// TODO
+      var draw_186_45 = (Canvas canvas, Rect container) {
+        var frame = Rect.fromLTWH(
+            ((container.width / 2.0) - -3.184518814086914 - 14.684518814086914),
+            ((container.height / 2.0) - 1.2444629669189453 - 6.488508224487305),
+            29.369037628173828,
+            12.97701644897461);
+        canvas.save();
+        canvas.transform(Float64List.fromList([
+          0.7071067690849304,
+          -0.7071067690849304,
+          0.0,
+          0.0,
+          0.7071067690849304,
+          0.7071067690849304,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          frame.left,
+          frame.top,
+          0.0,
+          1.0
+        ]));
+        var style_0 = ui.TextStyle(
+          fontFamily: 'Roboto',
+          color: Color.fromARGB(255, 255, 255, 255),
+          fontSize: 16.0,
+          fontWeight: FontWeight.w700,
+        );
+        var paragraphStyle = ui.ParagraphStyle(
+          fontFamily: 'Roboto',
+          textAlign: TextAlign.left,
+          fontSize: 16.0,
+          fontWeight: FontWeight.w700,
+        );
+        var paragraphBuilder = ui.ParagraphBuilder(paragraphStyle)
+          ..pushStyle(style_0);
+        paragraphBuilder.addText("TODO");
+        var paragraph = paragraphBuilder.build();
+        paragraph.layout(new ui.ParagraphConstraints(width: frame.width));
+        canvas.drawParagraph(paragraph, Offset.zero);
+        canvas.restore();
+      };
+      draw_186_45(canvas, frame);
+      canvas.restore();
+    };
+    draw_186_44(canvas, frame);
+  }
+
+  @override
+  SemanticsBuilderCallback get semanticsBuilder {
+    return (Size size) => [];
+  }
+
+  @override
+  bool shouldRebuildSemantics(TodoLogoPainter oldDelegate) {
+    return false;
+  }
+
+  @override
+  bool shouldRepaint(TodoLogoPainter oldDelegate) {
     return false;
   }
 }
@@ -1027,6 +1473,9 @@ class _PathCatalog {
     this.path_9 = _build_9();
     this.path_10 = _build_10();
     this.path_11 = _build_11();
+    this.path_12 = _build_12();
+    this.path_13 = _build_13();
+    this.path_14 = _build_14();
   }
 
   Path path_0;
@@ -1052,6 +1501,12 @@ class _PathCatalog {
   Path path_10;
 
   Path path_11;
+
+  Path path_12;
+
+  Path path_13;
+
+  Path path_14;
 
   static final _PathCatalog instance = new _PathCatalog();
 
@@ -1176,6 +1631,22 @@ class _PathCatalog {
 
   static Path _build_9() {
     var path = Path();
+    path.moveTo(0.0, 1.0);
+    path.cubicTo(0.0, 0.4477152526378632, 0.4477152526378632, 0.0, 1.0, 0.0);
+    path.lineTo(588.0, 0.0);
+    path.cubicTo(588.5523071289062, 0.0, 589.0, 0.4477152526378632, 589.0, 1.0);
+    path.lineTo(589.0, 95.0);
+    path.cubicTo(
+        589.0, 95.55228424072266, 588.5523071289062, 96.0, 588.0, 96.0);
+    path.lineTo(1.0, 96.0);
+    path.cubicTo(0.4477152526378632, 96.0, 0.0, 95.55228424072266, 0.0, 95.0);
+    path.lineTo(0.0, 1.0);
+    path.close();
+    return path;
+  }
+
+  static Path _build_10() {
+    var path = Path();
     path.moveTo(0.0, 9.0);
     path.cubicTo(0.0, 4.02943754196167, 4.02943754196167, 0.0, 9.0, 0.0);
     path.lineTo(580.0, 0.0);
@@ -1190,7 +1661,7 @@ class _PathCatalog {
     return path;
   }
 
-  static Path _build_10() {
+  static Path _build_11() {
     var path = Path();
     path.moveTo(31.0, 15.5);
     path.cubicTo(
@@ -1202,7 +1673,7 @@ class _PathCatalog {
     return path;
   }
 
-  static Path _build_11() {
+  static Path _build_12() {
     var path = Path();
     path.moveTo(18.600000381469727, 9.300000190734863);
     path.cubicTo(18.600000381469727, 14.436248779296875, 14.436248779296875,
@@ -1216,20 +1687,97 @@ class _PathCatalog {
     path.close();
     return path;
   }
+
+  static Path _build_13() {
+    var path = Path();
+    path.moveTo(0.0, 0.0);
+    path.lineTo(60.10407638549805, 0.0);
+    path.lineTo(60.10407638549805, 60.10407638549805);
+    path.lineTo(0.0, 60.10407638549805);
+    path.lineTo(0.0, 0.0);
+    path.close();
+    return path;
+  }
+
+  static Path _build_14() {
+    var path = Path();
+    path.moveTo(2.1213202476501465, 11.197196960449219);
+    path.cubicTo(0.949747383594513, 10.02562427520752, -0.9497475028038027,
+        10.02562427520752, -2.1213204860687256, 11.197196960449219);
+    path.cubicTo(-3.2928931713104252, 12.368769645690918, -3.2928931713104252,
+        14.268264770507812, -2.1213202476501465, 15.439837455749512);
+    path.lineTo(2.1213202476501465, 11.197196960449219);
+    path.close();
+    path.moveTo(12.977017402648926, 26.295534133911133);
+    path.lineTo(10.855696678161621, 28.416854858398438);
+    path.lineTo(12.977017402648926, 30.538175582885742);
+    path.lineTo(15.098337173461914, 28.416854858398438);
+    path.lineTo(12.977017402648926, 26.295534133911133);
+    path.close();
+    path.moveTo(41.39387130737305, 2.1213204860687256);
+    path.cubicTo(42.56544494628906, 0.9497475028038027, 42.56544494628906,
+        -0.949747383594513, 41.39387130737305, -2.1213202476501465);
+    path.cubicTo(40.2223014831543, -3.2928931713104252, 38.32280349731445,
+        -3.2928931713104252, 37.1512336730957, -2.1213204860687256);
+    path.lineTo(41.39387130737305, 2.1213204860687256);
+    path.close();
+    path.moveTo(-2.1213202476501465, 15.439837455749512);
+    path.lineTo(10.855696678161621, 28.416854858398438);
+    path.lineTo(15.098337173461914, 24.174213409423828);
+    path.lineTo(2.1213202476501465, 11.197196960449219);
+    path.lineTo(-2.1213202476501465, 15.439837455749512);
+    path.close();
+    path.moveTo(15.098337173461914, 28.416854858398438);
+    path.lineTo(41.39387130737305, 2.1213204860687256);
+    path.lineTo(37.1512336730957, -2.1213204860687256);
+    path.lineTo(10.855696678161621, 24.174213409423828);
+    path.lineTo(15.098337173461914, 28.416854858398438);
+    path.close();
+    return path;
+  }
 }
 
 class Data {
   Data({this.isVisible});
 
   final bool isVisible;
+
+  @override
+  bool operator ==(o) => o is Data && isVisible == o.isVisible;
+  @override
+  int get hashcode {
+    int result = 17;
+    result = 37 * result + (this.isVisible?.hashCode ?? 0);
+    return result;
+  }
 }
 
 class TextData extends Data {
   TextData({isVisible, this.text}) : super(isVisible: isVisible);
 
   final String text;
+
+  @override
+  bool operator ==(o) =>
+      o is TextData && isVisible == o.isVisible && text == o.text;
+  @override
+  int get hashcode {
+    int result = 17;
+    result = 37 * result + (this.isVisible?.hashCode ?? 0);
+    result = 37 * result + (this.text?.hashCode ?? 0);
+    return result;
+  }
 }
 
 class VectorData extends Data {
   VectorData({isVisible}) : super(isVisible: isVisible);
+
+  @override
+  bool operator ==(o) => o is VectorData && isVisible == o.isVisible;
+  @override
+  int get hashcode {
+    int result = 17;
+    result = 37 * result + (this.isVisible?.hashCode ?? 0);
+    return result;
+  }
 }

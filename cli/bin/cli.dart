@@ -22,7 +22,7 @@ void main(List<String> args) async {
 
   var api = FigmaApiGenerator(Client(), results["token"]);
   var file = await api.getFile(results["fileKey"]);
-  var generator = FigmaWidgetGenerator(file);
+  var generator = FigmaGenerator(file);
 
   var widgets = Map<String,String>();
   (results["widget"] ?? []).forEach((w) {

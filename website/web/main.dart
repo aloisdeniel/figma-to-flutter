@@ -49,7 +49,7 @@ void main() {
       widgets[s] = s;
     });
 
-    var  generator = FigmaWidgetGenerator(file);
+    var  generator = FigmaGenerator(file);
     var code =  await generator.generateComponents(widgets);
     updateCode(code);
   }

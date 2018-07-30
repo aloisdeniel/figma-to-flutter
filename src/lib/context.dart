@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:code_builder/code_builder.dart';
+import 'package:figma_to_flutter/tools/code.dart';
 import 'package:figma_to_flutter/tools/format.dart' as format;
 
 class DataProperty {
@@ -12,7 +13,7 @@ class DataProperty {
 
 class BuildContext {
 
-  bool _hasData;
+  List<String> _dataProperties = [];
 
   dynamic _rootNode;
 
@@ -55,7 +56,7 @@ class BuildContext {
     return [x,y,w,h];
   }
 
-  BuildContext addChildWidget(String propertyName, String instance, dynamic map) {
+  BuildContext addChildWidget(String instance, dynamic map) {
 
     var code = "Positioned(child: $instance,";
 
@@ -141,13 +142,14 @@ class BuildContext {
         ..name = "this.$propertyName"
         ..named = true));
      
-      _hasData = true;
+      _dataProperties.add(propertyName);
 
       return this;
   }
 
   Class _buildCustomPainterData() {
     _customPainterData.constructors.add(_customPainterDataConstructor.build());
+    addEqualsAndHashcode(_customPainterData, _dataProperties);
     return _customPainterData.build();
   }
 
@@ -185,20 +187,20 @@ class BuildContext {
 
   Class _buildWidget() {
 
-    if(_hasData) {
+    if(_dataProperties.isNotEmpty) {
       this.addWidgetField(customPainterData.name, "data");
     }
     _widget.constructors.add(_widgetConstructor.build());
 
     var body = BlockBuilder();
 
-    var args = _hasData ? "data" : "";
+    var args = _dataProperties.isNotEmpty ? "data" : "";
     var customPaint = "CustomPaint(painter: ${_customPainter.name}($args)";
 
     if(!this._childWidgets.isEmpty) {
       customPaint += ", child: Material(type: MaterialType.transparency, child: Container(child:Stack(children:[";
       customPaint += this._childWidgets.join(", ");
-      customPaint += "])))";
+      customPaint += "].where((x) => x != null).toList())))";
     }
 
     body.statements.add(Code("return $customPaint);"));
@@ -237,7 +239,7 @@ class BuildContext {
         ..name = "oldDelegate"
         ..type = refer(_customPainter.name)
       ))
-      ..body = Code("return false;")
+      ..body = Code( _dataProperties.isNotEmpty ? "return oldDelegate.data != this.data;" : "return false;")
     );
 
     var shouldRebuildSemantics = Method((b) => b
@@ -248,7 +250,7 @@ class BuildContext {
         ..name = "oldDelegate"
         ..type = refer(_customPainter.name)
       ))
-      ..body = Code("return false;")
+      ..body = Code(_dataProperties.isNotEmpty ? "return oldDelegate.data != this.data;" : "return false;")
     );
 
     var paint = Method((b) => b
@@ -265,7 +267,7 @@ class BuildContext {
 
     var constructor = ConstructorBuilder();
 
-    if(_hasData) {
+    if(_dataProperties.isNotEmpty) {
       constructor.optionalParameters.add(Parameter((p) => p
         ..name = "this.data"
         ..toThis));
@@ -289,7 +291,7 @@ class BuildContext {
 
   List<Class> build() {
     List<Class> result = [];
-    if(_hasData) {
+    if(_dataProperties.isNotEmpty) {
       var dataClass = _buildCustomPainterData();
       result.add(dataClass);
     }

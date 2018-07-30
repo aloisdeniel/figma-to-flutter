@@ -12,6 +12,8 @@ The easiest way is to use the [online tool](http://aloisdeniel.github.com/figma-
 
 ### Dynamic elements
 
+![dynamic](docs/dynamic.png)
+
 **Example:** `$checkmark`
 
 You can declare nodes as dynamic by starting name with `$`.
@@ -31,11 +33,15 @@ All directives start with `#` and allow you to control behavior of your componen
 
 #### `tap` - `RECTANGLE`
 
+![tap](docs/directive-tap.png)
+
 **Example:** `#tap(onSelected)`
 
 Defines a rectangle as a tappable area (an [InkWell](https://docs.flutter.io/flutter/material/InkWell-class.html)) with a callback.
 
 #### `widget` - `NODE`
+
+![tap](docs/directive-widget.png)
 
 **Example:** `#widget(field)`
 
@@ -44,9 +50,12 @@ Includes a widget at the node location.
 
 ## Roadmap
 
-- [ ] **Semantics**
-- [ ] **Build time generator** : creating a generator for updating widgets at build time (like `built_value`).
-- [ ] **Drawing**
+- [ ] **Semantics** : adding semantics items for accessibility.
+- [ ] **Build time generator** : creating generators for updating widgets at build time (like `built_value`).
+- [ ] **Catalogs** : caching constants instead of instantiating it at each draw pass.
+    - [ ] Colors
+    - [ ] TextStyles
+- [ ] **Drawing** : reproducing Figma drawing logic
     - [ ] Fills
         - [ ] `GRADIENT_ANGULAR`
         - [ ] `GRADIENT_DIAMOND`

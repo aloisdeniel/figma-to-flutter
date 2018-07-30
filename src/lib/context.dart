@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:built_collection/built_collection.dart';
 import 'package:code_builder/code_builder.dart';
 import 'package:figma_to_flutter/tools/code.dart';
 import 'package:figma_to_flutter/tools/format.dart' as format;
@@ -19,15 +20,13 @@ class BuildContext {
 
   ClassBuilder _widget;
   ClassBuilder _customPainter;
-  ClassBuilder _customPainterData;
   ConstructorBuilder _widgetConstructor;
-  ConstructorBuilder _customPainterDataConstructor;
+  ConstructorBuilder _customPainterConstructor;
   BlockBuilder _paintBody;
   List<Code> _childWidgets = [];
 
   ClassBuilder get widget => _widget;
   ClassBuilder get customPainter => _customPainter;
-  ClassBuilder get customPainterData => _customPainterData;
 
   BuildContext(componentName, this._rootNode) {
     var widgetName = format.toClassName(componentName);
@@ -40,12 +39,8 @@ class BuildContext {
                 ..extend = refer("CustomPainter");
 
     _paintBody = BlockBuilder();
-
-    _customPainterData = ClassBuilder()
-                ..name = "${widgetName}Data";
-
-    _customPainterDataConstructor = ConstructorBuilder();
     _widgetConstructor = ConstructorBuilder();
+    _customPainterConstructor = ConstructorBuilder();
   }
 
   List<double> _toRectangle(dynamic map) {
@@ -131,26 +126,24 @@ class BuildContext {
 
       // Painter
 
-      _customPainterData.fields.add(Field((b) => b
+      _customPainter.fields.add(Field((b) => b
         ..name = propertyName
         ..modifier = FieldModifier.final$
         ..type = refer(className)
       ));
 
-      _customPainterDataConstructor
-        ..optionalParameters.add(Parameter((p) => p
+      _customPainterConstructor
+        ..requiredParameters.add(Parameter((p) => p
         ..name = "this.$propertyName"
         ..named = true));
+
+      // Widget
+
+      this.addWidgetField(className, propertyName, false);
      
       _dataProperties.add(propertyName);
 
       return this;
-  }
-
-  Class _buildCustomPainterData() {
-    _customPainterData.constructors.add(_customPainterDataConstructor.build());
-    addEqualsAndHashcode(_customPainterData, _dataProperties);
-    return _customPainterData.build();
   }
 
   BuildContext addPaint(List<String> statements) {
@@ -171,10 +164,13 @@ class BuildContext {
   }
  */
 
-  BuildContext addWidgetField(String type, String name) {
-    _widgetConstructor.optionalParameters.add(Parameter((p) => p
+  BuildContext addWidgetField(String type, String name, bool required) {
+
+    ListBuilder<Parameter> parameters = !required ? _widgetConstructor.optionalParameters : _widgetConstructor.requiredParameters;
+
+    parameters.add(Parameter((p) => p
       ..name = "this.$name"
-      ..named = true
+      ..named = !required
       ..toThis));
 
     _widget.fields.add(Field((b) => b
@@ -187,14 +183,11 @@ class BuildContext {
 
   Class _buildWidget() {
 
-    if(_dataProperties.isNotEmpty) {
-      this.addWidgetField(customPainterData.name, "data");
-    }
     _widget.constructors.add(_widgetConstructor.build());
 
     var body = BlockBuilder();
 
-    var args = _dataProperties.isNotEmpty ? "data" : "";
+    var args = _dataProperties.join(", ");
     var customPaint = "CustomPaint(painter: ${_customPainter.name}($args)";
 
     if(!this._childWidgets.isEmpty) {
@@ -231,6 +224,8 @@ class BuildContext {
       ..body = Code("return (Size size) => [];")
     );
 
+    var dataComparison = this._dataProperties.map((x) => "oldDelegate.$x != this.$x").join(" || ");
+
     var shouldRepaint = Method((b) => b
       ..name = "shouldRepaint"
       ..annotations.add(CodeExpression(Code("override")))
@@ -239,7 +234,7 @@ class BuildContext {
         ..name = "oldDelegate"
         ..type = refer(_customPainter.name)
       ))
-      ..body = Code( _dataProperties.isNotEmpty ? "return oldDelegate.data != this.data;" : "return false;")
+      ..body = Code( _dataProperties.isNotEmpty ? "return $dataComparison;" : "return false;")
     );
 
     var shouldRebuildSemantics = Method((b) => b
@@ -250,7 +245,7 @@ class BuildContext {
         ..name = "oldDelegate"
         ..type = refer(_customPainter.name)
       ))
-      ..body = Code(_dataProperties.isNotEmpty ? "return oldDelegate.data != this.data;" : "return false;")
+      ..body = Code("return shouldRepaint(oldDelegate);")
     );
 
     var paint = Method((b) => b
@@ -265,21 +260,7 @@ class BuildContext {
             ..name="size"
             ..type=refer("Size"))));
 
-    var constructor = ConstructorBuilder();
-
-    if(_dataProperties.isNotEmpty) {
-      constructor.optionalParameters.add(Parameter((p) => p
-        ..name = "this.data"
-        ..toThis));
-
-      _customPainter.fields.add(Field((b) => b
-        ..name = "data"
-        ..modifier = FieldModifier.final$
-        ..type = refer(customPainterData.name)
-      ));
-    }
-
-    _customPainter.constructors.add(constructor.build());
+    _customPainter.constructors.add(_customPainterConstructor.build());
     _customPainter.methods.addAll([
         paint, 
         semanticsBuilder,
@@ -291,10 +272,7 @@ class BuildContext {
 
   List<Class> build() {
     List<Class> result = [];
-    if(_dataProperties.isNotEmpty) {
-      var dataClass = _buildCustomPainterData();
-      result.add(dataClass);
-    }
+
     var widgetClass = _buildWidget();
     result.add(widgetClass);
 

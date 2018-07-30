@@ -62,10 +62,8 @@ class _HomeState extends State<Home> {
     margin: EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0),
     constraints: BoxConstraints.expand(height: 58.0),  
     child: TodoItem(
-      data: TodoItemData(
-        title:  TextData(text: todos[i].title),
-        selected: VectorData(isVisible: todos[i].isSelected),
-      ),
+      title:  TextData(text: todos[i].title),
+      selected: VectorData(isVisible: todos[i].isSelected),
       onSelect: (){ 
         print("selected"); 
         this.setState(() { 

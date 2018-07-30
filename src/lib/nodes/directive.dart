@@ -17,7 +17,7 @@ class DirectiveGenerator {
 
       var instance = "InkWell(onTap: $propertyName, borderRadius: BorderRadius.all(Radius.circular($cornerRadius)))";
 
-      context.addWidgetField("GestureTapCallback", propertyName);
+      context.addWidgetField("GestureTapCallback", propertyName, false);
       context.addChildWidget(instance, map);
   }
 
@@ -27,7 +27,7 @@ class DirectiveGenerator {
 
       var instance = "this.$propertyName";
       
-      context.addWidgetField("Widget", propertyName);
+      context.addWidgetField("Widget", propertyName, false);
       context.addChildWidget(instance, map);
   }
 

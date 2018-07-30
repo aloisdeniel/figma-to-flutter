@@ -786,6 +786,7 @@ file:///Users/alois/.pub-cache/hosted/pub.dartlang.org/yaml-2.1.15/lib/src/yaml_
 file:///Users/alois/.pub-cache/hosted/pub.dartlang.org/yaml-2.1.15/lib/yaml.dart
 file:///Users/alois/flutter_figma_generator/src/lib/api.dart
 file:///Users/alois/flutter_figma_generator/src/lib/base/color.dart
+file:///Users/alois/flutter_figma_generator/src/lib/base/effect.dart
 file:///Users/alois/flutter_figma_generator/src/lib/base/paint.dart
 file:///Users/alois/flutter_figma_generator/src/lib/base/path.dart
 file:///Users/alois/flutter_figma_generator/src/lib/base/text_styles.dart
@@ -801,6 +802,7 @@ file:///Users/alois/flutter_figma_generator/src/lib/nodes/text.dart
 file:///Users/alois/flutter_figma_generator/src/lib/nodes/vector.dart
 file:///Users/alois/flutter_figma_generator/src/lib/parsing/declaration.dart
 file:///Users/alois/flutter_figma_generator/src/lib/parsing/parse_path.dart
+file:///Users/alois/flutter_figma_generator/src/lib/tools/code.dart
 file:///Users/alois/flutter_figma_generator/src/lib/tools/format.dart
 file:///Users/alois/flutter_figma_generator/website/.packages
 file:///Users/alois/flutter_figma_generator/website/web/main.dart

@@ -60,7 +60,7 @@ class TextGenerator {
       
 
     if(declaration is DynamicItem) {
-      context.addPaint(["if(this.data?.$varName?.text == null) {"]);
+      context.addPaint(["if(this?.$varName?.text == null) {"]);
     }
 
     if(characterStyleOverrides.isEmpty) {
@@ -94,7 +94,7 @@ class TextGenerator {
         context.addPaint(["paragraphBuilder.pushStyle(style_${characterStyleOverrides[0]});"]);
       }
       context.addPaint([
-        "paragraphBuilder.addText(this.data.$varName.text);", 
+        "paragraphBuilder.addText(this.$varName.text);", 
         "}"
       ]);
     }

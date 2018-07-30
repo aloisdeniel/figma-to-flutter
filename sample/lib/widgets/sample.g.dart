@@ -2,36 +2,21 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'dart:ui' as ui;
 
-class LogoData {
-  LogoData({this.topBar});
+class Logo extends StatelessWidget {
+  Logo({this.topBar});
 
   final Data topBar;
 
   @override
-  bool operator ==(o) => o is LogoData && topBar == o.topBar;
-  @override
-  int get hashcode {
-    int result = 17;
-    result = 37 * result + (this.topBar?.hashCode ?? 0);
-    return result;
-  }
-}
-
-class Logo extends StatelessWidget {
-  Logo({this.data});
-
-  final LogoData data;
-
-  @override
   Widget build(BuildContext context) {
-    return CustomPaint(painter: LogoPainter(data));
+    return CustomPaint(painter: LogoPainter(topBar));
   }
 }
 
 class LogoPainter extends CustomPainter {
-  LogoPainter([this.data]);
+  LogoPainter(this.topBar);
 
-  final LogoData data;
+  final Data topBar;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -386,7 +371,7 @@ class LogoPainter extends CustomPainter {
         canvas.restore();
       };
       draw_105_46(canvas, frame);
-      if (this.data?.topBar?.isVisible ?? true) {
+      if (this.topBar?.isVisible ?? true) {
 // $topBar
         var draw_186_0 = (Canvas canvas, Rect container) {
           var frame =
@@ -706,12 +691,12 @@ class LogoPainter extends CustomPainter {
 
   @override
   bool shouldRebuildSemantics(LogoPainter oldDelegate) {
-    return oldDelegate.data != this.data;
+    return shouldRepaint(oldDelegate);
   }
 
   @override
   bool shouldRepaint(LogoPainter oldDelegate) {
-    return oldDelegate.data != this.data;
+    return oldDelegate.topBar != this.topBar;
   }
 }
 
@@ -848,7 +833,7 @@ class AddTodoPainter extends CustomPainter {
 
   @override
   bool shouldRebuildSemantics(AddTodoPainter oldDelegate) {
-    return false;
+    return shouldRepaint(oldDelegate);
   }
 
   @override
@@ -857,36 +842,19 @@ class AddTodoPainter extends CustomPainter {
   }
 }
 
-class TodoItemData {
-  TodoItemData({this.selected, this.title});
+class TodoItem extends StatelessWidget {
+  TodoItem({this.selected, this.onSelect, this.title});
 
   final VectorData selected;
+
+  final GestureTapCallback onSelect;
 
   final TextData title;
 
   @override
-  bool operator ==(o) =>
-      o is TodoItemData && selected == o.selected && title == o.title;
-  @override
-  int get hashcode {
-    int result = 17;
-    result = 37 * result + (this.selected?.hashCode ?? 0);
-    result = 37 * result + (this.title?.hashCode ?? 0);
-    return result;
-  }
-}
-
-class TodoItem extends StatelessWidget {
-  TodoItem({this.onSelect, this.data});
-
-  final GestureTapCallback onSelect;
-
-  final TodoItemData data;
-
-  @override
   Widget build(BuildContext context) {
     return CustomPaint(
-        painter: TodoItemPainter(data),
+        painter: TodoItemPainter(selected, title),
         child: Material(
             type: MaterialType.transparency,
             child: Container(
@@ -906,9 +874,11 @@ class TodoItem extends StatelessWidget {
 }
 
 class TodoItemPainter extends CustomPainter {
-  TodoItemPainter([this.data]);
+  TodoItemPainter(this.selected, this.title);
 
-  final TodoItemData data;
+  final VectorData selected;
+
+  final TextData title;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -1080,7 +1050,7 @@ class TodoItemPainter extends CustomPainter {
           canvas.restore();
         };
         draw_186_17(canvas, frame);
-        if (this.data?.selected?.isVisible ?? true) {
+        if (this.selected?.isVisible ?? true) {
 // $selected
           var draw_186_21 = (Canvas canvas, Rect container) {
             var frame = Rect.fromLTWH(
@@ -1150,7 +1120,7 @@ class TodoItemPainter extends CustomPainter {
         canvas.restore();
       };
       draw_226_3(canvas, frame);
-      if (this.data?.title?.isVisible ?? true) {
+      if (this.title?.isVisible ?? true) {
 // $title
         var draw_204_67 = (Canvas canvas, Rect container) {
           var frame = Rect.fromLTWH(59.0, 18.0, (container.width - (107.0)),
@@ -1188,10 +1158,10 @@ class TodoItemPainter extends CustomPainter {
           );
           var paragraphBuilder = ui.ParagraphBuilder(paragraphStyle)
             ..pushStyle(style_0);
-          if (this.data?.title?.text == null) {
+          if (this?.title?.text == null) {
             paragraphBuilder.addText("I need to do something");
           } else {
-            paragraphBuilder.addText(this.data.title.text);
+            paragraphBuilder.addText(this.title.text);
           }
           var paragraph = paragraphBuilder.build();
           paragraph.layout(new ui.ParagraphConstraints(width: frame.width));
@@ -1212,12 +1182,13 @@ class TodoItemPainter extends CustomPainter {
 
   @override
   bool shouldRebuildSemantics(TodoItemPainter oldDelegate) {
-    return oldDelegate.data != this.data;
+    return shouldRepaint(oldDelegate);
   }
 
   @override
   bool shouldRepaint(TodoItemPainter oldDelegate) {
-    return oldDelegate.data != this.data;
+    return oldDelegate.selected != this.selected ||
+        oldDelegate.title != this.title;
   }
 }
 
@@ -1450,7 +1421,7 @@ class TodoLogoPainter extends CustomPainter {
 
   @override
   bool shouldRebuildSemantics(TodoLogoPainter oldDelegate) {
-    return false;
+    return shouldRepaint(oldDelegate);
   }
 
   @override

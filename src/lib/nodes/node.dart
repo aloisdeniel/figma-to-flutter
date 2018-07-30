@@ -131,7 +131,7 @@ class NodeGenerator {
     if(declaration is DynamicItem) {
       _generateData(context, map);
       var defaultIsVisible = (map["visible"] == null || map["visible"] == true).toString();
-      context.addPaint(["if(this.data?.$varName?.isVisible ?? $defaultIsVisible) {"]);
+      context.addPaint(["if(this.$varName?.isVisible ?? $defaultIsVisible) {"]);
     }
 
    context.addPaint(["", "// ${map["name"]}"]);

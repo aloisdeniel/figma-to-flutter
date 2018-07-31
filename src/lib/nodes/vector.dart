@@ -1,7 +1,6 @@
 
 import 'dart:math';
 
-import 'package:code_builder/code_builder.dart';
 import 'package:figma_to_flutter/base/effect.dart';
 import 'package:figma_to_flutter/context.dart';
 import 'package:figma_to_flutter/parsing/declaration.dart';
@@ -45,6 +44,15 @@ class VectorGenerator {
 
     var fillGeometry = "[" + map["fillGeometry"].map((f) => this._path.generate(f).toString() + ".transform(transform)").join(", ") + "]";
     context.addPaint(["var fillGeometry = $fillGeometry;"]);
+
+    // Clipping
+    if(map["isMask"] ?? false) {
+      context.addPaint([
+        "var mask = Path();",
+        "fillGeometry.forEach((p) => mask.addPath(p, Offset.zero));"
+        "canvas.clipPath(mask);"
+      ]);
+    }
 
     if(!effectMaps.isEmpty) {
       context.addPaint([

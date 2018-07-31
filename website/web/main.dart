@@ -11,11 +11,15 @@ import 'package:http/browser_client.dart';
 @JS()
 external void updateCode(String code);
 
+@JS()
+external void copyCode(String code);
+
 var selectedComponents = [];
 
 void main() {
 
   var submit = querySelector('#submit') as ButtonElement;
+  var copy = querySelector('#copy') as ButtonElement;
   var generate = querySelector('#generate') as ButtonElement;
   var sectionComponents = querySelector('#section-components');
   var components = querySelector('#components');
@@ -28,6 +32,7 @@ void main() {
   fileKey.value = window.localStorage['fileKey'];
 
   dynamic file;
+  String code;
 
   void updateSelectedItems() {
     components.children.forEach((item) {
@@ -50,7 +55,7 @@ void main() {
     });
 
     var  generator = FigmaGenerator(file);
-    var code =  await generator.generateComponents(widgets);
+    code =  await generator.generateComponents(widgets);
     updateCode(code);
   }
 
@@ -125,6 +130,10 @@ void main() {
   });
   generate.onClick.listen((c) {
     generateCode();
+  });
+
+  copy.onClick.listen((c) {
+    copyCode(code);
   });
 }
 

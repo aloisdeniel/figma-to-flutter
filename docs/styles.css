@@ -52,6 +52,13 @@ p {
   height: 64px;
 }
 
+#copy {
+  display: block;
+  position: fixed;
+  right: 10px;
+  top: 10px;
+}
+
 input[type='text'] {
   font-size: 15px;
   border: 0px;

@@ -15,7 +15,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="scaffolded-by" content="https://github.com/google/stagehand">
-    <title>webapp</title>
+    <title>Figma to Flutter</title>
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
     <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/prettify.js"></script>
     <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/lang-dart.js"></script>
@@ -31,6 +31,18 @@
         console.log("Prettyfying code...");
         document.getElementById("result").innerHTML = PR.prettyPrintOne(code, 'dart', true);
       }
+
+      var toCopy;
+      function copyCode(code) {
+        toCopy = code;
+        document.execCommand('copy');
+      }
+
+      document.addEventListener('copy', function(e){
+        console.log("copy...");
+        e.clipboardData.setData('text/plain', toCopy);
+        e.preventDefault();
+      });
     </script>
     <script defer src="main.js"></script>
 </head>
@@ -72,6 +84,7 @@
     <!-- Code  -->
     <div class="column result">
       <pre id="result" class="prettyprint"></pre>
+      <button id="copy">Copy to clipboard</button>
     </div>
 </div>
 </body>

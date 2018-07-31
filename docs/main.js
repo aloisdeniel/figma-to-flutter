@@ -474,11 +474,11 @@
     Function.prototype.call$0 = function() {
       return this();
     };
-    Function.prototype.call$3 = function(a, b, c) {
-      return this(a, b, c);
-    };
     Function.prototype.call$1$1 = function(a) {
       return this(a);
+    };
+    Function.prototype.call$3 = function(a, b, c) {
+      return this(a, b, c);
     };
     Function.prototype.call$4 = function(a, b, c, d) {
       return this(a, b, c, d);
@@ -1055,23 +1055,23 @@
       "^": "JSArray;$ti"
     },
     ArrayIterator: {
-      "^": "Object;_iterable,__interceptors$_length,_index,0__interceptors$_current,$ti",
+      "^": "Object;__interceptors$_iterable,__interceptors$_length,__interceptors$_index,0__interceptors$_current,$ti",
       get$current: function() {
         return this.__interceptors$_current;
       },
       moveNext$0: function() {
         var t1, $length, t2;
-        t1 = this._iterable;
+        t1 = this.__interceptors$_iterable;
         $length = t1.length;
         if (this.__interceptors$_length !== $length)
           throw H.wrapException(H.throwConcurrentModificationError(t1));
-        t2 = this._index;
+        t2 = this.__interceptors$_index;
         if (t2 >= $length) {
           this.__interceptors$_current = null;
           return false;
         }
         this.__interceptors$_current = t1[t2];
-        this._index = t2 + 1;
+        this.__interceptors$_index = t2 + 1;
         return true;
       }
     },
@@ -2108,10 +2108,10 @@
       }
     },
     SubListIterable: {
-      "^": "ListIterable;__internal$_iterable,_start,_endOrLength,$ti",
+      "^": "ListIterable;_iterable,_start,_endOrLength,$ti",
       get$_endIndex: function() {
         var $length, t1, t2;
-        $length = J.get$length$asx(this.__internal$_iterable);
+        $length = J.get$length$asx(this._iterable);
         t1 = this._endOrLength;
         if (t1 != null) {
           if (typeof $length !== "number")
@@ -2125,7 +2125,7 @@
       },
       get$_startIndex: function() {
         var $length, t1;
-        $length = J.get$length$asx(this.__internal$_iterable);
+        $length = J.get$length$asx(this._iterable);
         t1 = this._start;
         if (typeof t1 !== "number")
           return t1.$gt();
@@ -2137,7 +2137,7 @@
       },
       get$length: function(_) {
         var $length, t1, t2;
-        $length = J.get$length$asx(this.__internal$_iterable);
+        $length = J.get$length$asx(this._iterable);
         t1 = this._start;
         if (typeof t1 !== "number")
           return t1.$ge();
@@ -2169,7 +2169,7 @@
           t1 = true;
         if (t1)
           throw H.wrapException(P.IndexError$(index, this, "index", null, null));
-        return J.elementAt$1$ax(this.__internal$_iterable, realIndex);
+        return J.elementAt$1$ax(this._iterable, realIndex);
       },
       skip$1: function(_, count) {
         var t1, newStart;
@@ -2180,12 +2180,12 @@
         t1 = this._endOrLength;
         if (t1 != null && newStart >= t1)
           return new H.EmptyIterable(this.$ti);
-        return H.SubListIterable$(this.__internal$_iterable, newStart, t1, H.getTypeArgumentByIndex(this, 0));
+        return H.SubListIterable$(this._iterable, newStart, t1, H.getTypeArgumentByIndex(this, 0));
       },
       toList$1$growable: function(_, growable) {
         var start, t1, t2, end, end0, t3, $length, result, t4, i;
         start = this._start;
-        t1 = this.__internal$_iterable;
+        t1 = this._iterable;
         t2 = J.getInterceptor$asx(t1);
         end = t2.get$length(t1);
         end0 = this._endOrLength;
@@ -2241,13 +2241,13 @@
       }
     },
     ListIterator: {
-      "^": "Object;__internal$_iterable,__internal$_length,__internal$_index,0__internal$_current,$ti",
+      "^": "Object;_iterable,__internal$_length,__internal$_index,0__internal$_current,$ti",
       get$current: function() {
         return this.__internal$_current;
       },
       moveNext$0: function() {
         var t1, t2, $length, t3;
-        t1 = this.__internal$_iterable;
+        t1 = this._iterable;
         t2 = J.getInterceptor$asx(t1);
         $length = t2.get$length(t1);
         t3 = this.__internal$_length;
@@ -2266,21 +2266,21 @@
       }
     },
     MappedIterable: {
-      "^": "Iterable;__internal$_iterable,_f,$ti",
+      "^": "Iterable;_iterable,_f,$ti",
       get$iterator: function(_) {
-        return new H.MappedIterator(J.get$iterator$ax(this.__internal$_iterable), this._f, this.$ti);
+        return new H.MappedIterator(J.get$iterator$ax(this._iterable), this._f, this.$ti);
       },
       get$length: function(_) {
-        return J.get$length$asx(this.__internal$_iterable);
+        return J.get$length$asx(this._iterable);
       },
       get$isEmpty: function(_) {
-        return J.get$isEmpty$asx(this.__internal$_iterable);
+        return J.get$isEmpty$asx(this._iterable);
       },
       get$first: function(_) {
-        return this._f.call$1(J.get$first$ax(this.__internal$_iterable));
+        return this._f.call$1(J.get$first$ax(this._iterable));
       },
       elementAt$1: function(_, index) {
-        return this._f.call$1(J.elementAt$1$ax(this.__internal$_iterable, index));
+        return this._f.call$1(J.elementAt$1$ax(this._iterable, index));
       },
       $asIterable: function($S, $T) {
         return [$T];
@@ -2296,7 +2296,7 @@
       }
     },
     EfficientLengthMappedIterable: {
-      "^": "MappedIterable;__internal$_iterable,_f,$ti",
+      "^": "MappedIterable;_iterable,_f,$ti",
       $isEfficientLengthIterable: 1,
       $asEfficientLengthIterable: function($S, $T) {
         return [$T];
@@ -2339,9 +2339,9 @@
       }
     },
     WhereIterable: {
-      "^": "Iterable;__internal$_iterable,_f,$ti",
+      "^": "Iterable;_iterable,_f,$ti",
       get$iterator: function(_) {
-        return new H.WhereIterator(J.get$iterator$ax(this.__internal$_iterable), this._f, this.$ti);
+        return new H.WhereIterator(J.get$iterator$ax(this._iterable), this._f, this.$ti);
       },
       map$1$1: function(_, f, $T) {
         var t1 = H.getTypeArgumentByIndex(this, 0);
@@ -2365,9 +2365,9 @@
       }
     },
     TakeIterable: {
-      "^": "Iterable;__internal$_iterable,_takeCount,$ti",
+      "^": "Iterable;_iterable,_takeCount,$ti",
       get$iterator: function(_) {
-        return new H.TakeIterator(J.get$iterator$ax(this.__internal$_iterable), this._takeCount, this.$ti);
+        return new H.TakeIterator(J.get$iterator$ax(this._iterable), this._takeCount, this.$ti);
       },
       static: {
         TakeIterable_TakeIterable: function(iterable, takeCount, $E) {
@@ -2381,10 +2381,10 @@
       }
     },
     EfficientLengthTakeIterable: {
-      "^": "TakeIterable;__internal$_iterable,_takeCount,$ti",
+      "^": "TakeIterable;_iterable,_takeCount,$ti",
       get$length: function(_) {
         var iterableLength, t1;
-        iterableLength = J.get$length$asx(this.__internal$_iterable);
+        iterableLength = J.get$length$asx(this._iterable);
         t1 = this._takeCount;
         if (typeof iterableLength !== "number")
           return iterableLength.$gt();
@@ -2409,9 +2409,9 @@
       }
     },
     TakeWhileIterable: {
-      "^": "Iterable;__internal$_iterable,_f,$ti",
+      "^": "Iterable;_iterable,_f,$ti",
       get$iterator: function(_) {
-        return new H.TakeWhileIterator(J.get$iterator$ax(this.__internal$_iterable), this._f, false, this.$ti);
+        return new H.TakeWhileIterator(J.get$iterator$ax(this._iterable), this._f, false, this.$ti);
       }
     },
     TakeWhileIterator: {
@@ -2433,12 +2433,12 @@
       }
     },
     SkipIterable: {
-      "^": "Iterable;__internal$_iterable,_skipCount,$ti",
+      "^": "Iterable;_iterable,_skipCount,$ti",
       skip$1: function(_, count) {
-        return new H.SkipIterable(this.__internal$_iterable, this._skipCount + H._checkCount(count), this.$ti);
+        return new H.SkipIterable(this._iterable, this._skipCount + H._checkCount(count), this.$ti);
       },
       get$iterator: function(_) {
-        return new H.SkipIterator(J.get$iterator$ax(this.__internal$_iterable), this._skipCount, this.$ti);
+        return new H.SkipIterator(J.get$iterator$ax(this._iterable), this._skipCount, this.$ti);
       },
       static: {
         SkipIterable_SkipIterable: function(iterable, count, $E) {
@@ -2450,10 +2450,10 @@
       }
     },
     EfficientLengthSkipIterable: {
-      "^": "SkipIterable;__internal$_iterable,_skipCount,$ti",
+      "^": "SkipIterable;_iterable,_skipCount,$ti",
       get$length: function(_) {
         var t1, $length;
-        t1 = J.get$length$asx(this.__internal$_iterable);
+        t1 = J.get$length$asx(this._iterable);
         if (typeof t1 !== "number")
           return t1.$sub();
         $length = t1 - this._skipCount;
@@ -2462,7 +2462,7 @@
         return 0;
       },
       skip$1: function(_, count) {
-        return new H.EfficientLengthSkipIterable(this.__internal$_iterable, this._skipCount + H._checkCount(count), this.$ti);
+        return new H.EfficientLengthSkipIterable(this._iterable, this._skipCount + H._checkCount(count), this.$ti);
       },
       $isEfficientLengthIterable: 1
     },
@@ -4062,7 +4062,7 @@
       if (!t1.$isPattern)
         throw H.wrapException(P.ArgumentError$value(pattern, "pattern", "is not a Pattern"));
       for (t1 = t1.allMatches$1(pattern, receiver), t1 = new H._AllMatchesIterator(t1._re, t1._string, t1.__js_helper$_start), startIndex = 0, t2 = ""; t1.moveNext$0(); t2 = t3) {
-        t3 = t1.__js_helper$_current;
+        t3 = t1._current;
         t4 = t3._match;
         t5 = t4.index;
         t3 = t2 + H.S(H._js_helper___stringIdentity$closure().call$1(C.JSString_methods.substring$2(receiver, startIndex, t5))) + H.S(onMatch.call$1(t3));
@@ -4269,11 +4269,11 @@
       }
     },
     NullError: {
-      "^": "Error;_message,_method",
+      "^": "Error;__js_helper$_message,_method",
       toString$0: function(_) {
         var t1 = this._method;
         if (t1 == null)
-          return "NullError: " + H.S(this._message);
+          return "NullError: " + H.S(this.__js_helper$_message);
         return "NullError: method not found: '" + t1 + "' on null";
       },
       static: {
@@ -4283,16 +4283,16 @@
       }
     },
     JsNoSuchMethodError: {
-      "^": "Error;_message,_method,_receiver",
+      "^": "Error;__js_helper$_message,_method,_receiver",
       toString$0: function(_) {
         var t1, t2;
         t1 = this._method;
         if (t1 == null)
-          return "NoSuchMethodError: " + H.S(this._message);
+          return "NoSuchMethodError: " + H.S(this.__js_helper$_message);
         t2 = this._receiver;
         if (t2 == null)
-          return "NoSuchMethodError: method not found: '" + t1 + "' (" + H.S(this._message) + ")";
-        return "NoSuchMethodError: method not found: '" + t1 + "' on '" + t2 + "' (" + H.S(this._message) + ")";
+          return "NoSuchMethodError: method not found: '" + t1 + "' (" + H.S(this.__js_helper$_message) + ")";
+        return "NoSuchMethodError: method not found: '" + t1 + "' on '" + t2 + "' (" + H.S(this.__js_helper$_message) + ")";
       },
       static: {
         JsNoSuchMethodError$: function(_message, match) {
@@ -4304,9 +4304,9 @@
       }
     },
     UnknownJsTypeError: {
-      "^": "Error;_message",
+      "^": "Error;__js_helper$_message",
       toString$0: function(_) {
-        var t1 = this._message;
+        var t1 = this.__js_helper$_message;
         return t1.length === 0 ? "Error" : "Error: " + t1;
       }
     },
@@ -4363,7 +4363,7 @@
       }
     },
     BoundClosure: {
-      "^": "TearOffClosure;_self,_target,_receiver,_name",
+      "^": "TearOffClosure;_self,_target,_receiver,__js_helper$_name",
       $eq: function(_, other) {
         if (other == null)
           return false;
@@ -4389,7 +4389,7 @@
         var receiver = this._receiver;
         if (receiver == null)
           receiver = this._self;
-        return "Closure '" + H.S(this._name) + "' of " + ("Instance of '" + H.Primitives_objectTypeName(receiver) + "'");
+        return "Closure '" + H.S(this.__js_helper$_name) + "' of " + ("Instance of '" + H.Primitives_objectTypeName(receiver) + "'");
       },
       static: {
         BoundClosure_selfOf: function(closure) {
@@ -4716,7 +4716,7 @@
         var t1, t2;
         t1 = this._map;
         t2 = new H.LinkedHashMapKeyIterator(t1, t1._modifications, this.$ti);
-        t2._cell = t1._first;
+        t2.__js_helper$_cell = t1._first;
         return t2;
       },
       contains$1: function(_, element) {
@@ -4737,22 +4737,22 @@
       }
     },
     LinkedHashMapKeyIterator: {
-      "^": "Object;_map,_modifications,0_cell,0__js_helper$_current,$ti",
+      "^": "Object;_map,_modifications,0__js_helper$_cell,0_current,$ti",
       get$current: function() {
-        return this.__js_helper$_current;
+        return this._current;
       },
       moveNext$0: function() {
         var t1 = this._map;
         if (this._modifications !== t1._modifications)
           throw H.wrapException(P.ConcurrentModificationError$(t1));
         else {
-          t1 = this._cell;
+          t1 = this.__js_helper$_cell;
           if (t1 == null) {
-            this.__js_helper$_current = null;
+            this._current = null;
             return false;
           } else {
-            this.__js_helper$_current = t1.hashMapCellKey;
-            this._cell = t1._next;
+            this._current = t1.hashMapCellKey;
+            this.__js_helper$_cell = t1._next;
             return true;
           }
         }
@@ -4890,9 +4890,9 @@
       }
     },
     _AllMatchesIterator: {
-      "^": "Object;_regExp,_string,_nextIndex,0__js_helper$_current",
+      "^": "Object;_regExp,_string,_nextIndex,0_current",
       get$current: function() {
-        return this.__js_helper$_current;
+        return this._current;
       },
       moveNext$0: function() {
         var t1, t2, match, nextIndex;
@@ -4903,13 +4903,13 @@
         if (t2 <= t1.length) {
           match = this._regExp._execGlobal$2(t1, t2);
           if (match != null) {
-            this.__js_helper$_current = match;
+            this._current = match;
             nextIndex = match.get$end();
             this._nextIndex = match._match.index === nextIndex ? nextIndex + 1 : nextIndex;
             return true;
           }
         }
-        this.__js_helper$_current = null;
+        this._current = null;
         this._string = null;
         return false;
       }
@@ -4933,15 +4933,15 @@
       $isMatch: 1
     },
     _StringAllMatchesIterable: {
-      "^": "Iterable;__js_helper$_input,_pattern,__js_helper$_index",
+      "^": "Iterable;_input,_pattern,_index",
       get$iterator: function(_) {
-        return new H._StringAllMatchesIterator(this.__js_helper$_input, this._pattern, this.__js_helper$_index);
+        return new H._StringAllMatchesIterator(this._input, this._pattern, this._index);
       },
       get$first: function(_) {
         var t1, t2, index;
-        t1 = this.__js_helper$_input;
+        t1 = this._input;
         t2 = this._pattern;
-        index = t1.indexOf(t2, this.__js_helper$_index);
+        index = t1.indexOf(t2, this._index);
         if (index >= 0)
           return new H.StringMatch(index, t1, t2);
         throw H.wrapException(H.IterableElementError_noElement());
@@ -4951,31 +4951,31 @@
       }
     },
     _StringAllMatchesIterator: {
-      "^": "Object;__js_helper$_input,_pattern,__js_helper$_index,0__js_helper$_current",
+      "^": "Object;_input,_pattern,_index,0_current",
       moveNext$0: function() {
         var t1, t2, t3, t4, t5, index, end;
-        t1 = this.__js_helper$_index;
+        t1 = this._index;
         t2 = this._pattern;
         t3 = t2.length;
-        t4 = this.__js_helper$_input;
+        t4 = this._input;
         t5 = t4.length;
         if (t1 + t3 > t5) {
-          this.__js_helper$_current = null;
+          this._current = null;
           return false;
         }
         index = t4.indexOf(t2, t1);
         if (index < 0) {
-          this.__js_helper$_index = t5 + 1;
-          this.__js_helper$_current = null;
+          this._index = t5 + 1;
+          this._current = null;
           return false;
         }
         end = index + t3;
-        this.__js_helper$_current = new H.StringMatch(index, t4, t2);
-        this.__js_helper$_index = end === this.__js_helper$_index ? end + 1 : end;
+        this._current = new H.StringMatch(index, t4, t2);
+        this._index = end === this._index ? end + 1 : end;
         return true;
       },
       get$current: function() {
-        return this.__js_helper$_current;
+        return this._current;
       }
     }
   }], ["dart._js_names", "dart:_js_names",, H, {
@@ -5686,7 +5686,7 @@
       }
     },
     _awaitOnObject_closure0: {
-      "^": "Closure:32;bodyFunction",
+      "^": "Closure:33;bodyFunction",
       call$2: function(error, stackTrace) {
         this.bodyFunction.call$2(1, new H.ExceptionAndStackTrace(error, H.interceptedTypeCheck(stackTrace, "$isStackTrace")));
       }
@@ -7040,7 +7040,7 @@
       }
     },
     _cancelAndErrorClosure_closure: {
-      "^": "Closure:32;subscription,future",
+      "^": "Closure:33;subscription,future",
       call$2: function(error, stackTrace) {
         P._cancelAndError(this.subscription, this.future, error, H.interceptedTypeCheck(stackTrace, "$isStackTrace"));
       }
@@ -8236,7 +8236,7 @@
       "^": "Object;_element,0_collection$_next,0_collection$_previous"
     },
     _LinkedHashSetIterator: {
-      "^": "Object;_set,_collection$_modifications,0_collection$_cell,0_collection$_current,$ti",
+      "^": "Object;_set,_collection$_modifications,0_cell,0_collection$_current,$ti",
       get$current: function() {
         return this._collection$_current;
       },
@@ -8245,13 +8245,13 @@
         if (this._collection$_modifications !== t1._collection$_modifications)
           throw H.wrapException(P.ConcurrentModificationError$(t1));
         else {
-          t1 = this._collection$_cell;
+          t1 = this._cell;
           if (t1 == null) {
             this._collection$_current = null;
             return false;
           } else {
             this._collection$_current = H.assertSubtypeOfRuntimeType(t1._element, H.getTypeArgumentByIndex(this, 0));
-            this._collection$_cell = t1._collection$_next;
+            this._cell = t1._collection$_next;
             return true;
           }
         }
@@ -8259,7 +8259,7 @@
       static: {
         _LinkedHashSetIterator$: function(_set, _modifications, $E) {
           var t1 = new P._LinkedHashSetIterator(_set, _modifications, [$E]);
-          t1._collection$_cell = _set._collection$_first;
+          t1._cell = _set._collection$_first;
           return t1;
         }
       }
@@ -12401,7 +12401,7 @@
       }
     },
     _createTables_setChars: {
-      "^": "Closure:33;",
+      "^": "Closure:34;",
       call$3: function(target, chars, transition) {
         var t1, i, t2;
         for (t1 = chars.length, i = 0; i < t1; ++i) {
@@ -12413,7 +12413,7 @@
       }
     },
     _createTables_setRange: {
-      "^": "Closure:33;",
+      "^": "Closure:34;",
       call$3: function(target, range, transition) {
         var i, n, t1;
         for (i = C.JSString_methods._codeUnitAt$1(range, 0), n = C.JSString_methods._codeUnitAt$1(range, 1); i <= n; ++i) {
@@ -13540,7 +13540,7 @@
       },
       setRequestHeader$2: [function(receiver, $name, value) {
         return receiver.setRequestHeader(H.stringTypeCheck($name), H.stringTypeCheck(value));
-      }, "call$2", "get$setRequestHeader", 9, 0, 34],
+      }, "call$2", "get$setRequestHeader", 9, 0, 35],
       $isHttpRequest: 1,
       "%": "XMLHttpRequest"
     },
@@ -14094,7 +14094,7 @@
       "%": "Storage"
     },
     Storage_keys_closure: {
-      "^": "Closure:34;keys",
+      "^": "Closure:35;keys",
       call$2: function(k, v) {
         return C.JSArray_methods.add$1(this.keys, k);
       }
@@ -14514,22 +14514,22 @@
       }
     },
     FixedSizeListIterator: {
-      "^": "Object;_array,_html$_length,_position,0_current,$ti",
+      "^": "Object;_array,_html$_length,_position,0_html$_current,$ti",
       moveNext$0: function() {
         var nextPosition, t1;
         nextPosition = this._position + 1;
         t1 = this._html$_length;
         if (nextPosition < t1) {
-          this._current = J.$index$asx(this._array, nextPosition);
+          this._html$_current = J.$index$asx(this._array, nextPosition);
           this._position = nextPosition;
           return true;
         }
-        this._current = null;
+        this._html$_current = null;
         this._position = t1;
         return false;
       },
       get$current: function() {
-        return this._current;
+        return this._html$_current;
       }
     },
     _DOMWindowCrossFrame: {
@@ -14856,14 +14856,14 @@
       }
     },
     CssClassSetImpl_addAll_closure: {
-      "^": "Closure:37;$this,iterable",
+      "^": "Closure:38;$this,iterable",
       call$1: function(s) {
         var t1 = P.String;
         return H.assertSubtype(s, "$isSet", [t1], "$asSet").addAll$1(0, J.map$1$1$ax(this.iterable, this.$this.get$_validateToken(), t1));
       }
     },
     CssClassSetImpl_clear_closure: {
-      "^": "Closure:37;",
+      "^": "Closure:38;",
       call$1: function(s) {
         return H.assertSubtype(s, "$isSet", [P.String], "$asSet").clear$0(0);
       }
@@ -14886,10 +14886,10 @@
         H.intTypeCheck(index);
         H.interceptedTypeCheck(value, "$isElement");
         t1 = this.get$_html_common$_iterable();
-        J.replaceWith$1$x(t1._f.call$1(J.elementAt$1$ax(t1.__internal$_iterable, index)), value);
+        J.replaceWith$1$x(t1._f.call$1(J.elementAt$1$ax(t1._iterable, index)), value);
       },
       set$length: function(_, newLength) {
-        var len = J.get$length$asx(this.get$_html_common$_iterable().__internal$_iterable);
+        var len = J.get$length$asx(this.get$_html_common$_iterable()._iterable);
         if (typeof len !== "number")
           return H.iae(len);
         if (newLength >= len)
@@ -14920,13 +14920,13 @@
         C.JSArray_methods.forEach$1(P.List_List$from(H.TakeIterable_TakeIterable(t1, end - start, H.getRuntimeTypeArgument(t1, "Iterable", 0)), true, null), new P.FilteredElementList_removeRange_closure());
       },
       get$length: function(_) {
-        return J.get$length$asx(this.get$_html_common$_iterable().__internal$_iterable);
+        return J.get$length$asx(this.get$_html_common$_iterable()._iterable);
       },
       $index: function(_, index) {
         var t1;
         H.intTypeCheck(index);
         t1 = this.get$_html_common$_iterable();
-        return t1._f.call$1(J.elementAt$1$ax(t1.__internal$_iterable, index));
+        return t1._f.call$1(J.elementAt$1$ax(t1._iterable, index));
       },
       get$iterator: function(_) {
         var t1 = P.List_List$from(this.get$_html_common$_iterable(), false, W.Element);
@@ -15828,18 +15828,18 @@
   }], ["", "package:analyzer/error/error.dart",, V, {
     "^": "",
     AnalysisError: {
-      "^": "Object;errorCode,_error$_message<,_correction,source>,offset>,length>,isStaticOnly",
+      "^": "Object;errorCode,_message<,_correction,source>,offset>,length>,isStaticOnly",
       get$hashCode: function(_) {
         var hashCode, t1, t2;
         hashCode = this.offset;
-        t1 = this._error$_message;
+        t1 = this._message;
         t1 = t1 != null ? C.JSString_methods.get$hashCode(t1) : 0;
         t2 = this.source;
         t2 = t2 != null ? t2.get$hashCode(t2) : 0;
         return (hashCode ^ t1 ^ t2) >>> 0;
       },
       get$message: function(_) {
-        return this._error$_message;
+        return this._message;
       },
       $eq: function(_, other) {
         var t1, t2;
@@ -15852,8 +15852,8 @@
             return false;
           if (this.offset !== other.offset || this.length !== other.length)
             return false;
-          t1 = this._error$_message;
-          t2 = other._error$_message;
+          t1 = this._message;
+          t2 = other._message;
           if (t1 == null ? t2 != null : t1 !== t2)
             return false;
           if (!J.$eq$(this.source, other.source))
@@ -15864,14 +15864,14 @@
       },
       toString$0: function(_) {
         var t1 = this.source;
-        t1 = H.S(t1 != null ? t1.fullName : "<unknown source>") + "(" + this.offset + ".." + (this.offset + this.length - 1) + "): " + H.S(this._error$_message);
+        t1 = H.S(t1 != null ? t1.fullName : "<unknown source>") + "(" + this.offset + ".." + (this.offset + this.length - 1) + "): " + H.S(this._message);
         return t1.charCodeAt(0) == 0 ? t1 : t1;
       },
       static: {
         AnalysisError$: function(source, offset, $length, errorCode, $arguments) {
           var t1, correctionTemplate;
           t1 = new V.AnalysisError(errorCode, null, null, source, offset, $length, false);
-          t1._error$_message = G.formatList(errorCode.message, $arguments);
+          t1._message = G.formatList(errorCode.message, $arguments);
           correctionTemplate = errorCode.correction;
           if (correctionTemplate != null)
             t1._correction = G.formatList(correctionTemplate, $arguments);
@@ -16053,7 +16053,7 @@
       }
     },
     AnnotationImpl: {
-      "^": "AstNodeImpl;atSign,0_ast$_name<,period,0_constructorName,0_ast$_arguments,0_ast$_element,0elementAnnotation,0_ast$_parent,0_propertyMap",
+      "^": "AstNodeImpl;atSign,0_name<,period,0_constructorName,0_ast$_arguments,0_ast$_element,0elementAnnotation,0_ast$_parent,0_propertyMap",
       get$beginToken: function() {
         return this.atSign;
       },
@@ -16066,7 +16066,7 @@
           if (t1 != null)
             return t1.token;
         }
-        return this._ast$_name.get$endToken();
+        return this._name.get$endToken();
       },
       accept$1$1: function(_, visitor, $E) {
         return H.assertSubtype(visitor, "$isAstVisitor", [$E], "$asAstVisitor").visitAnnotation$1(this);
@@ -16405,7 +16405,7 @@
       }
     },
     ClassDeclarationImpl: {
-      "^": "NamedCompilationUnitMemberImpl;abstractKeyword,classKeyword,0_typeParameters,0_extendsClause,0_withClause,0_implementsClause,0_nativeClause,leftBracket,0_members,rightBracket,0_ast$_name,0_comment,0_metadata,0_ast$_parent,0_propertyMap",
+      "^": "NamedCompilationUnitMemberImpl;abstractKeyword,classKeyword,0_typeParameters,0_extendsClause,0_withClause,0_implementsClause,0_nativeClause,leftBracket,0_members,rightBracket,0_name,0_comment,0_metadata,0_ast$_parent,0_propertyMap",
       get$endToken: function() {
         return this.rightBracket;
       },
@@ -16425,7 +16425,7 @@
       $isClassMember: 1
     },
     ClassTypeAliasImpl: {
-      "^": "TypeAliasImpl;0_typeParameters,equals,abstractKeyword,0_superclass,0_withClause,0_implementsClause,typedefKeyword,semicolon,0_ast$_name,0_comment,0_metadata,0_ast$_parent,0_propertyMap",
+      "^": "TypeAliasImpl;0_typeParameters,equals,abstractKeyword,0_superclass,0_withClause,0_implementsClause,typedefKeyword,semicolon,0_name,0_comment,0_metadata,0_ast$_parent,0_propertyMap",
       get$firstTokenAfterCommentAndMetadata: function() {
         var t1 = this.abstractKeyword;
         if (t1 != null)
@@ -16549,7 +16549,7 @@
       }
     },
     ConfigurationImpl: {
-      "^": "AstNodeImpl;ifKeyword,leftParenthesis,0_ast$_name<,equalToken,0_ast$_value,rightParenthesis,0_uri,0uriSource,0_ast$_parent,0_propertyMap",
+      "^": "AstNodeImpl;ifKeyword,leftParenthesis,0_name<,equalToken,0_ast$_value,rightParenthesis,0_uri,0uriSource,0_ast$_parent,0_propertyMap",
       get$beginToken: function() {
         return this.ifKeyword;
       },
@@ -16562,7 +16562,7 @@
       $isConfiguration: 1
     },
     ConstructorDeclarationImpl: {
-      "^": "ClassMemberImpl;externalKeyword<,constKeyword<,factoryKeyword<,0_returnType,period,0_ast$_name<,0_parameters,separator,0_initializers,0_redirectedConstructor,0_body,0element,0_comment,0_metadata,0_ast$_parent,0_propertyMap",
+      "^": "ClassMemberImpl;externalKeyword<,constKeyword<,factoryKeyword<,0_returnType,period,0_name<,0_parameters,separator,0_initializers,0_redirectedConstructor,0_body,0element,0_comment,0_metadata,0_ast$_parent,0_propertyMap",
       get$endToken: function() {
         var t1 = this._body;
         if (t1 != null)
@@ -16614,12 +16614,12 @@
       $isConstructorInitializer: 1
     },
     ConstructorNameImpl: {
-      "^": "AstNodeImpl;0_type<,period,0_ast$_name<,0staticElement,0_ast$_parent,0_propertyMap",
+      "^": "AstNodeImpl;0_type<,period,0_name<,0staticElement,0_ast$_parent,0_propertyMap",
       get$beginToken: function() {
-        return this._type._ast$_name.get$beginToken();
+        return this._type._name.get$beginToken();
       },
       get$endToken: function() {
-        var t1 = this._ast$_name;
+        var t1 = this._name;
         if (t1 != null)
           return t1.token;
         return this._type.get$endToken();
@@ -16635,7 +16635,7 @@
         ConstructorNameImpl$: function(type, period, $name) {
           var t1 = new U.ConstructorNameImpl(period);
           t1._type = t1._becomeParentOf$1$1(type, U.TypeNameImpl);
-          t1._ast$_name = t1._becomeParentOf$1$1($name, U.SimpleIdentifierImpl);
+          t1._name = t1._becomeParentOf$1$1($name, U.SimpleIdentifierImpl);
           return t1;
         }
       }
@@ -16803,12 +16803,12 @@
       $isEmptyStatement: 1
     },
     EnumConstantDeclarationImpl: {
-      "^": "DeclarationImpl;0_ast$_name<,0_comment,0_metadata,0_ast$_parent,0_propertyMap",
+      "^": "DeclarationImpl;0_name<,0_comment,0_metadata,0_ast$_parent,0_propertyMap",
       get$endToken: function() {
-        return this._ast$_name.token;
+        return this._name.token;
       },
       get$firstTokenAfterCommentAndMetadata: function() {
-        return this._ast$_name.token;
+        return this._name.token;
       },
       accept$1$1: function(_, visitor, $E) {
         return H.assertSubtype(visitor, "$isAstVisitor", [$E], "$asAstVisitor").visitEnumConstantDeclaration$1(this);
@@ -16816,7 +16816,7 @@
       $isEnumConstantDeclaration: 1
     },
     EnumDeclarationImpl: {
-      "^": "NamedCompilationUnitMemberImpl;enumKeyword,leftBracket,0_constants,rightBracket,0_ast$_name,0_comment,0_metadata,0_ast$_parent,0_propertyMap",
+      "^": "NamedCompilationUnitMemberImpl;enumKeyword,leftBracket,0_constants,rightBracket,0_name,0_comment,0_metadata,0_ast$_parent,0_propertyMap",
       get$endToken: function() {
         return this.rightBracket;
       },
@@ -16832,7 +16832,7 @@
           var t1, t2;
           t1 = new U.EnumDeclarationImpl(enumKeyword, leftBracket, rightBracket);
           t1.AnnotatedNodeImpl$2(comment, metadata);
-          t1._ast$_name = t1._becomeParentOf$1$1($name, U.SimpleIdentifierImpl);
+          t1._name = t1._becomeParentOf$1$1($name, U.SimpleIdentifierImpl);
           t2 = Y.EnumConstantDeclaration;
           t2 = new U.NodeListImpl(t1, H.setRuntimeTypeInfo([], [t2]), [t2]);
           t2.addAll$1(0, constants);
@@ -17059,7 +17059,7 @@
       $isFunctionBody: 1
     },
     FunctionDeclarationImpl: {
-      "^": "NamedCompilationUnitMemberImpl;externalKeyword<,0_returnType,propertyKeyword<,0_functionExpression,0_ast$_name,0_comment,0_metadata,0_ast$_parent,0_propertyMap",
+      "^": "NamedCompilationUnitMemberImpl;externalKeyword<,0_returnType,propertyKeyword<,0_functionExpression,0_name,0_comment,0_metadata,0_ast$_parent,0_propertyMap",
       get$endToken: function() {
         return this._functionExpression.get$endToken();
       },
@@ -17076,7 +17076,7 @@
             if (t1 != null)
               return t1;
             else {
-              t1 = this._ast$_name;
+              t1 = this._name;
               if (t1 != null)
                 return t1.token;
             }
@@ -17095,7 +17095,7 @@
         FunctionDeclarationImpl$: function(comment, metadata, externalKeyword, returnType, propertyKeyword, $name, functionExpression) {
           var t1 = new U.FunctionDeclarationImpl(externalKeyword, propertyKeyword);
           t1.AnnotatedNodeImpl$2(comment, metadata);
-          t1._ast$_name = t1._becomeParentOf$1$1($name, U.SimpleIdentifierImpl);
+          t1._name = t1._becomeParentOf$1$1($name, U.SimpleIdentifierImpl);
           t1._returnType = t1._becomeParentOf$1$1(returnType, U.TypeAnnotationImpl);
           t1._functionExpression = t1._becomeParentOf$1$1(functionExpression, U.FunctionExpressionImpl);
           return t1;
@@ -17184,7 +17184,7 @@
       $isFunctionExpressionInvocation: 1
     },
     FunctionTypeAliasImpl: {
-      "^": "TypeAliasImpl;0_returnType,0_typeParameters,0_parameters,typedefKeyword,semicolon,0_ast$_name,0_comment,0_metadata,0_ast$_parent,0_propertyMap",
+      "^": "TypeAliasImpl;0_returnType,0_typeParameters,0_parameters,typedefKeyword,semicolon,0_name,0_comment,0_metadata,0_ast$_parent,0_propertyMap",
       accept$1$1: function(_, visitor, $E) {
         return H.assertSubtype(visitor, "$isAstVisitor", [$E], "$asAstVisitor").visitFunctionTypeAlias$1(this);
       },
@@ -17193,7 +17193,7 @@
         FunctionTypeAliasImpl$: function(comment, metadata, keyword, returnType, $name, typeParameters, parameters, semicolon) {
           var t1 = new U.FunctionTypeAliasImpl(keyword, semicolon);
           t1.AnnotatedNodeImpl$2(comment, metadata);
-          t1._ast$_name = t1._becomeParentOf$1$1($name, U.SimpleIdentifierImpl);
+          t1._name = t1._becomeParentOf$1$1($name, U.SimpleIdentifierImpl);
           t1._returnType = t1._becomeParentOf$1$1(returnType, U.TypeAnnotationImpl);
           t1._typeParameters = t1._becomeParentOf$1$1(typeParameters, U.TypeParameterListImpl);
           t1._parameters = t1._becomeParentOf$1$1(parameters, U.FormalParameterListImpl);
@@ -17249,7 +17249,7 @@
       }
     },
     GenericTypeAliasImpl: {
-      "^": "TypeAliasImpl;0_typeParameters,equals,0_functionType,typedefKeyword,semicolon,0_ast$_name,0_comment,0_metadata,0_ast$_parent,0_propertyMap",
+      "^": "TypeAliasImpl;0_typeParameters,equals,0_functionType,typedefKeyword,semicolon,0_name,0_comment,0_metadata,0_ast$_parent,0_propertyMap",
       accept$1$1: function(_, visitor, $E) {
         return H.assertSubtype(visitor, "$isAstVisitor", [$E], "$asAstVisitor").visitGenericTypeAlias$1(this);
       },
@@ -17258,7 +17258,7 @@
         GenericTypeAliasImpl$: function(comment, metadata, typedefToken, $name, typeParameters, equals, functionType, semicolon) {
           var t1 = new U.GenericTypeAliasImpl(equals, typedefToken, semicolon);
           t1.AnnotatedNodeImpl$2(comment, metadata);
-          t1._ast$_name = t1._becomeParentOf$1$1($name, U.SimpleIdentifierImpl);
+          t1._name = t1._becomeParentOf$1$1($name, U.SimpleIdentifierImpl);
           t1._typeParameters = t1._becomeParentOf$1$1(typeParameters, U.TypeParameterListImpl);
           t1._functionType = t1._becomeParentOf$1$1(functionType, U.GenericFunctionTypeImpl);
           return t1;
@@ -17389,7 +17389,7 @@
       "^": "ExpressionImpl;keyword<,0_constructorName,0_argumentList,0staticElement,0staticType,0_ast$_parent,0_propertyMap",
       get$beginToken: function() {
         var t1 = this.keyword;
-        return t1 == null ? this._constructorName._type._ast$_name.get$beginToken() : t1;
+        return t1 == null ? this._constructorName._type._name.get$beginToken() : t1;
       },
       get$endToken: function() {
         return this._argumentList.rightParenthesis;
@@ -17533,7 +17533,7 @@
       $isLabel: 1
     },
     LibraryDirectiveImpl: {
-      "^": "DirectiveImpl;libraryKeyword,0_ast$_name<,semicolon<,0_ast$_element,0_comment,0_metadata,0_ast$_parent,0_propertyMap",
+      "^": "DirectiveImpl;libraryKeyword,0_name<,semicolon<,0_ast$_element,0_comment,0_metadata,0_ast$_parent,0_propertyMap",
       get$endToken: function() {
         return this.semicolon;
       },
@@ -17647,7 +17647,7 @@
       $isMapLiteral: 1
     },
     MethodDeclarationImpl: {
-      "^": "ClassMemberImpl;externalKeyword<,modifierKeyword,0_returnType,propertyKeyword<,operatorKeyword,0_ast$_name<,0_typeParameters,0_parameters,0_body,0_comment,0_metadata,0_ast$_parent,0_propertyMap",
+      "^": "ClassMemberImpl;externalKeyword<,modifierKeyword,0_returnType,propertyKeyword<,operatorKeyword,0_name<,0_typeParameters,0_parameters,0_body,0_comment,0_metadata,0_ast$_parent,0_propertyMap",
       get$body: function(_) {
         return this._body;
       },
@@ -17678,10 +17678,10 @@
             }
           }
         }
-        return this._ast$_name.token;
+        return this._name.token;
       },
       get$name: function(_) {
-        return this._ast$_name;
+        return this._name;
       },
       get$parameters: function() {
         return this._parameters;
@@ -17731,15 +17731,15 @@
       }
     },
     NamedCompilationUnitMemberImpl: {
-      "^": "CompilationUnitMemberImpl;0_ast$_name<",
+      "^": "CompilationUnitMemberImpl;0_name<",
       get$name: function(_) {
-        return this._ast$_name;
+        return this._name;
       }
     },
     NamedExpressionImpl: {
-      "^": "ExpressionImpl;0_ast$_name<,0_expression,0staticType,0_ast$_parent,0_propertyMap",
+      "^": "ExpressionImpl;0_name<,0_expression,0staticType,0_ast$_parent,0_propertyMap",
       get$beginToken: function() {
-        return this._ast$_name._label.token;
+        return this._name._label.token;
       },
       get$endToken: function() {
         return this._expression.get$endToken();
@@ -17754,7 +17754,7 @@
       static: {
         NamedExpressionImpl$: function($name, expression) {
           var t1 = new U.NamedExpressionImpl();
-          t1._ast$_name = t1._becomeParentOf$1$1($name, U.LabelImpl);
+          t1._name = t1._becomeParentOf$1$1($name, U.LabelImpl);
           t1._expression = t1._becomeParentOf$1$1(expression, U.ExpressionImpl);
           return t1;
         }
@@ -17773,12 +17773,12 @@
       }
     },
     NativeClauseImpl: {
-      "^": "AstNodeImpl;nativeKeyword,0_ast$_name<,0_ast$_parent,0_propertyMap",
+      "^": "AstNodeImpl;nativeKeyword,0_name<,0_ast$_parent,0_propertyMap",
       get$beginToken: function() {
         return this.nativeKeyword;
       },
       get$endToken: function() {
-        return this._ast$_name.get$endToken();
+        return this._name.get$endToken();
       },
       accept$1$1: function(_, visitor, $E) {
         return H.assertSubtype(visitor, "$isAstVisitor", [$E], "$asAstVisitor").visitNativeClause$1(this);
@@ -18607,18 +18607,18 @@
       $isTypedLiteral: 1
     },
     TypeNameImpl: {
-      "^": "TypeAnnotationImpl;0_ast$_name<,0_typeArguments,question,0type>,0_ast$_parent,0_propertyMap",
+      "^": "TypeAnnotationImpl;0_name<,0_typeArguments,question,0type>,0_ast$_parent,0_propertyMap",
       get$beginToken: function() {
-        return this._ast$_name.get$beginToken();
+        return this._name.get$beginToken();
       },
       get$endToken: function() {
         var t1 = this._typeArguments;
         if (t1 != null)
           return t1.rightBracket;
-        return this._ast$_name.get$endToken();
+        return this._name.get$endToken();
       },
       get$isSynthetic: function() {
-        return this._ast$_name.get$isSynthetic() && this._typeArguments == null;
+        return this._name.get$isSynthetic() && this._typeArguments == null;
       },
       accept$1$1: function(_, visitor, $E) {
         return H.assertSubtype(visitor, "$isAstVisitor", [$E], "$asAstVisitor").visitTypeName$1(this);
@@ -18627,22 +18627,22 @@
       static: {
         TypeNameImpl$: function($name, typeArguments, question) {
           var t1 = new U.TypeNameImpl(question);
-          t1._ast$_name = t1._becomeParentOf$1$1($name, U.IdentifierImpl);
+          t1._name = t1._becomeParentOf$1$1($name, U.IdentifierImpl);
           t1._typeArguments = t1._becomeParentOf$1$1(typeArguments, U.TypeArgumentListImpl);
           return t1;
         }
       }
     },
     TypeParameterImpl: {
-      "^": "DeclarationImpl;0_ast$_name<,extendsKeyword,0_bound,0_comment,0_metadata,0_ast$_parent,0_propertyMap",
+      "^": "DeclarationImpl;0_name<,extendsKeyword,0_bound,0_comment,0_metadata,0_ast$_parent,0_propertyMap",
       get$endToken: function() {
         var t1 = this._bound;
         if (t1 == null)
-          return this._ast$_name.token;
+          return this._name.token;
         return t1.get$endToken();
       },
       get$firstTokenAfterCommentAndMetadata: function() {
-        return this._ast$_name.token;
+        return this._name.token;
       },
       accept$1$1: function(_, visitor, $E) {
         return H.assertSubtype(visitor, "$isAstVisitor", [$E], "$asAstVisitor").visitTypeParameter$1(this);
@@ -18652,7 +18652,7 @@
         TypeParameterImpl$: function(comment, metadata, $name, extendsKeyword, bound) {
           var t1 = new U.TypeParameterImpl(extendsKeyword);
           t1.AnnotatedNodeImpl$2(comment, metadata);
-          t1._ast$_name = t1._becomeParentOf$1$1($name, U.SimpleIdentifierImpl);
+          t1._name = t1._becomeParentOf$1$1($name, U.SimpleIdentifierImpl);
           t1._bound = t1._becomeParentOf$1$1(bound, U.TypeAnnotationImpl);
           return t1;
         }
@@ -18678,15 +18678,15 @@
       }
     },
     VariableDeclarationImpl: {
-      "^": "DeclarationImpl;0_ast$_name<,equals,0_initializer<,0_comment,0_metadata,0_ast$_parent,0_propertyMap",
+      "^": "DeclarationImpl;0_name<,equals,0_initializer<,0_comment,0_metadata,0_ast$_parent,0_propertyMap",
       get$endToken: function() {
         var t1 = this._initializer;
         if (t1 != null)
           return t1.get$endToken();
-        return this._ast$_name.token;
+        return this._name.token;
       },
       get$firstTokenAfterCommentAndMetadata: function() {
-        return this._ast$_name.token;
+        return this._name.token;
       },
       accept$1$1: function(_, visitor, $E) {
         return H.assertSubtype(visitor, "$isAstVisitor", [$E], "$asAstVisitor").visitVariableDeclaration$1(this);
@@ -18696,7 +18696,7 @@
         VariableDeclarationImpl$: function($name, equals, initializer) {
           var t1 = new U.VariableDeclarationImpl(equals);
           t1.AnnotatedNodeImpl$2(null, null);
-          t1._ast$_name = t1._becomeParentOf$1$1($name, U.SimpleIdentifierImpl);
+          t1._name = t1._becomeParentOf$1$1($name, U.SimpleIdentifierImpl);
           t1._initializer = t1._becomeParentOf$1$1(initializer, U.ExpressionImpl);
           return t1;
         }
@@ -18820,7 +18820,7 @@
         H.assertSubtype(members, "$isList", t2, "$asList");
         t3 = new U.ClassDeclarationImpl(abstractKeyword, classKeyword, leftBracket, rightBracket);
         t3.AnnotatedNodeImpl$2(comment, metadata);
-        t3._ast$_name = t3._becomeParentOf$1$1($name, U.SimpleIdentifierImpl);
+        t3._name = t3._becomeParentOf$1$1($name, U.SimpleIdentifierImpl);
         t3._typeParameters = t3._becomeParentOf$1$1(typeParameters, U.TypeParameterListImpl);
         t3._extendsClause = t3._becomeParentOf$1$1(extendsClause, U.ExtendsClauseImpl);
         t3._withClause = t3._becomeParentOf$1$1(withClause, U.WithClauseImpl);
@@ -18833,7 +18833,7 @@
       classTypeAlias$11: function(comment, metadata, keyword, $name, typeParameters, equals, abstractKeyword, superclass, withClause, implementsClause, semicolon) {
         var t1 = new U.ClassTypeAliasImpl(equals, abstractKeyword, keyword, semicolon);
         t1.AnnotatedNodeImpl$2(comment, H.assertSubtype(metadata, "$isList", [Y.Annotation], "$asList"));
-        t1._ast$_name = t1._becomeParentOf$1$1($name, U.SimpleIdentifierImpl);
+        t1._name = t1._becomeParentOf$1$1($name, U.SimpleIdentifierImpl);
         t1._typeParameters = t1._becomeParentOf$1$1(typeParameters, U.TypeParameterListImpl);
         t1._superclass = t1._becomeParentOf$1$1(superclass, U.TypeNameImpl);
         t1._withClause = t1._becomeParentOf$1$1(withClause, U.WithClauseImpl);
@@ -18849,7 +18849,7 @@
         t3 = new U.ConstructorDeclarationImpl(externalKeyword, constKeyword, factoryKeyword, period, separator);
         t3.AnnotatedNodeImpl$2(comment, metadata);
         t3._returnType = t3._becomeParentOf$1$1(returnType, U.IdentifierImpl);
-        t3._ast$_name = t3._becomeParentOf$1$1($name, U.SimpleIdentifierImpl);
+        t3._name = t3._becomeParentOf$1$1($name, U.SimpleIdentifierImpl);
         t3._parameters = t3._becomeParentOf$1$1(parameters, U.FormalParameterListImpl);
         t1 = new U.NodeListImpl(t3, H.setRuntimeTypeInfo([], t2), [t1]);
         t1.addAll$1(0, initializers);
@@ -18902,7 +18902,7 @@
         var t1 = new U.MethodDeclarationImpl(externalKeyword, modifierKeyword, propertyKeyword, operatorKeyword);
         t1.AnnotatedNodeImpl$2(comment, H.assertSubtype(metadata, "$isList", [Y.Annotation], "$asList"));
         t1._returnType = t1._becomeParentOf$1$1(returnType, U.TypeAnnotationImpl);
-        t1._ast$_name = t1._becomeParentOf$1$1($name, U.SimpleIdentifierImpl);
+        t1._name = t1._becomeParentOf$1$1($name, U.SimpleIdentifierImpl);
         t1._typeParameters = t1._becomeParentOf$1$1(typeParameters, U.TypeParameterListImpl);
         t1._parameters = t1._becomeParentOf$1$1(parameters, U.FormalParameterListImpl);
         t1._body = t1._becomeParentOf$1$1(body, U.FunctionBodyImpl);
@@ -19004,7 +19004,7 @@
       visitAnnotation$1: function(node) {
         var t1;
         this.sink._contents += "@";
-        t1 = node._ast$_name;
+        t1 = node._name;
         if (t1 != null)
           t1.accept$1$1(0, this, P.Object);
         this.safelyVisitNodeWithPrefix$2(".", node._constructorName);
@@ -19160,7 +19160,7 @@
         this.safelyVisitTokenWithSuffix$2(node.abstractKeyword, " ");
         t1 = this.sink;
         t1._contents += "class ";
-        t2 = node._ast$_name;
+        t2 = node._name;
         if (t2 != null)
           t2.accept$1$1(0, this, P.Object);
         t2 = node._typeParameters;
@@ -19181,7 +19181,7 @@
           this.sink._contents += "abstract ";
         t1 = this.sink;
         t1._contents += "class ";
-        t2 = node._ast$_name;
+        t2 = node._name;
         if (t2 != null)
           t2.accept$1$1(0, this, P.Object);
         t2 = node._typeParameters;
@@ -19234,7 +19234,7 @@
         var t1, t2;
         t1 = this.sink;
         t1._contents += "if (";
-        t2 = node._ast$_name;
+        t2 = node._name;
         if (t2 != null)
           t2.accept$1$1(0, this, P.Object);
         this.safelyVisitNodeWithPrefix$2(" == ", node._ast$_value);
@@ -19253,7 +19253,7 @@
         t1 = node._returnType;
         if (t1 != null)
           t1.accept$1$1(0, this, P.Object);
-        this.safelyVisitNodeWithPrefix$2(".", node._ast$_name);
+        this.safelyVisitNodeWithPrefix$2(".", node._name);
         t1 = node._parameters;
         if (t1 != null)
           t1.accept$1$1(0, this, P.Object);
@@ -19278,7 +19278,7 @@
         var t1 = node._type;
         if (t1 != null)
           t1.accept$1$1(0, this, P.Object);
-        this.safelyVisitNodeWithPrefix$2(".", node._ast$_name);
+        this.safelyVisitNodeWithPrefix$2(".", node._name);
         return;
       },
       visitContinueStatement$1: function(node) {
@@ -19344,7 +19344,7 @@
       visitEnumConstantDeclaration$1: function(node) {
         var t1;
         this.safelyVisitNodeListWithSeparatorAndSuffix$3(node._metadata, " ", " ");
-        t1 = node._ast$_name;
+        t1 = node._name;
         if (t1 != null)
           t1.accept$1$1(0, this, P.Object);
         return;
@@ -19354,7 +19354,7 @@
         this.safelyVisitNodeListWithSeparatorAndSuffix$3(node._metadata, " ", " ");
         t1 = this.sink;
         t1._contents += "enum ";
-        t2 = node._ast$_name;
+        t2 = node._name;
         if (t2 != null)
           t2.accept$1$1(0, this, P.Object);
         t1._contents += " {";
@@ -19513,7 +19513,7 @@
         this.safelyVisitTokenWithSuffix$2(node.externalKeyword, " ");
         this.safelyVisitNodeWithSuffix$2(node._returnType, " ");
         this.safelyVisitTokenWithSuffix$2(node.propertyKeyword, " ");
-        t1 = node._ast$_name;
+        t1 = node._name;
         if (t1 != null)
           t1.accept$1$1(0, this, P.Object);
         t1 = node._functionExpression;
@@ -19559,7 +19559,7 @@
         t1 = this.sink;
         t1._contents += "typedef ";
         this.safelyVisitNodeWithSuffix$2(node._returnType, " ");
-        t2 = node._ast$_name;
+        t2 = node._name;
         if (t2 != null)
           t2.accept$1$1(0, this, P.Object);
         t2 = node._typeParameters;
@@ -19607,7 +19607,7 @@
         this.safelyVisitNodeListWithSeparatorAndSuffix$3(node._metadata, " ", " ");
         t1 = this.sink;
         t1._contents += "typedef ";
-        t2 = node._ast$_name;
+        t2 = node._name;
         if (t2 != null)
           t2.accept$1$1(0, this, P.Object);
         t2 = node._typeParameters;
@@ -19749,7 +19749,7 @@
         this.safelyVisitNodeListWithSeparatorAndSuffix$3(node._metadata, " ", " ");
         t1 = this.sink;
         t1._contents += "library ";
-        t2 = node._ast$_name;
+        t2 = node._name;
         if (t2 != null)
           t2.accept$1$1(0, this, P.Object);
         t1._contents += ";";
@@ -19808,7 +19808,7 @@
         t1 = node.propertyKeyword;
         this.safelyVisitTokenWithSuffix$2(t1, " ");
         this.safelyVisitTokenWithSuffix$2(node.operatorKeyword, " ");
-        t2 = node._ast$_name;
+        t2 = node._name;
         if (t2 != null)
           t2.accept$1$1(0, this, P.Object);
         if ((t1 == null ? null : t1.get$keyword()) !== C.Keyword_cXJ) {
@@ -19845,7 +19845,7 @@
         return;
       },
       visitNamedExpression$1: function(node) {
-        var t1 = node._ast$_name;
+        var t1 = node._name;
         if (t1 != null)
           t1.accept$1$1(0, this, P.Object);
         this.safelyVisitNodeWithPrefix$2(" ", node._expression);
@@ -19854,7 +19854,7 @@
       visitNativeClause$1: function(node) {
         var t1;
         this.sink._contents += "native ";
-        t1 = node._ast$_name;
+        t1 = node._name;
         if (t1 != null)
           t1.accept$1$1(0, this, P.Object);
         return;
@@ -20092,7 +20092,7 @@
         return;
       },
       visitTypeName$1: function(node) {
-        var t1 = node._ast$_name;
+        var t1 = node._name;
         if (t1 != null)
           t1.accept$1$1(0, this, P.Object);
         t1 = node._typeArguments;
@@ -20105,7 +20105,7 @@
       visitTypeParameter$1: function(node) {
         var t1;
         this.safelyVisitNodeListWithSeparatorAndSuffix$3(node._metadata, " ", " ");
-        t1 = node._ast$_name;
+        t1 = node._name;
         if (t1 != null)
           t1.accept$1$1(0, this, P.Object);
         this.safelyVisitNodeWithPrefix$2(" extends ", node._bound);
@@ -20121,7 +20121,7 @@
       visitVariableDeclaration$1: function(node) {
         var t1;
         this.safelyVisitNodeListWithSeparatorAndSuffix$3(node._metadata, " ", " ");
-        t1 = node._ast$_name;
+        t1 = node._name;
         if (t1 != null)
           t1.accept$1$1(0, this, P.Object);
         this.safelyVisitNodeWithPrefix$2(" = ", node._initializer);
@@ -21166,7 +21166,7 @@
           name0 = this.parseStringLiteral$0();
           $.$get$astFactory().toString;
           nativeClause = new U.NativeClauseImpl(keyword0);
-          nativeClause._ast$_name = nativeClause._becomeParentOf$1$1(name0, U.StringLiteralImpl);
+          nativeClause._name = nativeClause._becomeParentOf$1$1(name0, U.StringLiteralImpl);
         } else
           nativeClause = null;
         t1 = this._currentToken;
@@ -21495,7 +21495,7 @@
           t6 = new U.AnnotationImpl(token, period);
           H.assertIsSubtype(t4, t2, "The type argument '", "' is not a subtype of the type variable bound '", "' of type variable 'T' in '_becomeParentOf'.");
           $name._ast$_parent = t6;
-          t6._ast$_name = $name;
+          t6._name = $name;
           H.assertIsSubtype(t3, t2, "The type argument '", "' is not a subtype of the type variable bound '", "' of type variable 'T' in '_becomeParentOf'.");
           if (constructorName != null)
             constructorName._ast$_parent = t6;
@@ -22545,13 +22545,13 @@
                   t1 = $.$get$astFactory();
                   t2 = commentAndMetadata.get$comment();
                   t3 = commentAndMetadata.get$metadata();
-                  t1 = t1.simpleIdentifier$2$isDeclaration(variable.get$_ast$_name().token, true);
+                  t1 = t1.simpleIdentifier$2$isDeclaration(variable.get$_name().token, true);
                   loopVariable = U.DeclaredIdentifierImpl$(t2, H.assertSubtype(t3, "$isList", [Y.Annotation], "$asList"), H.interceptedTypeCheck(keyword, "$isToken"), H.interceptedTypeCheck(type0, "$isTypeAnnotation"), t1);
                 } else {
                   t1 = commentAndMetadata;
                   if (t1.get$metadata() != null)
                     t1.get$metadata().length;
-                  identifier = variable.get$_ast$_name();
+                  identifier = variable.get$_name();
                 }
               }
               inKeyword = this.getAndAdvance$0();
@@ -24714,7 +24714,7 @@
         t3 = method._metadata;
         t4 = method.externalKeyword;
         t5 = method._returnType;
-        t6 = method._ast$_name;
+        t6 = method._name;
         t7 = method._typeParameters;
         t8 = method._parameters;
         t9 = method._body;
@@ -25230,7 +25230,7 @@
           t6 = new U.ConfigurationImpl(token, leftParenthesis, equalToken, rightParenthesis);
           H.assertIsSubtype(t3, t2, "The type argument '", "' is not a subtype of the type variable bound '", "' of type variable 'T' in '_becomeParentOf'.");
           $name._ast$_parent = t6;
-          t6._ast$_name = $name;
+          t6._name = $name;
           H.assertIsSubtype(t1, t2, "The type argument '", "' is not a subtype of the type variable bound '", "' of type variable 'T' in '_becomeParentOf'.");
           if (value != null)
             value._ast$_parent = t6;
@@ -25348,7 +25348,7 @@
         $.$get$astFactory().toString;
         t1 = new U.EnumConstantDeclarationImpl();
         t1.AnnotatedNodeImpl$2(commentAndMetadata.comment, H.assertSubtype(commentAndMetadata.metadata, "$isList", [Y.Annotation], "$asList"));
-        t1._ast$_name = t1._becomeParentOf$1$1($name, U.SimpleIdentifierImpl);
+        t1._name = t1._becomeParentOf$1$1($name, U.SimpleIdentifierImpl);
         return t1;
       },
       _parseFormalParameterListAfterParen$2$inFunctionType: function(leftParenthesis, inFunctionType) {
@@ -26609,7 +26609,7 @@
           $.$get$astFactory().toString;
           t1 = new U.LibraryDirectiveImpl(keyword, semicolon);
           t1.AnnotatedNodeImpl$2(t2.comment, H.assertSubtype(t2.metadata, "$isList", [Y.Annotation], "$asList"));
-          t1._ast$_name = t1._becomeParentOf$1$1(libraryName, U.LibraryIdentifierImpl);
+          t1._name = t1._becomeParentOf$1$1(libraryName, U.LibraryIdentifierImpl);
           return t1;
         } else if (t1 === C.Keyword_AUT) {
           t1 = this.$this;
@@ -26646,7 +26646,7 @@
       }
     },
     Parser__parseUri_isKeywordAfterUri: {
-      "^": "Closure:42;",
+      "^": "Closure:43;",
       call$1: function(token) {
         var t1, t2;
         if (token.get$lexeme() !== "as") {
@@ -26665,7 +26665,7 @@
       }
     },
     Parser__parseUri_isValidInUri: {
-      "^": "Closure:42;",
+      "^": "Closure:43;",
       call$1: function(token) {
         var type = token.type;
         return type === C.TokenType_gg4 || type === C.TokenType_sBE || type === C.TokenType_wCI || type === C.TokenType_cv8 || type === C.TokenType_j7J || type === C.TokenType_Vyt || type === C.TokenType_q1z;
@@ -31382,7 +31382,7 @@
           span = Y._FileSpan$(file, t5, t6 + t4);
           if (t3.length !== 0)
             t3 += "\n";
-          t3 += span.message$2$color(0, error.get$_error$_message(), color);
+          t3 += span.message$2$color(0, error.get$_message(), color);
         }
         t1 = shownErrors.length;
         t1 = t4 !== t1 ? t3 + "\n" + ("(" + (t1 - t4) + " more errors...)") : t3;
@@ -31400,9 +31400,9 @@
       }
     },
     UnexpectedOutputException: {
-      "^": "Object;_input,_output",
+      "^": "Object;_exceptions$_input,_output",
       toString$0: function(_) {
-        return "The formatter produced unexpected output. Input was:\n" + this._input + "\nWhich formatted to:\n" + this._output;
+        return "The formatter produced unexpected output. Input was:\n" + this._exceptions$_input + "\nWhich formatted to:\n" + this._output;
       }
     }
   }], ["dart_style.src.fast_hash", "package:dart_style/src/fast_hash.dart",, N, {
@@ -31748,7 +31748,7 @@
           otherDisallowed = other._unboundConstraints.$index(0, t2);
           if (disallowed._length !== otherDisallowed._length)
             return false;
-          for (t2 = new P._LinkedHashSetIterator(disallowed, disallowed._collection$_modifications, [H.getTypeArgumentByIndex(disallowed, 0)]), t2._collection$_cell = disallowed._collection$_first; t2.moveNext$0();)
+          for (t2 = new P._LinkedHashSetIterator(disallowed, disallowed._collection$_modifications, [H.getTypeArgumentByIndex(disallowed, 0)]), t2._cell = disallowed._collection$_first; t2.moveNext$0();)
             if (!otherDisallowed.contains$1(0, t2._collection$_current))
               return false;
         }
@@ -32850,7 +32850,7 @@
       },
       visitAnnotation$1: function(node) {
         this.token$1(node.atSign);
-        this.visit$1(node._ast$_name);
+        this.visit$1(node._name);
         this.token$1(node.period);
         this.visit$1(node._constructorName);
         this.visit$1(node._ast$_arguments);
@@ -33131,7 +33131,7 @@
         this.token$2$after(node.abstractKeyword, t1);
         this.token$1(node.classKeyword);
         this.builder._pendingWhitespace = C.Whitespace_space;
-        this.visit$1(node._ast$_name);
+        this.visit$1(node._name);
         this.visit$1(node._typeParameters);
         this.visit$1(node._extendsClause);
         t2 = this.builder;
@@ -33260,7 +33260,7 @@
         this.token$1(node.ifKeyword);
         this.builder._pendingWhitespace = C.Whitespace_space;
         this.token$1(node.leftParenthesis);
-        this.visit$1(node._ast$_name);
+        this.visit$1(node._name);
         t1 = node.equalToken;
         if (t1 != null) {
           this.builder.nestExpression$0();
@@ -33283,7 +33283,7 @@
         this.token$2$after(node.factoryKeyword, t1);
         this.visit$1(node._returnType);
         this.token$1(node.period);
-        this.visit$1(node._ast$_name);
+        this.visit$1(node._name);
         this.builder.startRule$0();
         if (node._redirectedConstructor != null)
           this.builder.nestExpression$0();
@@ -33348,7 +33348,7 @@
       visitConstructorName$1: function(node) {
         this.visit$1(node._type);
         this.token$1(node.period);
-        this.visit$1(node._ast$_name);
+        this.visit$1(node._name);
       },
       visitContinueStatement$1: function(node) {
         this._simpleStatement$2(node, new F.SourceVisitor_visitContinueStatement_closure(this, node));
@@ -33425,14 +33425,14 @@
       },
       visitEnumConstantDeclaration$1: function(node) {
         this.visitMetadata$1(node._metadata);
-        this.visit$1(node._ast$_name);
+        this.visit$1(node._name);
       },
       visitEnumDeclaration$1: function(node) {
         var t1;
         this.visitMetadata$1(node._metadata);
         this.token$1(node.enumKeyword);
         this.builder._pendingWhitespace = C.Whitespace_space;
-        this.visit$1(node._ast$_name);
+        this.visit$1(node._name);
         this.builder._pendingWhitespace = C.Whitespace_space;
         this._beginBody$2$space(node.leftBracket, true);
         this.visitCommaSeparatedNodes$2$between(node._constants, this.get$splitOrTwoNewlines());
@@ -33879,7 +33879,7 @@
       },
       visitNativeClause$1: function(node) {
         this.token$1(node.nativeKeyword);
-        this.visit$2$before(node._ast$_name, this.get$space());
+        this.visit$2$before(node._name, this.get$space());
       },
       visitNativeFunctionBody$1: function(node) {
         this._simpleStatement$2(node, new F.SourceVisitor_visitNativeFunctionBody_closure(this, node));
@@ -34058,7 +34058,7 @@
         this._visitGenericList$3(node.leftBracket, node.rightBracket, node._ast$_arguments);
       },
       visitTypeName$1: function(node) {
-        this.visit$1(node._ast$_name);
+        this.visit$1(node._name);
         this.visit$1(node._typeArguments);
       },
       visitTypeParameter$1: function(node) {
@@ -34078,7 +34078,7 @@
       },
       visitVariableDeclaration$1: function(node) {
         var t1;
-        this.visit$1(node._ast$_name);
+        this.visit$1(node._name);
         t1 = node._initializer;
         if (t1 == null)
           return;
@@ -34176,7 +34176,7 @@
         this.builder.nestExpression$0();
         t1 = this.builder;
         C.JSArray_methods.add$1(t1._openSpans, new E.OpenSpan(t1.get$_currentChunkIndex(), 1));
-        this.visit$1(node._ast$_name);
+        this.visit$1(node._name);
         t1 = J.getInterceptor(node._expression);
         if (!!t1.$isListLiteral || !!t1.$isMapLiteral)
           this.builder._pendingWhitespace = C.Whitespace_space;
@@ -34683,10 +34683,10 @@
       }, "call$0", "get$oneOrTwoNewlines", 0, 0, 1],
       split$0: [function(_) {
         return this.builder.split$1$space(0, true);
-      }, "call$0", "get$split", 1, 0, 41],
+      }, "call$0", "get$split", 1, 0, 42],
       zeroSplit$0: [function() {
         return this.builder.split$0(0);
-      }, "call$0", "get$zeroSplit", 0, 0, 41],
+      }, "call$0", "get$zeroSplit", 0, 0, 42],
       soloSplit$1: [function(cost) {
         var rule = O.Rule$(cost);
         this.builder.startRule$1(rule);
@@ -34935,7 +34935,7 @@
         t1.token$2$after(t2.abstractKeyword, t1.get$space());
         t1.token$1(t2.typedefKeyword);
         t1.builder._pendingWhitespace = C.Whitespace_space;
-        t1.visit$1(t2._ast$_name);
+        t1.visit$1(t2._name);
         t1.visit$1(t2._typeParameters);
         t1.builder._pendingWhitespace = C.Whitespace_space;
         t1.token$1(t2.equals);
@@ -35042,13 +35042,13 @@
       }
     },
     SourceVisitor_visitFormalParameterList_closure: {
-      "^": "Closure:40;",
+      "^": "Closure:41;",
       call$1: function(param) {
         return !J.getInterceptor(H.interceptedTypeCheck(param, "$isFormalParameter")).$isDefaultFormalParameter;
       }
     },
     SourceVisitor_visitFormalParameterList_closure0: {
-      "^": "Closure:40;",
+      "^": "Closure:41;",
       call$1: function(param) {
         return !!J.getInterceptor(H.interceptedTypeCheck(param, "$isFormalParameter")).$isDefaultFormalParameter;
       }
@@ -35068,7 +35068,7 @@
         t1.token$1(t2.typedefKeyword);
         t1.builder._pendingWhitespace = C.Whitespace_space;
         t1.visit$2$after(t2._returnType, t1.get$space());
-        t1.visit$1(t2._ast$_name);
+        t1.visit$1(t2._name);
         t1.visit$1(t2._typeParameters);
         t1.visit$1(t2._parameters);
       }
@@ -35099,7 +35099,7 @@
         t3 = t1.builder;
         t3._pendingWhitespace = C.Whitespace_space;
         t3.startRule$0();
-        t1.visit$1(t2._ast$_name);
+        t1.visit$1(t2._name);
         t1.visit$1(t2._typeParameters);
         t1.builder.split$1$space(0, true);
         t1.token$1(t2.equals);
@@ -35173,7 +35173,7 @@
         t2 = this.node;
         t1.token$1(t2.libraryKeyword);
         t1.builder._pendingWhitespace = C.Whitespace_space;
-        t1.visit$1(t2._ast$_name);
+        t1.visit$1(t2._name);
       }
     },
     SourceVisitor_visitNativeFunctionBody_closure: {
@@ -35267,7 +35267,7 @@
         var t1, t2, t3;
         t1 = this.$this;
         t2 = this.node;
-        t1.visit$1(t2._ast$_name);
+        t1.visit$1(t2._name);
         t3 = t1.get$space();
         t1.token$3$after$before(t2.extendsKeyword, t3, t3);
         t1.visit$1(t2._bound);
@@ -35533,7 +35533,7 @@
       }
     },
     PaintGenerator_generate_closure0: {
-      "^": "Closure:39;$this,opacity",
+      "^": "Closure:40;$this,opacity",
       call$1: function(x) {
         return this.$this._paint$_color.generate$2$opacity(J.$index$asx(x, "color"), this.opacity);
       }
@@ -35767,7 +35767,7 @@
       }
     },
     PathGenerator_buildCatalog_closure1: {
-      "^": "Closure:38;constructorBody",
+      "^": "Closure:39;constructorBody",
       call$1: function(b) {
         var t1 = this.constructorBody.build$0();
         b.get$_constructor$_$this();
@@ -36721,7 +36721,7 @@
       }
     },
     FigmaGenerator__generateWidgets_closure: {
-      "^": "Closure:36;$this,withComments,classes",
+      "^": "Closure:37;$this,withComments,classes",
       call$2: function(k, node) {
         var t1, t2, t3, t4, context, className, t5, widgetName, t6, t7, t8, t9, t10, relativeTransform, result;
         H.stringTypeCheck(k);
@@ -37152,7 +37152,7 @@
       }
     },
     VectorGenerator_generate_closure2: {
-      "^": "Closure:35;$this",
+      "^": "Closure:36;$this",
       call$1: function(f) {
         return J.$add$ansx(this.$this._vector$_path.generate$1(f).code, ".transform(transform)");
       }
@@ -37190,13 +37190,13 @@
       }
     },
     VectorGenerator_generate_closure5: {
-      "^": "Closure:39;$this",
+      "^": "Closure:40;$this",
       call$1: function(f) {
         return this.$this._vector$_paint.generate$1(f);
       }
     },
     VectorGenerator_generate_closure6: {
-      "^": "Closure:35;$this",
+      "^": "Closure:36;$this",
       call$1: function(f) {
         return J.$add$ansx(this.$this._vector$_path.generate$1(f).code, ".transform(transform)");
       }
@@ -38240,7 +38240,7 @@
       }
     },
     CodeCatalog_build_closure1: {
-      "^": "Closure:38;constructorBody",
+      "^": "Closure:39;constructorBody",
       call$1: function(b) {
         var t1 = this.constructorBody.build$0();
         b.get$_constructor$_$this();
@@ -46948,10 +46948,11 @@
   }], ["figma_flutter", "../website/web/main.dart",, R, {
     "^": "",
     main: function() {
-      var t1, t2, submit, generate, sectionComponents, components, token, fileKey, fileTitle, t3;
+      var t1, t2, submit, copy, generate, sectionComponents, components, token, fileKey, fileTitle, t3;
       t1 = {};
       t2 = document;
       submit = H.interceptedTypeCast(t2.querySelector("#submit"), "$isButtonElement");
+      copy = H.interceptedTypeCast(t2.querySelector("#copy"), "$isButtonElement");
       generate = H.interceptedTypeCast(t2.querySelector("#generate"), "$isButtonElement");
       sectionComponents = t2.querySelector("#section-components");
       components = t2.querySelector("#components");
@@ -46962,6 +46963,7 @@
       token.value = window.localStorage.getItem("token");
       fileKey.value = window.localStorage.getItem("fileKey");
       t1.file = null;
+      t1.code = null;
       P.print("Start");
       submit.toString;
       t2 = W.MouseEvent;
@@ -46969,6 +46971,8 @@
       W._EventStreamSubscription$(submit, "click", H.functionTypeCheck(new R.main_closure(new R.main_downloadFile(t1, token, fileKey, fileTitle, sectionComponents, new R.main_createComponentLi(new R.main_updateSelectedItems(components)), components)), t3), false, t2);
       generate.toString;
       W._EventStreamSubscription$(generate, "click", H.functionTypeCheck(new R.main_closure0(new R.main_generateCode(t1)), t3), false, t2);
+      copy.toString;
+      W._EventStreamSubscription$(copy, "click", H.functionTypeCheck(new R.main_closure1(t1), t3), false, t2);
     },
     main_updateSelectedItems: {
       "^": "Closure:1;components",
@@ -46993,7 +46997,7 @@
     main_generateCode: {
       "^": "Closure:45;_box_0",
       call$0: function() {
-        var $async$goto = 0, $async$completer = P._makeAsyncAwaitCompleter(null), $async$self = this, t1, widgets, generator, t2, t3, t4, t5, t6, code;
+        var $async$goto = 0, $async$completer = P._makeAsyncAwaitCompleter(null), $async$self = this, t1, widgets, t2, generator, t3, t4, t5, t6, t7, code;
         var $async$call$0 = P._wrapJsFunctionForAsync(function($async$errorCode, $async$result) {
           if ($async$errorCode === 1)
             return P._asyncRethrow($async$result, $async$completer);
@@ -47005,33 +47009,35 @@
                 t1 = P.String;
                 widgets = new H.JsLinkedHashMap(0, 0, [t1, t1]);
                 C.JSArray_methods.forEach$1($.$get$selectedComponents(), new R.main_generateCode_closure(widgets));
-                generator = new Y.FigmaGenerator($async$self._box_0.file);
-                t2 = new K.ColorGenerator(new K.CodeCatalog("_ColorCatalog", "Color", B.toVariableName("Color"), P.LinkedHashMap_LinkedHashMap$_empty(t1, t1)));
-                generator._colors = t2;
-                t3 = U.Reference;
-                t3 = new X._$ClassBuilder(false, S.ListBuilder_ListBuilder(C.List_empty, B.Expression), S.ListBuilder_ListBuilder(C.List_empty, t1), S.ListBuilder_ListBuilder(C.List_empty, t3), S.ListBuilder_ListBuilder(C.List_empty, t3), S.ListBuilder_ListBuilder(C.List_empty, t3), S.ListBuilder_ListBuilder(C.List_empty, Y.Constructor), S.ListBuilder_ListBuilder(C.List_empty, D.Method), S.ListBuilder_ListBuilder(C.List_empty, F.Field), null, null, null);
-                t3.get$_$this();
-                t3.name = "_PathCatalog";
-                t3 = new D.PathGenerator(0, t3);
-                generator._path = t3;
-                t4 = new M.PaintGenerator(t2, new K.CodeCatalog("_PaintCatalog", "Paint", B.toVariableName("Paint"), P.LinkedHashMap_LinkedHashMap$_empty(t1, t1)));
-                generator._paint = t4;
-                t5 = new K.EffectsGenerator(t2, new K.CodeCatalog("_EffectCatalog", "Paint", B.toVariableName("Paint"), P.LinkedHashMap_LinkedHashMap$_empty(t1, t1)));
-                generator._effects = t5;
+                t2 = $async$self._box_0;
+                generator = new Y.FigmaGenerator(t2.file);
+                t3 = new K.ColorGenerator(new K.CodeCatalog("_ColorCatalog", "Color", B.toVariableName("Color"), P.LinkedHashMap_LinkedHashMap$_empty(t1, t1)));
+                generator._colors = t3;
+                t4 = U.Reference;
+                t4 = new X._$ClassBuilder(false, S.ListBuilder_ListBuilder(C.List_empty, B.Expression), S.ListBuilder_ListBuilder(C.List_empty, t1), S.ListBuilder_ListBuilder(C.List_empty, t4), S.ListBuilder_ListBuilder(C.List_empty, t4), S.ListBuilder_ListBuilder(C.List_empty, t4), S.ListBuilder_ListBuilder(C.List_empty, Y.Constructor), S.ListBuilder_ListBuilder(C.List_empty, D.Method), S.ListBuilder_ListBuilder(C.List_empty, F.Field), null, null, null);
+                t4.get$_$this();
+                t4.name = "_PathCatalog";
+                t4 = new D.PathGenerator(0, t4);
+                generator._path = t4;
+                t5 = new M.PaintGenerator(t3, new K.CodeCatalog("_PaintCatalog", "Paint", B.toVariableName("Paint"), P.LinkedHashMap_LinkedHashMap$_empty(t1, t1)));
+                generator._paint = t5;
+                t6 = new K.EffectsGenerator(t3, new K.CodeCatalog("_EffectCatalog", "Paint", B.toVariableName("Paint"), P.LinkedHashMap_LinkedHashMap$_empty(t1, t1)));
+                generator._effects = t6;
                 t1 = new Z.TextStyleGenerator(new K.CodeCatalog("_TextStyleCatalog", "ui.TextStyle", B.toVariableName("ui.TextStyle"), P.LinkedHashMap_LinkedHashMap$_empty(t1, t1)));
                 generator._textStyles = t1;
-                t6 = new B.NodeGenerator(new U.DirectiveGenerator());
-                t6._group = new O.GroupGenerator(t6);
-                t6._frame = new A.FrameGenerator(t2, t6);
-                t6._vector = new Y.VectorGenerator(t4, t5, t3);
-                t6._text = new L.TextGenerator(t2, t1, new Z.ParagraphStyleGenerator());
-                generator._node = t6;
-                generator._component = new G.ComponentGenerator(t6);
+                t7 = new B.NodeGenerator(new U.DirectiveGenerator());
+                t7._group = new O.GroupGenerator(t7);
+                t7._frame = new A.FrameGenerator(t3, t7);
+                t7._vector = new Y.VectorGenerator(t5, t6, t4);
+                t7._text = new L.TextGenerator(t3, t1, new Z.ParagraphStyleGenerator());
+                generator._node = t7;
+                generator._component = new G.ComponentGenerator(t7);
                 $async$goto = 2;
                 return P._asyncAwait(generator.generateComponents$1(widgets), $async$call$0);
               case 2:
                 // returning from await.
                 code = $async$result;
+                t2.code = code;
                 self.updateCode(code);
                 // implicit return
                 return P._asyncReturn(null, $async$completer);
@@ -47167,7 +47173,7 @@
       }
     },
     main_downloadFile_closure: {
-      "^": "Closure:36;createComponentLi,lis",
+      "^": "Closure:37;createComponentLi,lis",
       call$2: function(k, v) {
         var widgetName, li;
         H.stringTypeCheck(k);
@@ -47177,17 +47183,26 @@
       }
     },
     main_closure: {
-      "^": "Closure:43;downloadFile",
+      "^": "Closure:32;downloadFile",
       call$1: function(c) {
         H.interceptedTypeCheck(c, "$isMouseEvent");
         this.downloadFile.call$0();
       }
     },
     main_closure0: {
-      "^": "Closure:43;generateCode",
+      "^": "Closure:32;generateCode",
       call$1: function(c) {
         H.interceptedTypeCheck(c, "$isMouseEvent");
         this.generateCode.call$0();
+      }
+    },
+    main_closure1: {
+      "^": "Closure:32;_box_0",
+      call$1: function(c) {
+        var t1;
+        H.interceptedTypeCheck(c, "$isMouseEvent");
+        t1 = this._box_0.code;
+        self.copyCode(t1);
       }
     }
   }, 1]];
@@ -48595,7 +48610,7 @@
   Isolate = Isolate.$finishIsolateConstructor(Isolate);
   $ = new Isolate();
   init.metadata = [];
-  init.types = [{func: 1, ret: P.Null}, {func: 1, ret: -1}, {func: 1, ret: -1, args: [D.ParameterBuilder]}, {func: 1, ret: B.Message, args: [L.Token]}, {func: 1, ret: P.Null, args: [,]}, {func: 1, ret: -1, args: [F.FieldBuilder]}, {func: 1, ret: -1, args: [D.MethodBuilder]}, {func: 1, ret: P.String, args: [P.String]}, {func: 1, ret: -1, args: [,]}, {func: 1, ret: P.String}, {func: 1, ret: P.bool, args: [,]}, {func: 1, ret: L.Token}, {func: 1, ret: B.Message, args: [P.String]}, {func: 1, ret: -1, args: [B.Expression]}, {func: 1, ret: P.bool}, {func: 1, ret: P.Null, args: [,,]}, {func: 1, args: [,]}, {func: 1, ret: P.Null, args: [O.Rule]}, {func: 1, ret: P.Null, args: [W.ProgressEvent]}, {func: 1, ret: X.Code, args: [P.String]}, {func: 1, ret: P.bool, args: [O.Rule]}, {func: 1, ret: P.Null, args: [P.String]}, {func: 1, ret: P.String, args: [P.Match]}, {func: 1, ret: -1, args: [P.Object], opt: [P.StackTrace]}, {func: 1, ret: U.Reference, args: [U.Reference]}, {func: 1, ret: P.StringSink, args: [U.Reference]}, {func: 1, ret: P.bool, args: [P.String]}, {func: 1, ret: -1, args: [P.Object]}, {func: 1, ret: U.KeywordState0, args: [P.int]}, {func: 1, ret: P.Null, args: [P.String, P.String]}, {func: 1, ret: -1, args: [X.BlockBuilder]}, {func: 1, ret: -1, args: [{func: 1, ret: -1}]}, {func: 1, ret: P.Null, args: [, P.StackTrace]}, {func: 1, ret: -1, args: [P.Uint8List, P.String, P.int]}, {func: 1, ret: -1, args: [P.String, P.String]}, {func: 1, ret: P.String, args: [,]}, {func: 1, ret: P.Null, args: [P.String,,]}, {func: 1, ret: -1, args: [[P.Set, P.String]]}, {func: 1, ret: -1, args: [Y.ConstructorBuilder]}, {func: 1, ret: X.Code, args: [,]}, {func: 1, ret: P.bool, args: [Y.FormalParameter]}, {func: 1, ret: E.Chunk}, {func: 1, ret: P.bool, args: [L.Token]}, {func: 1, ret: P.Null, args: [W.MouseEvent]}, {func: 1, ret: -1, opt: [P.Object]}, {func: 1, ret: P.Future}, {func: 1, ret: B.Message, args: [P.int]}, {func: 1, ret: O.Rule, args: [E.Chunk]}, {func: 1, ret: P.Null, args: [[P.List, E.Chunk]]}, {func: 1, ret: P.Null, args: [Y.Expression0]}, {func: 1, ret: P.bool, args: [D.Parameter]}, {func: 1, ret: P.bool, args: [Y.Expression0]}, {func: 1, ret: -1, args: [U.DirectiveBuilder]}, {func: 1, ret: P.Null, args: [U.Reference]}, {func: 1, ret: P.Null, args: [R.Spec]}, {func: 1, ret: -1, args: [E.TypeReferenceBuilder]}, {func: 1, ret: P.bool, args: [Y.NamedExpression]}, {func: 1, ret: P.Null, args: [X.Code]}, {func: 1, ret: P.Null, args: [D.Method]}, {func: 1, ret: -1, args: [O.Rule]}, {func: 1, ret: P.bool, args: [E.SourceComment]}, {func: 1, ret: P.Null, args: [,], opt: [,]}, {func: 1, ret: P.Null, args: [F.Field]}, {func: 1, ret: P.Null, args: [Y.Constructor]}, {func: 1, ret: Y.IndentingBuiltValueToStringHelper, args: [P.String]}, {func: 1, ret: P.Null, args: [[P.List, E.Chunk], P.String, P.int]}, {func: 1, ret: P.Null, args: [, {func: 1, ret: P.String}]}, {func: 1, ret: P.String, named: {color: P.bool}}, {func: 1, ret: P.Object, args: [P.int]}, {func: 1, ret: P.int, args: [O.Rule]}, {func: 1, ret: P.Null, args: [P.int]}, {func: 1, ret: P.Null, args: [O.Rule, P.int]}, {func: 1, ret: P.String, args: [O.Rule]}, {func: 1, ret: Y.Directive}, {func: 1, ret: O.Rule, opt: [P.int]}, {func: 1, ret: -1, args: [L.Token], named: {after: {func: 1}, before: {func: 1}}}, {func: 1, ret: -1, args: [A.ScannerErrorCode, P.int, [P.List, P.Object]]}, {func: 1, ret: P.Null, args: [Y.Statement]}, {func: 1, ret: W.Element, args: [W.Node]}, {func: 1, ret: P._Future, args: [,]}, {func: 1, ret: P.bool, args: [W.Node]}, {func: 1, ret: X.Code, args: [A.PathSegmentData]}, {func: 1, args: [P.String]}, {func: 1, ret: P.bool, args: [[P.Set, P.String]]}, {func: 1, ret: P.Null, args: [P.bool]}, {func: 1, ret: L.Token, args: [[P.List, P.int], L.Token, [P.List, P.int]]}, {func: 1, args: [,,]}, {func: 1, ret: -1, args: [O.LibraryBuilder]}, {func: 1, ret: -1, args: [W.Event]}, {func: 1, ret: P.Null, args: [P.int,,]}, {func: 1, ret: P.int, args: [P.String, P.String]}, {func: 1, ret: [P.Future, P.String]}, {func: 1, ret: L.Token, args: [S.NonAsciiIdentifierToken]}, {func: 1, ret: P.Uint8List, args: [,,]}, {func: 1, ret: -1, args: [A.ScannerErrorCode, [P.List, P.Object]]}, {func: 1, ret: L.Keyword}, {func: 1, ret: O.KeywordState, args: [P.int]}, {func: 1, ret: -1, args: [, P.StackTrace]}, {func: 1, ret: [P.Future, U.Response], args: [,], named: {headers: [P.Map, P.String, P.String]}}, {func: 1, ret: P.bool, args: [P.String, P.String]}, {func: 1, ret: P.int, args: [P.String]}, {func: 1, ret: -1, args: [[P.List, P.int]]}, {func: 1, ret: U.Response, args: [P.Uint8List]}, {func: 1, ret: P.bool, args: [P.Object]}, {func: 1, ret: R.MediaType}, {func: 1, ret: P.Uint8List, args: [P.int]}, {func: 1, ret: P.String, args: [P.int]}, {func: 1, ret: P.int, args: [P.int,,]}, {func: 1, ret: Y.FileSpan, args: [P.int], opt: [P.int]}, {func: 1, ret: P.String, args: [P.String], named: {color: null}}, {func: 1, ret: -1, args: [P.String], named: {length: P.int, match: P.Match, position: P.int}}, {func: 1, ret: P.int, args: [P.int, P.Object]}, {func: 1, ret: P.Null, args: [W.Element]}, {func: 1, ret: P.int, args: [P.int, P.int]}, {func: 1, ret: W.LIElement, args: [P.String]}, {func: 1, ret: [P.Future, P.Null], args: [W.MouseEvent]}, {func: 1, ret: -1, args: [P.String], opt: [,]}, {func: 1, ret: P.int, args: [,,]}, {func: 1, ret: -1, args: [P.String, P.int]}, {func: 1, ret: P.bool, args: [,,]}, {func: 1, ret: P.int, args: [,]}, {func: 1, ret: P.int, args: [P.Object]}, {func: 1, ret: P.bool, args: [P.Object, P.Object]}, {func: 1, ret: P.int, args: [[P.List, P.int], P.int]}, {func: 1, args: [, P.String]}, {func: 1, ret: P.Null, args: [{func: 1, ret: -1}]}, {func: 1, ret: B.Message, args: [P.String, P.int]}, {func: 1, ret: B.Message, args: [P.String, L.Token]}, {func: 1, ret: B.Message, args: [P.String, P.String]}, {func: 1, ret: -1, args: [P.int, P.int]}];
+  init.types = [{func: 1, ret: P.Null}, {func: 1, ret: -1}, {func: 1, ret: -1, args: [D.ParameterBuilder]}, {func: 1, ret: B.Message, args: [L.Token]}, {func: 1, ret: P.Null, args: [,]}, {func: 1, ret: -1, args: [F.FieldBuilder]}, {func: 1, ret: -1, args: [D.MethodBuilder]}, {func: 1, ret: P.String, args: [P.String]}, {func: 1, ret: -1, args: [,]}, {func: 1, ret: P.String}, {func: 1, ret: P.bool, args: [,]}, {func: 1, ret: L.Token}, {func: 1, ret: B.Message, args: [P.String]}, {func: 1, ret: -1, args: [B.Expression]}, {func: 1, ret: P.bool}, {func: 1, ret: P.Null, args: [,,]}, {func: 1, args: [,]}, {func: 1, ret: P.Null, args: [O.Rule]}, {func: 1, ret: P.Null, args: [W.ProgressEvent]}, {func: 1, ret: X.Code, args: [P.String]}, {func: 1, ret: P.bool, args: [O.Rule]}, {func: 1, ret: P.Null, args: [P.String]}, {func: 1, ret: P.String, args: [P.Match]}, {func: 1, ret: -1, args: [P.Object], opt: [P.StackTrace]}, {func: 1, ret: U.Reference, args: [U.Reference]}, {func: 1, ret: P.StringSink, args: [U.Reference]}, {func: 1, ret: P.bool, args: [P.String]}, {func: 1, ret: -1, args: [P.Object]}, {func: 1, ret: U.KeywordState0, args: [P.int]}, {func: 1, ret: P.Null, args: [P.String, P.String]}, {func: 1, ret: -1, args: [X.BlockBuilder]}, {func: 1, ret: -1, args: [{func: 1, ret: -1}]}, {func: 1, ret: P.Null, args: [W.MouseEvent]}, {func: 1, ret: P.Null, args: [, P.StackTrace]}, {func: 1, ret: -1, args: [P.Uint8List, P.String, P.int]}, {func: 1, ret: -1, args: [P.String, P.String]}, {func: 1, ret: P.String, args: [,]}, {func: 1, ret: P.Null, args: [P.String,,]}, {func: 1, ret: -1, args: [[P.Set, P.String]]}, {func: 1, ret: -1, args: [Y.ConstructorBuilder]}, {func: 1, ret: X.Code, args: [,]}, {func: 1, ret: P.bool, args: [Y.FormalParameter]}, {func: 1, ret: E.Chunk}, {func: 1, ret: P.bool, args: [L.Token]}, {func: 1, ret: -1, opt: [P.Object]}, {func: 1, ret: P.Future}, {func: 1, ret: B.Message, args: [P.int]}, {func: 1, ret: O.Rule, args: [E.Chunk]}, {func: 1, ret: P.Null, args: [[P.List, E.Chunk]]}, {func: 1, ret: P.Null, args: [Y.Expression0]}, {func: 1, ret: P.bool, args: [D.Parameter]}, {func: 1, ret: P.bool, args: [Y.Expression0]}, {func: 1, ret: -1, args: [U.DirectiveBuilder]}, {func: 1, ret: P.Null, args: [U.Reference]}, {func: 1, ret: P.Null, args: [R.Spec]}, {func: 1, ret: -1, args: [E.TypeReferenceBuilder]}, {func: 1, ret: P.bool, args: [Y.NamedExpression]}, {func: 1, ret: P.Null, args: [X.Code]}, {func: 1, ret: P.Null, args: [D.Method]}, {func: 1, ret: -1, args: [O.Rule]}, {func: 1, ret: P.bool, args: [E.SourceComment]}, {func: 1, ret: P.Null, args: [,], opt: [,]}, {func: 1, ret: P.Null, args: [F.Field]}, {func: 1, ret: P.Null, args: [Y.Constructor]}, {func: 1, ret: Y.IndentingBuiltValueToStringHelper, args: [P.String]}, {func: 1, ret: P.Null, args: [[P.List, E.Chunk], P.String, P.int]}, {func: 1, ret: P.Null, args: [, {func: 1, ret: P.String}]}, {func: 1, ret: P.String, named: {color: P.bool}}, {func: 1, ret: P.Object, args: [P.int]}, {func: 1, ret: P.int, args: [O.Rule]}, {func: 1, ret: P.Null, args: [P.int]}, {func: 1, ret: P.Null, args: [O.Rule, P.int]}, {func: 1, ret: P.String, args: [O.Rule]}, {func: 1, ret: Y.Directive}, {func: 1, ret: O.Rule, opt: [P.int]}, {func: 1, ret: -1, args: [L.Token], named: {after: {func: 1}, before: {func: 1}}}, {func: 1, ret: -1, args: [A.ScannerErrorCode, P.int, [P.List, P.Object]]}, {func: 1, ret: P.Null, args: [Y.Statement]}, {func: 1, ret: W.Element, args: [W.Node]}, {func: 1, ret: P._Future, args: [,]}, {func: 1, ret: P.bool, args: [W.Node]}, {func: 1, ret: X.Code, args: [A.PathSegmentData]}, {func: 1, args: [P.String]}, {func: 1, ret: P.bool, args: [[P.Set, P.String]]}, {func: 1, ret: P.Null, args: [P.bool]}, {func: 1, ret: L.Token, args: [[P.List, P.int], L.Token, [P.List, P.int]]}, {func: 1, args: [,,]}, {func: 1, ret: -1, args: [O.LibraryBuilder]}, {func: 1, ret: -1, args: [W.Event]}, {func: 1, ret: P.Null, args: [P.int,,]}, {func: 1, ret: P.int, args: [P.String, P.String]}, {func: 1, ret: [P.Future, P.String]}, {func: 1, ret: L.Token, args: [S.NonAsciiIdentifierToken]}, {func: 1, ret: P.Uint8List, args: [,,]}, {func: 1, ret: -1, args: [A.ScannerErrorCode, [P.List, P.Object]]}, {func: 1, ret: L.Keyword}, {func: 1, ret: O.KeywordState, args: [P.int]}, {func: 1, ret: -1, args: [, P.StackTrace]}, {func: 1, ret: [P.Future, U.Response], args: [,], named: {headers: [P.Map, P.String, P.String]}}, {func: 1, ret: P.bool, args: [P.String, P.String]}, {func: 1, ret: P.int, args: [P.String]}, {func: 1, ret: -1, args: [[P.List, P.int]]}, {func: 1, ret: U.Response, args: [P.Uint8List]}, {func: 1, ret: P.bool, args: [P.Object]}, {func: 1, ret: R.MediaType}, {func: 1, ret: P.Uint8List, args: [P.int]}, {func: 1, ret: P.String, args: [P.int]}, {func: 1, ret: P.int, args: [P.int,,]}, {func: 1, ret: Y.FileSpan, args: [P.int], opt: [P.int]}, {func: 1, ret: P.String, args: [P.String], named: {color: null}}, {func: 1, ret: -1, args: [P.String], named: {length: P.int, match: P.Match, position: P.int}}, {func: 1, ret: P.int, args: [P.int, P.Object]}, {func: 1, ret: P.Null, args: [W.Element]}, {func: 1, ret: P.int, args: [P.int, P.int]}, {func: 1, ret: W.LIElement, args: [P.String]}, {func: 1, ret: [P.Future, P.Null], args: [W.MouseEvent]}, {func: 1, ret: -1, args: [P.String], opt: [,]}, {func: 1, ret: P.int, args: [,,]}, {func: 1, ret: -1, args: [P.String, P.int]}, {func: 1, ret: P.bool, args: [,,]}, {func: 1, ret: P.int, args: [,]}, {func: 1, ret: P.int, args: [P.Object]}, {func: 1, ret: P.bool, args: [P.Object, P.Object]}, {func: 1, ret: P.int, args: [[P.List, P.int], P.int]}, {func: 1, args: [, P.String]}, {func: 1, ret: P.Null, args: [{func: 1, ret: -1}]}, {func: 1, ret: B.Message, args: [P.String, P.int]}, {func: 1, ret: B.Message, args: [P.String, L.Token]}, {func: 1, ret: B.Message, args: [P.String, P.String]}, {func: 1, ret: -1, args: [P.int, P.int]}];
   function convertToFastObject(properties) {
     function MyClass() {
     }

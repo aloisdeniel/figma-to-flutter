@@ -52,15 +52,12 @@ Includes a widget at the node location.
 
 - [ ] **Semantics** : adding semantics items for accessibility.
 - [ ] **Build time generator** : creating generators for updating widgets at build time (like `built_value`).
-- [ ] **Catalogs** : caching constants instead of instantiating it at each draw pass.
-    - [ ] Colors
-    - [ ] TextStyles
 - [ ] **Drawing** : reproducing Figma drawing logic
     - [ ] Fills
         - [ ] `GRADIENT_ANGULAR`
         - [ ] `GRADIENT_DIAMOND`
-        - [ ] `GRADIENT_EMOJI`
-        - [ ] `GRADIENT_IMAGE`
+        - [ ] `EMOJI`
+        - [ ] `IMAGE`
             - [ ] Scale Modes
                 - [ ] `FILL`
                 - [ ] `FIT`
@@ -71,7 +68,7 @@ Includes a widget at the node location.
         - [ ] `LAYER_BLUR`
         - [ ] `BACKGROUND_BLUR`
 
-    - [ ] Blend modes (*All is considered *`PASS_THROUGH`/`NORMAL`)
+    - [ ] Blend modes (*All is considered* `PASS_THROUGH`/`NORMAL`)
     - [ ] Text fills
     - [ ] Masks & Clips
     - [ ] Styles

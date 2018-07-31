@@ -803,6 +803,7 @@ file:///Users/alois/flutter_figma_generator/src/lib/nodes/vector.dart
 file:///Users/alois/flutter_figma_generator/src/lib/parsing/declaration.dart
 file:///Users/alois/flutter_figma_generator/src/lib/parsing/parse_path.dart
 file:///Users/alois/flutter_figma_generator/src/lib/tools/code.dart
+file:///Users/alois/flutter_figma_generator/src/lib/tools/code_catalog.dart
 file:///Users/alois/flutter_figma_generator/src/lib/tools/format.dart
 file:///Users/alois/flutter_figma_generator/website/.packages
 file:///Users/alois/flutter_figma_generator/website/web/main.dart

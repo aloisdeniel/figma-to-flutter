@@ -1,7 +1,10 @@
 
 import 'package:code_builder/code_builder.dart';
+import 'package:figma_to_flutter/tools/code_catalog.dart';
 
 class TextStyleGenerator {
+
+  CodeCatalog catalog = CodeCatalog("_TextStyleCatalog", "ui.TextStyle");
 
   Code generate(dynamic map, String color) {
 
@@ -14,7 +17,7 @@ class TextStyleGenerator {
     var lineHeightPercent = map["letterSpacing"].toDouble();
     var fontWeight = map["fontWeight"].toInt();
 
-    return new Code("ui.TextStyle(" +
+    return catalog.get("ui.TextStyle(" +
       "fontFamily: '$fontFamily'," +
       "color: $color," +
       "fontSize: $fontSize," +

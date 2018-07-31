@@ -1,11 +1,14 @@
 import 'dart:math';
 
+import 'package:figma_to_flutter/tools/code_catalog.dart';
 import 'color.dart';
 import 'package:code_builder/code_builder.dart';
 
 class PaintGenerator {
 
   final ColorGenerator _color;
+
+  CodeCatalog catalog = CodeCatalog("_PaintCatalog", "Paint");
 
   PaintGenerator(this._color);
 
@@ -25,7 +28,7 @@ class PaintGenerator {
 
     if(type == "SOLID") {
       var color = _color.generate(map["color"], opacity: opacity);
-      return new Code("(Paint()..color = $color)");
+      return catalog.get("(Paint()..color = $color)");
     }
     else if(type.startsWith("GRADIENT_")) {
       var local = (frame) => frame.toString();
@@ -69,11 +72,11 @@ class PaintGenerator {
       }
 
       if(gradient != null) {
-        return new Code("(Paint()..shader = $gradient.createShader(Offset.zero & frame.size))");
+        return catalog.get("(Paint()..shader = $gradient.createShader(Offset.zero & frame.size))");
       }
     }
 
-    return new Code("Paint()");
+    return catalog.get("Paint()");
 }
 }
 

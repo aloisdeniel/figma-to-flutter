@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:args/args.dart';
@@ -12,6 +13,7 @@ void main(List<String> args) async {
   parser.addOption('fileKey', abbr: 'f');
   parser.addMultiOption('widget', abbr: 'w');
   parser.addOption('output', abbr: 'o');
+  parser.addFlag('withComments', abbr: 'c', defaultsTo: false);
 
   var results = parser.parse(args);
 
@@ -22,6 +24,9 @@ void main(List<String> args) async {
 
   var api = FigmaApiGenerator(Client(), results["token"]);
   var file = await api.getFile(results["fileKey"]);
+
+  await (new File(results["output"] + ".json")).writeAsString(json.encode(file));
+
   var generator = FigmaGenerator(file);
 
   var widgets = Map<String,String>();
@@ -29,7 +34,7 @@ void main(List<String> args) async {
     widgets[w] = w;
   });
 
-  var code = generator.generateComponents(widgets);
+  var code = generator.generateComponents(widgets, withComments: true);
   
   // Writing to file
   await (new File(results["output"])).writeAsString(code);

@@ -1,5 +1,6 @@
 
 import 'package:code_builder/code_builder.dart';
+import 'package:figma_to_flutter/tools/format.dart';
 import '../parsing/parse_path.dart';
 
 class PathGenerator {
@@ -27,8 +28,8 @@ class PathGenerator {
         ..name = "instance"
         ..static = true
         ..modifier = FieldModifier.final$
-        ..type = refer("_PathCatalog")
-        ..assignment = Code("new _PathCatalog()")
+        ..type = refer(_catalog.name)
+        ..assignment = Code(_catalog.name + "()")
       ));
 
     _catalog.constructors.add(Constructor((b) => b
@@ -74,14 +75,14 @@ class PathGenerator {
 
   Code generate(map) {
     var index = _addPath(map);
-    return Code("_PathCatalog.instance.path_${index}");
+    return Code("${_catalog.name}.instance.path_${index}");
   }
   
   Code _generateCommand(PathSegmentData segment) {
     switch (segment.command) {
       case SvgPathSegType.moveToRel:
       case SvgPathSegType.moveToAbs:
-        return Code("path.moveTo(${segment.targetPoint.x}, ${segment.targetPoint.y})");
+        return Code("path.moveTo(${toFixedDouble(segment.targetPoint.x)}, ${toFixedDouble(segment.targetPoint.y)})");
         break;
       case SvgPathSegType.lineToRel:
       case SvgPathSegType.lineToAbs:
@@ -89,18 +90,18 @@ class PathGenerator {
       case SvgPathSegType.lineToHorizontalAbs:
       case SvgPathSegType.lineToVerticalRel:
       case SvgPathSegType.lineToVerticalAbs:
-        return Code("path.lineTo(${segment.targetPoint.x}, ${segment.targetPoint.y})");
+        return Code("path.lineTo(${toFixedDouble(segment.targetPoint.x)}, ${toFixedDouble(segment.targetPoint.y)})");
         break;
       case SvgPathSegType.close:
         return Code("path.close()");
         break;
       case SvgPathSegType.cubicToRel:
       case SvgPathSegType.cubicToAbs:
-        return Code("path.cubicTo(${segment.point1.x}, ${segment.point1.y}, ${segment.point2.x}, ${segment.point2.y}, ${segment.targetPoint.x}, ${segment.targetPoint.y})");
+        return Code("path.cubicTo(${toFixedDouble(segment.point1.x)}, ${toFixedDouble(segment.point1.y)}, ${toFixedDouble(segment.point2.x)}, ${toFixedDouble(segment.point2.y)}, ${toFixedDouble(segment.targetPoint.x)}, ${toFixedDouble(segment.targetPoint.y)})");
         break;
       case SvgPathSegType.quadToRel:
       case SvgPathSegType.quadToAbs:
-        return Code("path.cubicTo(${segment.point1.x}, ${segment.point1.y}, ${segment.point2.x}, ${segment.point2.y}, ${segment.targetPoint.x}, ${segment.targetPoint.y})");
+        return Code("path.cubicTo(${toFixedDouble(segment.point1.x)}, ${toFixedDouble(segment.point1.y)}, ${toFixedDouble(segment.point2.x)}, ${toFixedDouble(segment.point2.y)}, ${toFixedDouble(segment.targetPoint.x)}, ${toFixedDouble(segment.targetPoint.y)})");
         break;
       case SvgPathSegType.smoothCubicToRel:
       case SvgPathSegType.smoothCubicToAbs:

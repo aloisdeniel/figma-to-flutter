@@ -4,6 +4,8 @@ import 'dart:math';
 import 'package:code_builder/code_builder.dart';
 import 'package:figma_to_flutter/base/effect.dart';
 import 'package:figma_to_flutter/context.dart';
+import 'package:figma_to_flutter/parsing/declaration.dart';
+import 'package:figma_to_flutter/tools/format.dart';
 import '../base/paint.dart';
 import '../base/path.dart';
 
@@ -27,10 +29,13 @@ class VectorGenerator {
 
   void generate(BuildContext context, dynamic map) {
  
+    var declaration = Declaration.parse(map["name"]);
+    var propertyName = toVariableName(declaration.name);
+    
     var size = _toPoint(map["size"]);
-    var sx = "(frame.width / ${size.x})";
-    var sy = "(frame.height / ${size.y})";
-    var transform = "Float64List.fromList([$sx, 0.0, 0.0, 0.0, 0.0, $sy, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0,0.0, 0.0, 0.0, 1.0])";
+    var sx = "(frame.width / ${toFixedDouble(size.x)})";
+    var sy = "(frame.height / ${toFixedDouble(size.y)})";
+    var transform = "Float64List.fromList([${sx}, 0.0, 0.0, 0.0, 0.0, ${sy}, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0,0.0, 0.0, 0.0, 1.0])";
 
     context.addPaint(["var transform = $transform;"]);
 
@@ -69,15 +74,24 @@ class VectorGenerator {
     }
 
     if(!fillMaps.isEmpty) {
-      var fills = "[" + fillMaps.map((f) => this._paint.generate(f)).join(", ") + "]";
-      context.addPaint([
-        "var fills = $fills;",
-        "fills.forEach((paint) {",
-        "fillGeometry.forEach((path) {",
-        "canvas.drawPath(path, paint);",
-        "});",
-        "});",
-      ]);
+      fillMaps.forEach((f) {
+        if(f["type"] == "IMAGE") {
+          context.addImage(propertyName);
+          context.addPaint([
+            "fillGeometry.forEach((path) {",
+            "if(${propertyName}Provider != null) ${propertyName}Provider.paint(canvas, path.getBounds(), path, ImageConfiguration());"
+            "});",
+          ]);
+        }
+        else {
+          var paint = this._paint.generate(f);
+          context.addPaint([
+            "fillGeometry.forEach((path) {",
+            "canvas.drawPath(path, $paint);",
+            "});",
+          ]);
+        }
+      });
     }
 
     if(!strokeMaps.isEmpty) {

@@ -1,8 +1,5 @@
-import 'dart:math';
-
 import 'package:built_collection/built_collection.dart';
 import 'package:code_builder/code_builder.dart';
-import 'package:figma_to_flutter/tools/code.dart';
 import 'package:figma_to_flutter/tools/format.dart' as format;
 
 class DataProperty {
@@ -14,7 +11,10 @@ class DataProperty {
 
 class BuildContext {
 
+  bool withComments;
+
   List<String> _dataProperties = [];
+  List<String> _imageProperties = [];
 
   dynamic _rootNode;
 
@@ -28,7 +28,7 @@ class BuildContext {
   ClassBuilder get widget => _widget;
   ClassBuilder get customPainter => _customPainter;
 
-  BuildContext(componentName, this._rootNode) {
+  BuildContext(componentName, this._rootNode, {this.withComments = false}) {
     var widgetName = format.toClassName(componentName);
     _widget = ClassBuilder()
                 ..name = widgetName
@@ -50,6 +50,50 @@ class BuildContext {
     var h = map["height"].toDouble();
     return [x,y,w,h];
   }
+
+/*
+  void _alignWidget(String widget, ) {
+    var code = "Positioned(child: $instance,";
+
+    // Position
+    var absoluteBoundingBox = _toRectangle(map["absoluteBoundingBox"]);
+    var rootAbsoluteBoundingBox = _toRectangle(_rootNode["absoluteBoundingBox"]);
+    var left = absoluteBoundingBox[0] - rootAbsoluteBoundingBox[0];
+    var top = absoluteBoundingBox[1]  - rootAbsoluteBoundingBox[1];
+    var width = absoluteBoundingBox[2];
+    var height = absoluteBoundingBox[3];
+    var right = rootAbsoluteBoundingBox[2] - (left + width);
+    var bottom = rootAbsoluteBoundingBox[3] - (top + height);
+    var constraints = map["constraints"];
+    var horizontal = constraints["horizontal"];
+    var vertical = constraints["vertical"];
+
+    switch(horizontal) {
+      case "RIGHT":
+        code += "left: $left, width: $width,";
+        break;
+      case "LEFT_RIGHT":
+        code += "left: $left, right: $right,";
+        break;
+      case "CENTER":
+        code += "width: $width, height: $height,"; // TODO
+        break;
+    }
+    
+    switch(vertical) {
+      case "BOTTOM":
+        code += "top: $top, height: $height,";
+        break;
+      case "TOP_BOTTOM":
+        code += "top: $top, bottom: $bottom,";
+        break;
+      case "CENTER":
+        code += "width: $width, height: $height,"; // TODO
+        break;
+    }
+    
+    code += ")";
+  } */
 
   BuildContext addChildWidget(String instance, dynamic map) {
 
@@ -96,6 +140,47 @@ class BuildContext {
     this._childWidgets.add(Code(code));
 
     return this;
+  }
+
+/**
+ * class TodoLogoPainter extends ChangeNotifier implements  CustomPainter {
+  TodoLogoPainter(ImageProvider image)
+  {
+    this.image = DecorationImage(image: image).createPainter(_onUpdate);
+  } 
+  
+  DecorationImagePainter image;
+
+  void _onUpdate() => this.notifyListeners();
+ */
+  BuildContext addImage(String name) {
+      var propertyName = format.toVariableName(name) + "Provider";
+
+    _widget.fields.add(Field((b) => b
+        ..name = propertyName
+        ..modifier = FieldModifier.final$
+        ..type = refer("ImageProvider")
+      ));
+
+      _widgetConstructor
+        ..requiredParameters.add(Parameter((p) => p
+        ..name = "this.${propertyName}"
+        ..named = true));
+
+    _customPainter.fields.add(Field((b) => b
+        ..name = propertyName
+        ..type = refer("DecorationImagePainter")
+      ));
+
+      _customPainterConstructor
+        ..optionalParameters.add(Parameter((p) => p
+        ..name = propertyName
+        ..type = refer("ImageProvider")));
+     
+      _dataProperties.add(propertyName);
+      _imageProperties.add(propertyName);
+
+        return this;
   }
 
   BuildContext addData(String name, String type) {
@@ -259,6 +344,26 @@ class BuildContext {
       ..requiredParameters.add(Parameter((p) => p
             ..name="size"
             ..type=refer("Size"))));
+
+    if(this._imageProperties.isNotEmpty) {
+      _customPainter.extend = refer("ChangeNotifier");
+      _customPainter.implements = ListBuilder<Reference>([refer("CustomPainter")]);
+      _customPainterConstructor.body = Block((b) => b..statements.addAll(this._imageProperties.map((x) => Code("this.${x} = (${x} != null) ? DecorationImage(image: ${x}).createPainter(_onUpdate) : null;"))));
+      _customPainter.methods.add(Method((b) => b
+        ..name = '_onUpdate'
+        ..returns = refer("void")
+        ..lambda = true
+        ..body = Code("this.notifyListeners()"))
+      );_customPainter.methods.add(Method((b) => b
+        ..name = 'hitTest'
+        ..returns = refer("bool")
+        ..lambda = true
+        ..requiredParameters.add(Parameter((p) => p
+          ..name = "offset"
+          ..type = refer("Offset")))
+        ..body = Code("false"))
+      );
+    }
 
     _customPainter.constructors.add(_customPainterConstructor.build());
     _customPainter.methods.addAll([

@@ -16,14 +16,21 @@ import 'package:code_builder/code_builder.dart';
 class FigmaGenerator {
 
   ComponentGenerator _component;
+  ColorGenerator _colors;
   PathGenerator _path;
+  PaintGenerator _paint;
+  EffectsGenerator _effects;
+  TextStyleGenerator _textStyles;
   NodeGenerator _node;
   dynamic _document;
 
   FigmaGenerator(this._document) {
-    var color = ColorGenerator();
+    _colors = ColorGenerator();
     _path = PathGenerator();
-    _node = NodeGenerator(DirectiveGenerator(), color, PaintGenerator(color), EffectsGenerator(color), _path, TextStyleGenerator(), ParagraphStyleGenerator());
+    _paint = PaintGenerator(_colors);
+    _effects = EffectsGenerator(_colors);
+    _textStyles = TextStyleGenerator();
+    _node = NodeGenerator(DirectiveGenerator(), _colors, _paint, _effects, _path, _textStyles, ParagraphStyleGenerator());
     _component = ComponentGenerator(_node);
   }
 
@@ -88,28 +95,19 @@ class FigmaGenerator {
     return result;
   }
 
-  Library _generateWidgets(Map<String,dynamic> widgets) {
+  Library _generateWidgets(Map<String,dynamic> widgets, {bool withComments = false}) {
     var classes = <Class>[];
     
     widgets.forEach((k,node) {
-      var newClasses = _component.generate(k, node).toList();
+      var newClasses = _component.generate(k, node, withComments: withComments).toList();
       classes.addAll(newClasses);
     });
 
-    /**
-     * class Data {
-  final bool isVisible;
-  Data({this.isVisible});
-}
-
-class TextData extends Data {
-  final String text;
-  TextData({isVisible, this.text}) : super(isVisible: isVisible);
-}
-     */
-
     classes.add(_path.buildCatalog());
-
+    classes.add(_paint.catalog.build());
+    classes.add(_effects.catalog.build());
+    classes.add(_colors.catalog.build());
+    classes.add(_textStyles.catalog.build());
     classes.addAll(_createDataClasses());
 
     return Library((b) => b
@@ -138,7 +136,7 @@ class TextData extends Data {
     return null;
   }
   
-  String generateComponents(Map<String,String> components) {
+  String generateComponents(Map<String,String> components, {bool withComments = false}) {
     Map<String,dynamic> widgets = {};
 
     _document["components"].forEach((ck,cv) {
@@ -149,7 +147,7 @@ class TextData extends Data {
       });
     });
 
-    var library = _generateWidgets(widgets);
+    var library = _generateWidgets(widgets, withComments: withComments);
     var emitter = DartEmitter();
       return DartFormatter().format ('${library.accept(emitter)}');
   }

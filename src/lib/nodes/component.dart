@@ -8,9 +8,9 @@ class ComponentGenerator {
 
   ComponentGenerator(this._node);
 
-  List<Class> generate(String name, dynamic map) {
+  List<Class> generate(String name, dynamic map, {bool withComments = false}) {
 
-    var context = BuildContext(name, map);
+    var context = BuildContext(name, map, withComments: withComments);
 
     map["constraints"] = {
       "horizontal": "LEFT_RIGHT",

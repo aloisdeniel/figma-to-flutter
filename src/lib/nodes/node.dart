@@ -42,8 +42,8 @@ class NodeGenerator {
     var e = row1[1].toDouble();
 
     var values = [
-      a.toString(), d.toString() , "0.0", "0.0",
-      b.toString(), e.toString(), "0.0", "0.0",
+      toFixedDouble(a), toFixedDouble(d) , "0.0", "0.0",
+      toFixedDouble(b), toFixedDouble(e), "0.0", "0.0",
       "0.0" , "0.0" , "1.0" , "0.0",
       "frame.left" , "frame.top" , "0.0" , "1.0",
     ];
@@ -57,7 +57,7 @@ class NodeGenerator {
     return Point(w.toDouble(), h.toDouble());
   }
 
-  Code _createFrame(map, Point orginalContainerSize) {
+  Code _createFrame(map, Point orginalContainerSize, bool withComments) {
 
     var size = _toPoint(map["size"]);
     var relativeTransform = map["relativeTransform"];
@@ -71,46 +71,48 @@ class NodeGenerator {
     var horizontal = constraints["horizontal"];
     var vertical = constraints["vertical"];
 
-    var x = "$vx";
-    var y = "$vy";
-    var w = "$vw";
-    var h = "$vh";
+    var x = toFixedDouble(vx);
+    var y = toFixedDouble(vy);
+    var w = toFixedDouble(vw);
+    var h = toFixedDouble(vh);
+    var bottom = orginalContainerSize.y - vy - vh;
+    var right = orginalContainerSize.x - vx - vw;
+    var comments = " /* H:${horizontal} V:${vertical} F:(l:$x,t:$y,r:$right,b:$bottom,w:$w,h:$h) */";
 
     switch(horizontal) {
       case "RIGHT":
         var fromRight = orginalContainerSize.x - vx;
-        x = "(container.width - (${fromRight}))";
+        x = "(container.width - (${toFixedDouble(fromRight)})";
         break;
       case "LEFT_RIGHT":
-        var right = orginalContainerSize.x - vx - vw;
         var totalMargin = vx + right;
-        w = "(container.width - ($totalMargin))";
+        w = "(container.width - (${toFixedDouble(totalMargin)}))";
         break;
       case "CENTER":
         var center = vx + (vw / 2.0);
         var delta = (orginalContainerSize.x / 2.0) - center;
-        x = "((container.width / 2.0) - $delta - ${vw / 2.0})";
+
+        x = "((container.width / 2.0) - (${toFixedDouble(delta + vw / 2.0)}))";
         break;
     }
     
     switch(vertical) {
       case "BOTTOM":
         var fromBottom = orginalContainerSize.y - vy;
-        y = "(container.height - (${fromBottom}))";
+        y = "(container.height - (${toFixedDouble(fromBottom)}))";
         break;
       case "TOP_BOTTOM":
-        var bottom = orginalContainerSize.y - vy - vh;
         var totalMargin = vy + bottom;
-        h = "(container.height - ($totalMargin))";
+        h = "(container.height - (${toFixedDouble(totalMargin)}))";
         break;
       case "CENTER":
         var center = vy + (vh / 2.0);
         var delta = (orginalContainerSize.y / 2.0) - center;
-        y = "((container.height / 2.0) - $delta - ${vh / 2.0})";
+        y = "((container.height / 2.0) - ${toFixedDouble(delta + vh / 2.0)})";
         break;
     }
 
-    return Code("Rect.fromLTWH($x, $y, $w, $h)");
+    return Code("Rect.fromLTWH($x, $y, $w, $h)" + (withComments ? comments : ""));
   }
 
   void _generateData(BuildContext context, dynamic map) {
@@ -134,7 +136,9 @@ class NodeGenerator {
       context.addPaint(["if(this.$varName?.isVisible ?? $defaultIsVisible) {"]);
     }
 
-   context.addPaint(["", "// ${map["name"]}"]);
+    if(context.withComments) {
+      context.addPaint(["", "// ${map["id"]} : ${map["name"]} (${map["type"]})"]);
+    }
 
     var methodName = "draw_" + map["id"].replaceAll(":", "_").replaceAll(";","__");
     print(methodName);
@@ -143,7 +147,7 @@ class NodeGenerator {
     // Transform
 
     var container = _toPoint(parent["size"]);
-    var frame = _createFrame(map, container);
+    var frame = _createFrame(map, container, context.withComments);
     var relativeTransform = _createTransform(map);
     context.addPaint(["var frame = ${frame};"]);
 

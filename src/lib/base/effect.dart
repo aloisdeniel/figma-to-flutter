@@ -1,9 +1,13 @@
+import 'package:figma_to_flutter/tools/code_catalog.dart';
+
 import 'color.dart';
 import 'package:code_builder/code_builder.dart';
 
 class EffectsGenerator {
 
   final ColorGenerator _color;
+
+  CodeCatalog catalog = CodeCatalog("_EffectCatalog", "Paint");
 
   EffectsGenerator(this._color);
 
@@ -14,12 +18,12 @@ class EffectsGenerator {
       var color = _color.generate(map["color"]);
       var radius = map["radius"].toDouble();
 
-    return new Code("(Paint()\n" +
+    return catalog.get("(Paint()\n" +
       "..color = $color\n" +
       "..maskFilter = MaskFilter.blur(BlurStyle.normal, BoxShadow.convertRadiusToSigma($radius))" +
       ")");
     }
 
-    return new Code("Paint()");
+    return catalog.get("Paint()");
   }
 }

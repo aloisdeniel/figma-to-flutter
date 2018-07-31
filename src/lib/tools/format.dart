@@ -14,3 +14,7 @@ String toClassName(String name) {
   var className = rc.pascalCase;
   return _removeSpecialChars(className);
 }
+
+String toFixedDouble(double value) {
+  return value.toString();
+}

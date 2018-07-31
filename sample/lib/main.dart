@@ -34,7 +34,7 @@ class _HomeState extends State<Home> {
   Widget _buildLogo() => Container(
     margin: EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0),
       constraints: BoxConstraints.expand(height: 128.0),  
-      child: TodoLogo(),
+      child: TodoLogo(NetworkImage("https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/1024px-Google_%22G%22_Logo.svg.png")),
   );
 
   Widget _buildHeader() => Container(
@@ -98,7 +98,22 @@ class MyApp extends StatelessWidget {
       theme: new ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: new Home(),
+      home: Stack(children: <Widget>[
+         Home(),
+         Align(
+          alignment: Alignment.topLeft,
+            child:
+             Container(
+               constraints: BoxConstraints.expand(
+               width: 50.0,
+               height: 100.0,),
+             child:Transform.translate(
+               child: Text("X"),
+               offset: Offset(0.0,0.0),
+             ))
+         )
+         
+      ]),
     );
   }
 }

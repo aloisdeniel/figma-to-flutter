@@ -9,9 +9,16 @@ class GroupGenerator {
 
   GroupGenerator(this._node);
 
-  void generate(BuildContext context, dynamic map) {
+  bool isSupported(dynamic map) {
+    const supported = [ 
+      'GROUP'
+    ];
+    return supported.contains(map["type"]);
+  }
+
+  void generate(BuildContext context, dynamic map, dynamic parent) {
     map["children"].forEach((x) {
-       this._node.generate(context,x,map);
+       this._node.generate(context,x,parent);
     });
   }
 }

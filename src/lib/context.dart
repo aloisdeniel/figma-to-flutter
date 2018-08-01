@@ -14,7 +14,7 @@ class BuildContext {
   bool withComments;
 
   List<String> _dataProperties = [];
-  List<String> _imageProperties = [];
+  Map<String,String> _imageProperties = {};
 
   dynamic _rootNode;
 
@@ -142,18 +142,21 @@ class BuildContext {
     return this;
   }
 
-/**
- * class TodoLogoPainter extends ChangeNotifier implements  CustomPainter {
-  TodoLogoPainter(ImageProvider image)
-  {
-    this.image = DecorationImage(image: image).createPainter(_onUpdate);
-  } 
-  
-  DecorationImagePainter image;
+  String _toFit(dynamic map) {
+    switch(map["scaleMode"]) {
+        case "FIT":
+          return "BoxFit.contain";
+          break;
+        case "STRECH":
+          return "BoxFit.fill";
+          break;
+        default:
+          return "BoxFit.cover";
+          break;
+      } 
+  }
 
-  void _onUpdate() => this.notifyListeners();
- */
-  BuildContext addImage(String name) {
+  BuildContext addImage(String name, dynamic map) {
       var propertyName = format.toVariableName(name) + "Provider";
 
     _widget.fields.add(Field((b) => b
@@ -163,7 +166,7 @@ class BuildContext {
       ));
 
       _widgetConstructor
-        ..requiredParameters.add(Parameter((p) => p
+        ..optionalParameters.add(Parameter((p) => p
         ..name = "this.${propertyName}"
         ..named = true));
 
@@ -173,14 +176,16 @@ class BuildContext {
       ));
 
       _customPainterConstructor
-        ..optionalParameters.add(Parameter((p) => p
+        ..requiredParameters.add(Parameter((p) => p
         ..name = propertyName
         ..type = refer("ImageProvider")));
      
       _dataProperties.add(propertyName);
-      _imageProperties.add(propertyName);
 
-        return this;
+      var fit = _toFit(map);
+      _imageProperties[propertyName] = "DecorationImage(image: ${propertyName}, fit: $fit)";
+
+      return this;
   }
 
   BuildContext addData(String name, String type) {
@@ -346,9 +351,14 @@ class BuildContext {
             ..type=refer("Size"))));
 
     if(this._imageProperties.isNotEmpty) {
+
       _customPainter.extend = refer("ChangeNotifier");
       _customPainter.implements = ListBuilder<Reference>([refer("CustomPainter")]);
-      _customPainterConstructor.body = Block((b) => b..statements.addAll(this._imageProperties.map((x) => Code("this.${x} = (${x} != null) ? DecorationImage(image: ${x}).createPainter(_onUpdate) : null;"))));
+      _customPainterConstructor.body = Block((b){ 
+        List<Code> statements = [];
+        this._imageProperties.forEach((k,v) => statements.add(Code("this.${k} = (${k} != null) ? $v.createPainter(_onUpdate) : null;")));
+        return b..statements.addAll(statements);
+      });
       _customPainter.methods.add(Method((b) => b
         ..name = '_onUpdate'
         ..returns = refer("void")

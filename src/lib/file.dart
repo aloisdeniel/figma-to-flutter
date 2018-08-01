@@ -101,7 +101,7 @@ class FigmaGenerator {
     return result;
   }
 
-  Library _generateWidgets(Map<String,dynamic> widgets, {bool withComments = false}) {
+  Library _generateWidgets(Map<String,dynamic> widgets, {bool withComments = false, bool withDataClasses = true}) {
     var classes = <Class>[];
     
     widgets.forEach((k,node) {
@@ -114,7 +114,9 @@ class FigmaGenerator {
     classes.add(_effects.catalog.build());
     classes.add(_colors.catalog.build());
     classes.add(_textStyles.catalog.build());
-    classes.addAll(_createDataClasses());
+    if(withDataClasses) {
+      classes.addAll(_createDataClasses());
+    }
 
     return Library((b) => b
     ..directives.addAll([
@@ -142,7 +144,7 @@ class FigmaGenerator {
     return null;
   }
   
-  String generateComponents(Map<String,String> components, {bool withComments = false}) {
+  String generateComponents(Map<String,String> components, {bool withComments = false, bool withDataClasses = true}) {
     Map<String,dynamic> widgets = {};
 
     _document["components"].forEach((ck,cv) {
@@ -158,7 +160,7 @@ class FigmaGenerator {
     var source = '${library.accept(emitter)}';
     try
     {
-      return DartFormatter(lineEnding: "").format(source);
+      return DartFormatter().format(source);
     }
     catch(e) {
       throw FigmaFormattingException(e,source);

@@ -116,8 +116,8 @@ class NodeGenerator {
         break;
       case "SCALE":
         var ratio = "(container.width) / ${toFixedDouble(vw)}";
-        y = "(${toFixedDouble(vx)} * $ratio)";
-        h = "(${toFixedDouble(vy)} * $ratio)";
+        y = "(${toFixedDouble(vy)} * $ratio)";
+        h = "(${toFixedDouble(vh)} * $ratio)";
         break;
     }
 
@@ -149,54 +149,59 @@ class NodeGenerator {
       context.addPaint(["", "// ${map["id"]} : ${map["name"]} (${map["type"]})"]);
     }
 
+    var isVector = _vector.isSupported(map);
+    var isGroup = _group.isSupported(map);
+
+    if(isVector) {
+      _vector.generateClip(context, map);
+    }
+
     var methodName = "draw_" + map["id"].replaceAll(":", "_").replaceAll(";","__");
     print(methodName);
    context.addPaint(["var $methodName = (Canvas canvas, Rect container) {"]);
 
     // Transform
 
-    var container = _toPoint(parent["size"]);
-    var frame = _createFrame(map, container, context.withComments);
-    var relativeTransform = _createTransform(map);
-    context.addPaint(["var frame = ${frame};"]);
+    
+
+    if(!isGroup) {
+      var container = _toPoint(parent["size"]);
+      var frame = _createFrame(map, container, context.withComments);
+      context.addPaint(["var frame = ${frame};"]);
+
+      var relativeTransform = _createTransform(map);
+      context.addPaint([
+        "canvas.save();",
+        "canvas.transform($relativeTransform);"
+      ]);
+
+      if(isVector) {
+        _vector.generate(context, map);
+      }
+      else if(_frame.isSupported(map)) {
+        _frame.generate(context, map);
+      }
+      else if(_text.isSupported(map)) {
+        _text.generate(context, map);
+      }
+    }
+    else {
+      var relativeTransform = map["relativeTransform"];
+      var tx = relativeTransform[0][2].toDouble();
+      var ty = relativeTransform[1][2].toDouble();
+      context.addPaint([
+        "canvas.save();",
+        "canvas.translate($tx, $ty);"
+      ]);
+      _group.generate(context, map, parent);
+    }
 
     context.addPaint([
-      "canvas.save();",
-      "canvas.transform(${relativeTransform});"
+      "canvas.restore();",
+      "};",
+      "$methodName(canvas,frame);",
     ]);
-
-    switch(map["type"] as String)
-    {
-        case 'RECT':
-        case 'VECTOR':
-        case 'ELLIPSE':
-        case 'RECTANGLE':
-        case 'REGULAR_POLYGON':
-        case 'BOOLEAN_OPERATION':
-        case 'STAR':
-          _vector.generate(context, map);
-          break;
-
-        case 'GROUP':
-          _group.generate(context, map);
-          break;
-
-        case 'FRAME':
-        case 'COMPONENT':
-        case 'INSTANCE':
-          _frame.generate(context, map);
-          break;
-
-        case 'TEXT':
-          _text.generate(context, map);
-          break;
-      }
-      context.addPaint([
-        "canvas.restore();",
-        "};",
-        "$methodName(canvas,frame);",
-      ]);
-    
+      
     if(declaration is DynamicItem) {
       context.addPaint(["}"]);
     }

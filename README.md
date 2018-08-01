@@ -4,7 +4,7 @@ A Dart code generator that converts Figma components to Flutter widgets.
 
 ## Try it
 
-**Disclaimer : All of this is purely experimental and under active development (read why I started the project [here](https://aloisdeniel.github.io/introducing-figma-to-flutter/)).** 
+**Disclaimer : All of this is purely experimental and under active development (read why I started the project [here](https://aloisdeniel.github.io/introducing-figma-to-flutter/)). If I would have access to Figma rendering source code it would have been a lot easier, but be aware that all the rendering logic is reverse engineered, so you will experience a lot of inconsistencies!** 
 
 The easiest way is to use the [online tool](http://aloisdeniel.github.com/figma-to-flutter).
 

@@ -10,6 +10,15 @@ class FrameGenerator {
 
   FrameGenerator(this._color, this._node);
 
+  bool isSupported(dynamic map) {
+    const supported = [ 
+      'FRAME',
+      'COMPONENT',
+      'INSTANCE',
+    ];
+    return supported.contains(map["type"]);
+  }
+
   void generate(BuildContext context,dynamic map) {
     // Draw background
     var color = _color.generate(map["backgroundColor"]);

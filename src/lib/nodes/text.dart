@@ -14,6 +14,13 @@ class TextGenerator {
 
   TextGenerator(this._color, this._textStyle, this._paragraphStyle);
 
+  bool isSupported(dynamic map) {
+    const supported = [ 
+      'TEXT'
+    ];
+    return supported.contains(map["type"]);
+  }
+
   void generate(BuildContext context,dynamic map) {
  
     var declaration = Declaration.parse(map["name"]);

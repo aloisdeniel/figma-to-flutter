@@ -14,6 +14,7 @@ void main(List<String> args) async {
   parser.addMultiOption('widget', abbr: 'w');
   parser.addOption('output', abbr: 'o');
   parser.addFlag('withComments', abbr: 'c', defaultsTo: false);
+  parser.addFlag('withDataClasses', abbr: 'd', defaultsTo: true);
 
   var results = parser.parse(args);
 
@@ -35,8 +36,9 @@ void main(List<String> args) async {
   });
 
   try {
-    var code = generator.generateComponents(widgets, withComments: true);
+    var code = generator.generateComponents(widgets, withComments: results["withComments"], withDataClasses: results["withDataClasses"]);
     // Writing to file
+
     await (new File(results["output"])).writeAsString(code);
   }
   catch(e) {
@@ -44,6 +46,10 @@ void main(List<String> args) async {
       // Writing to file
       print(e.inner);
       await (new File(results["output"] + ".error.dart")).writeAsString(e.code);
+    }
+    else {
+      // Writing to file
+      print(e);
     }
   }
 }

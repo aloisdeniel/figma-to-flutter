@@ -13,6 +13,12 @@ import 'nodes/node.dart';
 import 'tools/format.dart';
 import 'package:code_builder/code_builder.dart';
 
+class FigmaFormattingException {
+  FigmaFormattingException(this.inner, this.code);
+  final String code;
+  final Exception inner;
+}
+
 class FigmaGenerator {
 
   ComponentGenerator _component;
@@ -149,6 +155,13 @@ class FigmaGenerator {
 
     var library = _generateWidgets(widgets, withComments: withComments);
     var emitter = DartEmitter();
-      return DartFormatter().format ('${library.accept(emitter)}');
+    var source = '${library.accept(emitter)}';
+    try
+    {
+      return DartFormatter(lineEnding: "").format(source);
+    }
+    catch(e) {
+      throw FigmaFormattingException(e,source);
+    }
   }
 }

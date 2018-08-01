@@ -34,8 +34,16 @@ void main(List<String> args) async {
     widgets[w] = w;
   });
 
-  var code = generator.generateComponents(widgets, withComments: true);
-  
-  // Writing to file
-  await (new File(results["output"])).writeAsString(code);
+  try {
+    var code = generator.generateComponents(widgets, withComments: true);
+    // Writing to file
+    await (new File(results["output"])).writeAsString(code);
+  }
+  catch(e) {
+    if(e is FigmaFormattingException) {
+      // Writing to file
+      print(e.inner);
+      await (new File(results["output"] + ".error.dart")).writeAsString(e.code);
+    }
+  }
 }

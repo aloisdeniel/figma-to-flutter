@@ -82,7 +82,7 @@ class NodeGenerator {
     switch(horizontal) {
       case "RIGHT":
         var fromRight = orginalContainerSize.x - vx;
-        x = "(container.width - (${toFixedDouble(fromRight)})";
+        x = "(container.width - (${toFixedDouble(fromRight)}))";
         break;
       case "LEFT_RIGHT":
         var totalMargin = vx + right;
@@ -91,8 +91,12 @@ class NodeGenerator {
       case "CENTER":
         var center = vx + (vw / 2.0);
         var delta = (orginalContainerSize.x / 2.0) - center;
-
         x = "((container.width / 2.0) - (${toFixedDouble(delta + vw / 2.0)}))";
+        break;
+      case "SCALE":
+        var ratio = "(container.width) / ${toFixedDouble(vw)}";
+        x = "(${toFixedDouble(vx)} * $ratio)";
+        w = "(${toFixedDouble(vw)} * $ratio)";
         break;
     }
     
@@ -109,6 +113,11 @@ class NodeGenerator {
         var center = vy + (vh / 2.0);
         var delta = (orginalContainerSize.y / 2.0) - center;
         y = "((container.height / 2.0) - ${toFixedDouble(delta + vh / 2.0)})";
+        break;
+      case "SCALE":
+        var ratio = "(container.width) / ${toFixedDouble(vw)}";
+        y = "(${toFixedDouble(vx)} * $ratio)";
+        h = "(${toFixedDouble(vy)} * $ratio)";
         break;
     }
 

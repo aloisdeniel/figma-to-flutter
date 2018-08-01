@@ -1,6 +1,7 @@
 
 import 'package:code_builder/code_builder.dart';
 import 'package:figma_to_flutter/tools/code_catalog.dart';
+import 'package:figma_to_flutter/tools/format.dart';
 
 class TextStyleGenerator {
 
@@ -55,7 +56,7 @@ class ParagraphStyleGenerator {
     return new Code("ui.ParagraphStyle(" +
       "fontFamily: '$fontFamily'," +
       "textAlign: $textAlignHorizontal," +
-      "fontSize: $fontSize," +
+      "fontSize: ${toFixedDouble(fontSize)}," +
       "fontWeight: FontWeight.w$fontWeight," +
     ")");
   }

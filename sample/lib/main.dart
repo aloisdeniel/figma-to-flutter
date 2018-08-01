@@ -5,6 +5,8 @@ import 'package:flutter_figma_sample/todo/todo.dart';
 
 void main() => runApp(new MyApp());
 
+var appBarColor = Color(0xFF343841);
+
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
@@ -14,7 +16,65 @@ class MyApp extends StatelessWidget {
       theme: new ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: Stack(children: <Widget>[
+      home: HomePage()
+    );
+  }
+}
+
+class HomePage extends StatelessWidget {
+  final samples = [
+    Sample("Todo", (b) => TodoPage())
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+            appBar: AppBar(
+              backgroundColor: appBarColor,
+              title: Text("Flutter to figma"),
+            ),
+            body:ListView.builder(itemBuilder:(b,i) => SampleCell(samples[i]), itemCount: samples.length)
+    );
+  }
+}
+
+class Sample {
+  final String name;
+  final WidgetBuilder builder;
+  Sample(this.name, this.builder);
+}
+
+class SampleCell  extends StatelessWidget {
+  final Sample sample;
+  SampleCell(this.sample);
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+    onTap: () {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (b) => Scaffold(
+            appBar: AppBar(
+              backgroundColor: appBarColor,
+              title: Text(this.sample.name),
+            ),
+            body: this.sample.builder(b)
+          ),
+      ));
+    },
+    child:Card(
+      child: Container(
+        margin: EdgeInsets.all(20.0),
+        child: Text(this.sample.name), 
+      )
+    )
+  );
+  }
+}
+
+/**
+ home: Stack(children: <Widget>[
          TodoPage(),
          Align(
           alignment: Alignment.topLeft,
@@ -30,6 +90,4 @@ class MyApp extends StatelessWidget {
          )
          
       ]),
-    );
-  }
-}
+ */

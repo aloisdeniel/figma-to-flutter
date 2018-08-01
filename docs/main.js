@@ -37130,7 +37130,7 @@
         J.toDouble$0$n(t3.$index(defaultStyle, "lineHeightPx"));
         J.toDouble$0$n(t3.$index(defaultStyle, "letterSpacing"));
         fontWeight = J.toInt$0$n(t3.$index(defaultStyle, "fontWeight"));
-        context.addPaint$1(H.setRuntimeTypeInfo(["var paragraphStyle = " + new X.StaticCode("ui.ParagraphStyle(" + ("fontFamily: '" + H.S(fontFamily) + "',") + ("textAlign: " + textAlignHorizontal + ",") + ("fontSize: " + H.S(fontSize) + ",") + ("fontWeight: FontWeight.w" + fontWeight + ",") + ")").toString$0(0) + ";", "var paragraphBuilder = ui.ParagraphBuilder(paragraphStyle)..pushStyle(style_0);"], t2));
+        context.addPaint$1(H.setRuntimeTypeInfo(["var paragraphStyle = " + new X.StaticCode("ui.ParagraphStyle(" + ("fontFamily: '" + H.S(fontFamily) + "',") + ("textAlign: " + textAlignHorizontal + ",") + ("fontSize: " + C.JSNumber_methods.toString$0(fontSize) + ",") + ("fontWeight: FontWeight.w" + fontWeight + ",") + ")").toString$0(0) + ";", "var paragraphBuilder = ui.ParagraphBuilder(paragraphStyle)..pushStyle(style_0);"], t2));
         characterStyleOverrides = t1.$index(map, "characterStyleOverrides");
         t1 = !!declaration.$isDynamicItem;
         if (t1)

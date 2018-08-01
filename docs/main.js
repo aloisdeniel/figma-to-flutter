@@ -36843,7 +36843,7 @@
         t4 = J.getInterceptor$asx(relativeTransform);
         t2 = J.toDouble$0$n(J.$index$asx(t4.$index(relativeTransform, 0), 2));
         t4 = J.toDouble$0$n(J.$index$asx(t4.$index(relativeTransform, 1), 2));
-        context.addPaint$1(H.setRuntimeTypeInfo(["canvas.drawColor(Colors.transparent, BlendMode.screen);", "var frame = Offset.zero & size;", "canvas.translate(" + H.S(-1 * t2) + ", " + H.S(-1 * t4) + ");"], t3));
+        context.addPaint$1(H.setRuntimeTypeInfo(["canvas.drawColor(Colors.transparent, BlendMode.screen);", "var frame = Offset.zero & size;", "canvas.translate(" + B.toFixedDouble(-1 * t2) + ", " + B.toFixedDouble(-1 * t4) + ");"], t3));
         t1._component$_node.generate$3(context, node, node);
         result = H.setRuntimeTypeInfo([], [X.Class]);
         C.JSArray_methods.add$1(result, context._buildWidget$0());

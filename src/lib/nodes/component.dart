@@ -2,6 +2,7 @@
 import 'package:code_builder/code_builder.dart';
 import 'package:figma_to_flutter/context.dart';
 import 'package:figma_to_flutter/nodes/node.dart';
+import 'package:figma_to_flutter/tools/format.dart';
 
 class ComponentGenerator {
   final NodeGenerator _node;
@@ -24,7 +25,7 @@ class ComponentGenerator {
     context.addPaint([
       "canvas.drawColor(Colors.transparent, BlendMode.screen);",
       "var frame = Offset.zero & size;",
-      "canvas.translate($vx, $vy);",
+      "canvas.translate(${toFixedDouble(vx)}, ${toFixedDouble(vy)});",
     ]);
 
     _node.generate(context, map, map);

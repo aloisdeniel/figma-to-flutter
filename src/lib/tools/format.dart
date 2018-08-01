@@ -16,5 +16,7 @@ String toClassName(String name) {
 }
 
 String toFixedDouble(double value) {
+  if(value == 0)
+    return "0.0";
   return value.toStringAsFixed(10);
 }

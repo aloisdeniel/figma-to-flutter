@@ -21,7 +21,7 @@ class TextStyleGenerator {
     return catalog.get("ui.TextStyle(" +
       "fontFamily: '$fontFamily'," +
       "color: $color," +
-      "fontSize: $fontSize," +
+      "fontSize: ${toFixedDouble(fontSize)}," +
       "fontWeight: FontWeight.w$fontWeight," +
     ")");
   }

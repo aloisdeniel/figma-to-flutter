@@ -16,5 +16,5 @@ String toClassName(String name) {
 }
 
 String toFixedDouble(double value) {
-  return value.toString();
+  return value.toStringAsFixed(10);
 }

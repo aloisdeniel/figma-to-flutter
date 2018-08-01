@@ -1141,6 +1141,15 @@
       toDouble$0: function(receiver) {
         return receiver;
       },
+      toStringAsFixed$1: function(receiver, fractionDigits) {
+        var result;
+        if (fractionDigits > 20)
+          throw H.wrapException(P.RangeError$range(fractionDigits, 0, 20, "fractionDigits", null));
+        result = receiver.toFixed(fractionDigits);
+        if (receiver === 0 && this.get$isNegative(receiver))
+          return "-" + result;
+        return result;
+      },
       toRadixString$1: function(receiver, radix) {
         var result, match, t1, exponent;
         if (radix < 2 || radix > 36)
@@ -35754,22 +35763,22 @@
         switch (segment.command) {
           case C.SvgPathSegType_3:
           case C.SvgPathSegType_2:
-            return new X.StaticCode("path.moveTo(" + J.toString$0$(segment.targetPoint.x) + ", " + J.toString$0$(segment.targetPoint.y) + ")");
+            return new X.StaticCode("path.moveTo(" + J.toStringAsFixed$1$n(segment.targetPoint.x, 10) + ", " + J.toStringAsFixed$1$n(segment.targetPoint.y, 10) + ")");
           case C.SvgPathSegType_5:
           case C.SvgPathSegType_4:
           case C.SvgPathSegType_13:
           case C.SvgPathSegType_12:
           case C.SvgPathSegType_15:
           case C.SvgPathSegType_14:
-            return new X.StaticCode("path.lineTo(" + J.toString$0$(segment.targetPoint.x) + ", " + J.toString$0$(segment.targetPoint.y) + ")");
+            return new X.StaticCode("path.lineTo(" + J.toStringAsFixed$1$n(segment.targetPoint.x, 10) + ", " + J.toStringAsFixed$1$n(segment.targetPoint.y, 10) + ")");
           case C.SvgPathSegType_1:
             return new X.StaticCode("path.close()");
           case C.SvgPathSegType_7:
           case C.SvgPathSegType_6:
-            return new X.StaticCode("path.cubicTo(" + J.toString$0$(segment.point1.x) + ", " + J.toString$0$(segment.point1.y) + ", " + J.toString$0$(segment.point2.x) + ", " + J.toString$0$(segment.point2.y) + ", " + J.toString$0$(segment.targetPoint.x) + ", " + J.toString$0$(segment.targetPoint.y) + ")");
+            return new X.StaticCode("path.cubicTo(" + J.toStringAsFixed$1$n(segment.point1.x, 10) + ", " + J.toStringAsFixed$1$n(segment.point1.y, 10) + ", " + J.toStringAsFixed$1$n(segment.point2.x, 10) + ", " + J.toStringAsFixed$1$n(segment.point2.y, 10) + ", " + J.toStringAsFixed$1$n(segment.targetPoint.x, 10) + ", " + J.toStringAsFixed$1$n(segment.targetPoint.y, 10) + ")");
           case C.SvgPathSegType_9:
           case C.SvgPathSegType_8:
-            return new X.StaticCode("path.cubicTo(" + J.toString$0$(segment.point1.x) + ", " + J.toString$0$(segment.point1.y) + ", " + J.toString$0$(segment.point2.x) + ", " + J.toString$0$(segment.point2.y) + ", " + J.toString$0$(segment.targetPoint.x) + ", " + J.toString$0$(segment.targetPoint.y) + ")");
+            return new X.StaticCode("path.cubicTo(" + J.toStringAsFixed$1$n(segment.point1.x, 10) + ", " + J.toStringAsFixed$1$n(segment.point1.y, 10) + ", " + J.toStringAsFixed$1$n(segment.point2.x, 10) + ", " + J.toStringAsFixed$1$n(segment.point2.y, 10) + ", " + J.toStringAsFixed$1$n(segment.targetPoint.x, 10) + ", " + J.toStringAsFixed$1$n(segment.targetPoint.y, 10) + ")");
           case C.SvgPathSegType_17:
           case C.SvgPathSegType_16:
           case C.SvgPathSegType_19:
@@ -35879,7 +35888,7 @@
         J.toDouble$0$n(t1.$index(map, "lineHeightPx"));
         J.toDouble$0$n(t1.$index(map, "letterSpacing"));
         fontWeight = J.toInt$0$n(t1.$index(map, "fontWeight"));
-        return this.catalog.$get$1("ui.TextStyle(" + ("fontFamily: '" + H.S(fontFamily) + "',") + ("color: " + H.S(color) + ",") + ("fontSize: " + H.S(fontSize) + ",") + ("fontWeight: FontWeight.w" + fontWeight + ",") + ")");
+        return this.catalog.$get$1("ui.TextStyle(" + ("fontFamily: '" + H.S(fontFamily) + "',") + ("color: " + H.S(color) + ",") + ("fontSize: " + C.JSNumber_methods.toStringAsFixed$1(fontSize, 10) + ",") + ("fontWeight: FontWeight.w" + fontWeight + ",") + ")");
       }
     },
     ParagraphStyleGenerator: {
@@ -36987,8 +36996,8 @@
           if (H.boolTypeCheck(isMask == null ? false : isMask)) {
             P.print("Creating mask");
             size = t3._toPoint$1(t1.$index(map, "size"));
-            sx = "(frame.width / " + J.toString$0$(size.x) + ")";
-            sy = "(frame.height / " + J.toString$0$(size.y) + ")";
+            sx = "(frame.width / " + J.toStringAsFixed$1$n(size.x, 10) + ")";
+            sy = "(frame.height / " + J.toStringAsFixed$1$n(size.y, 10) + ")";
             transform = "Float64List.fromList([" + sx + ", 0.0, 0.0, 0.0, 0.0, " + sy + ", 0.0, 0.0, 0.0, 0.0, 1.0, 0.0,0.0, 0.0, 0.0, 1.0])";
             clipGeometry = t3._createGeometry$2(map, "clipTransform");
             context.addPaint$1(H.setRuntimeTypeInfo(["var mask = Path();", "var clipTransform = " + transform + ";", "var clipGeometry = " + clipGeometry + ";", "clipGeometry.forEach((p) => mask.addPath(p, Offset.zero));", "canvas.clipPath(mask);"], [P.String]));
@@ -37012,23 +37021,19 @@
           t4 = J.getInterceptor$asx(constraints);
           horizontal = t4.$index(constraints, "horizontal");
           vertical = t4.$index(constraints, "vertical");
-          x = C.JSNumber_methods.toString$0(vx);
-          y = C.JSNumber_methods.toString$0(vy);
-          w = J.getInterceptor(vw).toString$0(vw);
-          h = J.getInterceptor(vh).toString$0(vh);
+          x = C.JSNumber_methods.toStringAsFixed$1(vx, 10);
+          y = C.JSNumber_methods.toStringAsFixed$1(vy, 10);
+          w = J.getInterceptor$n(vw).toStringAsFixed$1(vw, 10);
+          h = J.getInterceptor$n(vh).toStringAsFixed$1(vh, 10);
           t4 = orginalContainerSize.y;
           if (typeof t4 !== "number")
             return t4.$sub();
           t5 = t4 - vy;
-          if (typeof vh !== "number")
-            return H.iae(vh);
           bottom = t5 - vh;
           t6 = orginalContainerSize.x;
           if (typeof t6 !== "number")
             return t6.$sub();
           t7 = t6 - vx;
-          if (typeof vw !== "number")
-            return H.iae(vw);
           right = t7 - vw;
           H.S(horizontal);
           H.S(vertical);
@@ -37036,36 +37041,36 @@
           H.S(bottom);
           switch (horizontal) {
             case "RIGHT":
-              x = "(container.width - (" + C.JSNumber_methods.toString$0(t7) + "))";
+              x = "(container.width - (" + C.JSNumber_methods.toStringAsFixed$1(t7, 10) + "))";
               break;
             case "LEFT_RIGHT":
-              w = "(container.width - (" + C.JSNumber_methods.toString$0(vx + right) + "))";
+              w = "(container.width - (" + C.JSNumber_methods.toStringAsFixed$1(vx + right, 10) + "))";
               break;
             case "CENTER":
               t7 = vw / 2;
-              x = "((container.width / 2.0) - (" + C.JSDouble_methods.toString$0(t6 / 2 - (vx + t7) + t7) + "))";
+              x = "((container.width / 2.0) - (" + C.JSDouble_methods.toStringAsFixed$1(t6 / 2 - (vx + t7) + t7, 10) + "))";
               break;
             case "SCALE":
-              ratio = "(container.width) / " + C.JSNumber_methods.toString$0(vw);
-              x = "(" + C.JSNumber_methods.toString$0(vx) + " * " + ratio + ")";
-              w = "(" + C.JSNumber_methods.toString$0(vw) + " * " + ratio + ")";
+              ratio = "(container.width) / " + C.JSNumber_methods.toStringAsFixed$1(vw, 10);
+              x = "(" + C.JSNumber_methods.toStringAsFixed$1(vx, 10) + " * " + ratio + ")";
+              w = "(" + C.JSNumber_methods.toStringAsFixed$1(vw, 10) + " * " + ratio + ")";
               break;
           }
           switch (vertical) {
             case "BOTTOM":
-              y = "(container.height - (" + C.JSNumber_methods.toString$0(t5) + "))";
+              y = "(container.height - (" + C.JSNumber_methods.toStringAsFixed$1(t5, 10) + "))";
               break;
             case "TOP_BOTTOM":
-              h = "(container.height - (" + C.JSNumber_methods.toString$0(vy + bottom) + "))";
+              h = "(container.height - (" + C.JSNumber_methods.toStringAsFixed$1(vy + bottom, 10) + "))";
               break;
             case "CENTER":
               t5 = vh / 2;
-              y = "((container.height / 2.0) - " + C.JSDouble_methods.toString$0(t4 / 2 - (vy + t5) + t5) + ")";
+              y = "((container.height / 2.0) - " + C.JSDouble_methods.toStringAsFixed$1(t4 / 2 - (vy + t5) + t5, 10) + ")";
               break;
             case "SCALE":
-              ratio = "(container.width) / " + C.JSNumber_methods.toString$0(vw);
-              y = "(" + C.JSNumber_methods.toString$0(vy) + " * " + ratio + ")";
-              h = "(" + C.JSNumber_methods.toString$0(vh) + " * " + ratio + ")";
+              ratio = "(container.width) / " + C.JSNumber_methods.toStringAsFixed$1(vw, 10);
+              y = "(" + C.JSNumber_methods.toStringAsFixed$1(vy, 10) + " * " + ratio + ")";
+              h = "(" + C.JSNumber_methods.toStringAsFixed$1(vh, 10) + " * " + ratio + ")";
               break;
           }
           t4 = "Rect.fromLTWH(" + x + ", " + y + ", " + w + ", " + h + ")";
@@ -37080,7 +37085,7 @@
           t4 = J.getInterceptor$asx(row1);
           d = J.toDouble$0$n(t4.$index(row1, 0));
           e = J.toDouble$0$n(t4.$index(row1, 1));
-          context.addPaint$1(H.setRuntimeTypeInfo(["canvas.save();", "canvas.transform(" + new X.StaticCode("Float64List.fromList([" + C.JSArray_methods.join$1(H.setRuntimeTypeInfo([C.JSNumber_methods.toString$0(a), C.JSNumber_methods.toString$0(d), "0.0", "0.0", C.JSNumber_methods.toString$0(b), C.JSNumber_methods.toString$0(e), "0.0", "0.0", "0.0", "0.0", "1.0", "0.0", "frame.left", "frame.top", "0.0", "1.0"], t3), ", ") + "])").toString$0(0) + ");"], t3));
+          context.addPaint$1(H.setRuntimeTypeInfo(["canvas.save();", "canvas.transform(" + new X.StaticCode("Float64List.fromList([" + C.JSArray_methods.join$1(H.setRuntimeTypeInfo([C.JSNumber_methods.toStringAsFixed$1(a, 10), C.JSNumber_methods.toStringAsFixed$1(d, 10), "0.0", "0.0", C.JSNumber_methods.toStringAsFixed$1(b, 10), C.JSNumber_methods.toStringAsFixed$1(e, 10), "0.0", "0.0", "0.0", "0.0", "1.0", "0.0", "frame.left", "frame.top", "0.0", "1.0"], t3), ", ") + "])").toString$0(0) + ");"], t3));
           if (isVector)
             this._vector.generate$2(context, map);
           else {
@@ -37130,7 +37135,7 @@
         J.toDouble$0$n(t3.$index(defaultStyle, "lineHeightPx"));
         J.toDouble$0$n(t3.$index(defaultStyle, "letterSpacing"));
         fontWeight = J.toInt$0$n(t3.$index(defaultStyle, "fontWeight"));
-        context.addPaint$1(H.setRuntimeTypeInfo(["var paragraphStyle = " + new X.StaticCode("ui.ParagraphStyle(" + ("fontFamily: '" + H.S(fontFamily) + "',") + ("textAlign: " + textAlignHorizontal + ",") + ("fontSize: " + C.JSNumber_methods.toString$0(fontSize) + ",") + ("fontWeight: FontWeight.w" + fontWeight + ",") + ")").toString$0(0) + ";", "var paragraphBuilder = ui.ParagraphBuilder(paragraphStyle)..pushStyle(style_0);"], t2));
+        context.addPaint$1(H.setRuntimeTypeInfo(["var paragraphStyle = " + new X.StaticCode("ui.ParagraphStyle(" + ("fontFamily: '" + H.S(fontFamily) + "',") + ("textAlign: " + textAlignHorizontal + ",") + ("fontSize: " + C.JSNumber_methods.toStringAsFixed$1(fontSize, 10) + ",") + ("fontWeight: FontWeight.w" + fontWeight + ",") + ")").toString$0(0) + ";", "var paragraphBuilder = ui.ParagraphBuilder(paragraphStyle)..pushStyle(style_0);"], t2));
         characterStyleOverrides = t1.$index(map, "characterStyleOverrides");
         t1 = !!declaration.$isDynamicItem;
         if (t1)
@@ -37217,8 +37222,8 @@
         propertyName = B.toVariableName(declaration.get$name(declaration));
         geometry = this._createGeometry$2(map, "transform");
         size = this._toPoint$1(t1.$index(map, "size"));
-        sx = "(frame.width / " + J.toString$0$(size.x) + ")";
-        sy = "(frame.height / " + J.toString$0$(size.y) + ")";
+        sx = "(frame.width / " + J.toStringAsFixed$1$n(size.x, 10) + ")";
+        sy = "(frame.height / " + J.toStringAsFixed$1$n(size.y, 10) + ")";
         t2 = [P.String];
         context.addPaint$1(H.setRuntimeTypeInfo(["var transform = " + ("Float64List.fromList([" + sx + ", 0.0, 0.0, 0.0, 0.0, " + sy + ", 0.0, 0.0, 0.0, 0.0, 1.0, 0.0,0.0, 0.0, 0.0, 1.0])") + ";"], t2));
         fillMaps = J.where$1$ax(t1.$index(map, "fills"), new Y.VectorGenerator_generate_closure(map));
@@ -37286,7 +37291,7 @@
         t1 = offset.x;
         hasOffset = t1 !== 0 || offset.y !== 0;
         if (hasOffset)
-          t2.addPaint$1(H.setRuntimeTypeInfo(["canvas.save();", "canvas.translate(" + J.toString$0$(t1) + ", " + J.toString$0$(offset.y) + ");"], t3));
+          t2.addPaint$1(H.setRuntimeTypeInfo(["canvas.save();", "canvas.translate(" + J.toStringAsFixed$1$n(t1, 10) + ", " + J.toStringAsFixed$1$n(offset.y, 10) + ");"], t3));
         t2.addPaint$1(H.setRuntimeTypeInfo(["canvas.drawPath(path, effectPaint);"], t3));
         if (hasOffset)
           t2.addPaint$1(H.setRuntimeTypeInfo(["canvas.restore();"], t3));
@@ -47669,6 +47674,9 @@
   };
   J.toRadixString$1$n = function(receiver, a0) {
     return J.getInterceptor$n(receiver).toRadixString$1(receiver, a0);
+  };
+  J.toStringAsFixed$1$n = function(receiver, a0) {
+    return J.getInterceptor$n(receiver).toStringAsFixed$1(receiver, a0);
   };
   J.trim$0$s = function(receiver) {
     return J.getInterceptor$s(receiver).trim$0(receiver);

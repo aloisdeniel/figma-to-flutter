@@ -191,7 +191,7 @@ class NodeGenerator {
       var ty = relativeTransform[1][2].toDouble();
       context.addPaint([
         "canvas.save();",
-        "canvas.translate($tx, $ty);"
+        "canvas.translate(${toFixedDouble(tx)}, ${toFixedDouble(ty)});"
       ]);
       _group.generate(context, map, parent);
     }

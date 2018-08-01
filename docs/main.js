@@ -35763,22 +35763,22 @@
         switch (segment.command) {
           case C.SvgPathSegType_3:
           case C.SvgPathSegType_2:
-            return new X.StaticCode("path.moveTo(" + J.toStringAsFixed$1$n(segment.targetPoint.x, 10) + ", " + J.toStringAsFixed$1$n(segment.targetPoint.y, 10) + ")");
+            return new X.StaticCode("path.moveTo(" + B.toFixedDouble(segment.targetPoint.x) + ", " + B.toFixedDouble(segment.targetPoint.y) + ")");
           case C.SvgPathSegType_5:
           case C.SvgPathSegType_4:
           case C.SvgPathSegType_13:
           case C.SvgPathSegType_12:
           case C.SvgPathSegType_15:
           case C.SvgPathSegType_14:
-            return new X.StaticCode("path.lineTo(" + J.toStringAsFixed$1$n(segment.targetPoint.x, 10) + ", " + J.toStringAsFixed$1$n(segment.targetPoint.y, 10) + ")");
+            return new X.StaticCode("path.lineTo(" + B.toFixedDouble(segment.targetPoint.x) + ", " + B.toFixedDouble(segment.targetPoint.y) + ")");
           case C.SvgPathSegType_1:
             return new X.StaticCode("path.close()");
           case C.SvgPathSegType_7:
           case C.SvgPathSegType_6:
-            return new X.StaticCode("path.cubicTo(" + J.toStringAsFixed$1$n(segment.point1.x, 10) + ", " + J.toStringAsFixed$1$n(segment.point1.y, 10) + ", " + J.toStringAsFixed$1$n(segment.point2.x, 10) + ", " + J.toStringAsFixed$1$n(segment.point2.y, 10) + ", " + J.toStringAsFixed$1$n(segment.targetPoint.x, 10) + ", " + J.toStringAsFixed$1$n(segment.targetPoint.y, 10) + ")");
+            return new X.StaticCode("path.cubicTo(" + B.toFixedDouble(segment.point1.x) + ", " + B.toFixedDouble(segment.point1.y) + ", " + B.toFixedDouble(segment.point2.x) + ", " + B.toFixedDouble(segment.point2.y) + ", " + B.toFixedDouble(segment.targetPoint.x) + ", " + B.toFixedDouble(segment.targetPoint.y) + ")");
           case C.SvgPathSegType_9:
           case C.SvgPathSegType_8:
-            return new X.StaticCode("path.cubicTo(" + J.toStringAsFixed$1$n(segment.point1.x, 10) + ", " + J.toStringAsFixed$1$n(segment.point1.y, 10) + ", " + J.toStringAsFixed$1$n(segment.point2.x, 10) + ", " + J.toStringAsFixed$1$n(segment.point2.y, 10) + ", " + J.toStringAsFixed$1$n(segment.targetPoint.x, 10) + ", " + J.toStringAsFixed$1$n(segment.targetPoint.y, 10) + ")");
+            return new X.StaticCode("path.cubicTo(" + B.toFixedDouble(segment.point1.x) + ", " + B.toFixedDouble(segment.point1.y) + ", " + B.toFixedDouble(segment.point2.x) + ", " + B.toFixedDouble(segment.point2.y) + ", " + B.toFixedDouble(segment.targetPoint.x) + ", " + B.toFixedDouble(segment.targetPoint.y) + ")");
           case C.SvgPathSegType_17:
           case C.SvgPathSegType_16:
           case C.SvgPathSegType_19:
@@ -35888,7 +35888,7 @@
         J.toDouble$0$n(t1.$index(map, "lineHeightPx"));
         J.toDouble$0$n(t1.$index(map, "letterSpacing"));
         fontWeight = J.toInt$0$n(t1.$index(map, "fontWeight"));
-        return this.catalog.$get$1("ui.TextStyle(" + ("fontFamily: '" + H.S(fontFamily) + "',") + ("color: " + H.S(color) + ",") + ("fontSize: " + C.JSNumber_methods.toStringAsFixed$1(fontSize, 10) + ",") + ("fontWeight: FontWeight.w" + fontWeight + ",") + ")");
+        return this.catalog.$get$1("ui.TextStyle(" + ("fontFamily: '" + H.S(fontFamily) + "',") + ("color: " + H.S(color) + ",") + ("fontSize: " + B.toFixedDouble(fontSize) + ",") + ("fontWeight: FontWeight.w" + fontWeight + ",") + ")");
       }
     },
     ParagraphStyleGenerator: {
@@ -36996,8 +36996,8 @@
           if (H.boolTypeCheck(isMask == null ? false : isMask)) {
             P.print("Creating mask");
             size = t3._toPoint$1(t1.$index(map, "size"));
-            sx = "(frame.width / " + J.toStringAsFixed$1$n(size.x, 10) + ")";
-            sy = "(frame.height / " + J.toStringAsFixed$1$n(size.y, 10) + ")";
+            sx = "(frame.width / " + B.toFixedDouble(size.x) + ")";
+            sy = "(frame.height / " + B.toFixedDouble(size.y) + ")";
             transform = "Float64List.fromList([" + sx + ", 0.0, 0.0, 0.0, 0.0, " + sy + ", 0.0, 0.0, 0.0, 0.0, 1.0, 0.0,0.0, 0.0, 0.0, 1.0])";
             clipGeometry = t3._createGeometry$2(map, "clipTransform");
             context.addPaint$1(H.setRuntimeTypeInfo(["var mask = Path();", "var clipTransform = " + transform + ";", "var clipGeometry = " + clipGeometry + ";", "clipGeometry.forEach((p) => mask.addPath(p, Offset.zero));", "canvas.clipPath(mask);"], [P.String]));
@@ -37021,19 +37021,23 @@
           t4 = J.getInterceptor$asx(constraints);
           horizontal = t4.$index(constraints, "horizontal");
           vertical = t4.$index(constraints, "vertical");
-          x = C.JSNumber_methods.toStringAsFixed$1(vx, 10);
-          y = C.JSNumber_methods.toStringAsFixed$1(vy, 10);
-          w = J.getInterceptor$n(vw).toStringAsFixed$1(vw, 10);
-          h = J.getInterceptor$n(vh).toStringAsFixed$1(vh, 10);
+          x = B.toFixedDouble(vx);
+          y = B.toFixedDouble(vy);
+          w = B.toFixedDouble(vw);
+          h = B.toFixedDouble(vh);
           t4 = orginalContainerSize.y;
           if (typeof t4 !== "number")
             return t4.$sub();
           t5 = t4 - vy;
+          if (typeof vh !== "number")
+            return H.iae(vh);
           bottom = t5 - vh;
           t6 = orginalContainerSize.x;
           if (typeof t6 !== "number")
             return t6.$sub();
           t7 = t6 - vx;
+          if (typeof vw !== "number")
+            return H.iae(vw);
           right = t7 - vw;
           H.S(horizontal);
           H.S(vertical);
@@ -37041,36 +37045,36 @@
           H.S(bottom);
           switch (horizontal) {
             case "RIGHT":
-              x = "(container.width - (" + C.JSNumber_methods.toStringAsFixed$1(t7, 10) + "))";
+              x = "(container.width - (" + B.toFixedDouble(t7) + "))";
               break;
             case "LEFT_RIGHT":
-              w = "(container.width - (" + C.JSNumber_methods.toStringAsFixed$1(vx + right, 10) + "))";
+              w = "(container.width - (" + B.toFixedDouble(vx + right) + "))";
               break;
             case "CENTER":
               t7 = vw / 2;
-              x = "((container.width / 2.0) - (" + C.JSDouble_methods.toStringAsFixed$1(t6 / 2 - (vx + t7) + t7, 10) + "))";
+              x = "((container.width / 2.0) - (" + B.toFixedDouble(t6 / 2 - (vx + t7) + t7) + "))";
               break;
             case "SCALE":
-              ratio = "(container.width) / " + C.JSNumber_methods.toStringAsFixed$1(vw, 10);
-              x = "(" + C.JSNumber_methods.toStringAsFixed$1(vx, 10) + " * " + ratio + ")";
-              w = "(" + C.JSNumber_methods.toStringAsFixed$1(vw, 10) + " * " + ratio + ")";
+              ratio = "(container.width) / " + B.toFixedDouble(vw);
+              x = "(" + B.toFixedDouble(vx) + " * " + ratio + ")";
+              w = "(" + B.toFixedDouble(vw) + " * " + ratio + ")";
               break;
           }
           switch (vertical) {
             case "BOTTOM":
-              y = "(container.height - (" + C.JSNumber_methods.toStringAsFixed$1(t5, 10) + "))";
+              y = "(container.height - (" + B.toFixedDouble(t5) + "))";
               break;
             case "TOP_BOTTOM":
-              h = "(container.height - (" + C.JSNumber_methods.toStringAsFixed$1(vy + bottom, 10) + "))";
+              h = "(container.height - (" + B.toFixedDouble(vy + bottom) + "))";
               break;
             case "CENTER":
               t5 = vh / 2;
-              y = "((container.height / 2.0) - " + C.JSDouble_methods.toStringAsFixed$1(t4 / 2 - (vy + t5) + t5, 10) + ")";
+              y = "((container.height / 2.0) - " + B.toFixedDouble(t4 / 2 - (vy + t5) + t5) + ")";
               break;
             case "SCALE":
-              ratio = "(container.width) / " + C.JSNumber_methods.toStringAsFixed$1(vw, 10);
-              y = "(" + C.JSNumber_methods.toStringAsFixed$1(vy, 10) + " * " + ratio + ")";
-              h = "(" + C.JSNumber_methods.toStringAsFixed$1(vh, 10) + " * " + ratio + ")";
+              ratio = "(container.width) / " + B.toFixedDouble(vw);
+              y = "(" + B.toFixedDouble(vy) + " * " + ratio + ")";
+              h = "(" + B.toFixedDouble(vh) + " * " + ratio + ")";
               break;
           }
           t4 = "Rect.fromLTWH(" + x + ", " + y + ", " + w + ", " + h + ")";
@@ -37085,7 +37089,7 @@
           t4 = J.getInterceptor$asx(row1);
           d = J.toDouble$0$n(t4.$index(row1, 0));
           e = J.toDouble$0$n(t4.$index(row1, 1));
-          context.addPaint$1(H.setRuntimeTypeInfo(["canvas.save();", "canvas.transform(" + new X.StaticCode("Float64List.fromList([" + C.JSArray_methods.join$1(H.setRuntimeTypeInfo([C.JSNumber_methods.toStringAsFixed$1(a, 10), C.JSNumber_methods.toStringAsFixed$1(d, 10), "0.0", "0.0", C.JSNumber_methods.toStringAsFixed$1(b, 10), C.JSNumber_methods.toStringAsFixed$1(e, 10), "0.0", "0.0", "0.0", "0.0", "1.0", "0.0", "frame.left", "frame.top", "0.0", "1.0"], t3), ", ") + "])").toString$0(0) + ");"], t3));
+          context.addPaint$1(H.setRuntimeTypeInfo(["canvas.save();", "canvas.transform(" + new X.StaticCode("Float64List.fromList([" + C.JSArray_methods.join$1(H.setRuntimeTypeInfo([B.toFixedDouble(a), B.toFixedDouble(d), "0.0", "0.0", B.toFixedDouble(b), B.toFixedDouble(e), "0.0", "0.0", "0.0", "0.0", "1.0", "0.0", "frame.left", "frame.top", "0.0", "1.0"], t3), ", ") + "])").toString$0(0) + ");"], t3));
           if (isVector)
             this._vector.generate$2(context, map);
           else {
@@ -37103,7 +37107,7 @@
           t1 = J.getInterceptor$asx(relativeTransform);
           tx = J.toDouble$0$n(J.$index$asx(t1.$index(relativeTransform, 0), 2));
           ty = J.toDouble$0$n(J.$index$asx(t1.$index(relativeTransform, 1), 2));
-          context.addPaint$1(H.setRuntimeTypeInfo(["canvas.save();", "canvas.translate(" + H.S(tx) + ", " + H.S(ty) + ");"], t3));
+          context.addPaint$1(H.setRuntimeTypeInfo(["canvas.save();", "canvas.translate(" + B.toFixedDouble(tx) + ", " + B.toFixedDouble(ty) + ");"], t3));
           this._group.generate$3(context, map, $parent);
         }
         context.addPaint$1(H.setRuntimeTypeInfo(["canvas.restore();", "};", methodName + "(canvas,frame);"], t3));
@@ -37135,7 +37139,7 @@
         J.toDouble$0$n(t3.$index(defaultStyle, "lineHeightPx"));
         J.toDouble$0$n(t3.$index(defaultStyle, "letterSpacing"));
         fontWeight = J.toInt$0$n(t3.$index(defaultStyle, "fontWeight"));
-        context.addPaint$1(H.setRuntimeTypeInfo(["var paragraphStyle = " + new X.StaticCode("ui.ParagraphStyle(" + ("fontFamily: '" + H.S(fontFamily) + "',") + ("textAlign: " + textAlignHorizontal + ",") + ("fontSize: " + C.JSNumber_methods.toStringAsFixed$1(fontSize, 10) + ",") + ("fontWeight: FontWeight.w" + fontWeight + ",") + ")").toString$0(0) + ";", "var paragraphBuilder = ui.ParagraphBuilder(paragraphStyle)..pushStyle(style_0);"], t2));
+        context.addPaint$1(H.setRuntimeTypeInfo(["var paragraphStyle = " + new X.StaticCode("ui.ParagraphStyle(" + ("fontFamily: '" + H.S(fontFamily) + "',") + ("textAlign: " + textAlignHorizontal + ",") + ("fontSize: " + B.toFixedDouble(fontSize) + ",") + ("fontWeight: FontWeight.w" + fontWeight + ",") + ")").toString$0(0) + ";", "var paragraphBuilder = ui.ParagraphBuilder(paragraphStyle)..pushStyle(style_0);"], t2));
         characterStyleOverrides = t1.$index(map, "characterStyleOverrides");
         t1 = !!declaration.$isDynamicItem;
         if (t1)
@@ -37222,8 +37226,8 @@
         propertyName = B.toVariableName(declaration.get$name(declaration));
         geometry = this._createGeometry$2(map, "transform");
         size = this._toPoint$1(t1.$index(map, "size"));
-        sx = "(frame.width / " + J.toStringAsFixed$1$n(size.x, 10) + ")";
-        sy = "(frame.height / " + J.toStringAsFixed$1$n(size.y, 10) + ")";
+        sx = "(frame.width / " + B.toFixedDouble(size.x) + ")";
+        sy = "(frame.height / " + B.toFixedDouble(size.y) + ")";
         t2 = [P.String];
         context.addPaint$1(H.setRuntimeTypeInfo(["var transform = " + ("Float64List.fromList([" + sx + ", 0.0, 0.0, 0.0, 0.0, " + sy + ", 0.0, 0.0, 0.0, 0.0, 1.0, 0.0,0.0, 0.0, 0.0, 1.0])") + ";"], t2));
         fillMaps = J.where$1$ax(t1.$index(map, "fills"), new Y.VectorGenerator_generate_closure(map));
@@ -37291,7 +37295,7 @@
         t1 = offset.x;
         hasOffset = t1 !== 0 || offset.y !== 0;
         if (hasOffset)
-          t2.addPaint$1(H.setRuntimeTypeInfo(["canvas.save();", "canvas.translate(" + J.toStringAsFixed$1$n(t1, 10) + ", " + J.toStringAsFixed$1$n(offset.y, 10) + ");"], t3));
+          t2.addPaint$1(H.setRuntimeTypeInfo(["canvas.save();", "canvas.translate(" + B.toFixedDouble(t1) + ", " + B.toFixedDouble(offset.y) + ");"], t3));
         t2.addPaint$1(H.setRuntimeTypeInfo(["canvas.drawPath(path, effectPaint);"], t3));
         if (hasOffset)
           t2.addPaint$1(H.setRuntimeTypeInfo(["canvas.restore();"], t3));
@@ -38379,6 +38383,11 @@
       if (0 >= $name.length)
         return H.ioore($name, 0);
       return $name[0].toLowerCase() + C.JSString_methods.substring$1($name, 1);
+    },
+    toFixedDouble: function(value) {
+      if (value === 0)
+        return "0.0";
+      return J.toStringAsFixed$1$n(value, 10);
     }
   }], ["", "package:front_end/src/base/errors.dart",, A, {
     "^": "",

@@ -6,6 +6,8 @@
 
 The easiest way to start is the [online tool](http://aloisdeniel.github.com/figma-to-flutter).
 
+![workflow](docs/workflow.png)
+
 ## Documentation
 
 ### Dynamic elements

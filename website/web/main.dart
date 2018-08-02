@@ -55,7 +55,7 @@ void main() {
     });
 
     var  generator = FigmaGenerator(file);
-    code =  await generator.generateComponents(widgets);
+    code =  await generator.generateComponents(widgets, withComments: true);
     updateCode(code);
   }
 

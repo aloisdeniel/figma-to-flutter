@@ -1,40 +1,36 @@
-
 import 'package:code_builder/code_builder.dart';
 import 'package:figma_to_flutter/tools/format.dart';
-import '../parsing/parse_path.dart';
+import 'package:path_parsing/path_parsing.dart';
 
+/**
+ * A code generator that translates Figma path data 
+ * into Flutter [Path] equivalents.
+ */
 class PathGenerator {
-  
   int _index = 0;
   ClassBuilder _catalog = new ClassBuilder()..name = "_PathCatalog";
 
-  PathGenerator() {
-  }
+  PathGenerator() {}
 
   Class buildCatalog() {
-
     var constructorBody = BlockBuilder();
 
     for (var i = 0; i < _index; i++) {
       _catalog.fields.add(Field((b) => b
         ..name = "path_$i"
-        ..type = refer("Path")
-      )); 
-      constructorBody.statements
-        ..add(Code("this.path_$i = _build_$i();")); 
+        ..type = refer("Path")));
+      constructorBody.statements..add(Code("this.path_$i = _build_$i();"));
     }
 
     _catalog.fields.add(Field((b) => b
-        ..name = "instance"
-        ..static = true
-        ..modifier = FieldModifier.final$
-        ..type = refer(_catalog.name)
-        ..assignment = Code(_catalog.name + "()")
-      ));
+      ..name = "instance"
+      ..static = true
+      ..modifier = FieldModifier.final$
+      ..type = refer(_catalog.name)
+      ..assignment = Code(_catalog.name + "()")));
 
-    _catalog.constructors.add(Constructor((b) => b
-      ..body = constructorBody.build()
-    ));
+    _catalog.constructors
+        .add(Constructor((b) => b..body = constructorBody.build()));
 
     return _catalog.build();
   }
@@ -45,17 +41,11 @@ class PathGenerator {
 
     if (svg == null) {
       statement = [Code("Path()")];
-    }
-    else if (svg == '') {
+    } else if (svg == '') {
       statement = [Code("Path()")];
-    }
-    else {
-      final SvgPathStringSource parser = new SvgPathStringSource(svg);
-      final SvgPathNormalizer normalizer = new SvgPathNormalizer();
-      var segments = parser.parseSegments();
-      for (PathSegmentData seg in segments) {
-        statement.addAll(normalizer.emitSegment(seg).map((c) => Code(_generateCommand(c).toString() + ";")));
-      }
+    } else {
+      var code = _CodePath(statement);
+      writeSvgPathDataToPath(svg, code);
     }
     var method = Method((b) => b
       ..name = "_build_$_index"
@@ -64,8 +54,7 @@ class PathGenerator {
       ..body = Block((c) => c.statements
         ..add(new Code("var path = Path();"))
         ..addAll(statement)
-        ..add(new Code("return path;")))
-    );
+        ..add(new Code("return path;"))));
 
     _catalog.methods.add(method);
 
@@ -77,40 +66,28 @@ class PathGenerator {
     var index = _addPath(map);
     return Code("${_catalog.name}.instance.path_${index}");
   }
-  
-  Code _generateCommand(PathSegmentData segment) {
-    switch (segment.command) {
-      case SvgPathSegType.moveToRel:
-      case SvgPathSegType.moveToAbs:
-        return Code("path.moveTo(${toFixedDouble(segment.targetPoint.x)}, ${toFixedDouble(segment.targetPoint.y)})");
-        break;
-      case SvgPathSegType.lineToRel:
-      case SvgPathSegType.lineToAbs:
-      case SvgPathSegType.lineToHorizontalRel:
-      case SvgPathSegType.lineToHorizontalAbs:
-      case SvgPathSegType.lineToVerticalRel:
-      case SvgPathSegType.lineToVerticalAbs:
-        return Code("path.lineTo(${toFixedDouble(segment.targetPoint.x)}, ${toFixedDouble(segment.targetPoint.y)})");
-        break;
-      case SvgPathSegType.close:
-        return Code("path.close()");
-        break;
-      case SvgPathSegType.cubicToRel:
-      case SvgPathSegType.cubicToAbs:
-        return Code("path.cubicTo(${toFixedDouble(segment.point1.x)}, ${toFixedDouble(segment.point1.y)}, ${toFixedDouble(segment.point2.x)}, ${toFixedDouble(segment.point2.y)}, ${toFixedDouble(segment.targetPoint.x)}, ${toFixedDouble(segment.targetPoint.y)})");
-        break;
-      case SvgPathSegType.quadToRel:
-      case SvgPathSegType.quadToAbs:
-        return Code("path.cubicTo(${toFixedDouble(segment.point1.x)}, ${toFixedDouble(segment.point1.y)}, ${toFixedDouble(segment.point2.x)}, ${toFixedDouble(segment.point2.y)}, ${toFixedDouble(segment.targetPoint.x)}, ${toFixedDouble(segment.targetPoint.y)})");
-        break;
-      case SvgPathSegType.smoothCubicToRel:
-      case SvgPathSegType.smoothCubicToAbs:
-      case SvgPathSegType.smoothQuadToRel:
-      case SvgPathSegType.smoothQuadToAbs:
-      case SvgPathSegType.arcToRel:
-      case SvgPathSegType.arcToAbs:
-      default:
-        throw new StateError('Invalid command type in path');
-    }
-  }
+}
+
+class _CodePath extends PathProxy {
+  final List<Code> statements;
+
+  _CodePath(this.statements);
+
+  @override
+  void close() => statements.add(Code("path.close();"));
+
+  @override
+  void cubicTo(
+          double x1, double y1, double x2, double y2, double x3, double y3) =>
+      statements.add(Code(
+          "path.cubicTo(${toFixedDouble(x1)}, ${toFixedDouble(y1)}, ${toFixedDouble(
+              x2)}, ${toFixedDouble(y2)}, ${toFixedDouble(x3)}, ${toFixedDouble(y3)});"));
+
+  @override
+  void lineTo(double x, double y) => statements
+      .add(Code("path.lineTo(${toFixedDouble(x)}, ${toFixedDouble(y)});"));
+
+  @override
+  void moveTo(double x, double y) => statements
+      .add(Code("path.moveTo(${toFixedDouble(x)}, ${toFixedDouble(y)});"));
 }

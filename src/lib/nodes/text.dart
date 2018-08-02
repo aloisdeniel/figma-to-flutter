@@ -1,13 +1,11 @@
 import 'package:code_builder/code_builder.dart';
 import 'package:figma_to_flutter/context.dart';
 import 'package:figma_to_flutter/parsing/declaration.dart';
-import '../base/paint.dart';
 import '../base/color.dart';
 import '../tools/format.dart';
 import '../base/text_styles.dart';
 
 class TextGenerator {
-
   final ColorGenerator _color;
   final TextStyleGenerator _textStyle;
   final ParagraphStyleGenerator _paragraphStyle;
@@ -15,21 +13,19 @@ class TextGenerator {
   TextGenerator(this._color, this._textStyle, this._paragraphStyle);
 
   bool isSupported(dynamic map) {
-    const supported = [ 
-      'TEXT'
-    ];
+    const supported = ['TEXT'];
     return supported.contains(map["type"]);
   }
 
-  void generate(BuildContext context,dynamic map) {
- 
+  void generate(BuildContext context, dynamic map) {
     var declaration = Declaration.parse(map["name"]);
     var varName = toVariableName(declaration.name);
-    
+
     var characters = map["characters"] as String;
 
     // Styles
-    var color = _color.generate(map["fills"].first["color"]); // TODO manage other fills
+    var color =
+        _color.generate(map["fills"].first["color"]); // TODO manage other fills
 
     var defaultStyle = map["style"];
     var style0 = this._textStyle.generate(defaultStyle, color.toString());
@@ -37,7 +33,8 @@ class TextGenerator {
 
     map["styleOverrideTable"].forEach((key, value) {
       var map = {}..addAll(defaultStyle)..addAll(value);
-      var color = _color.generate(value["fills"].first["color"]); // TODO manage other fills
+      var color = _color
+          .generate(value["fills"].first["color"]); // TODO manage other fills
       var style = this._textStyle.generate(map, color.toString());
       context.addPaint(["var style_$key = $style;"]);
     });
@@ -64,23 +61,22 @@ class TextGenerator {
           paragraphBuilder.addText(this.text.sUUN);
         }*/
 
-      
-
-    if(declaration is DynamicItem) {
+    if (declaration is DynamicItem) {
       context.addPaint(["if(this?.$varName?.text == null) {"]);
     }
 
-    if(characterStyleOverrides.isEmpty) {
+    if (characterStyleOverrides.isEmpty) {
       context.addPaint(["paragraphBuilder.addText(\"$characters\");"]);
-    }
-    else {
+    } else {
       var styleId = "0";
       var slice = "";
       for (var i = 0; i < characters.length; i++) {
-        var newStyleId = i < characterStyleOverrides.length ? characterStyleOverrides[i].toString() : "0";
+        var newStyleId = i < characterStyleOverrides.length
+            ? characterStyleOverrides[i].toString()
+            : "0";
 
-        if(newStyleId != styleId) {
-          if(!slice.isEmpty) {
+        if (newStyleId != styleId) {
+          if (!slice.isEmpty) {
             context.addPaint(["paragraphBuilder.addText(\"$slice\");"]);
           }
           styleId = newStyleId.toString();
@@ -89,21 +85,20 @@ class TextGenerator {
         }
         slice += characters[i];
       }
-      if(!slice.isEmpty) {
+      if (!slice.isEmpty) {
         context.addPaint(["paragraphBuilder.addText(\"$slice\");"]);
       }
     }
 
-    if(declaration is DynamicItem) {
+    if (declaration is DynamicItem) {
       context.addPaint(["} else {"]);
       // We take the style of the first character for our variable text
-      if(!characterStyleOverrides.isEmpty) {
-        context.addPaint(["paragraphBuilder.pushStyle(style_${characterStyleOverrides[0]});"]);
+      if (!characterStyleOverrides.isEmpty) {
+        context.addPaint([
+          "paragraphBuilder.pushStyle(style_${characterStyleOverrides[0]});"
+        ]);
       }
-      context.addPaint([
-        "paragraphBuilder.addText(this.$varName.text);", 
-        "}"
-      ]);
+      context.addPaint(["paragraphBuilder.addText(this.$varName.text);", "}"]);
     }
     context.addPaint([
       "var paragraph = paragraphBuilder.build();",

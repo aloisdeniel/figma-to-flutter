@@ -1,8 +1,7 @@
-
-import 'dart:math';
-
-import 'package:code_builder/code_builder.dart';
+import 'package:figma_to_flutter/base/base.dart';
+import 'package:figma_to_flutter/base/constraints.dart';
 import 'package:figma_to_flutter/base/effect.dart';
+import 'package:figma_to_flutter/base/transform.dart';
 import 'package:figma_to_flutter/context.dart';
 import 'package:figma_to_flutter/nodes/directive.dart';
 import 'package:figma_to_flutter/parsing/declaration.dart';
@@ -16,193 +15,118 @@ import '../base/paint.dart';
 import '../base/path.dart';
 import '../base/text_styles.dart';
 
+/**
+ * A code generator that translates Figma node into its
+ * Flutter equivalent.
+ * 
+ * It basically applies transform to canvas (if needed), 
+ * manages visibility, directives and select a sub-generator 
+ * (based on node type).
+ * 
+ * A method is created for each node to keep a local scope.
+ */
 class NodeGenerator {
-
   FrameGenerator _frame;
   VectorGenerator _vector;
   GroupGenerator _group;
   TextGenerator _text;
   final DirectiveGenerator _directive;
+  final TransformGenerator _transform;
+  final ConstraintsGenerator _constraints;
 
-  NodeGenerator(this._directive, ColorGenerator color, PaintGenerator paint, EffectsGenerator effects, PathGenerator path, TextStyleGenerator textStyle, ParagraphStyleGenerator paragraphStyle) {
+  NodeGenerator(
+      this._directive,
+      this._transform,
+      this._constraints,
+      ColorGenerator color,
+      PaintGenerator paint,
+      EffectsGenerator effects,
+      PathGenerator path,
+      TextStyleGenerator textStyle,
+      ParagraphStyleGenerator paragraphStyle) {
     _group = GroupGenerator(this);
     _frame = FrameGenerator(color, this);
     _vector = VectorGenerator(paint, effects, path);
     _text = TextGenerator(color, textStyle, paragraphStyle);
   }
 
-  Code _createTransform(dynamic map) {
-    var transform = map["relativeTransform"];
-    var row0 = transform[0];
-    var row1 = transform[1];
-
-    var a = row0[0].toDouble();
-    var b = row0[1].toDouble();
-    var d = row1[0].toDouble();
-    var e = row1[1].toDouble();
-
-    var values = [
-      toFixedDouble(a), toFixedDouble(d) , "0.0", "0.0",
-      toFixedDouble(b), toFixedDouble(e), "0.0", "0.0",
-      "0.0" , "0.0" , "1.0" , "0.0",
-      "frame.left" , "frame.top" , "0.0" , "1.0",
-    ];
-
-    return new Code("Float64List.fromList([" + values.join(", ") + "])");
-  }
-
-  Point _toPoint(dynamic map) {
-    var w = map["width"] ?? map["x"];
-    var h = map["height"] ?? map["y"];
-    return Point(w.toDouble(), h.toDouble());
-  }
-
-  Code _createFrame(map, Point orginalContainerSize, bool withComments) {
-
-    var size = _toPoint(map["size"]);
-    var relativeTransform = map["relativeTransform"];
-
-    var vx = relativeTransform[0][2].toDouble();
-    var vy = relativeTransform[1][2].toDouble();
-    var vw = size.x;
-    var vh = size.y;
-
-    var constraints = map["constraints"];
-    var horizontal = constraints["horizontal"];
-    var vertical = constraints["vertical"];
-
-    var x = toFixedDouble(vx);
-    var y = toFixedDouble(vy);
-    var w = toFixedDouble(vw);
-    var h = toFixedDouble(vh);
-    var bottom = orginalContainerSize.y - vy - vh;
-    var right = orginalContainerSize.x - vx - vw;
-    var comments = " /* H:${horizontal} V:${vertical} F:(l:$x,t:$y,r:$right,b:$bottom,w:$w,h:$h) */";
-
-    switch(horizontal) {
-      case "RIGHT":
-        var fromRight = orginalContainerSize.x - vx;
-        x = "(container.width - (${toFixedDouble(fromRight)}))";
-        break;
-      case "LEFT_RIGHT":
-        var totalMargin = vx + right;
-        w = "(container.width - (${toFixedDouble(totalMargin)}))";
-        break;
-      case "CENTER":
-        var center = vx + (vw / 2.0);
-        var delta = (orginalContainerSize.x / 2.0) - center;
-        x = "((container.width / 2.0) - (${toFixedDouble(delta + vw / 2.0)}))";
-        break;
-      case "SCALE":
-        var ratio = "(container.width) / ${toFixedDouble(vw)}";
-        x = "(${toFixedDouble(vx)} * $ratio)";
-        w = "(${toFixedDouble(vw)} * $ratio)";
-        break;
-    }
-    
-    switch(vertical) {
-      case "BOTTOM":
-        var fromBottom = orginalContainerSize.y - vy;
-        y = "(container.height - (${toFixedDouble(fromBottom)}))";
-        break;
-      case "TOP_BOTTOM":
-        var totalMargin = vy + bottom;
-        h = "(container.height - (${toFixedDouble(totalMargin)}))";
-        break;
-      case "CENTER":
-        var center = vy + (vh / 2.0);
-        var delta = (orginalContainerSize.y / 2.0) - center;
-        y = "((container.height / 2.0) - ${toFixedDouble(delta + vh / 2.0)})";
-        break;
-      case "SCALE":
-        var ratio = "(container.width) / ${toFixedDouble(vw)}";
-        y = "(${toFixedDouble(vy)} * $ratio)";
-        h = "(${toFixedDouble(vh)} * $ratio)";
-        break;
-    }
-
-    return Code("Rect.fromLTWH($x, $y, $w, $h)" + (withComments ? comments : ""));
-  }
-
   void _generateData(BuildContext context, dynamic map) {
-      var declaration = Declaration.parse(map["name"]);
-      context.addData(declaration.name, map["type"]);
+    var declaration = Declaration.parse(map["name"]);
+    context.addData(declaration.name, map["type"]);
   }
 
-  void generate(BuildContext context, dynamic map, dynamic parent) {
+  void generate(
+      BuildContext context, dynamic map, dynamic parent, dynamic transform) {
     var declaration = Declaration.parse(map["name"]);
     var varName = toVariableName(declaration.name);
 
-    // ignoring directives 
-    if(declaration is DirectiveItem) {
-      if(_directive.generate(context, map))
-        return;
+    // ignoring directives
+    if (declaration is DirectiveItem) {
+      if (_directive.generate(context, map)) return;
     }
 
-    if(declaration is DynamicItem) {
+    if (declaration is DynamicItem) {
       _generateData(context, map);
-      var defaultIsVisible = (map["visible"] == null || map["visible"] == true).toString();
+      var defaultIsVisible =
+          (map["visible"] == null || map["visible"] == true).toString();
       context.addPaint(["if(this.$varName?.isVisible ?? $defaultIsVisible) {"]);
     }
 
-    if(context.withComments) {
-      context.addPaint(["", "// ${map["id"]} : ${map["name"]} (${map["type"]})"]);
+    if (context.withComments) {
+      context
+          .addPaint(["", "// ${map["id"]} : ${map["name"]} (${map["type"]})"]);
     }
 
     var isVector = _vector.isSupported(map);
     var isGroup = _group.isSupported(map);
 
-    if(isVector) {
+    if (isVector) {
       _vector.generateClip(context, map);
     }
 
-    var methodName = "draw_" + map["id"].replaceAll(":", "_").replaceAll(";","__");
+    var methodName =
+        "draw_" + map["id"].replaceAll(":", "_").replaceAll(";", "__");
     print(methodName);
-   context.addPaint(["var $methodName = (Canvas canvas, Rect container) {"]);
+    context.addPaint(["var $methodName = (Canvas canvas, Rect container) {"]);
 
     // Transform
 
-    
-
-    if(!isGroup) {
-      var container = _toPoint(parent["size"]);
-      var frame = _createFrame(map, container, context.withComments);
+    if (!isGroup) {
+      var container = toPoint(parent["size"]);
+      var frame = _constraints.generate(
+          map, "container", container, transform, context.withComments);
       context.addPaint(["var frame = ${frame};"]);
 
-      var relativeTransform = _createTransform(map);
       context.addPaint([
         "canvas.save();",
-        "canvas.transform($relativeTransform);"
       ]);
 
-      if(isVector) {
+      _constraints.applyScale(context, map, parent, "container");
+
+      var relativeTransform = _transform.generate(transform);
+      context.addPaint(["canvas.transform($relativeTransform);"]);
+
+      if (isVector) {
         _vector.generate(context, map);
-      }
-      else if(_frame.isSupported(map)) {
+      } else if (_frame.isSupported(map)) {
         _frame.generate(context, map);
-      }
-      else if(_text.isSupported(map)) {
+      } else if (_text.isSupported(map)) {
         _text.generate(context, map);
       }
-    }
-    else {
-      var relativeTransform = map["relativeTransform"];
-      var tx = relativeTransform[0][2].toDouble();
-      var ty = relativeTransform[1][2].toDouble();
+
       context.addPaint([
-        "canvas.save();",
-        "canvas.translate(${toFixedDouble(tx)}, ${toFixedDouble(ty)});"
+        "canvas.restore();",
       ]);
-      _group.generate(context, map, parent);
+    } else {
+      _group.generate(context, map, parent, transform);
     }
 
     context.addPaint([
-      "canvas.restore();",
       "};",
       "$methodName(canvas,frame);",
     ]);
-      
-    if(declaration is DynamicItem) {
+
+    if (declaration is DynamicItem) {
       context.addPaint(["}"]);
     }
   }

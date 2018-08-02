@@ -4,8 +4,13 @@ import 'package:figma_to_flutter/tools/code_catalog.dart';
 import 'color.dart';
 import 'package:code_builder/code_builder.dart';
 
+/**
+ * A code generator that translates Figma fill and stroke nodes 
+ * into Flutter [Paint] equivalents.
+ * 
+ * Warning: It only supports **solid, linear and radial gradients** paints.
+ */
 class PaintGenerator {
-
   final ColorGenerator _color;
 
   CodeCatalog catalog = CodeCatalog("_PaintCatalog", "Paint");
@@ -26,11 +31,10 @@ class PaintGenerator {
     var type = map["type"];
     var opacity = map["opacity"]?.toDouble() ?? 1.0;
 
-    if(type == "SOLID") {
+    if (type == "SOLID") {
       var color = _color.generate(map["color"], opacity: opacity);
       return catalog.get("(Paint()..color = $color)");
-    }
-    else if(type.startsWith("GRADIENT_")) {
+    } else if (type.startsWith("GRADIENT_")) {
       var local = (frame) => frame.toString();
       // Handles
       var gradientHandlePositions = map["gradientHandlePositions"];
@@ -43,40 +47,44 @@ class PaintGenerator {
 
       // Stops
       var gradientStops = map["gradientStops"];
-      var stopValues = gradientStops.map((x)  => x["position"].toDouble()).toList().cast<double>();
+      var stopValues = gradientStops
+          .map((x) => x["position"].toDouble())
+          .toList()
+          .cast<double>();
       var stops = "[" + stopValues.join(", ") + "]";
 
       // Colors
-      var colorValues = gradientStops.map((x)  => _color.generate(x["color"], opacity: opacity)).toList();
+      var colorValues = gradientStops
+          .map((x) => _color.generate(x["color"], opacity: opacity))
+          .toList();
       var colors = "[" + colorValues.join(", ") + "]";
       var gradient = null;
 
-      if(type == "GRADIENT_LINEAR") {
+      if (type == "GRADIENT_LINEAR") {
         gradient = new Code("LinearGradient(" +
-        "begin: $beginAlignment, " + 
-        "end: $endAlignment, " + 
-        "stops: $stops, " + 
-        "colors: $colors, " +
-        "tileMode: TileMode.clamp" +
-        ")");
-      }
-      else if(type == "GRADIENT_RADIAL") {
+            "begin: $beginAlignment, " +
+            "end: $endAlignment, " +
+            "stops: $stops, " +
+            "colors: $colors, " +
+            "tileMode: TileMode.clamp" +
+            ")");
+      } else if (type == "GRADIENT_RADIAL") {
         var radius = (end.x - begin.x).abs();
         gradient = new Code("RadialGradient(" +
-        "center: $beginAlignment, " + 
-        "radius: $radius, " + 
-        "stops: $stops, " + 
-        "colors: $colors, " +
-        "tileMode: TileMode.clamp" +
-        ")");
+            "center: $beginAlignment, " +
+            "radius: $radius, " +
+            "stops: $stops, " +
+            "colors: $colors, " +
+            "tileMode: TileMode.clamp" +
+            ")");
       }
 
-      if(gradient != null) {
-        return catalog.get("(Paint()..shader = $gradient.createShader(Offset.zero & frame.size))");
+      if (gradient != null) {
+        return Code(
+            "(Paint()..shader = $gradient.createShader(Offset.zero & frame.size))");
       }
     }
 
     return catalog.get("Paint()");
+  }
 }
-}
-

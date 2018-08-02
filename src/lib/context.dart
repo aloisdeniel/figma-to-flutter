@@ -2,19 +2,17 @@ import 'package:built_collection/built_collection.dart';
 import 'package:code_builder/code_builder.dart';
 import 'package:figma_to_flutter/tools/format.dart' as format;
 
-class DataProperty {
-  final String type;
-  final String name;
-  final String defaultsTo;
-  DataProperty(this.type,this.name, this.defaultsTo);
-}
-
+/**
+ * The main context while generating generating [Widget] and 
+ * its [CustomPainter].
+ * 
+ * It keeps track of all statements, dynamic data properties.
+ */
 class BuildContext {
-
   bool withComments;
 
   List<String> _dataProperties = [];
-  Map<String,String> _imageProperties = {};
+  Map<String, String> _imageProperties = {};
 
   dynamic _rootNode;
 
@@ -31,12 +29,12 @@ class BuildContext {
   BuildContext(componentName, this._rootNode, {this.withComments = false}) {
     var widgetName = format.toClassName(componentName);
     _widget = ClassBuilder()
-                ..name = widgetName
-                ..extend = refer('StatelessWidget');
+      ..name = widgetName
+      ..extend = refer('StatelessWidget');
 
     _customPainter = ClassBuilder()
-                ..name = "${widgetName}Painter"
-                ..extend = refer("CustomPainter");
+      ..name = "${widgetName}Painter"
+      ..extend = refer("CustomPainter");
 
     _paintBody = BlockBuilder();
     _widgetConstructor = ConstructorBuilder();
@@ -48,62 +46,18 @@ class BuildContext {
     var y = map["y"].toDouble();
     var w = map["width"].toDouble();
     var h = map["height"].toDouble();
-    return [x,y,w,h];
+    return [x, y, w, h];
   }
 
-/*
-  void _alignWidget(String widget, ) {
-    var code = "Positioned(child: $instance,";
-
-    // Position
-    var absoluteBoundingBox = _toRectangle(map["absoluteBoundingBox"]);
-    var rootAbsoluteBoundingBox = _toRectangle(_rootNode["absoluteBoundingBox"]);
-    var left = absoluteBoundingBox[0] - rootAbsoluteBoundingBox[0];
-    var top = absoluteBoundingBox[1]  - rootAbsoluteBoundingBox[1];
-    var width = absoluteBoundingBox[2];
-    var height = absoluteBoundingBox[3];
-    var right = rootAbsoluteBoundingBox[2] - (left + width);
-    var bottom = rootAbsoluteBoundingBox[3] - (top + height);
-    var constraints = map["constraints"];
-    var horizontal = constraints["horizontal"];
-    var vertical = constraints["vertical"];
-
-    switch(horizontal) {
-      case "RIGHT":
-        code += "left: $left, width: $width,";
-        break;
-      case "LEFT_RIGHT":
-        code += "left: $left, right: $right,";
-        break;
-      case "CENTER":
-        code += "width: $width, height: $height,"; // TODO
-        break;
-    }
-    
-    switch(vertical) {
-      case "BOTTOM":
-        code += "top: $top, height: $height,";
-        break;
-      case "TOP_BOTTOM":
-        code += "top: $top, bottom: $bottom,";
-        break;
-      case "CENTER":
-        code += "width: $width, height: $height,"; // TODO
-        break;
-    }
-    
-    code += ")";
-  } */
-
   BuildContext addChildWidget(String instance, dynamic map) {
-
     var code = "Positioned(child: $instance,";
 
     // Position
     var absoluteBoundingBox = _toRectangle(map["absoluteBoundingBox"]);
-    var rootAbsoluteBoundingBox = _toRectangle(_rootNode["absoluteBoundingBox"]);
+    var rootAbsoluteBoundingBox =
+        _toRectangle(_rootNode["absoluteBoundingBox"]);
     var left = absoluteBoundingBox[0] - rootAbsoluteBoundingBox[0];
-    var top = absoluteBoundingBox[1]  - rootAbsoluteBoundingBox[1];
+    var top = absoluteBoundingBox[1] - rootAbsoluteBoundingBox[1];
     var width = absoluteBoundingBox[2];
     var height = absoluteBoundingBox[3];
     var right = rootAbsoluteBoundingBox[2] - (left + width);
@@ -112,7 +66,7 @@ class BuildContext {
     var horizontal = constraints["horizontal"];
     var vertical = constraints["vertical"];
 
-    switch(horizontal) {
+    switch (horizontal) {
       case "RIGHT":
         code += "left: $left, width: $width,";
         break;
@@ -123,8 +77,8 @@ class BuildContext {
         code += "width: $width, height: $height,"; // TODO
         break;
     }
-    
-    switch(vertical) {
+
+    switch (vertical) {
       case "BOTTOM":
         code += "top: $top, height: $height,";
         break;
@@ -135,7 +89,7 @@ class BuildContext {
         code += "width: $width, height: $height,"; // TODO
         break;
     }
-    
+
     code += ")";
     this._childWidgets.add(Code(code));
 
@@ -143,97 +97,94 @@ class BuildContext {
   }
 
   String _toFit(dynamic map) {
-    switch(map["scaleMode"]) {
-        case "FIT":
-          return "BoxFit.contain";
-          break;
-        case "STRECH":
-          return "BoxFit.fill";
-          break;
-        default:
-          return "BoxFit.cover";
-          break;
-      } 
+    switch (map["scaleMode"]) {
+      case "FIT":
+        return "BoxFit.contain";
+        break;
+      case "STRECH":
+        return "BoxFit.fill";
+        break;
+      default:
+        return "BoxFit.cover";
+        break;
+    }
   }
 
   BuildContext addImage(String name, dynamic map) {
-      var propertyName = format.toVariableName(name) + "Provider";
+    var propertyName = format.toVariableName(name) + "Provider";
 
     _widget.fields.add(Field((b) => b
-        ..name = propertyName
-        ..modifier = FieldModifier.final$
-        ..type = refer("ImageProvider")
-      ));
+      ..name = propertyName
+      ..modifier = FieldModifier.final$
+      ..type = refer("ImageProvider")));
 
-      _widgetConstructor
-        ..optionalParameters.add(Parameter((p) => p
+    _widgetConstructor
+      ..optionalParameters.add(Parameter((p) => p
         ..name = "this.${propertyName}"
         ..named = true));
 
     _customPainter.fields.add(Field((b) => b
-        ..name = propertyName
-        ..type = refer("DecorationImagePainter")
-      ));
+      ..name = propertyName
+      ..type = refer("DecorationImagePainter")));
 
-      _customPainterConstructor
-        ..requiredParameters.add(Parameter((p) => p
+    _customPainterConstructor
+      ..requiredParameters.add(Parameter((p) => p
         ..name = propertyName
         ..type = refer("ImageProvider")));
-     
-      _dataProperties.add(propertyName);
 
-      var fit = _toFit(map);
-      _imageProperties[propertyName] = "DecorationImage(image: ${propertyName}, fit: $fit)";
+    _dataProperties.add(propertyName);
 
-      return this;
+    var fit = _toFit(map);
+    _imageProperties[propertyName] =
+        "DecorationImage(image: ${propertyName}, fit: $fit)";
+
+    return this;
   }
 
   BuildContext addData(String name, String type) {
-      var propertyName = format.toVariableName(name);
+    var propertyName = format.toVariableName(name);
 
-      String className;
+    String className;
 
-      switch(type)
-      {
-        case 'RECT':
-        case 'VECTOR':
-        case 'ELLIPSE':
-        case 'RECTANGLE':
-        case 'REGULAR_POLYGON':
-        case 'BOOLEAN_OPERATION':
-        case 'STAR':
-          className = "VectorData";
-          break;
+    switch (type) {
+      case 'RECT':
+      case 'VECTOR':
+      case 'ELLIPSE':
+      case 'RECTANGLE':
+      case 'REGULAR_POLYGON':
+      case 'BOOLEAN_OPERATION':
+      case 'STAR':
+        className = "VectorData";
+        break;
 
-        case 'TEXT':
-          className = "TextData";
-          break;
+      case 'TEXT':
+        className = "TextData";
+        break;
 
-        default:
-          className = "Data";
-          break;
-      }
+      default:
+        className = "Data";
+        break;
+    }
 
-      // Painter
+    // Painter
 
-      _customPainter.fields.add(Field((b) => b
-        ..name = propertyName
-        ..modifier = FieldModifier.final$
-        ..type = refer(className)
-      ));
+    _customPainter.fields.add(Field((b) => b
+      ..name = propertyName
+      ..modifier = FieldModifier.final$
+      ..type = refer(className)));
 
-      _customPainterConstructor
-        ..requiredParameters.add(Parameter((p) => p
+    _customPainterConstructor
+      ..requiredParameters.add(Parameter((p) => p
         ..name = "this.$propertyName"
         ..named = true));
 
-      // Widget
+    // Widget
 
-      this.addWidgetField(className, propertyName, false);
-     
-      _dataProperties.add(propertyName);
+    this.addWidgetField(className, propertyName, false);
 
-      return this;
+    _dataProperties.add(propertyName);
+
+    return this;
   }
 
   BuildContext addPaint(List<String> statements) {
@@ -255,8 +206,9 @@ class BuildContext {
  */
 
   BuildContext addWidgetField(String type, String name, bool required) {
-
-    ListBuilder<Parameter> parameters = !required ? _widgetConstructor.optionalParameters : _widgetConstructor.requiredParameters;
+    ListBuilder<Parameter> parameters = !required
+        ? _widgetConstructor.optionalParameters
+        : _widgetConstructor.requiredParameters;
 
     parameters.add(Parameter((p) => p
       ..name = "this.$name"
@@ -266,13 +218,11 @@ class BuildContext {
     _widget.fields.add(Field((b) => b
       ..name = "$name"
       ..modifier = FieldModifier.final$
-      ..type = refer(type)
-    ));
+      ..type = refer(type)));
     return this;
   }
 
   Class _buildWidget() {
-
     _widget.constructors.add(_widgetConstructor.build());
 
     var body = BlockBuilder();
@@ -280,8 +230,9 @@ class BuildContext {
     var args = _dataProperties.join(", ");
     var customPaint = "CustomPaint(painter: ${_customPainter.name}($args)";
 
-    if(!this._childWidgets.isEmpty) {
-      customPaint += ", child: Material(type: MaterialType.transparency, child: Container(child:Stack(children:[";
+    if (!this._childWidgets.isEmpty) {
+      customPaint +=
+          ", child: Material(type: MaterialType.transparency, child: Container(child:Stack(children:[";
       customPaint += this._childWidgets.join(", ");
       customPaint += "].where((x) => x != null).toList())))";
     }
@@ -294,10 +245,8 @@ class BuildContext {
       ..returns = refer("Widget")
       ..requiredParameters.add(Parameter((b) => b
         ..name = "context"
-        ..type = refer("BuildContext")
-      ))
-      ..body = body.build()
-    );
+        ..type = refer("BuildContext")))
+      ..body = body.build());
 
     _widget.methods.add(build);
 
@@ -305,16 +254,17 @@ class BuildContext {
   }
 
   Class _buildCustomPainter() {
-    
     var semanticsBuilder = Method((b) => b
       ..name = "semanticsBuilder"
       ..annotations.add(CodeExpression(Code("override")))
       ..type = MethodType.getter
       ..returns = refer("SemanticsBuilderCallback")
-      ..body = Code("return (Size size) => [];")
-    );
+      ..body = Code("return (Size size) => [];"));
 
-    var dataComparison = this._dataProperties.map((x) => "oldDelegate.$x != this.$x").join(" || ");
+    var dataComparison = this
+        ._dataProperties
+        .map((x) => "oldDelegate.$x != this.$x")
+        .join(" || ");
 
     var shouldRepaint = Method((b) => b
       ..name = "shouldRepaint"
@@ -322,10 +272,10 @@ class BuildContext {
       ..returns = refer("bool")
       ..requiredParameters.add(Parameter((b) => b
         ..name = "oldDelegate"
-        ..type = refer(_customPainter.name)
-      ))
-      ..body = Code( _dataProperties.isNotEmpty ? "return $dataComparison;" : "return false;")
-    );
+        ..type = refer(_customPainter.name)))
+      ..body = Code(_dataProperties.isNotEmpty
+          ? "return $dataComparison;"
+          : "return false;"));
 
     var shouldRebuildSemantics = Method((b) => b
       ..name = "shouldRebuildSemantics"
@@ -333,10 +283,8 @@ class BuildContext {
       ..returns = refer("bool")
       ..requiredParameters.add(Parameter((b) => b
         ..name = "oldDelegate"
-        ..type = refer(_customPainter.name)
-      ))
-      ..body = Code("return shouldRepaint(oldDelegate);")
-    );
+        ..type = refer(_customPainter.name)))
+      ..body = Code("return shouldRepaint(oldDelegate);"));
 
     var paint = Method((b) => b
       ..name = 'paint'
@@ -344,44 +292,44 @@ class BuildContext {
       ..returns = refer("void")
       ..body = _paintBody.build()
       ..requiredParameters.add(Parameter((p) => p
-            ..name="canvas"
-            ..type=refer("Canvas")))
+        ..name = "canvas"
+        ..type = refer("Canvas")))
       ..requiredParameters.add(Parameter((p) => p
-            ..name="size"
-            ..type=refer("Size"))));
+        ..name = "size"
+        ..type = refer("Size"))));
 
-    if(this._imageProperties.isNotEmpty) {
-
+    if (this._imageProperties.isNotEmpty) {
       _customPainter.extend = refer("ChangeNotifier");
-      _customPainter.implements = ListBuilder<Reference>([refer("CustomPainter")]);
-      _customPainterConstructor.body = Block((b){ 
+      _customPainter.implements =
+          ListBuilder<Reference>([refer("CustomPainter")]);
+      _customPainterConstructor.body = Block((b) {
         List<Code> statements = [];
-        this._imageProperties.forEach((k,v) => statements.add(Code("this.${k} = (${k} != null) ? $v.createPainter(_onUpdate) : null;")));
+        this._imageProperties.forEach((k, v) => statements.add(Code(
+            "this.${k} = (${k} != null) ? $v.createPainter(_onUpdate) : null;")));
         return b..statements.addAll(statements);
       });
       _customPainter.methods.add(Method((b) => b
         ..name = '_onUpdate'
         ..returns = refer("void")
         ..lambda = true
-        ..body = Code("this.notifyListeners()"))
-      );_customPainter.methods.add(Method((b) => b
+        ..body = Code("this.notifyListeners()")));
+      _customPainter.methods.add(Method((b) => b
         ..name = 'hitTest'
         ..returns = refer("bool")
         ..lambda = true
         ..requiredParameters.add(Parameter((p) => p
           ..name = "offset"
           ..type = refer("Offset")))
-        ..body = Code("false"))
-      );
+        ..body = Code("false")));
     }
 
     _customPainter.constructors.add(_customPainterConstructor.build());
     _customPainter.methods.addAll([
-        paint, 
-        semanticsBuilder,
-        shouldRebuildSemantics,
-        shouldRepaint,
-      ]);
+      paint,
+      semanticsBuilder,
+      shouldRebuildSemantics,
+      shouldRepaint,
+    ]);
     return _customPainter.build();
   }
 
@@ -396,4 +344,11 @@ class BuildContext {
 
     return result;
   }
+}
+
+class DataProperty {
+  final String type;
+  final String name;
+  final String defaultsTo;
+  DataProperty(this.type, this.name, this.defaultsTo);
 }

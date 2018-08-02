@@ -1,10 +1,14 @@
-
 import 'package:code_builder/code_builder.dart';
 import 'package:figma_to_flutter/tools/code_catalog.dart';
 
-// TODO improve with a map of for caching identical colors as variables
+/**
+ * A code generator that translates Figma color nodes into
+ * Flutter [Color] equivalents.
+ * 
+ * Since Figma color components are doubles (from 0.0 to 1.0),
+ * a byte representation (from 0 to 255) is calculated.
+ */
 class ColorGenerator {
-
   CodeCatalog catalog = CodeCatalog("_ColorCatalog", "Color");
 
   Code generate(dynamic map, {double opacity = 1.0}) {

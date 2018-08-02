@@ -1,7 +1,11 @@
 
 
 import 'package:flutter/material.dart';
+import 'package:flutter_figma_sample/cards/cards.dart';
+import 'package:flutter_figma_sample/gallery/gallery.dart';
+import 'package:flutter_figma_sample/logo.g.dart';
 import 'package:flutter_figma_sample/todo/todo.dart';
+import 'package:flutter_figma_sample/todo/todo.g.dart';
 
 void main() => runApp(new MyApp());
 
@@ -23,7 +27,9 @@ class MyApp extends StatelessWidget {
 
 class HomePage extends StatelessWidget {
   final samples = [
-    Sample("Todo", (b) => TodoPage())
+    Sample("Todo", (b) => TodoPage()),
+    Sample("Gallery", (b) => GalleryPage()),
+    Sample("Cards", (b) => CardsPage()),
   ];
 
   @override
@@ -31,7 +37,10 @@ class HomePage extends StatelessWidget {
     return Scaffold(
             appBar: AppBar(
               backgroundColor: appBarColor,
-              title: Text("Flutter to figma"),
+              title: Container(
+                constraints: BoxConstraints.expand(height: 40.80, width: 28.10),  
+                child: Logo(),
+              )
             ),
             body:ListView.builder(itemBuilder:(b,i) => SampleCell(samples[i]), itemCount: samples.length)
     );

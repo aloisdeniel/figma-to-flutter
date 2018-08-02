@@ -483,12 +483,6 @@
     Function.prototype.call$4 = function(a, b, c, d) {
       return this(a, b, c, d);
     };
-    Function.prototype.call$1$2 = function(a, b) {
-      return this(a, b);
-    };
-    Function.prototype.call$1$0 = function() {
-      return this();
-    };
     Function.prototype.call$5 = function(a, b, c, d, e) {
       return this(a, b, c, d, e);
     };
@@ -497,6 +491,12 @@
     };
     Function.prototype.call$6 = function(a, b, c, d, e, f) {
       return this(a, b, c, d, e, f);
+    };
+    Function.prototype.call$1$2 = function(a, b) {
+      return this(a, b);
+    };
+    Function.prototype.call$1$0 = function() {
+      return this();
     };
     Function.prototype.call$2$1 = function(a) {
       return this(a);
@@ -1020,6 +1020,21 @@
           throw H.wrapException(H.diagnoseIndexError(receiver, index));
         receiver[index] = value;
       },
+      $add: function(receiver, other) {
+        var t1, t2, t3, totalLength;
+        t1 = [H.getTypeArgumentByIndex(receiver, 0)];
+        H.assertSubtype(other, "$isList", t1, "$asList");
+        t2 = receiver.length;
+        t3 = J.get$length$asx(other);
+        if (typeof t3 !== "number")
+          return H.iae(t3);
+        totalLength = t2 + t3;
+        t1 = H.setRuntimeTypeInfo([], t1);
+        this.set$length(t1, totalLength);
+        this.setRange$3(t1, 0, receiver.length, receiver);
+        this.setRange$3(t1, receiver.length, totalLength, other);
+        return t1;
+      },
       $isJSIndexable: 1,
       $asJSIndexable: Isolate.functionThatReturnsNull,
       $isEfficientLengthIterable: 1,
@@ -1048,7 +1063,7 @@
         },
         JSArray__compareAny: [function(a, b) {
           return J.compareTo$1$ns(H.numberOrStringSuperNativeTypeCheck(a, "$isComparable"), H.numberOrStringSuperNativeTypeCheck(b, "$isComparable"));
-        }, "call$2", "_interceptors_JSArray__compareAny$closure", 8, 0, 117]
+        }, "call$2", "_interceptors_JSArray__compareAny$closure", 8, 0, 116]
       }
     },
     JSUnmodifiableArray: {
@@ -1189,6 +1204,11 @@
         if (typeof other !== "number")
           throw H.wrapException(H.argumentErrorValue(other));
         return receiver - other;
+      },
+      $mul: function(receiver, other) {
+        if (typeof other !== "number")
+          throw H.wrapException(H.argumentErrorValue(other));
+        return receiver * other;
       },
       $mod: function(receiver, other) {
         var result = receiver % other;
@@ -4774,13 +4794,13 @@
       }
     },
     initHooks_closure0: {
-      "^": "Closure:124;getUnknownTag",
+      "^": "Closure:123;getUnknownTag",
       call$2: function(o, tag) {
         return this.getUnknownTag(o, tag);
       }
     },
     initHooks_closure1: {
-      "^": "Closure:79;prototypeForTag",
+      "^": "Closure:81;prototypeForTag",
       call$1: function(tag) {
         return this.prototypeForTag(H.stringTypeCheck(tag));
       }
@@ -5305,14 +5325,14 @@
     },
     _AsyncRun__scheduleImmediateJsOverride: [function(callback) {
       self.scheduleImmediate(H.convertDartClosureToJS(new P._AsyncRun__scheduleImmediateJsOverride_internalCallback(H.functionTypeCheck(callback, {func: 1, ret: -1})), 0));
-    }, "call$1", "async__AsyncRun__scheduleImmediateJsOverride$closure", 4, 0, 32],
+    }, "call$1", "async__AsyncRun__scheduleImmediateJsOverride$closure", 4, 0, 30],
     _AsyncRun__scheduleImmediateWithSetImmediate: [function(callback) {
       self.setImmediate(H.convertDartClosureToJS(new P._AsyncRun__scheduleImmediateWithSetImmediate_internalCallback(H.functionTypeCheck(callback, {func: 1, ret: -1})), 0));
-    }, "call$1", "async__AsyncRun__scheduleImmediateWithSetImmediate$closure", 4, 0, 32],
+    }, "call$1", "async__AsyncRun__scheduleImmediateWithSetImmediate$closure", 4, 0, 30],
     _AsyncRun__scheduleImmediateWithTimer: [function(callback) {
       H.functionTypeCheck(callback, {func: 1, ret: -1});
       P._TimerImpl$(0, callback);
-    }, "call$1", "async__AsyncRun__scheduleImmediateWithTimer$closure", 4, 0, 32],
+    }, "call$1", "async__AsyncRun__scheduleImmediateWithTimer$closure", 4, 0, 30],
     _makeAsyncAwaitCompleter: function($T) {
       return new P._AsyncAwaitCompleter(new P._SyncCompleter(new P._Future(0, $.Zone__current, [$T]), [$T]), false, [$T]);
     },
@@ -5462,7 +5482,7 @@
       return new P._StreamIterator(H.assertSubtype(stream, "$isStream", [$T], "$asStream"), false, [$T]);
     },
     _nullDataHandler: [function(value) {
-    }, "call$1", "async___nullDataHandler$closure", 4, 0, 20],
+    }, "call$1", "async___nullDataHandler$closure", 4, 0, 28],
     _nullErrorHandler: [function(error, stackTrace) {
       var t1;
       H.interceptedTypeCheck(stackTrace, "$isStackTrace");
@@ -5471,7 +5491,7 @@
       P._rootHandleUncaughtError(null, null, t1, error, stackTrace);
     }, function(error) {
       return P._nullErrorHandler(error, null);
-    }, "call$2", "call$1", "async___nullErrorHandler$closure", 4, 2, 19],
+    }, "call$2", "call$1", "async___nullErrorHandler$closure", 4, 2, 24],
     _nullDoneHandler: [function() {
     }, "call$0", "async___nullDoneHandler$closure", 0, 0, 1],
     _runUserCode: function(userCode, onSuccess, onError, $T) {
@@ -5603,7 +5623,7 @@
       }
     },
     _AsyncRun__initializeScheduleImmediate_closure: {
-      "^": "Closure:63;_box_0,div,span",
+      "^": "Closure:124;_box_0,div,span",
       call$1: function(callback) {
         var t1, t2;
         this._box_0.storedCallback = H.functionTypeCheck(callback, {func: 1, ret: -1});
@@ -5695,13 +5715,13 @@
       }
     },
     _awaitOnObject_closure0: {
-      "^": "Closure:37;bodyFunction",
+      "^": "Closure:46;bodyFunction",
       call$2: function(error, stackTrace) {
         this.bodyFunction.call$2(1, new H.ExceptionAndStackTrace(error, H.interceptedTypeCheck(stackTrace, "$isStackTrace")));
       }
     },
     _wrapJsFunctionForAsync_closure: {
-      "^": "Closure:78;$protected",
+      "^": "Closure:88;$protected",
       call$2: function(errorCode, result) {
         this.$protected(H.intTypeCheck(errorCode), result);
       }
@@ -5815,7 +5835,7 @@
         this._completeError$2(error, stackTrace);
       }, function(error) {
         return this.completeError$2(error, null);
-      }, "completeError$1", "call$2", "call$1", "get$completeError", 4, 2, 19],
+      }, "completeError$1", "call$2", "call$1", "get$completeError", 4, 2, 24],
       $isCompleter: 1
     },
     _AsyncCompleter: {
@@ -5843,7 +5863,7 @@
         t1._complete$1(value);
       }, function($receiver) {
         return this.complete$1($receiver, null);
-      }, "complete$0", "call$1", "call$0", "get$complete", 1, 2, 49],
+      }, "complete$0", "call$1", "call$0", "get$complete", 1, 2, 44],
       _completeError$2: function(error, stackTrace) {
         this.future._completeError$2(error, stackTrace);
       }
@@ -6003,7 +6023,7 @@
         P._Future__propagateToListeners(this, listeners);
       }, function(error) {
         return this._completeError$2(error, null);
-      }, "_completeError$1", "call$2", "call$1", "get$_completeError", 4, 2, 19],
+      }, "_completeError$1", "call$2", "call$1", "get$_completeError", 4, 2, 24],
       _asyncComplete$1: function(value) {
         var t1;
         H.futureOrCheck(value, {futureOr: 1, type: H.getTypeArgumentByIndex(this, 0)});
@@ -6203,7 +6223,7 @@
       }
     },
     _Future__chainForeignFuture_closure0: {
-      "^": "Closure:91;target",
+      "^": "Closure:61;target",
       call$2: function(error, stackTrace) {
         this.target._completeError$2(error, H.interceptedTypeCheck(stackTrace, "$isStackTrace"));
       },
@@ -6284,7 +6304,7 @@
       }
     },
     _Future__propagateToListeners_handleWhenCompleteCallback_closure: {
-      "^": "Closure:118;originalSource",
+      "^": "Closure:79;originalSource",
       call$1: function(_) {
         return this.originalSource;
       }
@@ -6475,7 +6495,7 @@
       }
     },
     Stream_contains__closure0: {
-      "^": "Closure:57;_box_0,future",
+      "^": "Closure:83;_box_0,future",
       call$1: function(isMatch) {
         if (H.boolTypeCheck(isMatch))
           P._cancelAndValue(this._box_0.subscription, this.future, true);
@@ -7049,7 +7069,7 @@
       }
     },
     _cancelAndErrorClosure_closure: {
-      "^": "Closure:37;subscription,future",
+      "^": "Closure:46;subscription,future",
       call$2: function(error, stackTrace) {
         P._cancelAndError(this.subscription, this.future, error, H.interceptedTypeCheck(stackTrace, "$isStackTrace"));
       }
@@ -7123,10 +7143,10 @@
       },
       _handleData$1: [function(data) {
         this._stream._handleData$2(H.assertSubtypeOfRuntimeType(data, H.getRuntimeTypeArgument(this, "_ForwardingStreamSubscription", 0)), this);
-      }, "call$1", "get$_handleData", 4, 0, 20],
+      }, "call$1", "get$_handleData", 4, 0, 28],
       _handleError$2: [function(error, stackTrace) {
         this._stream._handleError$3(error, H.interceptedTypeCheck(stackTrace, "$isStackTrace"), this);
-      }, "call$2", "get$_handleError", 8, 0, 73],
+      }, "call$2", "get$_handleError", 8, 0, 96],
       _handleDone$0: [function() {
         H.assertSubtype(this, "$is_EventSink", [H.getRuntimeTypeArgument(this._stream, "_ForwardingStream", 1)], "$as_EventSink")._close$0();
       }, "call$0", "get$_handleDone", 0, 0, 1],
@@ -7376,10 +7396,10 @@
     },
     _defaultEquals: [function(a, b) {
       return J.$eq$(a, b);
-    }, "call$2", "collection___defaultEquals$closure", 8, 0, 119],
+    }, "call$2", "collection___defaultEquals$closure", 8, 0, 118],
     _defaultHashCode: [function(a) {
       return J.get$hashCode$(a);
-    }, "call$1", "collection___defaultHashCode$closure", 4, 0, 120],
+    }, "call$1", "collection___defaultHashCode$closure", 4, 0, 119],
     IterableBase_iterableToShortString: function(iterable, leftDelimiter, rightDelimiter) {
       var parts, t1;
       if (P._isToStringVisiting(iterable)) {
@@ -8506,6 +8526,22 @@
         this.set$length(receiver, t1 - 1);
         return result;
       },
+      $add: function(receiver, other) {
+        var t1, result, t2;
+        t1 = [H.getRuntimeTypeArgumentIntercepted(this, receiver, "ListMixin", 0)];
+        H.assertSubtype(other, "$isList", t1, "$asList");
+        result = H.setRuntimeTypeInfo([], t1);
+        t1 = this.get$length(receiver);
+        t2 = J.get$length$asx(other);
+        if (typeof t1 !== "number")
+          return t1.$add();
+        if (typeof t2 !== "number")
+          return H.iae(t2);
+        C.JSArray_methods.set$length(result, t1 + t2);
+        C.JSArray_methods.setRange$3(result, 0, this.get$length(receiver), receiver);
+        C.JSArray_methods.setRange$3(result, this.get$length(receiver), result.length, other);
+        return result;
+      },
       sublist$2: function(receiver, start, end) {
         var listLength, $length, result, i;
         listLength = this.get$length(receiver);
@@ -9377,7 +9413,7 @@
         if (typeof t3 !== "number")
           return H.iae(t3);
         this._bufferIndex = t4 + t3;
-      }, "call$1", "get$add", 5, 0, 20],
+      }, "call$1", "get$add", 5, 0, 28],
       close$0: [function(_) {
         this._callback.call$1(C.NativeUint8List_methods.sublist$2(this._convert$_buffer, 0, this._bufferIndex));
       }, "call$0", "get$close", 1, 0, 1]
@@ -10057,7 +10093,7 @@
       }
     },
     _Utf8Decoder_convert_scanOneByteCharacters: {
-      "^": "Closure:61;endIndex",
+      "^": "Closure:122;endIndex",
       call$2: function(units, from) {
         var to, t1, i, unit;
         H.assertSubtype(units, "$isList", [P.int], "$asList");
@@ -10073,7 +10109,7 @@
       }
     },
     _Utf8Decoder_convert_addSingleBytes: {
-      "^": "Closure:129;$this,startIndex,endIndex,codeUnits",
+      "^": "Closure:128;$this,startIndex,endIndex,codeUnits",
       call$2: function(from, to) {
         this.$this._stringSink._contents += P.String_String$fromCharCodes(this.codeUnits, from, to);
       }
@@ -10082,7 +10118,7 @@
     "^": "",
     identityHashCode: [function(object) {
       return H.objectHashCode(object);
-    }, "call$1", "core__identityHashCode$closure", 4, 0, 121],
+    }, "call$1", "core__identityHashCode$closure", 4, 0, 120],
     int_parse: function(source, onError, radix) {
       var value;
       H.functionTypeCheck(onError, {func: 1, ret: P.int, args: [P.String]});
@@ -10183,7 +10219,7 @@
     },
     identical: [function(a, b) {
       return a == null ? b == null : a === b;
-    }, "call$2", "core__identical$closure", 8, 0, 122],
+    }, "call$2", "core__identical$closure", 8, 0, 121],
     Uri_base: function() {
       var uri = H.Primitives_currentUri();
       if (uri != null)
@@ -11246,7 +11282,7 @@
         this._contents += H.S(obj) + "\n";
       }, function() {
         return this.writeln$1("");
-      }, "writeln$0", "call$1", "call$0", "get$writeln", 0, 2, 49],
+      }, "writeln$0", "call$1", "call$0", "get$writeln", 0, 2, 44],
       toString$0: function(_) {
         var t1 = this._contents;
         return t1.charCodeAt(0) == 0 ? t1 : t1;
@@ -11283,13 +11319,13 @@
       "^": "Object;"
     },
     Uri__parseIPv4Address_error: {
-      "^": "Closure:82;host",
+      "^": "Closure:117;host",
       call$2: function(msg, position) {
         throw H.wrapException(P.FormatException$("Illegal IPv4 address, " + msg, this.host, position));
       }
     },
     Uri_parseIPv6Address_error: {
-      "^": "Closure:83;host",
+      "^": "Closure:115;host",
       call$2: function(msg, position) {
         throw H.wrapException(P.FormatException$("Illegal IPv6 address, " + msg, this.host, position));
       },
@@ -11298,7 +11334,7 @@
       }
     },
     Uri_parseIPv6Address_parseHex: {
-      "^": "Closure:84;error,host",
+      "^": "Closure:112;error,host",
       call$2: function(start, end) {
         var value;
         if (end - start > 4)
@@ -12287,7 +12323,7 @@
       }
     },
     _Uri__Uri$notSimple_closure: {
-      "^": "Closure:22;uri,portStart",
+      "^": "Closure:21;uri,portStart",
       call$1: function(_) {
         var t1 = this.portStart;
         if (typeof t1 !== "number")
@@ -12296,7 +12332,7 @@
       }
     },
     _Uri__checkNonWindowsPathReservedCharacters_closure: {
-      "^": "Closure:22;argumentError",
+      "^": "Closure:21;argumentError",
       call$1: function(segment) {
         H.stringTypeCheck(segment);
         if (J.contains$1$asx(segment, "/"))
@@ -12395,13 +12431,13 @@
       }
     },
     _createTables_closure: {
-      "^": "Closure:93;",
+      "^": "Closure:104;",
       call$1: function(_) {
         return new Uint8Array(96);
       }
     },
     _createTables_build: {
-      "^": "Closure:97;tables",
+      "^": "Closure:92;tables",
       call$2: function(state, defaultTransition) {
         var t1 = this.tables;
         if (state >= t1.length)
@@ -12412,7 +12448,7 @@
       }
     },
     _createTables_setChars: {
-      "^": "Closure:51;",
+      "^": "Closure:33;",
       call$3: function(target, chars, transition) {
         var t1, i, t2;
         for (t1 = chars.length, i = 0; i < t1; ++i) {
@@ -12424,7 +12460,7 @@
       }
     },
     _createTables_setRange: {
-      "^": "Closure:51;",
+      "^": "Closure:33;",
       call$3: function(target, range, transition) {
         var i, n, t1;
         for (i = C.JSString_methods._codeUnitAt$1(range, 0), n = C.JSString_methods._codeUnitAt$1(range, 1); i <= n; ++i) {
@@ -13005,7 +13041,7 @@
       "^": "Interceptor;",
       text$0: [function(receiver) {
         return W.promiseToFuture(receiver.text(), P.String);
-      }, "call$0", "get$text", 1, 0, 116],
+      }, "call$0", "get$text", 1, 0, 90],
       "%": ";Body"
     },
     BodyElement: {
@@ -13551,7 +13587,7 @@
       },
       setRequestHeader$2: [function(receiver, $name, value) {
         return receiver.setRequestHeader(H.stringTypeCheck($name), H.stringTypeCheck(value));
-      }, "call$2", "get$setRequestHeader", 9, 0, 23],
+      }, "call$2", "get$setRequestHeader", 9, 0, 22],
       $isHttpRequest: 1,
       "%": "XMLHttpRequest"
     },
@@ -14105,7 +14141,7 @@
       "%": "Storage"
     },
     Storage_keys_closure: {
-      "^": "Closure:23;keys",
+      "^": "Closure:22;keys",
       call$2: function(k, v) {
         return C.JSArray_methods.add$1(this.keys, k);
       }
@@ -14501,7 +14537,7 @@
       }
     },
     _EventStreamSubscription_closure: {
-      "^": "Closure:125;onData",
+      "^": "Closure:86;onData",
       call$1: function(e) {
         return this.onData.call$1(H.interceptedTypeCheck(e, "$isEvent"));
       }
@@ -14712,7 +14748,7 @@
       }
     },
     _AcceptStructuredClone_walk_closure: {
-      "^": "Closure:66;_box_0,$this",
+      "^": "Closure:84;_box_0,$this",
       call$2: function(key, value) {
         var t1, t2;
         t1 = this._box_0.copy;
@@ -14861,20 +14897,20 @@
       }
     },
     CssClassSetImpl_add_closure: {
-      "^": "Closure:62;value",
+      "^": "Closure:82;value",
       call$1: function(s) {
         return H.assertSubtype(s, "$isSet", [P.String], "$asSet").add$1(0, this.value);
       }
     },
     CssClassSetImpl_addAll_closure: {
-      "^": "Closure:35;$this,iterable",
+      "^": "Closure:37;$this,iterable",
       call$1: function(s) {
         var t1 = P.String;
         return H.assertSubtype(s, "$isSet", [t1], "$asSet").addAll$1(0, J.map$1$1$ax(this.iterable, this.$this.get$_validateToken(), t1));
       }
     },
     CssClassSetImpl_clear_closure: {
-      "^": "Closure:35;",
+      "^": "Closure:37;",
       call$1: function(s) {
         return H.assertSubtype(s, "$isSet", [P.String], "$asSet").clear$0(0);
       }
@@ -14957,13 +14993,13 @@
       }
     },
     FilteredElementList__iterable_closure: {
-      "^": "Closure:76;",
+      "^": "Closure:80;",
       call$1: function(n) {
         return !!J.getInterceptor(H.interceptedTypeCheck(n, "$isNode")).$isElement;
       }
     },
     FilteredElementList__iterable_closure0: {
-      "^": "Closure:88;",
+      "^": "Closure:78;",
       call$1: function(n) {
         return H.interceptedTypeCast(H.interceptedTypeCheck(n, "$isNode"), "$isElement");
       }
@@ -15069,6 +15105,18 @@
         if (typeof t5 !== "number")
           return H.iae(t5);
         return new P.Point(t3, H.assertSubtypeOfRuntimeType(t2 - t5, t4), t1);
+      },
+      $mul: function(_, factor) {
+        var t1, t2, t3;
+        t1 = this.x;
+        if (typeof t1 !== "number")
+          return t1.$mul();
+        t2 = H.getTypeArgumentByIndex(this, 0);
+        t1 = H.assertSubtypeOfRuntimeType(t1 * factor, t2);
+        t3 = this.y;
+        if (typeof t3 !== "number")
+          return t3.$mul();
+        return new P.Point(t1, H.assertSubtypeOfRuntimeType(t3 * factor, t2), this.$ti);
       }
     },
     _RectangleBase: {
@@ -20229,7 +20277,7 @@
       },
       reportError$3: [function(errorCode, offset, $arguments) {
         this._scanner$_errorListener.onError$1(0, V.AnalysisError$(this.source, offset, 1, errorCode, H.assertSubtype($arguments, "$isList", [P.Object], "$asList")));
-      }, "call$3", "get$reportError", 12, 0, 89],
+      }, "call$3", "get$reportError", 12, 0, 76],
       setSourceStart$2: function(line, column) {
         var offset, t1, i;
         offset = this._readerOffset;
@@ -20311,7 +20359,7 @@
       return P.String_String$fromCharCodes(H.setRuntimeTypeInfo([((offset & 2147483647) >>> 10) + 55296, (offset & 1023) + 56320], [P.int]), 0, null);
     },
     formatList_closure: {
-      "^": "Closure:24;$arguments",
+      "^": "Closure:23;$arguments",
       call$1: function(match) {
         var index, t1, arg;
         index = P.int_parse(match.group$1(1), null, null);
@@ -26520,7 +26568,7 @@
       }
     },
     Parser_parseCompilationUnit2_parseDirective: {
-      "^": "Closure:58;_box_0,$this,keyword,commentAndMetadata,directives",
+      "^": "Closure:73;_box_0,$this,keyword,commentAndMetadata,directives",
       call$0: function() {
         var t1, t2, importKeyword, libraryUri, configurations, deferredToken, asToken, prefix, t3, nextToken, combinators, semicolon, exportKeyword, t4, t5, t6, t7, keyword, libraryName, partKeyword, partUri;
         t1 = this.keyword;
@@ -26659,7 +26707,7 @@
       }
     },
     Parser__parseUri_isKeywordAfterUri: {
-      "^": "Closure:36;",
+      "^": "Closure:42;",
       call$1: function(token) {
         var t1, t2;
         if (token.get$lexeme() !== "as") {
@@ -26678,7 +26726,7 @@
       }
     },
     Parser__parseUri_isValidInUri: {
-      "^": "Closure:36;",
+      "^": "Closure:42;",
       call$1: function(token) {
         var type = token.type;
         return type === C.TokenType_gg4 || type === C.TokenType_sBE || type === C.TokenType_wCI || type === C.TokenType_cv8 || type === C.TokenType_j7J || type === C.TokenType_Vyt || type === C.TokenType_q1z;
@@ -26775,6 +26823,10 @@
         if (index < 0 || index >= t1.length)
           return H.ioore(t1, index);
         return t1[index];
+      },
+      $add: function(_, other) {
+        H.assertSubtype(other, "$isList", this.$ti, "$asList");
+        throw H.wrapException(P.UnimplementedError$("+"));
       },
       cast$1$0: function(_, $T) {
         throw H.wrapException(P.UnimplementedError$("cast"));
@@ -27409,6 +27461,39 @@
         t1._contents += "\n";
         return t1;
       },
+      visitDirective$2: function(spec, output) {
+        var t1, t2;
+        if (output == null)
+          output = new P.StringBuffer("");
+        t1 = output._contents;
+        if (spec.type === C.DirectiveType_0)
+          output._contents = t1 + "import ";
+        else
+          output._contents = t1 + "export ";
+        t1 = output._contents += "'" + H.S(spec.url) + "'";
+        t2 = spec.as;
+        if (t2 != null)
+          t1 = output._contents += " as " + t2;
+        t2 = spec.show;
+        if (t2.length !== 0) {
+          t1 += " show ";
+          output._contents = t1;
+          t2 = P.StringBuffer__writeAll(t1, t2, ", ");
+          output._contents = t2;
+          t1 = t2;
+        } else {
+          t2 = spec.hide;
+          if (t2.length !== 0) {
+            t1 += " hide ";
+            output._contents = t1;
+            t2 = P.StringBuffer__writeAll(t1, t2, ", ");
+            output._contents = t2;
+            t1 = t2;
+          }
+        }
+        output._contents = t1 + ";";
+        return output;
+      },
       visitField$2: function(spec, output) {
         var _box_0, t1, t2;
         _box_0 = {};
@@ -27469,7 +27554,7 @@
         return t1;
       },
       visitLibrary$2: function(spec, output) {
-        var body, t1, t2, t3, t4, t5, _i, directive;
+        var body, t1, t2, t3, _i, directive;
         if (output == null)
           output = new P.StringBuffer("");
         body = new P.StringBuffer("");
@@ -27488,57 +27573,13 @@
         for (t1 = spec.directives._list, t1 = new J.ArrayIterator(t1, t1.length, 0, [H.getTypeArgumentByIndex(t1, 0)]), t2 = [t2]; t1.moveNext$0();) {
           t3 = t1.__interceptors$_current;
           t3.toString;
-          H.assertSubtype(this, "$isSpecVisitor", t2, "$asSpecVisitor");
-          t4 = t3.type;
-          t5 = output._contents;
-          if (t4 === C.DirectiveType_0)
-            output._contents = t5 + "import ";
-          else
-            output._contents = t5 + "export ";
-          t4 = output._contents += "'" + H.S(t3.url) + "'";
-          t5 = t3.as;
-          if (t5 != null)
-            t4 = output._contents += " as " + t5;
-          t5 = t3.show;
-          if (t5.length !== 0) {
-            t3 = t4 + " show ";
-            output._contents = t3;
-            t5 = P.StringBuffer__writeAll(t3, t5, ", ");
-            output._contents = t5;
-            t3 = t5;
-          } else {
-            t3 = t3.hide;
-            if (t3.length !== 0) {
-              t4 += " hide ";
-              output._contents = t4;
-              t3 = P.StringBuffer__writeAll(t4, t3, ", ");
-              output._contents = t3;
-            } else
-              t3 = t4;
-          }
-          output._contents = t3 + ";";
+          H.assertSubtype(this, "$isSpecVisitor", t2, "$asSpecVisitor").visitDirective$2(t3, output);
         }
         for (_i = 0; false; ++_i) {
           if (_i >= 0)
             return H.ioore(C.List_empty1, _i);
           directive = C.List_empty1[_i];
-          H.assertSubtype(this, "$isSpecVisitor", t2, "$asSpecVisitor");
-          directive.get$type(directive);
-          output._contents += "export ";
-          output._contents += "'" + H.S(directive.get$url(directive)) + "'";
-          directive.get$as(directive);
-          directive.get$deferred();
-          output._contents += " as " + H.S(directive.get$as(directive));
-          if (directive.get$show(directive).length !== 0) {
-            output._contents += " show ";
-            t1 = directive.get$show(directive);
-            output._contents = P.StringBuffer__writeAll(output._contents, t1, ", ");
-          } else if (directive.get$hide().length !== 0) {
-            output._contents += " hide ";
-            t1 = directive.get$hide();
-            output._contents = P.StringBuffer__writeAll(output._contents, t1, ", ");
-          }
-          output._contents += ";";
+          H.assertSubtype(this, "$isSpecVisitor", t2, "$asSpecVisitor").visitDirective$2(directive, output);
         }
         output._contents += body.toString$0(0);
         return output;
@@ -27760,7 +27801,7 @@
       }
     },
     DartEmitter_visitClass_closure3: {
-      "^": "Closure:80;_box_0,$this,spec",
+      "^": "Closure:63;_box_0,$this,spec",
       call$1: function(c) {
         var t1 = this._box_0;
         this.$this.visitConstructor$3(H.interceptedTypeCheck(c, "$isConstructor"), this.spec.name, t1.output);
@@ -27768,7 +27809,7 @@
       }
     },
     DartEmitter_visitClass_closure4: {
-      "^": "Closure:86;_box_0,$this",
+      "^": "Closure:62;_box_0,$this",
       call$1: function(f) {
         var t1 = this._box_0;
         this.$this.visitField$2(H.interceptedTypeCheck(f, "$isField"), t1.output);
@@ -27776,7 +27817,7 @@
       }
     },
     DartEmitter_visitClass_closure5: {
-      "^": "Closure:128;_box_0,$this",
+      "^": "Closure:58;_box_0,$this",
       call$1: function(m) {
         var t1;
         H.interceptedTypeCheck(m, "$isMethod");
@@ -27794,7 +27835,7 @@
       }
     },
     DartEmitter_visitConstructor_closure0: {
-      "^": "Closure:39;",
+      "^": "Closure:50;",
       call$1: function(p) {
         return H.interceptedTypeCheck(p, "$isParameter").named;
       }
@@ -27819,7 +27860,7 @@
       }
     },
     DartEmitter_visitMethod_closure1: {
-      "^": "Closure:39;",
+      "^": "Closure:50;",
       call$1: function(p) {
         return H.interceptedTypeCheck(p, "$isParameter").named;
       }
@@ -28182,7 +28223,7 @@
       }
     },
     CodeEmitter_visitBlock_closure: {
-      "^": "Closure:105;_box_0,$this",
+      "^": "Closure:57;_box_0,$this",
       call$1: function(statement) {
         H.interceptedTypeCheck(statement, "$isCode").accept$1$2(0, this.$this, this._box_0.output, P.StringSink);
       }
@@ -28545,38 +28586,7 @@
     Directive0: {
       "^": "Object;",
       accept$1$2: function(_, visitor, context, $R) {
-        var output, t1, t2;
-        H.assertSubtype(visitor, "$isSpecVisitor", [$R], "$asSpecVisitor");
-        H.assertSubtypeOfRuntimeType(context, $R);
-        output = context == null ? new P.StringBuffer("") : context;
-        t1 = output._contents;
-        if (this.type === C.DirectiveType_0)
-          output._contents = t1 + "import ";
-        else
-          output._contents = t1 + "export ";
-        t1 = output._contents += "'" + H.S(this.url) + "'";
-        t2 = this.as;
-        if (t2 != null)
-          t1 = output._contents += " as " + t2;
-        t2 = this.show;
-        if (t2.length !== 0) {
-          t1 += " show ";
-          output._contents = t1;
-          t2 = P.StringBuffer__writeAll(t1, t2, ", ");
-          output._contents = t2;
-          t1 = t2;
-        } else {
-          t2 = this.hide;
-          if (t2.length !== 0) {
-            t1 += " hide ";
-            output._contents = t1;
-            t2 = P.StringBuffer__writeAll(t1, t2, ", ");
-            output._contents = t2;
-            t1 = t2;
-          }
-        }
-        output._contents = t1 + ";";
-        return output;
+        return H.assertSubtype(visitor, "$isSpecVisitor", [$R], "$asSpecVisitor").visitDirective$2(this, H.assertSubtypeOfRuntimeType(context, $R));
       },
       accept$1$1: function($receiver, visitor, $R) {
         return this.accept$1$2($receiver, visitor, null, $R);
@@ -28584,7 +28594,7 @@
       $isSpec: 1
     },
     Directive_Directive$import_closure: {
-      "^": "Closure:123;as,url,show,hide",
+      "^": "Closure:52;as,url,show,hide",
       call$1: function(builder) {
         builder.get$_directive$_$this();
         builder.as = this.as;
@@ -28744,7 +28754,7 @@
       }
     },
     ExpressionEmitter_visitInvokeExpression_closure1: {
-      "^": "Closure:22;_box_0,$this,expression",
+      "^": "Closure:21;_box_0,$this,expression",
       call$1: function($name) {
         var t1, t2, t3;
         H.stringTypeCheck($name);
@@ -30190,7 +30200,7 @@
       }
     },
     ArgumentSublist_ArgumentSublist_closure: {
-      "^": "Closure:40;",
+      "^": "Closure:51;",
       call$1: function(arg) {
         return !J.getInterceptor(H.interceptedTypeCheck(arg, "$isExpression0")).$isNamedExpression;
       }
@@ -30444,7 +30454,7 @@
       }
     },
     CallChainVisitor_CallChainVisitor_flatten: {
-      "^": "Closure:41;_box_0,calls",
+      "^": "Closure:49;_box_0,calls",
       call$1: function(expression) {
         var $call, t1;
         this._box_0.target = expression;
@@ -30464,7 +30474,7 @@
       }
     },
     CallChainVisitor_CallChainVisitor_closure: {
-      "^": "Closure:40;",
+      "^": "Closure:51;",
       call$1: function($call) {
         var t1;
         H.interceptedTypeCheck($call, "$isExpression0");
@@ -31227,7 +31237,7 @@
       return $.useAnsiColors ? ansiEscape : "";
     },
     dumpChunks_addSpans: {
-      "^": "Closure:42;spanSet",
+      "^": "Closure:48;spanSet",
       call$1: function(chunks) {
         var t1, t2, _i, chunk;
         H.assertSubtype(chunks, "$isList", [E.Chunk], "$asList");
@@ -31240,13 +31250,13 @@
       }
     },
     dumpChunks_closure: {
-      "^": "Closure:43;",
+      "^": "Closure:47;",
       call$1: function(chunk) {
         return H.interceptedTypeCheck(chunk, "$isChunk")._rule;
       }
     },
     dumpChunks_closure0: {
-      "^": "Closure:21;",
+      "^": "Closure:20;",
       call$1: function(rule) {
         return H.interceptedTypeCheck(rule, "$isRule") != null;
       }
@@ -31323,7 +31333,7 @@
       }
     },
     dumpChunks_addChunk_writeIf: {
-      "^": "Closure:52;row",
+      "^": "Closure:66;row",
       call$2: function(predicate, callback) {
         var t1;
         H.functionTypeCheck(callback, {func: 1, ret: P.String});
@@ -31382,7 +31392,7 @@
       }
     },
     dumpLines_writeChunksUnsplit: {
-      "^": "Closure:42;buffer",
+      "^": "Closure:48;buffer",
       call$1: function(chunks) {
         var t1, t2, _i, chunk;
         H.assertSubtype(chunks, "$isList", [E.Chunk], "$asList");
@@ -31555,13 +31565,13 @@
       }
     },
     LineSplitter_closure: {
-      "^": "Closure:43;",
+      "^": "Closure:47;",
       call$1: function(chunk) {
         return H.interceptedTypeCheck(chunk, "$isChunk")._rule;
       }
     },
     LineSplitter_closure0: {
-      "^": "Closure:21;",
+      "^": "Closure:20;",
       call$1: function(rule) {
         return H.interceptedTypeCheck(rule, "$isRule") != null;
       }
@@ -32815,7 +32825,7 @@
       }
     },
     Rule_forgetUnusedRules_closure: {
-      "^": "Closure:21;",
+      "^": "Closure:20;",
       call$1: function(rule) {
         return H.interceptedTypeCheck(rule, "$isRule").index != null;
       }
@@ -34740,10 +34750,10 @@
       }, "call$0", "get$oneOrTwoNewlines", 0, 0, 1],
       split$0: [function(_) {
         return this.builder.split$1$space(0, true);
-      }, "call$0", "get$split", 1, 0, 44],
+      }, "call$0", "get$split", 1, 0, 41],
       zeroSplit$0: [function() {
         return this.builder.split$0(0);
-      }, "call$0", "get$zeroSplit", 0, 0, 44],
+      }, "call$0", "get$zeroSplit", 0, 0, 41],
       soloSplit$1: [function(cost) {
         var rule = O.Rule$(cost);
         this.builder.startRule$1(rule);
@@ -34957,7 +34967,7 @@
       }
     },
     SourceVisitor_visitBinaryExpression_traverse: {
-      "^": "Closure:41;$this,precedence",
+      "^": "Closure:49;$this,precedence",
       call$1: function(e) {
         var t1, t2, t3;
         t1 = J.getInterceptor(e);
@@ -35099,13 +35109,13 @@
       }
     },
     SourceVisitor_visitFormalParameterList_closure: {
-      "^": "Closure:45;",
+      "^": "Closure:40;",
       call$1: function(param) {
         return !J.getInterceptor(H.interceptedTypeCheck(param, "$isFormalParameter")).$isDefaultFormalParameter;
       }
     },
     SourceVisitor_visitFormalParameterList_closure0: {
-      "^": "Closure:45;",
+      "^": "Closure:40;",
       call$1: function(param) {
         return !!J.getInterceptor(H.interceptedTypeCheck(param, "$isFormalParameter")).$isDefaultFormalParameter;
       }
@@ -35488,6 +35498,21 @@
         return P._asyncStartSync($async$getFile$1, $async$completer);
       }
     }
+  }], ["", "package:figma_to_flutter/base/base.dart",, R, {
+    "^": "",
+    toPoint: function(map) {
+      var t1, w, h;
+      if (map == null)
+        return new P.Point(0, 0, [P.num]);
+      t1 = J.getInterceptor$asx(map);
+      w = t1.$index(map, "width");
+      if (w == null)
+        w = t1.$index(map, "x");
+      h = t1.$index(map, "height");
+      if (h == null)
+        h = t1.$index(map, "y");
+      return new P.Point(J.toDouble$0$n(w), J.toDouble$0$n(h), [P.num]);
+    }
   }], ["", "package:figma_to_flutter/base/color.dart",, K, {
     "^": "",
     ColorGenerator: {
@@ -35508,6 +35533,11 @@
         return this.generate$2$opacity(map, 1);
       }
     }
+  }], ["", "package:figma_to_flutter/base/constraints.dart",, G, {
+    "^": "",
+    ConstraintsGenerator: {
+      "^": "Object;"
+    }
   }], ["", "package:figma_to_flutter/base/effect.dart",, K, {
     "^": "",
     EffectsGenerator: {
@@ -35527,7 +35557,7 @@
     "^": "",
     PaintGenerator: {
       "^": "Object;_paint$_color,catalog",
-      _paint$_toPoint$1: function(map) {
+      _toPoint$1: function(map) {
         var t1 = J.getInterceptor$asx(map);
         return new P.Point(J.toDouble$0$n(t1.$index(map, "x")), J.toDouble$0$n(t1.$index(map, "y")), [P.num]);
       },
@@ -35545,8 +35575,8 @@
         else if (t2.startsWith$1(type, "GRADIENT_")) {
           gradientHandlePositions = t1.$index(map, "gradientHandlePositions");
           t3 = J.getInterceptor$asx(gradientHandlePositions);
-          begin = this._paint$_toPoint$1(t3.$index(gradientHandlePositions, 0));
-          end = this._paint$_toPoint$1(t3.$index(gradientHandlePositions, 1));
+          begin = this._toPoint$1(t3.$index(gradientHandlePositions, 0));
+          end = this._toPoint$1(t3.$index(gradientHandlePositions, 1));
           t3 = begin.x;
           if (typeof t3 !== "number")
             return t3.$sub();
@@ -35578,7 +35608,7 @@
           else
             gradient = t2.$eq(type, "GRADIENT_RADIAL") ? new X.StaticCode("RadialGradient(" + ("center: " + beginAlignment.toString$0(0) + ", ") + ("radius: " + H.S(Math.abs(t6 - t3)) + ", ") + ("stops: " + stops + ", ") + ("colors: " + colors + ", ") + "tileMode: TileMode.clamp)") : null;
           if (gradient != null)
-            return this.catalog.$get$1("(Paint()..shader = " + gradient.toString$0(0) + ".createShader(Offset.zero & frame.size))");
+            return new X.StaticCode("(Paint()..shader = " + gradient.toString$0(0) + ".createShader(Offset.zero & frame.size))");
         }
         return this.catalog.$get$1("Paint()");
       }
@@ -35590,7 +35620,7 @@
       }
     },
     PaintGenerator_generate_closure0: {
-      "^": "Closure:46;$this,opacity",
+      "^": "Closure:39;$this,opacity",
       call$1: function(x) {
         return this.$this._paint$_color.generate$2$opacity(J.$index$asx(x, "color"), this.opacity);
       }
@@ -35717,33 +35747,19 @@
         return t8.build$0();
       },
       _addPath$1: function(map) {
-        var _box_0, t1, svg, parser, t2, normalizer, segments, t3, t4, t5, method;
-        _box_0 = {};
-        t1 = X.Code;
-        _box_0.statement = H.setRuntimeTypeInfo([], [t1]);
+        var t1, t2, statement, svg, method;
+        t1 = {};
+        t2 = X.Code;
+        statement = H.setRuntimeTypeInfo([], [t2]);
+        t1.statement = statement;
         svg = H.stringTypeCast(J.$index$asx(map, "path"));
         if (svg == null)
-          _box_0.statement = H.setRuntimeTypeInfo([new X.StaticCode("Path()")], [t1]);
+          t1.statement = H.setRuntimeTypeInfo([new X.StaticCode("Path()")], [t2]);
         else if (svg === "")
-          _box_0.statement = H.setRuntimeTypeInfo([new X.StaticCode("Path()")], [t1]);
-        else {
-          parser = new A.SvgPathStringSource();
-          parser._previousCommand = C.SvgPathSegType_0;
-          parser._codePoints = new H.CodeUnits(svg);
-          parser._idx = 0;
-          parser._skipOptionalSvgSpaces$0();
-          t2 = [P.num];
-          normalizer = new A.SvgPathNormalizer(new P.Point(0, 0, t2), new P.Point(0, 0, t2), new P.Point(0, 0, t2), C.SvgPathSegType_0);
-          segments = parser.parseSegments$0();
-          for (t2 = new P._SyncStarIterator(segments._outerHelper(), [H.getTypeArgumentByIndex(segments, 0)]); t2.moveNext$0();) {
-            t3 = t2.get$current();
-            t4 = _box_0.statement;
-            t3 = normalizer.emitSegment$1(t3);
-            t5 = H.getTypeArgumentByIndex(t3, 0);
-            C.JSArray_methods.addAll$1(t4, new H.MappedListIterable(t3, H.functionTypeCheck(new D.PathGenerator__addPath_closure(this), {func: 1, ret: t1, args: [t5]}), [t5, t1]));
-          }
-        }
-        method = D._$Method__$Method(new D.PathGenerator__addPath_closure0(_box_0, this));
+          t1.statement = H.setRuntimeTypeInfo([new X.StaticCode("Path()")], [t2]);
+        else
+          T.writeSvgPathDataToPath(svg, new D._CodePath(statement));
+        method = D._$Method__$Method(new D.PathGenerator__addPath_closure(t1, this));
         t1 = this._path$_catalog.get$methods();
         H.assertSubtypeOfRuntimeType(method, H.getTypeArgumentByIndex(t1, 0));
         if (method == null)
@@ -35758,36 +35774,6 @@
         t1 = this._path$_catalog;
         t1.get$_$this();
         return new X.StaticCode(H.S(t1.name) + ".instance.path_" + index);
-      },
-      _generateCommand$1: function(segment) {
-        switch (segment.command) {
-          case C.SvgPathSegType_3:
-          case C.SvgPathSegType_2:
-            return new X.StaticCode("path.moveTo(" + B.toFixedDouble(segment.targetPoint.x) + ", " + B.toFixedDouble(segment.targetPoint.y) + ")");
-          case C.SvgPathSegType_5:
-          case C.SvgPathSegType_4:
-          case C.SvgPathSegType_13:
-          case C.SvgPathSegType_12:
-          case C.SvgPathSegType_15:
-          case C.SvgPathSegType_14:
-            return new X.StaticCode("path.lineTo(" + B.toFixedDouble(segment.targetPoint.x) + ", " + B.toFixedDouble(segment.targetPoint.y) + ")");
-          case C.SvgPathSegType_1:
-            return new X.StaticCode("path.close()");
-          case C.SvgPathSegType_7:
-          case C.SvgPathSegType_6:
-            return new X.StaticCode("path.cubicTo(" + B.toFixedDouble(segment.point1.x) + ", " + B.toFixedDouble(segment.point1.y) + ", " + B.toFixedDouble(segment.point2.x) + ", " + B.toFixedDouble(segment.point2.y) + ", " + B.toFixedDouble(segment.targetPoint.x) + ", " + B.toFixedDouble(segment.targetPoint.y) + ")");
-          case C.SvgPathSegType_9:
-          case C.SvgPathSegType_8:
-            return new X.StaticCode("path.cubicTo(" + B.toFixedDouble(segment.point1.x) + ", " + B.toFixedDouble(segment.point1.y) + ", " + B.toFixedDouble(segment.point2.x) + ", " + B.toFixedDouble(segment.point2.y) + ", " + B.toFixedDouble(segment.targetPoint.x) + ", " + B.toFixedDouble(segment.targetPoint.y) + ")");
-          case C.SvgPathSegType_17:
-          case C.SvgPathSegType_16:
-          case C.SvgPathSegType_19:
-          case C.SvgPathSegType_18:
-          case C.SvgPathSegType_11:
-          case C.SvgPathSegType_10:
-          default:
-            throw H.wrapException(P.StateError$("Invalid command type in path"));
-        }
       }
     },
     PathGenerator_buildCatalog_closure: {
@@ -35824,7 +35810,7 @@
       }
     },
     PathGenerator_buildCatalog_closure1: {
-      "^": "Closure:47;constructorBody",
+      "^": "Closure:38;constructorBody",
       call$1: function(b) {
         var t1 = this.constructorBody.build$0();
         b.get$_constructor$_$this();
@@ -35833,12 +35819,6 @@
       }
     },
     PathGenerator__addPath_closure: {
-      "^": "Closure:81;$this",
-      call$1: function(c) {
-        return new X.StaticCode(J.$add$ansx(this.$this._generateCommand$1(H.interceptedTypeCheck(c, "$isPathSegmentData")).code, ";"));
-      }
-    },
-    PathGenerator__addPath_closure0: {
       "^": "Closure:6;_box_0,$this",
       call$1: function(b) {
         var t1 = "_build_" + this.$this._path$_index;
@@ -35855,7 +35835,7 @@
       }
     },
     PathGenerator__addPath__closure: {
-      "^": "Closure:27;_box_0",
+      "^": "Closure:31;_box_0",
       call$1: function(c) {
         var t1, t2, t3, t4;
         t1 = c.get$statements();
@@ -35872,6 +35852,9 @@
         (t3 && C.JSArray_methods).add$1(t3, t2);
         return t1;
       }
+    },
+    _CodePath: {
+      "^": "PathProxy;statements"
     }
   }], ["", "package:figma_to_flutter/base/text_styles.dart",, Z, {
     "^": "",
@@ -35905,6 +35888,11 @@
             return "TextAlign.left";
         }
       }
+    }
+  }], ["", "package:figma_to_flutter/base/transform.dart",, G, {
+    "^": "",
+    TransformGenerator: {
+      "^": "Object;"
     }
   }], ["", "package:figma_to_flutter/context.dart",, M, {
     "^": "",
@@ -36211,7 +36199,7 @@
       }
     },
     BuildContext_addPaint_closure: {
-      "^": "Closure:33;",
+      "^": "Closure:36;",
       call$1: function(c) {
         return new X.StaticCode(H.stringTypeCheck(c));
       }
@@ -36428,7 +36416,7 @@
       }
     },
     BuildContext__buildCustomPainter_closure4: {
-      "^": "Closure:27;$this",
+      "^": "Closure:31;$this",
       call$1: function(b) {
         var statements, t1;
         statements = H.setRuntimeTypeInfo([], [X.Code]);
@@ -36442,7 +36430,7 @@
       }
     },
     BuildContext__buildCustomPainter__closure0: {
-      "^": "Closure:23;statements",
+      "^": "Closure:22;statements",
       call$2: function(k, v) {
         H.stringTypeCheck(k);
         H.stringTypeCheck(v);
@@ -36496,11 +36484,105 @@
     }
   }], ["", "package:figma_to_flutter/file.dart",, Y, {
     "^": "",
-    FigmaFormattingException: {
-      "^": "Object;code,inner"
-    },
     FigmaGenerator: {
       "^": "Object;0_component,0_colors,0_path,0_paint,0_effects,0_textStyles,0_node,_document",
+      generateComponents$4$dataClassImport$withComments$withDataClasses: function(components, dataClassImport, withComments, withDataClasses) {
+        var source, e, t1, widgets, library, t2, t3, errorListener, t4, reader, stringSource, scanner, startToken, t5, t6, parser, node, visitor, t7, t8, t9, t10, t11, result, selectionStart, selectionEnd, selectionLength, output, exception;
+        t1 = P.String;
+        H.assertSubtype(components, "$isMap", [t1, t1], "$asMap");
+        widgets = P.LinkedHashMap_LinkedHashMap$_empty(t1, null);
+        J.forEach$1$ax(J.$index$asx(this._document, "components"), new Y.FigmaGenerator_generateComponents_closure(this, components, widgets));
+        library = this._generateWidgets$4$dataClassImport$withComments$withDataClasses(widgets, dataClassImport, true, true);
+        library.toString;
+        source = H.assertSubtype(new D.DartEmitter(C.C__NullAllocator), "$isSpecVisitor", [P.StringSink], "$asSpecVisitor").visitLibrary$2(library, null).toString$0(0);
+        try {
+          t1 = P.LinkedHashSet_LinkedHashSet(null, null, null, Q.StyleFix);
+          t2 = new U.DartFormatter(null, 80, 0, t1);
+          t3 = H.stringTypeCheck(source);
+          t3 = A.SourceCode$(t3, true, null, null, null);
+          errorListener = new Y.ErrorListener(H.setRuntimeTypeInfo([], [V.AnalysisError]));
+          t4 = t3.text;
+          reader = D.CharSequenceReader$(t4);
+          stringSource = new O.StringSource(t4, t3.uri, null, Date.now());
+          scanner = Z.Scanner_Scanner$fasta(stringSource, errorListener, reader.getContents$0(), reader.get$offset(reader));
+          startToken = scanner.tokenize$0();
+          t5 = scanner.lineStarts;
+          if (t5.length < 1)
+            H.throwExpression(P.ArgumentError$("lineStarts must be non-empty"));
+          if (t5.length > 1)
+            if (J.$ge$n(t5[1], 2)) {
+              if (1 >= t5.length)
+                return H.ioore(t5, 1);
+              t6 = J.$sub$n(t5[1], 2);
+              if (t6 >>> 0 !== t6 || t6 >= t4.length)
+                return H.ioore(t4, t6);
+              t6 = t4[t6] === "\r";
+            } else
+              t6 = false;
+          else
+            t6 = false;
+          if (t6)
+            t2.lineEnding = "\r\n";
+          else
+            t2.lineEnding = "\n";
+          errorListener.throwIfErrors$0();
+          parser = X.Parser_Parser(stringSource, errorListener, null);
+          parser.set$enableOptionalNewAndConst(true);
+          node = parser.parseCompilationUnit$1(startToken);
+          errorListener.throwIfErrors$0();
+          visitor = new F.SourceVisitor(t2, new E.LineInfo(t5, 0), t3, false, false, 0, H.setRuntimeTypeInfo([], [P.bool]), H.setRuntimeTypeInfo([], [O.MetadataRule]), P.LinkedHashMap_LinkedHashMap$_empty(L.Token, B.ArgumentSublist));
+          t5 = O.Rule;
+          t6 = [t5];
+          t7 = H.setRuntimeTypeInfo([], t6);
+          t5 = P.LinkedHashSet_LinkedHashSet(null, null, null, t5);
+          t6 = H.setRuntimeTypeInfo([], t6);
+          t8 = H.setRuntimeTypeInfo([], [E.OpenSpan]);
+          t9 = H.setRuntimeTypeInfo([0], [P.int]);
+          t10 = $.FastHash__nextId + 1 & 268435455;
+          $.FastHash__nextId = t10;
+          t10 = new F.NestingBuilder(t9, new M.NestingLevel(null, 0, t10));
+          t9 = H.setRuntimeTypeInfo([], [M.NestingLevel]);
+          t11 = H.setRuntimeTypeInfo([], [E.Chunk]);
+          t10.indent$1(0);
+          C.JSArray_methods.add$1(t9, t10.get$currentNesting());
+          visitor.builder = new S.ChunkBuilder(t2, null, t3, t11, C.Whitespace_none, t7, t5, t6, t8, t10, t9, false, 0);
+          visitor.visit$1(node);
+          visitor.writePrecedingCommentsAndNewlines$1(node.endToken.next);
+          t9 = visitor.builder;
+          t9._writeHardSplit$0();
+          t9._divideChunks$0();
+          if ($.traceChunkBuilder) {
+            A.log(H.S($.$get$_green()) + "\nBuilt:" + H.S($.$get$_none()));
+            A.dumpChunks(0, t9._chunks);
+            A.log(null);
+          }
+          t2 = t9._formatter;
+          t3 = new P.StringBuffer("");
+          result = new A.LineWriter(t3, t9._chunks, t2.lineEnding, t2.pageWidth, 0, P.LinkedHashMap_LinkedHashMap$_empty(A._BlockKey, A.FormatResult)).writeLines$2$isCompilationUnit(t2.indent, true);
+          t2 = t9._source;
+          if (t2.selectionStart != null) {
+            selectionStart = result.selectionStart;
+            selectionEnd = result.selectionEnd;
+            if (selectionStart == null)
+              selectionStart = t3._contents.length;
+            selectionLength = (selectionEnd == null ? t3._contents.length : selectionEnd) - selectionStart;
+          } else {
+            selectionStart = null;
+            selectionLength = null;
+          }
+          output = A.SourceCode$(result.text, true, selectionLength, selectionStart, t2.uri);
+          if (t1._length === 0 && !M.equalIgnoringWhitespace(t4, output.text))
+            H.throwExpression(new A.UnexpectedOutputException(t4, output.text));
+          return output.text;
+        } catch (exception) {
+          e = H.unwrapException(exception);
+          t1 = H.interceptedTypeCheck(e, "$isException");
+          throw H.wrapException(new Y.FigmaFormattingException(source, t1));
+        }
+      },
+      generateComponents$2$withComments: function(components, withComments) {
+        return this.generateComponents$4$dataClassImport$withComments$withDataClasses(components, "figma_data.dart", withComments, true);
+      },
       _createDataClasses$0: function() {
         var result, t1, t2, t3, t4, t5, t6, builder, t7, t8, $constructor, t9, t10, t11;
         result = H.setRuntimeTypeInfo([], [X.Class]);
@@ -36599,11 +36681,11 @@
         C.JSArray_methods.add$1(result, builder.build$0());
         return result;
       },
-      _generateWidgets$3$withComments$withDataClasses: function(widgets, withComments, withDataClasses) {
+      _generateWidgets$4$dataClassImport$withComments$withDataClasses: function(widgets, dataClassImport, withComments, withDataClasses) {
         var classes, t1;
         H.assertSubtype(widgets, "$isMap", [P.String, null], "$asMap");
         classes = H.setRuntimeTypeInfo([], [X.Class]);
-        widgets.forEach$1(0, new Y.FigmaGenerator__generateWidgets_closure(this, false, classes));
+        widgets.forEach$1(0, new Y.FigmaGenerator__generateWidgets_closure(this, true, classes));
         C.JSArray_methods.add$1(classes, this._path.buildCatalog$0());
         C.JSArray_methods.add$1(classes, this._paint.catalog.build$0());
         C.JSArray_methods.add$1(classes, this._effects.catalog.build$0());
@@ -36611,11 +36693,8 @@
         C.JSArray_methods.add$1(classes, this._textStyles.catalog.build$0());
         C.JSArray_methods.addAll$1(classes, this._createDataClasses$0());
         t1 = new O._$LibraryBuilder(S.ListBuilder_ListBuilder(C.List_empty, R.Spec), S.ListBuilder_ListBuilder(C.List_empty, U.Directive0));
-        H.functionTypeCheck(new Y.FigmaGenerator__generateWidgets_closure0(classes), {func: 1, ret: -1, args: [O.LibraryBuilder]}).call$1(t1);
+        H.functionTypeCheck(new Y.FigmaGenerator__generateWidgets_closure0(true, classes), {func: 1, ret: -1, args: [O.LibraryBuilder]}).call$1(t1);
         return t1.build$0();
-      },
-      _generateWidgets$2$withComments: function(widgets, withComments) {
-        return this._generateWidgets$3$withComments$withDataClasses(widgets, withComments, true);
       },
       _findNode$2: function(map, id) {
         var t1, children, found;
@@ -36631,103 +36710,26 @@
               return found;
           }
         return;
-      },
-      generateComponents$3$withComments$withDataClasses: function(components, withComments, withDataClasses) {
-        var source, e, t1, widgets, library, t2, t3, errorListener, t4, reader, stringSource, scanner, startToken, t5, t6, parser, node, visitor, t7, t8, t9, t10, t11, result, selectionStart, selectionEnd, selectionLength, output, exception;
-        t1 = P.String;
-        H.assertSubtype(components, "$isMap", [t1, t1], "$asMap");
-        widgets = P.LinkedHashMap_LinkedHashMap$_empty(t1, null);
-        J.forEach$1$ax(J.$index$asx(this._document, "components"), new Y.FigmaGenerator_generateComponents_closure(this, components, widgets));
-        library = this._generateWidgets$2$withComments(widgets, false);
-        library.toString;
-        source = H.assertSubtype(new D.DartEmitter(C.C__NullAllocator), "$isSpecVisitor", [P.StringSink], "$asSpecVisitor").visitLibrary$2(library, null).toString$0(0);
-        try {
-          t1 = P.LinkedHashSet_LinkedHashSet(null, null, null, Q.StyleFix);
-          t2 = new U.DartFormatter(null, 80, 0, t1);
-          t3 = H.stringTypeCheck(source);
-          t3 = A.SourceCode$(t3, true, null, null, null);
-          errorListener = new Y.ErrorListener(H.setRuntimeTypeInfo([], [V.AnalysisError]));
-          t4 = t3.text;
-          reader = D.CharSequenceReader$(t4);
-          stringSource = new O.StringSource(t4, t3.uri, null, Date.now());
-          scanner = Z.Scanner_Scanner$fasta(stringSource, errorListener, reader.getContents$0(), reader.get$offset(reader));
-          startToken = scanner.tokenize$0();
-          t5 = scanner.lineStarts;
-          if (t5.length < 1)
-            H.throwExpression(P.ArgumentError$("lineStarts must be non-empty"));
-          if (t5.length > 1)
-            if (J.$ge$n(t5[1], 2)) {
-              if (1 >= t5.length)
-                return H.ioore(t5, 1);
-              t6 = J.$sub$n(t5[1], 2);
-              if (t6 >>> 0 !== t6 || t6 >= t4.length)
-                return H.ioore(t4, t6);
-              t6 = t4[t6] === "\r";
-            } else
-              t6 = false;
-          else
-            t6 = false;
-          if (t6)
-            t2.lineEnding = "\r\n";
-          else
-            t2.lineEnding = "\n";
-          errorListener.throwIfErrors$0();
-          parser = X.Parser_Parser(stringSource, errorListener, null);
-          parser.set$enableOptionalNewAndConst(true);
-          node = parser.parseCompilationUnit$1(startToken);
-          errorListener.throwIfErrors$0();
-          visitor = new F.SourceVisitor(t2, new E.LineInfo(t5, 0), t3, false, false, 0, H.setRuntimeTypeInfo([], [P.bool]), H.setRuntimeTypeInfo([], [O.MetadataRule]), P.LinkedHashMap_LinkedHashMap$_empty(L.Token, B.ArgumentSublist));
-          t5 = O.Rule;
-          t6 = [t5];
-          t7 = H.setRuntimeTypeInfo([], t6);
-          t5 = P.LinkedHashSet_LinkedHashSet(null, null, null, t5);
-          t6 = H.setRuntimeTypeInfo([], t6);
-          t8 = H.setRuntimeTypeInfo([], [E.OpenSpan]);
-          t9 = H.setRuntimeTypeInfo([0], [P.int]);
-          t10 = $.FastHash__nextId + 1 & 268435455;
-          $.FastHash__nextId = t10;
-          t10 = new F.NestingBuilder(t9, new M.NestingLevel(null, 0, t10));
-          t9 = H.setRuntimeTypeInfo([], [M.NestingLevel]);
-          t11 = H.setRuntimeTypeInfo([], [E.Chunk]);
-          t10.indent$1(0);
-          C.JSArray_methods.add$1(t9, t10.get$currentNesting());
-          visitor.builder = new S.ChunkBuilder(t2, null, t3, t11, C.Whitespace_none, t7, t5, t6, t8, t10, t9, false, 0);
-          visitor.visit$1(node);
-          visitor.writePrecedingCommentsAndNewlines$1(node.endToken.next);
-          t9 = visitor.builder;
-          t9._writeHardSplit$0();
-          t9._divideChunks$0();
-          if ($.traceChunkBuilder) {
-            A.log(H.S($.$get$_green()) + "\nBuilt:" + H.S($.$get$_none()));
-            A.dumpChunks(0, t9._chunks);
-            A.log(null);
-          }
-          t2 = t9._formatter;
-          t3 = new P.StringBuffer("");
-          result = new A.LineWriter(t3, t9._chunks, t2.lineEnding, t2.pageWidth, 0, P.LinkedHashMap_LinkedHashMap$_empty(A._BlockKey, A.FormatResult)).writeLines$2$isCompilationUnit(t2.indent, true);
-          t2 = t9._source;
-          if (t2.selectionStart != null) {
-            selectionStart = result.selectionStart;
-            selectionEnd = result.selectionEnd;
-            if (selectionStart == null)
-              selectionStart = t3._contents.length;
-            selectionLength = (selectionEnd == null ? t3._contents.length : selectionEnd) - selectionStart;
-          } else {
-            selectionStart = null;
-            selectionLength = null;
-          }
-          output = A.SourceCode$(result.text, true, selectionLength, selectionStart, t2.uri);
-          if (t1._length === 0 && !M.equalIgnoringWhitespace(t4, output.text))
-            H.throwExpression(new A.UnexpectedOutputException(t4, output.text));
-          return output.text;
-        } catch (exception) {
-          e = H.unwrapException(exception);
-          t1 = H.interceptedTypeCheck(e, "$isException");
-          throw H.wrapException(new Y.FigmaFormattingException(source, t1));
+      }
+    },
+    FigmaGenerator_generateComponents_closure: {
+      "^": "Closure:15;$this,components,widgets",
+      call$2: function(ck, cv) {
+        this.components.forEach$1(0, new Y.FigmaGenerator_generateComponents__closure(this.$this, cv, this.widgets, ck));
+      }
+    },
+    FigmaGenerator_generateComponents__closure: {
+      "^": "Closure:19;$this,cv,widgets,ck",
+      call$2: function(k, v) {
+        var className, t1, t2;
+        H.stringTypeCheck(k);
+        H.stringTypeCheck(v);
+        if (J.$eq$(J.$index$asx(this.cv, "name"), v)) {
+          className = M.ReCase$(k)._getPascalCase$0();
+          t1 = P.RegExp_RegExp("[^a-zA-Z0-9]", true, false);
+          t2 = this.$this;
+          this.widgets.$indexSet(0, H.stringReplaceAllUnchecked(className, t1, "_"), t2._findNode$2(J.$index$asx(t2._document, "document"), H.stringTypeCheck(this.ck)));
         }
-      },
-      generateComponents$1: function(components) {
-        return this.generateComponents$3$withComments$withDataClasses(components, false, true);
       }
     },
     FigmaGenerator__createDataClasses_closure: {
@@ -36803,7 +36805,7 @@
       }
     },
     FigmaGenerator__generateWidgets_closure: {
-      "^": "Closure:48;$this,withComments,classes",
+      "^": "Closure:35;$this,withComments,classes",
       call$2: function(k, node) {
         var t1, t2, t3, t4, context, className, t5, widgetName, t6, t7, t8, t9, t10, relativeTransform, result;
         H.stringTypeCheck(k);
@@ -36844,7 +36846,7 @@
         t2 = J.toDouble$0$n(J.$index$asx(t4.$index(relativeTransform, 0), 2));
         t4 = J.toDouble$0$n(J.$index$asx(t4.$index(relativeTransform, 1), 2));
         context.addPaint$1(H.setRuntimeTypeInfo(["canvas.drawColor(Colors.transparent, BlendMode.screen);", "var frame = Offset.zero & size;", "canvas.translate(" + B.toFixedDouble(-1 * t2) + ", " + B.toFixedDouble(-1 * t4) + ");"], t3));
-        t1._component$_node.generate$3(context, node, node);
+        t1._component$_node.generate$4(context, node, node, relativeTransform);
         result = H.setRuntimeTypeInfo([], [X.Class]);
         C.JSArray_methods.add$1(result, context._buildWidget$0());
         C.JSArray_methods.add$1(result, context._buildCustomPainter$0());
@@ -36853,41 +36855,31 @@
       }
     },
     FigmaGenerator__generateWidgets_closure0: {
-      "^": "Closure:87;classes",
+      "^": "Closure:87;withDataClasses,classes",
       call$1: function(b) {
-        var t1, t2;
+        var t1, t2, t3;
         t1 = b.get$directives();
-        t2 = H.assertSubtype(H.setRuntimeTypeInfo([U.Directive_Directive$import("dart:typed_data", null, C.List_empty0, C.List_empty0), U.Directive_Directive$import("package:flutter/material.dart", null, C.List_empty0, C.List_empty0), U.Directive_Directive$import("dart:ui", "ui", C.List_empty0, C.List_empty0)], [U.Directive0]), "$isIterable", [H.getTypeArgumentByIndex(t1, 0)], "$asIterable");
+        t2 = !this.withDataClasses ? U.Directive_Directive$import("dataClassImport", null, C.List_empty0, C.List_empty0) : H.setRuntimeTypeInfo([], [U.Directive0]);
+        t3 = U.Directive0;
+        t2 = H.assertSubtype(H.assertSubtype(t2, "$isIterable", [t3], "$asIterable"), "$isIterable", [H.getTypeArgumentByIndex(t1, 0)], "$asIterable");
         t1._checkElements$1(t2);
         t1 = t1.get$_safeList();
         (t1 && C.JSArray_methods).addAll$1(t1, t2);
-        t2 = b.get$body(b);
-        t1 = H.assertSubtype(this.classes, "$isIterable", [H.getTypeArgumentByIndex(t2, 0)], "$asIterable");
-        t2._checkElements$1(t1);
+        t2 = b.get$directives();
+        t3 = H.assertSubtype(H.setRuntimeTypeInfo([U.Directive_Directive$import("dart:typed_data", null, C.List_empty0, C.List_empty0), U.Directive_Directive$import("package:flutter/material.dart", null, C.List_empty0, C.List_empty0), U.Directive_Directive$import("dart:ui", "ui", C.List_empty0, C.List_empty0)], [t3]), "$isIterable", [H.getTypeArgumentByIndex(t2, 0)], "$asIterable");
+        t2._checkElements$1(t3);
         t2 = t2.get$_safeList();
-        (t2 && C.JSArray_methods).addAll$1(t2, t1);
+        (t2 && C.JSArray_methods).addAll$1(t2, t3);
+        t3 = b.get$body(b);
+        t2 = H.assertSubtype(this.classes, "$isIterable", [H.getTypeArgumentByIndex(t3, 0)], "$asIterable");
+        t3._checkElements$1(t2);
+        t3 = t3.get$_safeList();
+        (t3 && C.JSArray_methods).addAll$1(t3, t2);
         return b;
       }
     },
-    FigmaGenerator_generateComponents_closure: {
-      "^": "Closure:15;$this,components,widgets",
-      call$2: function(ck, cv) {
-        this.components.forEach$1(0, new Y.FigmaGenerator_generateComponents__closure(this.$this, cv, this.widgets, ck));
-      }
-    },
-    FigmaGenerator_generateComponents__closure: {
-      "^": "Closure:28;$this,cv,widgets,ck",
-      call$2: function(k, v) {
-        var className, t1, t2;
-        H.stringTypeCheck(k);
-        H.stringTypeCheck(v);
-        if (J.$eq$(J.$index$asx(this.cv, "name"), v)) {
-          className = M.ReCase$(k)._getPascalCase$0();
-          t1 = P.RegExp_RegExp("[^a-zA-Z0-9]", true, false);
-          t2 = this.$this;
-          this.widgets.$indexSet(0, H.stringReplaceAllUnchecked(className, t1, "_"), t2._findNode$2(J.$index$asx(t2._document, "document"), H.stringTypeCheck(this.ck)));
-        }
-      }
+    FigmaFormattingException: {
+      "^": "Object;code,inner"
     }
   }], ["", "package:figma_to_flutter/nodes/component.dart",, G, {
     "^": "",
@@ -36936,41 +36928,48 @@
     },
     FrameGenerator_generate_closure: {
       "^": "Closure:4;$this,context,map",
-      call$1: function(x) {
-        this.$this._frame$_node.generate$3(this.context, x, this.map);
+      call$1: function(child) {
+        this.$this._frame$_node.generate$4(this.context, child, this.map, J.$index$asx(child, "relativeTransform"));
       }
     }
   }], ["", "package:figma_to_flutter/nodes/group.dart",, O, {
     "^": "",
     GroupGenerator: {
       "^": "Object;_group$_node",
-      generate$3: function(context, map, $parent) {
-        J.forEach$1$ax(J.$index$asx(map, "children"), new O.GroupGenerator_generate_closure(this, context, $parent));
+      generate$4: function(context, map, $parent, transform) {
+        J.forEach$1$ax(J.$index$asx(map, "children"), new O.GroupGenerator_generate_closure(this, transform, context, $parent));
       }
     },
     GroupGenerator_generate_closure: {
-      "^": "Closure:4;$this,context,parent",
-      call$1: function(x) {
-        this.$this._group$_node.generate$3(this.context, x, this.parent);
+      "^": "Closure:4;$this,transform,context,parent",
+      call$1: function(child) {
+        var t1, t2, t3, angle1, x1, y1, cos2, sin2, angle2, x2, y2, newAngle, newCos, newSin;
+        t1 = J.$index$asx(child, "relativeTransform");
+        t2 = this.transform;
+        t3 = J.getInterceptor$asx(t1);
+        angle1 = Math.acos(J.toDouble$0$n(J.$index$asx(t3.$index(t1, 0), 0)));
+        x1 = J.$index$asx(t3.$index(t1, 0), 2);
+        y1 = J.$index$asx(t3.$index(t1, 1), 2);
+        t1 = J.getInterceptor$asx(t2);
+        cos2 = J.toDouble$0$n(J.$index$asx(t1.$index(t2, 0), 0));
+        sin2 = J.toDouble$0$n(J.$index$asx(t1.$index(t2, 1), 0));
+        angle2 = Math.acos(cos2);
+        x2 = J.$index$asx(t1.$index(t2, 0), 2);
+        y2 = J.$index$asx(t1.$index(t2, 1), 2);
+        newAngle = angle1 + angle2;
+        newCos = Math.cos(newAngle);
+        newSin = Math.sin(newAngle);
+        t2 = J.getInterceptor$ns(x1);
+        t1 = J.getInterceptor$ns(y1);
+        this.$this._group$_node.generate$4(this.context, child, this.parent, H.setRuntimeTypeInfo([[newCos, -newSin, J.$add$ansx(x2, J.$sub$n(t2.$mul(x1, cos2), t1.$mul(y1, sin2)))], [newSin, newCos, J.$add$ansx(y2, J.$add$ansx(t2.$mul(x1, sin2), t1.$mul(y1, cos2)))]], [P.List]));
       }
     }
   }], ["", "package:figma_to_flutter/nodes/node.dart",, B, {
     "^": "",
     NodeGenerator: {
-      "^": "Object;0_frame,0_vector,0_group,0_text,_directive",
-      _node$_toPoint$1: function(map) {
-        var t1, w, h;
-        t1 = J.getInterceptor$asx(map);
-        w = t1.$index(map, "width");
-        if (w == null)
-          w = t1.$index(map, "x");
-        h = t1.$index(map, "height");
-        if (h == null)
-          h = t1.$index(map, "y");
-        return new P.Point(J.toDouble$0$n(w), J.toDouble$0$n(h), [P.num]);
-      },
-      generate$3: function(context, map, $parent) {
-        var t1, declaration, varName, t2, t3, defaultIsVisible, isVector, isGroup, isMask, size, sx, sy, transform, clipGeometry, methodName, orginalContainerSize, relativeTransform, t4, vx, vy, vw, vh, constraints, horizontal, vertical, x, y, w, h, t5, bottom, t6, t7, right, ratio, row0, row1, a, b, d, e, tx, ty;
+      "^": "Object;0_frame,0_vector,0_group,0_text,_directive,_node$_transform,_node$_constraints",
+      generate$4: function(context, map, $parent, transform) {
+        var t1, declaration, varName, t2, t3, defaultIsVisible, isVector, isGroup, t4, isMask, size, sx, sy, transform0, clipGeometry, methodName, orginalContainerSize, t5, vx, vy, t6, t7, vw, vh, inner, t8, outer, constraints, horizontal, vertical, t9, t10, t11, t12, t13, t14, x, w, y, h, comments, parentWidth, parentHeight, row0, row1, a, b, d, e;
         t1 = J.getInterceptor$asx(map);
         declaration = L.Declaration_parse(H.stringTypeCheck(t1.$index(map, "name")));
         varName = B.toVariableName(declaration.get$name(declaration));
@@ -36985,111 +36984,151 @@
           defaultIsVisible = String(t3);
           context.addPaint$1(H.setRuntimeTypeInfo(["if(this." + varName + "?.isVisible ?? " + defaultIsVisible + ") {"], [P.String]));
         }
+        t3 = [P.String];
+        context.addPaint$1(H.setRuntimeTypeInfo(["", "// " + H.S(t1.$index(map, "id")) + " : " + H.S(t1.$index(map, "name")) + " (" + H.S(t1.$index(map, "type")) + ")"], t3));
         this._vector.toString;
         isVector = C.JSArray_methods.contains$1(C.List_oCX, t1.$index(map, "type"));
         this._group.toString;
         isGroup = C.JSArray_methods.contains$1(C.List_GROUP, t1.$index(map, "type"));
         if (isVector) {
-          t3 = this._vector;
-          t3.toString;
+          t4 = this._vector;
+          t4.toString;
           isMask = t1.$index(map, "isMask");
           if (H.boolTypeCheck(isMask == null ? false : isMask)) {
             P.print("Creating mask");
-            size = t3._toPoint$1(t1.$index(map, "size"));
+            size = R.toPoint(t1.$index(map, "size"));
             sx = "(frame.width / " + B.toFixedDouble(size.x) + ")";
             sy = "(frame.height / " + B.toFixedDouble(size.y) + ")";
-            transform = "Float64List.fromList([" + sx + ", 0.0, 0.0, 0.0, 0.0, " + sy + ", 0.0, 0.0, 0.0, 0.0, 1.0, 0.0,0.0, 0.0, 0.0, 1.0])";
-            clipGeometry = t3._createGeometry$2(map, "clipTransform");
-            context.addPaint$1(H.setRuntimeTypeInfo(["var mask = Path();", "var clipTransform = " + transform + ";", "var clipGeometry = " + clipGeometry + ";", "clipGeometry.forEach((p) => mask.addPath(p, Offset.zero));", "canvas.clipPath(mask);"], [P.String]));
+            transform0 = "Float64List.fromList([" + sx + ", 0.0, 0.0, 0.0, 0.0, " + sy + ", 0.0, 0.0, 0.0, 0.0, 1.0, 0.0,0.0, 0.0, 0.0, 1.0])";
+            clipGeometry = t4._createGeometry$2(map, "clipTransform");
+            context.addPaint$1(H.setRuntimeTypeInfo(["var mask = Path();", "var clipTransform = " + transform0 + ";", "var clipGeometry = " + clipGeometry + ";", "clipGeometry.forEach((p) => mask.addPath(p, Offset.zero));", "canvas.clipPath(mask);"], t3));
           }
         }
-        t3 = J.replaceAll$2$s(t1.$index(map, "id"), ":", "_");
-        methodName = "draw_" + H.stringReplaceAllUnchecked(t3, ";", "__");
+        t4 = J.replaceAll$2$s(t1.$index(map, "id"), ":", "_");
+        methodName = "draw_" + H.stringReplaceAllUnchecked(t4, ";", "__");
         P.print(methodName);
-        t3 = [P.String];
         context.addPaint$1(H.setRuntimeTypeInfo(["var " + methodName + " = (Canvas canvas, Rect container) {"], t3));
         if (!isGroup) {
-          orginalContainerSize = H.assertSubtype(this._node$_toPoint$1(J.$index$asx($parent, "size")), "$isPoint", [P.num], "$asPoint");
-          size = this._node$_toPoint$1(t1.$index(map, "size"));
-          relativeTransform = t1.$index(map, "relativeTransform");
-          t4 = J.getInterceptor$asx(relativeTransform);
-          vx = J.toDouble$0$n(J.$index$asx(t4.$index(relativeTransform, 0), 2));
-          vy = J.toDouble$0$n(J.$index$asx(t4.$index(relativeTransform, 1), 2));
-          vw = size.x;
-          vh = size.y;
+          t4 = J.getInterceptor$asx($parent);
+          orginalContainerSize = H.assertSubtype(R.toPoint(t4.$index($parent, "size")), "$isPoint", [P.num], "$asPoint");
+          size = t1.$index(map, "size");
+          t5 = J.getInterceptor$asx(transform);
+          vx = J.toDouble$0$n(J.$index$asx(t5.$index(transform, 0), 2));
+          vy = J.toDouble$0$n(J.$index$asx(t5.$index(transform, 1), 2));
+          t6 = J.getInterceptor$asx(size);
+          t7 = t6.$index(size, "width");
+          vw = J.toDouble$0$n(t7 == null ? t6.$index(size, "x") : t7);
+          t7 = t6.$index(size, "height");
+          vh = J.toDouble$0$n(t7 == null ? t6.$index(size, "y") : t7);
+          t6 = P.double;
+          inner = P.Rectangle$(vx, vy, vw, vh, t6);
+          t7 = orginalContainerSize.x;
+          t8 = orginalContainerSize.y;
+          outer = P.Rectangle$(0, 0, t7, t8, t6);
           constraints = t1.$index(map, "constraints");
-          t4 = J.getInterceptor$asx(constraints);
-          horizontal = t4.$index(constraints, "horizontal");
-          vertical = t4.$index(constraints, "vertical");
-          x = B.toFixedDouble(vx);
-          y = B.toFixedDouble(vy);
-          w = B.toFixedDouble(vw);
-          h = B.toFixedDouble(vh);
-          t4 = orginalContainerSize.y;
-          if (typeof t4 !== "number")
-            return t4.$sub();
-          t5 = t4 - vy;
-          if (typeof vh !== "number")
-            return H.iae(vh);
-          bottom = t5 - vh;
-          t6 = orginalContainerSize.x;
+          t6 = J.getInterceptor$asx(constraints);
+          horizontal = t6.$index(constraints, "horizontal");
+          vertical = t6.$index(constraints, "vertical");
+          t6 = inner.left;
+          t9 = outer.width;
+          t10 = inner.width;
           if (typeof t6 !== "number")
-            return t6.$sub();
-          t7 = t6 - vx;
-          if (typeof vw !== "number")
-            return H.iae(vw);
-          right = t7 - vw;
-          H.S(horizontal);
-          H.S(vertical);
-          H.S(right);
-          H.S(bottom);
+            return t6.$add();
+          if (typeof t10 !== "number")
+            return H.iae(t10);
+          t11 = H.getTypeArgumentByIndex(inner, 0);
+          t12 = H.assertSubtypeOfRuntimeType(t6 + t10, t11);
+          if (typeof t9 !== "number")
+            return t9.$sub();
+          t12 = t9 - t12;
+          t9 = inner.top;
+          t13 = outer.height;
+          t14 = inner.height;
+          if (typeof t9 !== "number")
+            return t9.$add();
+          if (typeof t14 !== "number")
+            return H.iae(t14);
+          t11 = H.assertSubtypeOfRuntimeType(t9 + t14, t11);
+          if (typeof t13 !== "number")
+            return t13.$sub();
+          t11 = t13 - t11;
           switch (horizontal) {
             case "RIGHT":
-              x = "(container.width - (" + B.toFixedDouble(t7) + "))";
+              x = "(container.width - (" + B.toFixedDouble(t10 + t12) + "))";
+              w = B.toFixedDouble(vw);
               break;
             case "LEFT_RIGHT":
-              w = "(container.width - (" + B.toFixedDouble(vx + right) + "))";
+              x = B.toFixedDouble(vx);
+              w = "(container.width - (" + B.toFixedDouble(vx + t12) + "))";
               break;
             case "CENTER":
-              t7 = vw / 2;
-              x = "((container.width / 2.0) - (" + B.toFixedDouble(t6 / 2 - (vx + t7) + t7) + "))";
+              t13 = vw / 2;
+              if (typeof t7 !== "number")
+                return t7.$div();
+              x = "((container.width / 2.0) - (" + B.toFixedDouble(t7 / 2 - (vx + t13) + t13) + "))";
+              w = B.toFixedDouble(vw);
               break;
-            case "SCALE":
-              ratio = "(container.width) / " + B.toFixedDouble(vw);
-              x = "(" + B.toFixedDouble(vx) + " * " + ratio + ")";
-              w = "(" + B.toFixedDouble(vw) + " * " + ratio + ")";
+            default:
+              x = B.toFixedDouble(vx);
+              w = B.toFixedDouble(vw);
               break;
           }
           switch (vertical) {
             case "BOTTOM":
-              y = "(container.height - (" + B.toFixedDouble(t5) + "))";
+              y = "(container.height - (" + B.toFixedDouble(t14 + t11) + "))";
+              h = B.toFixedDouble(vh);
               break;
             case "TOP_BOTTOM":
-              h = "(container.height - (" + B.toFixedDouble(vy + bottom) + "))";
+              y = B.toFixedDouble(vy);
+              h = "(container.height - (" + B.toFixedDouble(vy + t11) + "))";
               break;
             case "CENTER":
-              t5 = vh / 2;
-              y = "((container.height / 2.0) - " + B.toFixedDouble(t4 / 2 - (vy + t5) + t5) + ")";
+              t7 = vh / 2;
+              if (typeof t8 !== "number")
+                return t8.$div();
+              y = "((container.height / 2.0) - " + B.toFixedDouble(t8 / 2 - (vy + t7) + t7) + ")";
+              h = B.toFixedDouble(vh);
               break;
-            case "SCALE":
-              ratio = "(container.width) / " + B.toFixedDouble(vw);
-              y = "(" + B.toFixedDouble(vy) + " * " + ratio + ")";
-              h = "(" + B.toFixedDouble(vh) + " * " + ratio + ")";
+            default:
+              y = B.toFixedDouble(vy);
+              h = B.toFixedDouble(vh);
               break;
           }
-          t4 = "Rect.fromLTWH(" + x + ", " + y + ", " + w + ", " + h + ")";
-          context.addPaint$1(H.setRuntimeTypeInfo(["var frame = " + new X.StaticCode(t4).toString$0(0) + ";"], t3));
-          transform = t1.$index(map, "relativeTransform");
-          t4 = J.getInterceptor$asx(transform);
-          row0 = t4.$index(transform, 0);
-          row1 = t4.$index(transform, 1);
+          comments = " /* H:" + H.S(horizontal) + " V:" + H.S(vertical) + " F:(l:" + H.S(t6) + ",t:" + H.S(t9) + ",r:" + H.S(t12) + ",b:" + H.S(t12) + ",w:" + H.S(t10) + ",h:" + H.S(t14) + ") */";
+          t6 = "Rect.fromLTWH(" + x + ", " + y + ", " + w + ", " + h + ")";
+          context.addPaint$1(H.setRuntimeTypeInfo(["var frame = " + new X.StaticCode(t6 + comments).toString$0(0) + ";"], t3));
+          context.addPaint$1(H.setRuntimeTypeInfo(["canvas.save();"], t3));
+          constraints = t1.$index(map, "constraints");
+          t6 = J.getInterceptor$asx(constraints);
+          horizontal = t6.$index(constraints, "horizontal");
+          vertical = t6.$index(constraints, "vertical");
+          parentWidth = J.toDouble$0$n(J.$index$asx(t4.$index($parent, "size"), "x"));
+          parentHeight = J.toDouble$0$n(J.$index$asx(t4.$index($parent, "size"), "y"));
+          switch (horizontal) {
+            case "SCALE":
+              sx = "(container.width) / " + B.toFixedDouble(parentWidth);
+              break;
+            default:
+              sx = "1.0";
+          }
+          switch (vertical) {
+            case "SCALE":
+              sy = "(container.height) / " + B.toFixedDouble(parentHeight);
+              break;
+            default:
+              sy = "1.0";
+          }
+          if (sx !== "1.0" || sy !== "1.0")
+            context.addPaint$1(H.setRuntimeTypeInfo(["canvas.scale(" + sx + "," + sy + ");"], t3));
+          row0 = t5.$index(transform, 0);
+          row1 = t5.$index(transform, 1);
           t4 = J.getInterceptor$asx(row0);
           a = J.toDouble$0$n(t4.$index(row0, 0));
           b = J.toDouble$0$n(t4.$index(row0, 1));
           t4 = J.getInterceptor$asx(row1);
           d = J.toDouble$0$n(t4.$index(row1, 0));
           e = J.toDouble$0$n(t4.$index(row1, 1));
-          context.addPaint$1(H.setRuntimeTypeInfo(["canvas.save();", "canvas.transform(" + new X.StaticCode("Float64List.fromList([" + C.JSArray_methods.join$1(H.setRuntimeTypeInfo([B.toFixedDouble(a), B.toFixedDouble(d), "0.0", "0.0", B.toFixedDouble(b), B.toFixedDouble(e), "0.0", "0.0", "0.0", "0.0", "1.0", "0.0", "frame.left", "frame.top", "0.0", "1.0"], t3), ", ") + "])").toString$0(0) + ");"], t3));
+          context.addPaint$1(H.setRuntimeTypeInfo(["canvas.transform(" + new X.StaticCode("Float64List.fromList([" + C.JSArray_methods.join$1(H.setRuntimeTypeInfo([B.toFixedDouble(a), B.toFixedDouble(d), "0.0", "0.0", B.toFixedDouble(b), B.toFixedDouble(e), "0.0", "0.0", "0.0", "0.0", "1.0", "0.0", "frame.left", "frame.top", "0.0", "1.0"], t3), ", ") + "])").toString$0(0) + ");"], t3));
           if (isVector)
             this._vector.generate$2(context, map);
           else {
@@ -37102,15 +37141,10 @@
                 this._text.generate$2(context, map);
             }
           }
-        } else {
-          relativeTransform = t1.$index(map, "relativeTransform");
-          t1 = J.getInterceptor$asx(relativeTransform);
-          tx = J.toDouble$0$n(J.$index$asx(t1.$index(relativeTransform, 0), 2));
-          ty = J.toDouble$0$n(J.$index$asx(t1.$index(relativeTransform, 1), 2));
-          context.addPaint$1(H.setRuntimeTypeInfo(["canvas.save();", "canvas.translate(" + B.toFixedDouble(tx) + ", " + B.toFixedDouble(ty) + ");"], t3));
-          this._group.generate$3(context, map, $parent);
-        }
-        context.addPaint$1(H.setRuntimeTypeInfo(["canvas.restore();", "};", methodName + "(canvas,frame);"], t3));
+          context.addPaint$1(H.setRuntimeTypeInfo(["canvas.restore();"], t3));
+        } else
+          this._group.generate$4(context, map, $parent, transform);
+        context.addPaint$1(H.setRuntimeTypeInfo(["};", methodName + "(canvas,frame);"], t3));
         if (t2)
           context.addPaint$1(H.setRuntimeTypeInfo(["}"], t3));
       }
@@ -37191,23 +37225,9 @@
     "^": "",
     VectorGenerator: {
       "^": "Object;_vector$_paint,_vector$_effects,_vector$_path",
-      _toPoint$1: function(map) {
-        var t1, w, h;
-        if (map == null)
-          return new P.Point(0, 0, [P.num]);
-        t1 = J.getInterceptor$asx(map);
-        w = t1.$index(map, "width");
-        if (w == null)
-          w = t1.$index(map, "x");
-        h = t1.$index(map, "height");
-        if (h == null)
-          h = t1.$index(map, "y");
-        return new P.Point(J.toDouble$0$n(w), J.toDouble$0$n(h), [P.num]);
-      },
       _createGeometry$2: function(map, transform) {
         var t1, radius;
         t1 = J.getInterceptor$asx(map);
-        this._toPoint$1(t1.$index(map, "size"));
         if (J.$eq$(t1.$index(map, "type"), "RECTANGLE")) {
           t1 = t1.$index(map, "cornerRadius");
           radius = t1 == null ? null : J.toDouble$0$n(t1);
@@ -37225,7 +37245,7 @@
         declaration = L.Declaration_parse(H.stringTypeCheck(t1.$index(map, "name")));
         propertyName = B.toVariableName(declaration.get$name(declaration));
         geometry = this._createGeometry$2(map, "transform");
-        size = this._toPoint$1(t1.$index(map, "size"));
+        size = R.toPoint(t1.$index(map, "size"));
         sx = "(frame.width / " + B.toFixedDouble(size.x) + ")";
         sy = "(frame.height / " + B.toFixedDouble(size.y) + ")";
         t2 = [P.String];
@@ -37251,7 +37271,7 @@
       }
     },
     VectorGenerator__createGeometry_closure: {
-      "^": "Closure:50;$this,transform",
+      "^": "Closure:34;$this,transform",
       call$1: function(f) {
         return J.$add$ansx(this.$this._vector$_path.generate$1(f).code, ".transform(" + this.transform + ")");
       }
@@ -37286,19 +37306,18 @@
     VectorGenerator_generate_closure2: {
       "^": "Closure:4;$this,context",
       call$1: function(e) {
-        var t1, offset, t2, t3, hasOffset;
-        t1 = this.$this;
-        offset = t1._toPoint$1(J.$index$asx(e, "offset"));
-        t2 = this.context;
-        t3 = [P.String];
-        t2.addPaint$1(H.setRuntimeTypeInfo([C.JSString_methods.$add("var effectPaint = ", t1._vector$_effects.generate$1(e).code) + ";"], t3));
-        t1 = offset.x;
-        hasOffset = t1 !== 0 || offset.y !== 0;
+        var offset, t1, t2, t3, hasOffset;
+        offset = R.toPoint(J.$index$asx(e, "offset"));
+        t1 = this.context;
+        t2 = [P.String];
+        t1.addPaint$1(H.setRuntimeTypeInfo([C.JSString_methods.$add("var effectPaint = ", this.$this._vector$_effects.generate$1(e).code) + ";"], t2));
+        t3 = offset.x;
+        hasOffset = t3 !== 0 || offset.y !== 0;
         if (hasOffset)
-          t2.addPaint$1(H.setRuntimeTypeInfo(["canvas.save();", "canvas.translate(" + B.toFixedDouble(t1) + ", " + B.toFixedDouble(offset.y) + ");"], t3));
-        t2.addPaint$1(H.setRuntimeTypeInfo(["canvas.drawPath(path, effectPaint);"], t3));
+          t1.addPaint$1(H.setRuntimeTypeInfo(["canvas.save();", "canvas.translate(" + B.toFixedDouble(t3) + ", " + B.toFixedDouble(offset.y) + ");"], t2));
+        t1.addPaint$1(H.setRuntimeTypeInfo(["canvas.drawPath(path, effectPaint);"], t2));
         if (hasOffset)
-          t2.addPaint$1(H.setRuntimeTypeInfo(["canvas.restore();"], t3));
+          t1.addPaint$1(H.setRuntimeTypeInfo(["canvas.restore();"], t2));
       }
     },
     VectorGenerator_generate_closure3: {
@@ -37316,13 +37335,13 @@
       }
     },
     VectorGenerator_generate_closure4: {
-      "^": "Closure:46;$this",
+      "^": "Closure:39;$this",
       call$1: function(f) {
         return this.$this._vector$_paint.generate$1(f);
       }
     },
     VectorGenerator_generate_closure5: {
-      "^": "Closure:50;$this",
+      "^": "Closure:34;$this",
       call$1: function(f) {
         return J.$add$ansx(this.$this._vector$_path.generate$1(f).code, ".transform(transform)");
       }
@@ -37362,807 +37381,6 @@
       get$name: function(_) {
         var t1 = this.item;
         return t1.get$name(t1);
-      }
-    }
-  }], ["", "package:figma_to_flutter/parsing/parse_path.dart",, A, {
-    "^": "",
-    PointHelper_blendPoints: function(p1, p2) {
-      var t1, t2, t3, t4, t5;
-      t1 = [P.num];
-      H.assertSubtype(p1, "$isPoint", t1, "$asPoint");
-      H.assertSubtype(p2, "$isPoint", t1, "$asPoint");
-      t2 = p1.x;
-      t3 = p2.x;
-      if (typeof t3 !== "number")
-        return H.iae(t3);
-      if (typeof t2 !== "number")
-        return t2.$add();
-      t4 = p1.y;
-      t5 = p2.y;
-      if (typeof t5 !== "number")
-        return H.iae(t5);
-      if (typeof t4 !== "number")
-        return t4.$add();
-      return new P.Point((t2 + 2 * t3) * 0.3333333333333333, (t4 + 2 * t5) * 0.3333333333333333, t1);
-    },
-    isCubicCommand: function(command) {
-      return command === C.SvgPathSegType_6 || command === C.SvgPathSegType_7 || command === C.SvgPathSegType_16 || command === C.SvgPathSegType_17;
-    },
-    isQuadraticCommand: function(command) {
-      return command === C.SvgPathSegType_8 || command === C.SvgPathSegType_9 || command === C.SvgPathSegType_18 || command === C.SvgPathSegType_19;
-    },
-    SvgPathSegType: {
-      "^": "Object;index,_parse_path$_name",
-      toString$0: function(_) {
-        return this._parse_path$_name;
-      }
-    },
-    SvgPathStringSource: {
-      "^": "Object;0_previousCommand,0_codePoints,0_idx",
-      _isHtmlSpace$1: function(character) {
-        var t1;
-        if (character <= 32)
-          t1 = character === 32 || character === 10 || character === 9 || character === 13 || character === 12;
-        else
-          t1 = false;
-        return t1;
-      },
-      _skipOptionalSvgSpaces$0: function() {
-        var t1, t2;
-        while (true) {
-          t1 = this._idx;
-          t2 = this._codePoints.__internal$_string;
-          if (!(t1 < t2.length && this._isHtmlSpace$1(C.JSString_methods._codeUnitAt$1(t2, t1))))
-            break;
-          ++this._idx;
-        }
-        return this._idx < this._codePoints.__internal$_string.length;
-      },
-      _skipOptionalSvgSpacesOrDelimiter$1: function(delimiter) {
-        var t1, t2;
-        t1 = this._idx;
-        t2 = this._codePoints.__internal$_string;
-        if (t1 < t2.length && !this._isHtmlSpace$1(C.JSString_methods._codeUnitAt$1(t2, t1)) && C.JSString_methods._codeUnitAt$1(this._codePoints.__internal$_string, this._idx) !== delimiter)
-          return false;
-        if (this._skipOptionalSvgSpaces$0()) {
-          t1 = this._idx;
-          t2 = this._codePoints.__internal$_string;
-          if (t1 < t2.length && C.JSString_methods._codeUnitAt$1(t2, t1) === delimiter) {
-            this._idx = t1 + 1;
-            this._skipOptionalSvgSpaces$0();
-          }
-        }
-        return this._idx < this._codePoints.__internal$_string.length;
-      },
-      _skipOptionalSvgSpacesOrDelimiter$0: function() {
-        return this._skipOptionalSvgSpacesOrDelimiter$1(44);
-      },
-      _maybeImplicitCommand$2: function(lookahead, nextCommand) {
-        var t1;
-        if (!(lookahead >= 48 && lookahead <= 57 || lookahead === 43 || lookahead === 45 || lookahead === 46) || this._previousCommand === C.SvgPathSegType_1)
-          return nextCommand;
-        t1 = this._previousCommand;
-        if (t1 === C.SvgPathSegType_2)
-          return C.SvgPathSegType_4;
-        if (t1 === C.SvgPathSegType_3)
-          return C.SvgPathSegType_5;
-        return t1;
-      },
-      _parseNumber$0: function() {
-        var t1, end, t2, t3, sign, t4, ptrScanIntPart, integer, multiplier, ptrScanIntPart0, decimal, frac, number, exponentIsNegative, exponent;
-        this._skipOptionalSvgSpaces$0();
-        t1 = this._codePoints.__internal$_string;
-        end = t1.length;
-        t2 = this._idx;
-        t3 = t2 < end;
-        if (t3 && C.JSString_methods._codeUnitAt$1(t1, t2) === 43) {
-          ++t2;
-          this._idx = t2;
-          sign = 1;
-        } else if (t3 && C.JSString_methods._codeUnitAt$1(t1, t2) === 45) {
-          ++t2;
-          this._idx = t2;
-          sign = -1;
-        } else
-          sign = 1;
-        if (t2 !== end) {
-          t1 = C.JSString_methods._codeUnitAt$1(t1, t2);
-          t1 = (t1 < 48 || t1 > 57) && t1 !== 46;
-        } else
-          t1 = true;
-        if (t1)
-          throw H.wrapException(P.StateError$("First character of a number must be one of [0-9+-.]"));
-        t1 = t2;
-        while (true) {
-          t3 = t1 < end;
-          if (t3) {
-            t4 = C.JSString_methods._codeUnitAt$1(this._codePoints.__internal$_string, t1);
-            t4 = t4 >= 48 && t4 <= 57;
-          } else
-            t4 = false;
-          if (!t4)
-            break;
-          ++t1;
-          this._idx = t1;
-        }
-        if (t1 !== t2) {
-          ptrScanIntPart = t1 - 1;
-          for (t4 = this._codePoints.__internal$_string, integer = 0, multiplier = 1; ptrScanIntPart >= t2; ptrScanIntPart = ptrScanIntPart0) {
-            ptrScanIntPart0 = ptrScanIntPart - 1;
-            integer += multiplier * (C.JSString_methods.codeUnitAt$1(t4, ptrScanIntPart) - 48);
-            multiplier *= 10;
-          }
-          if (!(integer >= -17976931348623157e292 && integer <= 17976931348623157e292))
-            throw H.wrapException(P.StateError$("Numeric overflow"));
-        } else
-          integer = 0;
-        if (t3 && C.JSString_methods._codeUnitAt$1(this._codePoints.__internal$_string, t1) === 46) {
-          ++t1;
-          this._idx = t1;
-          if (t1 < end) {
-            t2 = C.JSString_methods._codeUnitAt$1(this._codePoints.__internal$_string, t1);
-            t2 = t2 < 48 || t2 > 57;
-          } else
-            t2 = true;
-          if (t2)
-            throw H.wrapException(P.StateError$("There must be at least one digit following the ."));
-          decimal = 0;
-          frac = 1;
-          while (true) {
-            if (t1 < end) {
-              t2 = C.JSString_methods._codeUnitAt$1(this._codePoints.__internal$_string, t1);
-              t2 = t2 >= 48 && t2 <= 57;
-            } else
-              t2 = false;
-            if (!t2)
-              break;
-            frac *= 0.1;
-            t2 = this._codePoints;
-            t3 = t1 + 1;
-            this._idx = t3;
-            decimal += (C.JSString_methods._codeUnitAt$1(t2.__internal$_string, t1) - 48) * frac;
-            t1 = t3;
-          }
-        } else
-          decimal = 0;
-        number = (integer + decimal) * sign;
-        t1 = this._idx;
-        t2 = t1 + 1;
-        if (t2 < end) {
-          t3 = this._codePoints.__internal$_string;
-          t1 = C.JSString_methods._codeUnitAt$1(t3, t1);
-          if (t1 === 101 || t1 === 69) {
-            t1 = C.JSString_methods._codeUnitAt$1(t3, t2);
-            t1 = t1 !== 120 && t1 !== 109;
-          } else
-            t1 = false;
-        } else
-          t1 = false;
-        if (t1) {
-          this._idx = t2;
-          t1 = this._codePoints.__internal$_string;
-          t3 = C.JSString_methods._codeUnitAt$1(t1, t2);
-          if (t3 === 43) {
-            ++t2;
-            this._idx = t2;
-            exponentIsNegative = false;
-          } else if (t3 === 45) {
-            ++t2;
-            this._idx = t2;
-            exponentIsNegative = true;
-          } else
-            exponentIsNegative = false;
-          if (t2 < end) {
-            t3 = C.JSString_methods._codeUnitAt$1(t1, t2);
-            t3 = t3 < 48 || t3 > 57;
-          } else
-            t3 = true;
-          if (t3)
-            throw H.wrapException(P.StateError$("Missing exponent"));
-          exponent = 0;
-          while (true) {
-            if (t2 < end) {
-              t3 = C.JSString_methods._codeUnitAt$1(t1, t2);
-              t3 = t3 >= 48 && t3 <= 57;
-            } else
-              t3 = false;
-            if (!t3)
-              break;
-            exponent = exponent * 10 + (C.JSString_methods._codeUnitAt$1(t1, t2) - 48);
-            ++t2;
-            this._idx = t2;
-          }
-          if (exponentIsNegative)
-            exponent = -exponent;
-          if (!(exponent >= -37 && exponent <= 38))
-            throw H.wrapException(P.StateError$("Invalid exponent " + exponent));
-          if (exponent !== 0)
-            number *= Math.pow(10, exponent);
-        }
-        if (!(number >= -17976931348623157e292 && number <= 17976931348623157e292))
-          throw H.wrapException(P.StateError$("Numeric overflow"));
-        this._skipOptionalSvgSpacesOrDelimiter$0();
-        return number;
-      },
-      _parseArcFlag$0: function() {
-        var t1, t2, flagChar;
-        t1 = this._idx;
-        t2 = this._codePoints.__internal$_string;
-        if (t1 >= t2.length)
-          throw H.wrapException(P.StateError$("Expected more data"));
-        flagChar = C.JSString_methods._codeUnitAt$1(t2, t1);
-        this._idx = t1 + 1;
-        this._skipOptionalSvgSpacesOrDelimiter$0();
-        if (flagChar === 48)
-          return false;
-        else if (flagChar === 49)
-          return true;
-        else
-          throw H.wrapException(P.StateError$("Invalid flag value"));
-      },
-      parseSegments$0: function() {
-        var $async$self = this;
-        return P._makeSyncStarIterable(function() {
-          var $async$goto = 0, $async$handler = 1, $async$currentError, t1, t2, t3, segment, lookahead, command, target;
-          return function $async$parseSegments$0($async$errorCode, $async$result) {
-            if ($async$errorCode === 1) {
-              $async$currentError = $async$result;
-              $async$goto = $async$handler;
-            }
-            while (true)
-              switch ($async$goto) {
-                case 0:
-                  // Function start
-                  t1 = [P.num];
-                case 2:
-                  // for condition
-                  if (!(t2 = $async$self._idx, t3 = $async$self._codePoints.__internal$_string, t2 < t3.length)) {
-                    // goto after for
-                    $async$goto = 3;
-                    break;
-                  }
-                  segment = new A.PathSegmentData(C.SvgPathSegType_0, false, false);
-                  lookahead = C.JSString_methods._codeUnitAt$1(t3, t2);
-                  command = C.Map_ekyNK.$index(0, lookahead);
-                  if (command == null)
-                    command = C.SvgPathSegType_0;
-                  if ($async$self._previousCommand === C.SvgPathSegType_0) {
-                    if (command !== C.SvgPathSegType_3 && command !== C.SvgPathSegType_2)
-                      H.throwExpression(P.StateError$("Expected to find moveTo command"));
-                    ++$async$self._idx;
-                  } else if (command === C.SvgPathSegType_0) {
-                    command = $async$self._maybeImplicitCommand$2(lookahead, command);
-                    if (command === C.SvgPathSegType_0)
-                      H.throwExpression(P.StateError$("Expected a path command"));
-                  } else
-                    ++$async$self._idx;
-                  $async$self._previousCommand = command;
-                  segment.command = command;
-                  switch (command) {
-                    case C.SvgPathSegType_7:
-                    case C.SvgPathSegType_6:
-                      target = 1;
-                      break;
-                    case C.SvgPathSegType_17:
-                    case C.SvgPathSegType_16:
-                      target = 2;
-                      break;
-                    case C.SvgPathSegType_3:
-                    case C.SvgPathSegType_2:
-                    case C.SvgPathSegType_5:
-                    case C.SvgPathSegType_4:
-                    case C.SvgPathSegType_19:
-                    case C.SvgPathSegType_18:
-                      target = 3;
-                      break;
-                    case C.SvgPathSegType_13:
-                    case C.SvgPathSegType_12:
-                      target = 4;
-                      break;
-                    case C.SvgPathSegType_15:
-                    case C.SvgPathSegType_14:
-                      target = 5;
-                      break;
-                    case C.SvgPathSegType_1:
-                      target = 6;
-                      break;
-                    case C.SvgPathSegType_9:
-                    case C.SvgPathSegType_8:
-                      target = 7;
-                      break;
-                    case C.SvgPathSegType_11:
-                    case C.SvgPathSegType_10:
-                      target = 8;
-                      break;
-                    case C.SvgPathSegType_0:
-                      target = 9;
-                      break;
-                    default:
-                      target = null;
-                      break;
-                  }
-                  if (target)
-                    c$0:
-                      for (; true;)
-                        switch (target) {
-                          case 1:
-                            segment.point1 = new P.Point($async$self._parseNumber$0(), $async$self._parseNumber$0(), t1);
-                            target = 2;
-                            continue c$0;
-                          case 2:
-                            segment.point2 = new P.Point($async$self._parseNumber$0(), $async$self._parseNumber$0(), t1);
-                            target = 3;
-                            continue c$0;
-                          case 3:
-                            segment.targetPoint = new P.Point($async$self._parseNumber$0(), $async$self._parseNumber$0(), t1);
-                            break c$0;
-                          case 4:
-                            t2 = $async$self._parseNumber$0();
-                            t3 = segment.targetPoint;
-                            t3 = t3 == null ? null : t3.y;
-                            segment.targetPoint = new P.Point(t2, t3 == null ? 0 : t3, t1);
-                            break c$0;
-                          case 5:
-                            t2 = segment.targetPoint;
-                            t2 = t2 == null ? null : t2.x;
-                            if (t2 == null)
-                              t2 = 0;
-                            segment.targetPoint = new P.Point(t2, $async$self._parseNumber$0(), t1);
-                            break c$0;
-                          case 6:
-                            $async$self._skipOptionalSvgSpaces$0();
-                            break c$0;
-                          case 7:
-                            segment.point1 = new P.Point($async$self._parseNumber$0(), $async$self._parseNumber$0(), t1);
-                            segment.targetPoint = new P.Point($async$self._parseNumber$0(), $async$self._parseNumber$0(), t1);
-                            break c$0;
-                          case 8:
-                            segment.point1 = new P.Point($async$self._parseNumber$0(), $async$self._parseNumber$0(), t1);
-                            t2 = $async$self._parseNumber$0();
-                            t3 = segment.point2;
-                            t3 = t3 == null ? null : t3.y;
-                            segment.point2 = new P.Point(t2, t3 == null ? 0 : t3, t1);
-                            segment.arcLarge = $async$self._parseArcFlag$0();
-                            segment.arcSweep = $async$self._parseArcFlag$0();
-                            segment.targetPoint = new P.Point($async$self._parseNumber$0(), $async$self._parseNumber$0(), t1);
-                            break c$0;
-                          case 9:
-                            H.throwExpression(P.StateError$("Unknown segment command"));
-                            break c$0;
-                        }
-                  $async$goto = 4;
-                  return segment;
-                case 4:
-                  // after yield
-                  // goto for condition
-                  $async$goto = 2;
-                  break;
-                case 3:
-                  // after for
-                  // implicit return
-                  return P._IterationMarker_endOfIteration();
-                case 1:
-                  // rethrow
-                  return P._IterationMarker_uncaughtError($async$currentError);
-              }
-          };
-        }, A.PathSegmentData);
-      }
-    },
-    PathSegmentData: {
-      "^": "Object;command,0targetPoint,0point1,0point2,arcSweep,arcLarge",
-      get$x: function(_) {
-        return this.targetPoint.x;
-      },
-      get$y: function(_) {
-        return this.targetPoint.y;
-      },
-      toString$0: function(_) {
-        return "PathSegmentData{" + this.command.toString$0(0) + " " + H.S(this.targetPoint) + " " + H.S(this.point1) + " " + H.S(this.point2) + " " + this.arcSweep + " " + this.arcLarge + "}";
-      }
-    },
-    SvgPathNormalizer: {
-      "^": "Object;_currentPoint,_subPathPoint,_controlPoint,_lastCommand",
-      emitSegment$1: function(segment) {
-        var target, t1, t2, t3, t4, t5, t6, t7, decomposed;
-        switch (segment.command) {
-          case C.SvgPathSegType_9:
-            target = 1;
-            break;
-          case C.SvgPathSegType_7:
-            target = 2;
-            break;
-          case C.SvgPathSegType_17:
-            target = 3;
-            break;
-          case C.SvgPathSegType_3:
-          case C.SvgPathSegType_5:
-          case C.SvgPathSegType_13:
-          case C.SvgPathSegType_15:
-          case C.SvgPathSegType_19:
-          case C.SvgPathSegType_11:
-            target = 4;
-            break;
-          case C.SvgPathSegType_12:
-            target = 5;
-            break;
-          case C.SvgPathSegType_14:
-            target = 6;
-            break;
-          case C.SvgPathSegType_1:
-            target = 7;
-            break;
-          default:
-            target = 8;
-            break;
-        }
-        c$0:
-          for (; true;)
-            switch (target) {
-              case 1:
-                t1 = segment.point1;
-                t2 = this._currentPoint;
-                t1.toString;
-                t3 = H.getTypeArgumentByIndex(t1, 0);
-                t4 = [t3];
-                H.assertSubtype(t2, "$isPoint", t4, "$asPoint");
-                t5 = t1.x;
-                t6 = t2.x;
-                if (typeof t5 !== "number")
-                  return t5.$add();
-                if (typeof t6 !== "number")
-                  return H.iae(t6);
-                t5 = H.assertSubtypeOfRuntimeType(t5 + t6, t3);
-                t1 = t1.y;
-                t7 = t2.y;
-                if (typeof t1 !== "number")
-                  return t1.$add();
-                if (typeof t7 !== "number")
-                  return H.iae(t7);
-                segment.point1 = new P.Point(t5, H.assertSubtypeOfRuntimeType(t1 + t7, t3), t4);
-                t4 = segment.targetPoint;
-                t4.toString;
-                t3 = H.getTypeArgumentByIndex(t4, 0);
-                t1 = [t3];
-                H.assertSubtype(t2, "$isPoint", t1, "$asPoint");
-                t2 = t4.x;
-                if (typeof t2 !== "number")
-                  return t2.$add();
-                t6 = H.assertSubtypeOfRuntimeType(t2 + t6, t3);
-                t4 = t4.y;
-                if (typeof t4 !== "number")
-                  return t4.$add();
-                segment.targetPoint = new P.Point(t6, H.assertSubtypeOfRuntimeType(t4 + t7, t3), t1);
-                break c$0;
-              case 2:
-                t1 = segment.point1;
-                t2 = this._currentPoint;
-                t1.toString;
-                t3 = H.getTypeArgumentByIndex(t1, 0);
-                t4 = [t3];
-                H.assertSubtype(t2, "$isPoint", t4, "$asPoint");
-                t5 = t1.x;
-                t6 = t2.x;
-                if (typeof t5 !== "number")
-                  return t5.$add();
-                if (typeof t6 !== "number")
-                  return H.iae(t6);
-                t6 = H.assertSubtypeOfRuntimeType(t5 + t6, t3);
-                t1 = t1.y;
-                t2 = t2.y;
-                if (typeof t1 !== "number")
-                  return t1.$add();
-                if (typeof t2 !== "number")
-                  return H.iae(t2);
-                segment.point1 = new P.Point(t6, H.assertSubtypeOfRuntimeType(t1 + t2, t3), t4);
-                target = 3;
-                continue c$0;
-              case 3:
-                t1 = segment.point2;
-                t2 = this._currentPoint;
-                t1.toString;
-                t3 = H.getTypeArgumentByIndex(t1, 0);
-                t4 = [t3];
-                H.assertSubtype(t2, "$isPoint", t4, "$asPoint");
-                t5 = t1.x;
-                t6 = t2.x;
-                if (typeof t5 !== "number")
-                  return t5.$add();
-                if (typeof t6 !== "number")
-                  return H.iae(t6);
-                t6 = H.assertSubtypeOfRuntimeType(t5 + t6, t3);
-                t1 = t1.y;
-                t2 = t2.y;
-                if (typeof t1 !== "number")
-                  return t1.$add();
-                if (typeof t2 !== "number")
-                  return H.iae(t2);
-                segment.point2 = new P.Point(t6, H.assertSubtypeOfRuntimeType(t1 + t2, t3), t4);
-                target = 4;
-                continue c$0;
-              case 4:
-                t1 = segment.targetPoint;
-                t2 = this._currentPoint;
-                t1.toString;
-                t3 = H.getTypeArgumentByIndex(t1, 0);
-                t4 = [t3];
-                H.assertSubtype(t2, "$isPoint", t4, "$asPoint");
-                t5 = t1.x;
-                t6 = t2.x;
-                if (typeof t5 !== "number")
-                  return t5.$add();
-                if (typeof t6 !== "number")
-                  return H.iae(t6);
-                t6 = H.assertSubtypeOfRuntimeType(t5 + t6, t3);
-                t1 = t1.y;
-                t2 = t2.y;
-                if (typeof t1 !== "number")
-                  return t1.$add();
-                if (typeof t2 !== "number")
-                  return H.iae(t2);
-                segment.targetPoint = new P.Point(t6, H.assertSubtypeOfRuntimeType(t1 + t2, t3), t4);
-                break c$0;
-              case 5:
-                segment.targetPoint = new P.Point(segment.targetPoint.x, this._currentPoint.y, [P.num]);
-                break c$0;
-              case 6:
-                segment.targetPoint = new P.Point(this._currentPoint.x, segment.targetPoint.y, [P.num]);
-                break c$0;
-              case 7:
-                segment.targetPoint = this._subPathPoint;
-                break c$0;
-              case 8:
-                break c$0;
-            }
-        switch (segment.command) {
-          case C.SvgPathSegType_3:
-          case C.SvgPathSegType_2:
-            target = 1;
-            break;
-          case C.SvgPathSegType_5:
-          case C.SvgPathSegType_4:
-          case C.SvgPathSegType_13:
-          case C.SvgPathSegType_12:
-          case C.SvgPathSegType_15:
-          case C.SvgPathSegType_14:
-            target = 2;
-            break;
-          case C.SvgPathSegType_1:
-            target = 3;
-            break;
-          case C.SvgPathSegType_17:
-          case C.SvgPathSegType_16:
-            target = 4;
-            break;
-          case C.SvgPathSegType_7:
-          case C.SvgPathSegType_6:
-            target = 5;
-            break;
-          case C.SvgPathSegType_19:
-          case C.SvgPathSegType_18:
-            target = 6;
-            break;
-          case C.SvgPathSegType_9:
-          case C.SvgPathSegType_8:
-            target = 7;
-            break;
-          case C.SvgPathSegType_11:
-          case C.SvgPathSegType_10:
-            target = 8;
-            break;
-          default:
-            target = 9;
-            break;
-        }
-        c$3:
-          for (t1 = [P.num]; true;)
-            switch (target) {
-              case 1:
-                this._subPathPoint = segment.targetPoint;
-                segment.command = C.SvgPathSegType_2;
-                break c$3;
-              case 2:
-                segment.command = C.SvgPathSegType_4;
-                break c$3;
-              case 3:
-                segment.command = C.SvgPathSegType_1;
-                break c$3;
-              case 4:
-                t2 = this._lastCommand;
-                t2 = t2 === C.SvgPathSegType_6 || t2 === C.SvgPathSegType_7 || t2 === C.SvgPathSegType_16 || t2 === C.SvgPathSegType_17;
-                t3 = this._currentPoint;
-                if (!t2)
-                  segment.point1 = t3;
-                else {
-                  t2 = this._controlPoint;
-                  t4 = t3.x;
-                  if (typeof t4 !== "number")
-                    return H.iae(t4);
-                  t5 = t2.x;
-                  if (typeof t5 !== "number")
-                    return H.iae(t5);
-                  t3 = t3.y;
-                  if (typeof t3 !== "number")
-                    return H.iae(t3);
-                  t2 = t2.y;
-                  if (typeof t2 !== "number")
-                    return H.iae(t2);
-                  segment.point1 = new P.Point(2 * t4 - t5, 2 * t3 - t2, t1);
-                }
-                target = 5;
-                continue c$3;
-              case 5:
-                this._controlPoint = segment.point2;
-                segment.command = C.SvgPathSegType_6;
-                break c$3;
-              case 6:
-                t2 = this._lastCommand;
-                t2 = t2 === C.SvgPathSegType_8 || t2 === C.SvgPathSegType_9 || t2 === C.SvgPathSegType_18 || t2 === C.SvgPathSegType_19;
-                t3 = this._currentPoint;
-                if (!t2)
-                  segment.point1 = t3;
-                else {
-                  t2 = this._controlPoint;
-                  t4 = t3.x;
-                  if (typeof t4 !== "number")
-                    return H.iae(t4);
-                  t5 = t2.x;
-                  if (typeof t5 !== "number")
-                    return H.iae(t5);
-                  t3 = t3.y;
-                  if (typeof t3 !== "number")
-                    return H.iae(t3);
-                  t2 = t2.y;
-                  if (typeof t2 !== "number")
-                    return H.iae(t2);
-                  segment.point1 = new P.Point(2 * t4 - t5, 2 * t3 - t2, t1);
-                }
-                target = 7;
-                continue c$3;
-              case 7:
-                t1 = segment.point1;
-                this._controlPoint = t1;
-                segment.point1 = A.PointHelper_blendPoints(this._currentPoint, t1);
-                segment.point2 = A.PointHelper_blendPoints(segment.targetPoint, this._controlPoint);
-                segment.command = C.SvgPathSegType_6;
-                break c$3;
-              case 8:
-                decomposed = this._decomposeArcToCubic$2(this._currentPoint, segment);
-                if (decomposed == null)
-                  segment.command = C.SvgPathSegType_4;
-                else
-                  return decomposed;
-                break c$3;
-              case 9:
-                throw H.wrapException(P.StateError$("Invalid command type in path"));
-            }
-        this._currentPoint = segment.targetPoint;
-        if (!A.isCubicCommand(segment.command) && !A.isQuadraticCommand(segment.command))
-          this._controlPoint = this._currentPoint;
-        this._lastCommand = segment.command;
-        return H.setRuntimeTypeInfo([segment], [A.PathSegmentData]);
-      },
-      _decomposeArcToCubic$2: function(currentPoint, arcSegment) {
-        var t1, t2, t3, rx, ry, angle, pointTransform, transformedMidPoint, t4, radiiScale, point1, point2, delta, scaleFactor, centerPoint, t5, offset1, offset2, theta1, thetaArc, segments, result, i, startTheta, endTheta, t, sinStartTheta, cosStartTheta, sinEndTheta, cosEndTheta, t6, t7, cubicSegment;
-        t1 = [P.num];
-        H.assertSubtype(currentPoint, "$isPoint", t1, "$asPoint");
-        t2 = arcSegment.point1;
-        t3 = t2.x;
-        if (typeof t3 !== "number")
-          return t3.abs$0();
-        rx = Math.abs(t3);
-        t2 = t2.y;
-        if (typeof t2 !== "number")
-          return t2.abs$0();
-        ry = Math.abs(t2);
-        if (rx === 0 || ry === 0)
-          return;
-        if (J.$eq$(arcSegment.targetPoint, currentPoint))
-          return;
-        angle = arcSegment.point2.x;
-        t2 = currentPoint.$sub(0, arcSegment.targetPoint).x;
-        if (typeof t2 !== "number")
-          return t2.$mul();
-        t2 *= 0.5;
-        pointTransform = new T.Matrix4(new Float32Array(16));
-        pointTransform.setIdentity$0();
-        if (typeof angle !== "number")
-          return angle.$negate();
-        t3 = -angle;
-        pointTransform.rotateZ$1(t3);
-        transformedMidPoint = this._mapPoint$2(pointTransform, new P.Point(t2, t2, t1));
-        t2 = transformedMidPoint.x;
-        if (typeof t2 !== "number")
-          return t2.$mul();
-        t4 = transformedMidPoint.y;
-        if (typeof t4 !== "number")
-          return t4.$mul();
-        radiiScale = t2 * t2 / (rx * rx) + t4 * t4 / (ry * ry);
-        if (radiiScale > 1) {
-          rx *= Math.sqrt(radiiScale);
-          ry *= Math.sqrt(radiiScale);
-        }
-        pointTransform.setIdentity$0();
-        pointTransform.scale$2(0, 1 / rx, 1 / ry);
-        pointTransform.rotateZ$1(t3);
-        point1 = this._mapPoint$2(pointTransform, currentPoint);
-        point2 = this._mapPoint$2(pointTransform, arcSegment.targetPoint);
-        delta = point2.$sub(0, point1);
-        t2 = delta.x;
-        t3 = delta.y;
-        if (typeof t2 !== "number")
-          return t2.$mul();
-        if (typeof t3 !== "number")
-          return H.iae(t3);
-        scaleFactor = Math.sqrt(Math.max(1 / (t2 * t3 + t3 * t3) - 0.25, 0));
-        if (arcSegment.arcSweep === arcSegment.arcLarge)
-          scaleFactor = -scaleFactor;
-        centerPoint = point1.$add(0, point2);
-        t4 = centerPoint.x;
-        if (typeof t4 !== "number")
-          return t4.$mul();
-        t5 = centerPoint.y;
-        if (typeof t5 !== "number")
-          return t5.$mul();
-        centerPoint = new P.Point(t4 * 0.5, t5 * 0.5, t1).$add(0, new P.Point(-(t3 * scaleFactor), t2 * scaleFactor, t1));
-        offset1 = point1.$sub(0, centerPoint);
-        offset2 = point2.$sub(0, centerPoint);
-        theta1 = Math.atan2(H.checkNum(offset1.y), H.checkNum(offset1.x));
-        thetaArc = Math.atan2(H.checkNum(offset2.y), H.checkNum(offset2.x)) - theta1;
-        if (thetaArc < 0 && arcSegment.arcSweep)
-          thetaArc += 6.283185307179586;
-        else if (thetaArc > 0 && !arcSegment.arcSweep)
-          thetaArc -= 6.283185307179586;
-        pointTransform.setIdentity$0();
-        pointTransform.rotateZ$1(angle);
-        pointTransform.scale$2(0, rx, ry);
-        segments = C.JSDouble_methods.ceil$0(Math.abs(thetaArc / 1.5717963267948964));
-        result = H.setRuntimeTypeInfo([], [A.PathSegmentData]);
-        for (t1 = [P.double], t2 = centerPoint.x, t3 = centerPoint.y, i = 0; i < segments;) {
-          startTheta = theta1 + i * thetaArc / segments;
-          ++i;
-          endTheta = theta1 + i * thetaArc / segments;
-          t = 1.3333333333333333 * Math.tan(0.25 * (endTheta - startTheta));
-          if (!isFinite(t))
-            return;
-          sinStartTheta = Math.sin(startTheta);
-          cosStartTheta = Math.cos(startTheta);
-          sinEndTheta = Math.sin(endTheta);
-          cosEndTheta = Math.cos(endTheta);
-          H.assertSubtype(new P.Point(t2, t3, t1), "$isPoint", t1, "$asPoint");
-          if (typeof t2 !== "number")
-            return H.iae(t2);
-          if (typeof t3 !== "number")
-            return H.iae(t3);
-          H.assertSubtype(new P.Point(t2, t3, t1), "$isPoint", t1, "$asPoint");
-          t4 = cosEndTheta + t2;
-          t5 = sinEndTheta + t3;
-          t6 = t * sinEndTheta;
-          t7 = -t * cosEndTheta;
-          H.assertSubtype(new P.Point(t6, t7, t1), "$isPoint", t1, "$asPoint");
-          cubicSegment = new A.PathSegmentData(C.SvgPathSegType_0, false, false);
-          cubicSegment.command = C.SvgPathSegType_6;
-          cubicSegment.point1 = this._mapPoint$2(pointTransform, new P.Point(cosStartTheta - t * sinStartTheta + t2, sinStartTheta + t * cosStartTheta + t3, t1));
-          cubicSegment.point2 = this._mapPoint$2(pointTransform, new P.Point(t4 + t6, t5 + t7, t1));
-          cubicSegment.targetPoint = this._mapPoint$2(pointTransform, new P.Point(t4, t5, t1));
-          C.JSArray_methods.add$1(result, cubicSegment);
-        }
-        return result;
-      },
-      _mapPoint$2: function(transform, point) {
-        var t1, t2, t3, t4, t5, t6;
-        t1 = [P.num];
-        H.assertSubtype(point, "$isPoint", t1, "$asPoint");
-        t2 = transform._m4storage;
-        t3 = t2[0];
-        t4 = point.x;
-        if (typeof t4 !== "number")
-          return H.iae(t4);
-        t5 = t2[4];
-        t6 = point.y;
-        if (typeof t6 !== "number")
-          return H.iae(t6);
-        return new P.Point(t3 * t4 + t5 * t6 + t2[12], t2[1] * t4 + t2[5] * t6 + t2[13], t1);
       }
     }
   }], ["", "package:figma_to_flutter/tools/code.dart",, X, {
@@ -38250,7 +37468,7 @@
       }
     },
     addEqualsAndHashcode__closure: {
-      "^": "Closure:27;properties",
+      "^": "Closure:31;properties",
       call$1: function(b) {
         var t1, t2, t3, t4;
         t1 = b.get$statements();
@@ -38273,7 +37491,7 @@
       }
     },
     addEqualsAndHashcode___closure: {
-      "^": "Closure:33;",
+      "^": "Closure:36;",
       call$1: function(x) {
         return new X.StaticCode("result = 37 * result + (this." + H.S(H.stringTypeCheck(x)) + "?.hashCode ?? 0);");
       }
@@ -38316,7 +37534,7 @@
       }
     },
     CodeCatalog_build_closure: {
-      "^": "Closure:28;$this,builder,constructorBody",
+      "^": "Closure:19;$this,builder,constructorBody",
       call$2: function(k, v) {
         var t1, t2;
         H.stringTypeCheck(k);
@@ -38366,7 +37584,7 @@
       }
     },
     CodeCatalog_build_closure1: {
-      "^": "Closure:47;constructorBody",
+      "^": "Closure:38;constructorBody",
       call$1: function(b) {
         var t1 = this.constructorBody.build$0();
         b.get$_constructor$_$this();
@@ -38442,7 +37660,7 @@
     _withArgumentsAsciiControlCharacter: [function(codePoint) {
       H.intTypeCheck(codePoint);
       return new B.Message(C.Code_UCF, "The control character " + ("U+" + C.JSString_methods.padLeft$2(J.toRadixString$1$n(codePoint, 16).toUpperCase(), 4, "0")) + " can only be used in strings and comments.", null, P.LinkedHashMap_LinkedHashMap$_literal(["codePoint", codePoint], P.String, null));
-    }, "call$1", "fasta_codes___withArgumentsAsciiControlCharacter$closure", 4, 0, 34],
+    }, "call$1", "fasta_codes___withArgumentsAsciiControlCharacter$closure", 4, 0, 45],
     _withArgumentsBuiltInIdentifierAsType: [function(token) {
       H.interceptedTypeCheck(token, "$isToken");
       return new B.Message(C.Code_uXf, "The built-in identifier '" + H.S(token.get$lexeme()) + "' can't be used as a type.", "Try correcting the name to match an existing type.", P.LinkedHashMap_LinkedHashMap$_literal(["token", token], P.String, null));
@@ -38523,11 +37741,11 @@
       H.intTypeCheck(codePoint);
       unicode = "U+" + C.JSString_methods.padLeft$2(J.toRadixString$1$n(codePoint, 16).toUpperCase(), 4, "0");
       return new B.Message(C.Code_m9N, "The non-ASCII character '" + H.S(character) + "' (" + unicode + ") can't be used in identifiers, only in strings and comments.", "Try using an US-ASCII letter, a digit, '_' (an underscore), or '$' (a dollar sign).", P.LinkedHashMap_LinkedHashMap$_literal(["character", character, "codePoint", codePoint], P.String, null));
-    }, "call$2", "fasta_codes___withArgumentsNonAsciiIdentifier$closure", 8, 0, 126],
+    }, "call$2", "fasta_codes___withArgumentsNonAsciiIdentifier$closure", 8, 0, 125],
     _withArgumentsNonAsciiWhitespace: [function(codePoint) {
       H.intTypeCheck(codePoint);
       return new B.Message(C.Code_ynK, "The non-ASCII space character " + ("U+" + C.JSString_methods.padLeft$2(J.toRadixString$1$n(codePoint, 16).toUpperCase(), 4, "0")) + " can only be used in strings and comments.", null, P.LinkedHashMap_LinkedHashMap$_literal(["codePoint", codePoint], P.String, null));
-    }, "call$1", "fasta_codes___withArgumentsNonAsciiWhitespace$closure", 4, 0, 34],
+    }, "call$1", "fasta_codes___withArgumentsNonAsciiWhitespace$closure", 4, 0, 45],
     _withArgumentsUnexpectedToken: [function(token) {
       H.interceptedTypeCheck(token, "$isToken");
       return new B.Message(C.Code_qd9, "Unexpected token '" + H.S(token.get$lexeme()) + "'.", null, P.LinkedHashMap_LinkedHashMap$_literal(["token", token], P.String, null));
@@ -38538,12 +37756,12 @@
       H.interceptedTypeCheck(token, "$isToken");
       lexeme = token.get$lexeme();
       return new B.Message(C.Code_a9w, "Can't find '" + H.S(string) + "' to match '" + H.S(lexeme) + "'.", null, P.LinkedHashMap_LinkedHashMap$_literal(["string", string, "token", token], P.String, null));
-    }, "call$2", "fasta_codes___withArgumentsUnmatchedToken$closure", 8, 0, 127],
+    }, "call$2", "fasta_codes___withArgumentsUnmatchedToken$closure", 8, 0, 126],
     _withArgumentsUnterminatedString: [function(string, string2) {
       H.stringTypeCheck(string);
       H.stringTypeCheck(string2);
       return new B.Message(C.Code_67z, "String starting with " + H.S(string) + " must end with " + H.S(string2) + ".", null, P.LinkedHashMap_LinkedHashMap$_literal(["string", string, "string2", string2], P.String, null));
-    }, "call$2", "fasta_codes___withArgumentsUnterminatedString$closure", 8, 0, 96],
+    }, "call$2", "fasta_codes___withArgumentsUnterminatedString$closure", 8, 0, 127],
     Code0: {
       "^": "Object;name,template,analyzerCode,dart2jsCode,severity,$ti",
       toString$0: function(_) {
@@ -43167,7 +42385,7 @@
       "^": "Object;"
     },
     KeywordState_KEYWORD_STATE_closure: {
-      "^": "Closure:90;",
+      "^": "Closure:89;",
       call$2: function(a, b) {
         return J.compareTo$1$ns(H.stringTypeCheck(a), H.stringTypeCheck(b));
       }
@@ -43341,7 +42559,7 @@
       return token;
     },
     defaultRecoveryStrategy_recoverIdentifier: {
-      "^": "Closure:92;_box_0",
+      "^": "Closure:91;_box_0",
       call$1: function(first) {
         var codeUnits, t1, t2, prepend, next, append, current, charOffset, value;
         codeUnits = H.setRuntimeTypeInfo([], [P.int]);
@@ -43959,7 +43177,7 @@
       }
     },
     translateErrorToken__makeError: {
-      "^": "Closure:94;_box_0,token,reportError",
+      "^": "Closure:93;_box_0,token,reportError",
       call$2: function(errorCode, $arguments) {
         var t1;
         H.assertSubtype($arguments, "$isList", [P.Object], "$asList");
@@ -44013,7 +43231,7 @@
       "^": "Object;_table,0_keyword",
       keyword$0: [function() {
         return this._keyword;
-      }, "call$0", "get$keyword", 0, 0, 95],
+      }, "call$0", "get$keyword", 0, 0, 94],
       next$1: [function(character) {
         var t1, t2;
         t1 = this._table;
@@ -44023,7 +43241,7 @@
         if (t2 < 0 || t2 >= t1.length)
           return H.ioore(t1, t2);
         return t1[t2];
-      }, "call$1", "get$next", 4, 0, 113],
+      }, "call$1", "get$next", 4, 0, 95],
       static: {
         KeywordState$: function(_table, syntax) {
           var t1 = new O.KeywordState(_table);
@@ -44959,7 +44177,7 @@
         return this._sendUnstreamed$3("HEAD", url, H.assertSubtype(headers, "$isMap", [t1, t1], "$asMap"));
       }, function($receiver, url) {
         return this.head$2$headers($receiver, url, null);
-      }, "head$1", "call$2$headers", "call$1", "get$head", 5, 3, 98],
+      }, "head$1", "call$2$headers", "call$1", "get$head", 5, 3, 97],
       _sendUnstreamed$5: function(method, url, headers, body, encoding) {
         var t1 = P.String;
         return this._sendUnstreamed$body$BaseClient(method, url, H.assertSubtype(headers, "$isMap", [t1, t1], "$asMap"), body, encoding);
@@ -45013,7 +44231,7 @@
       }
     },
     BaseRequest_closure: {
-      "^": "Closure:99;",
+      "^": "Closure:98;",
       call$2: function(key1, key2) {
         H.stringTypeCheck(key1);
         H.stringTypeCheck(key2);
@@ -45021,7 +44239,7 @@
       }
     },
     BaseRequest_closure0: {
-      "^": "Closure:100;",
+      "^": "Closure:99;",
       call$1: function(key) {
         return C.JSString_methods.get$hashCode(H.stringTypeCheck(key).toLowerCase());
       }
@@ -45059,7 +44277,7 @@
       }
     },
     ByteStream_toBytes_closure: {
-      "^": "Closure:101;completer",
+      "^": "Closure:100;completer",
       call$1: function(bytes) {
         return this.completer.complete$1(0, new Uint8Array(H._ensureNativeList(H.assertSubtype(bytes, "$isList", [P.int], "$asList"))));
       }
@@ -45098,7 +44316,7 @@
       }
     },
     Response_fromStream_closure: {
-      "^": "Closure:102;response",
+      "^": "Closure:101;response",
       call$1: function(body) {
         var t1, t2, t3, t4, t5, t6;
         H.interceptedTypeCheck(body, "$isUint8List");
@@ -45172,7 +44390,7 @@
       }
     },
     CaseInsensitiveMap$from_closure0: {
-      "^": "Closure:103;",
+      "^": "Closure:102;",
       call$1: function(key) {
         return key != null;
       }
@@ -45209,7 +44427,7 @@
       }
     },
     MediaType_MediaType$parse_closure: {
-      "^": "Closure:104;mediaType",
+      "^": "Closure:103;mediaType",
       call$0: function() {
         var t1, scanner, t2, t3, type, subtype, t4, parameters, t5, success, attribute, value;
         t1 = this.mediaType;
@@ -45285,7 +44503,7 @@
       }
     },
     MediaType_toString_closure: {
-      "^": "Closure:28;buffer",
+      "^": "Closure:19;buffer",
       call$2: function(attribute, value) {
         var t1, t2;
         H.stringTypeCheck(attribute);
@@ -45306,7 +44524,7 @@
       }
     },
     MediaType_toString__closure: {
-      "^": "Closure:24;",
+      "^": "Closure:23;",
       call$1: function(match) {
         return C.JSString_methods.$add("\\", match.$index(0, 0));
       }
@@ -45320,7 +44538,7 @@
       return H.stringReplaceAllFuncUnchecked(J.substring$2$s(string, 1, string.length - 1), $.$get$_quotedPair(), H.functionTypeCheck(new N.expectQuotedString_closure(), {func: 1, ret: P.String, args: [P.Match]}), null);
     },
     expectQuotedString_closure: {
-      "^": "Closure:24;",
+      "^": "Closure:23;",
       call$1: function(match) {
         return match.$index(0, 1);
       }
@@ -45614,19 +44832,19 @@
       }
     },
     Context_join_closure: {
-      "^": "Closure:30;",
+      "^": "Closure:27;",
       call$1: function(part) {
         return H.stringTypeCheck(part) != null;
       }
     },
     Context_joinAll_closure: {
-      "^": "Closure:30;",
+      "^": "Closure:27;",
       call$1: function(part) {
         return H.stringTypeCheck(part) !== "";
       }
     },
     Context_split_closure: {
-      "^": "Closure:30;",
+      "^": "Closure:27;",
       call$1: function(part) {
         return H.stringTypeCheck(part).length !== 0;
       }
@@ -45773,7 +44991,7 @@
       }
     },
     ParsedPath_normalize_closure: {
-      "^": "Closure:106;$this",
+      "^": "Closure:105;$this",
       call$1: function(_) {
         return this.$this.style.get$separator();
       }
@@ -46023,6 +45241,706 @@
         return true;
       return C.JSString_methods.codeUnitAt$1(path, t2) === 47;
     }
+  }], ["", "package:path_parsing/src/path_parsing.dart",, T, {
+    "^": "",
+    writeSvgPathDataToPath: function(svg, path) {
+      var parser, normalizer, t1, t2, t3, target, t4, t5, t6, t7, t8, t9;
+      if (svg === "")
+        return;
+      parser = new T.SvgPathStringSource();
+      parser._previousCommand = C.SvgPathSegType_0;
+      parser._codePoints = new H.CodeUnits(svg);
+      parser._idx = 0;
+      parser._skipOptionalSvgSpaces$0();
+      normalizer = new T.SvgPathNormalizer(C._PathOffset_0_0, C._PathOffset_0_0, C._PathOffset_0_0, C.SvgPathSegType_0);
+      for (t1 = parser.parseSegments$0(), t1 = new P._SyncStarIterator(t1._outerHelper(), [H.getTypeArgumentByIndex(t1, 0)]), t2 = path.statements; t1.moveNext$0();) {
+        t3 = t1.get$current();
+        switch (t3.command) {
+          case C.SvgPathSegType_9:
+            target = 1;
+            break;
+          case C.SvgPathSegType_7:
+            target = 2;
+            break;
+          case C.SvgPathSegType_17:
+            target = 3;
+            break;
+          case C.SvgPathSegType_3:
+          case C.SvgPathSegType_5:
+          case C.SvgPathSegType_13:
+          case C.SvgPathSegType_15:
+          case C.SvgPathSegType_19:
+          case C.SvgPathSegType_11:
+            target = 4;
+            break;
+          case C.SvgPathSegType_12:
+            target = 5;
+            break;
+          case C.SvgPathSegType_14:
+            target = 6;
+            break;
+          case C.SvgPathSegType_1:
+            target = 7;
+            break;
+          default:
+            target = 8;
+            break;
+        }
+        c$0:
+          for (; true;)
+            switch (target) {
+              case 1:
+                t4 = t3.point1;
+                t5 = normalizer._currentPoint;
+                t6 = t4.dx;
+                t7 = t5.dx;
+                t4 = t4.dy;
+                t5 = t5.dy;
+                t3.point1 = new T._PathOffset(t6 + t7, t4 + t5);
+                t4 = t3.targetPoint;
+                t3.targetPoint = new T._PathOffset(t4.dx + t7, t4.dy + t5);
+                break c$0;
+              case 2:
+                t4 = t3.point1;
+                t5 = normalizer._currentPoint;
+                t3.point1 = new T._PathOffset(t4.dx + t5.dx, t4.dy + t5.dy);
+                target = 3;
+                continue c$0;
+              case 3:
+                t4 = t3.point2;
+                t5 = normalizer._currentPoint;
+                t3.point2 = new T._PathOffset(t4.dx + t5.dx, t4.dy + t5.dy);
+                target = 4;
+                continue c$0;
+              case 4:
+                t4 = t3.targetPoint;
+                t5 = normalizer._currentPoint;
+                t3.targetPoint = new T._PathOffset(t4.dx + t5.dx, t4.dy + t5.dy);
+                break c$0;
+              case 5:
+                t3.targetPoint = new T._PathOffset(t3.targetPoint.dx, normalizer._currentPoint.dy);
+                break c$0;
+              case 6:
+                t3.targetPoint = new T._PathOffset(normalizer._currentPoint.dx, t3.targetPoint.dy);
+                break c$0;
+              case 7:
+                t3.targetPoint = normalizer._subPathPoint;
+                break c$0;
+              case 8:
+                break c$0;
+            }
+        switch (t3.command) {
+          case C.SvgPathSegType_3:
+          case C.SvgPathSegType_2:
+            target = 1;
+            break;
+          case C.SvgPathSegType_5:
+          case C.SvgPathSegType_4:
+          case C.SvgPathSegType_13:
+          case C.SvgPathSegType_12:
+          case C.SvgPathSegType_15:
+          case C.SvgPathSegType_14:
+            target = 2;
+            break;
+          case C.SvgPathSegType_1:
+            target = 3;
+            break;
+          case C.SvgPathSegType_17:
+          case C.SvgPathSegType_16:
+            target = 4;
+            break;
+          case C.SvgPathSegType_7:
+          case C.SvgPathSegType_6:
+            target = 5;
+            break;
+          case C.SvgPathSegType_19:
+          case C.SvgPathSegType_18:
+            target = 6;
+            break;
+          case C.SvgPathSegType_9:
+          case C.SvgPathSegType_8:
+            target = 7;
+            break;
+          case C.SvgPathSegType_11:
+          case C.SvgPathSegType_10:
+            target = 8;
+            break;
+          default:
+            target = 9;
+            break;
+        }
+        c$3:
+          for (; true;)
+            switch (target) {
+              case 1:
+                t4 = t3.targetPoint;
+                normalizer._subPathPoint = t4;
+                t5 = t4.dx;
+                t4 = t4.dy;
+                C.JSArray_methods.add$1(t2, new X.StaticCode("path.moveTo(" + B.toFixedDouble(t5) + ", " + B.toFixedDouble(t4) + ");"));
+                break c$3;
+              case 2:
+                t4 = t3.targetPoint;
+                t5 = t4.dx;
+                t4 = t4.dy;
+                C.JSArray_methods.add$1(t2, new X.StaticCode("path.lineTo(" + B.toFixedDouble(t5) + ", " + B.toFixedDouble(t4) + ");"));
+                break c$3;
+              case 3:
+                C.JSArray_methods.add$1(t2, new X.StaticCode("path.close();"));
+                break c$3;
+              case 4:
+                t4 = normalizer._lastCommand;
+                t4 = t4 === C.SvgPathSegType_6 || t4 === C.SvgPathSegType_7 || t4 === C.SvgPathSegType_16 || t4 === C.SvgPathSegType_17;
+                t5 = normalizer._currentPoint;
+                if (!t4)
+                  t3.point1 = t5;
+                else {
+                  t4 = normalizer._controlPoint;
+                  t3.point1 = new T._PathOffset(2 * t5.dx - t4.dx, 2 * t5.dy - t4.dy);
+                }
+                target = 5;
+                continue c$3;
+              case 5:
+                t4 = t3.point2;
+                normalizer._controlPoint = t4;
+                t5 = t3.point1;
+                t6 = t5.dx;
+                t5 = t5.dy;
+                t7 = t4.dx;
+                t4 = t4.dy;
+                t8 = t3.targetPoint;
+                t9 = t8.dx;
+                t8 = t8.dy;
+                C.JSArray_methods.add$1(t2, new X.StaticCode("path.cubicTo(" + B.toFixedDouble(t6) + ", " + B.toFixedDouble(t5) + ", " + B.toFixedDouble(t7) + ", " + B.toFixedDouble(t4) + ", " + B.toFixedDouble(t9) + ", " + B.toFixedDouble(t8) + ");"));
+                break c$3;
+              case 6:
+                t4 = normalizer._lastCommand;
+                t4 = t4 === C.SvgPathSegType_8 || t4 === C.SvgPathSegType_9 || t4 === C.SvgPathSegType_18 || t4 === C.SvgPathSegType_19;
+                t5 = normalizer._currentPoint;
+                if (!t4)
+                  t3.point1 = t5;
+                else {
+                  t4 = normalizer._controlPoint;
+                  t3.point1 = new T._PathOffset(2 * t5.dx - t4.dx, 2 * t5.dy - t4.dy);
+                }
+                target = 7;
+                continue c$3;
+              case 7:
+                t4 = t3.point1;
+                normalizer._controlPoint = t4;
+                t5 = normalizer._currentPoint;
+                t6 = t5.dx;
+                t7 = 2 * t4.dx;
+                t6 = (t6 + t7) * 0.3333333333333333;
+                t5 = t5.dy;
+                t4 = 2 * t4.dy;
+                t5 = (t5 + t4) * 0.3333333333333333;
+                t3.point1 = new T._PathOffset(t6, t5);
+                t8 = t3.targetPoint;
+                t9 = t8.dx;
+                t7 = (t9 + t7) * 0.3333333333333333;
+                t8 = t8.dy;
+                t4 = (t8 + t4) * 0.3333333333333333;
+                t3.point2 = new T._PathOffset(t7, t4);
+                C.JSArray_methods.add$1(t2, new X.StaticCode("path.cubicTo(" + B.toFixedDouble(t6) + ", " + B.toFixedDouble(t5) + ", " + B.toFixedDouble(t7) + ", " + B.toFixedDouble(t4) + ", " + B.toFixedDouble(t9) + ", " + B.toFixedDouble(t8) + ");"));
+                break c$3;
+              case 8:
+                if (!normalizer._decomposeArcToCubic$3(normalizer._currentPoint, t3, path)) {
+                  t4 = t3.targetPoint;
+                  t5 = t4.dx;
+                  t4 = t4.dy;
+                  C.JSArray_methods.add$1(t2, new X.StaticCode("path.lineTo(" + B.toFixedDouble(t5) + ", " + B.toFixedDouble(t4) + ");"));
+                }
+                break c$3;
+              case 9:
+                H.throwExpression(P.StateError$("Invalid command type in path"));
+                break c$3;
+            }
+        t4 = t3.targetPoint;
+        normalizer._currentPoint = t4;
+        t3 = t3.command;
+        if (!(t3 === C.SvgPathSegType_6 || t3 === C.SvgPathSegType_7 || t3 === C.SvgPathSegType_16 || t3 === C.SvgPathSegType_17))
+          t5 = !(t3 === C.SvgPathSegType_8 || t3 === C.SvgPathSegType_9 || t3 === C.SvgPathSegType_18 || t3 === C.SvgPathSegType_19);
+        else
+          t5 = false;
+        if (t5)
+          normalizer._controlPoint = t4;
+        normalizer._lastCommand = t3;
+      }
+    },
+    PathProxy: {
+      "^": "Object;"
+    },
+    _PathOffset: {
+      "^": "Object;dx,dy",
+      $add: function(_, other) {
+        H.interceptedTypeCheck(other, "$is_PathOffset");
+        return new T._PathOffset(this.dx + other.dx, this.dy + other.dy);
+      },
+      $sub: function(_, other) {
+        H.interceptedTypeCheck(other, "$is_PathOffset");
+        return new T._PathOffset(this.dx - other.dx, this.dy - other.dy);
+      },
+      $mul: function(_, operand) {
+        return new T._PathOffset(this.dx * operand, this.dy * operand);
+      },
+      toString$0: function(_) {
+        return "PathOffset{" + H.S(this.dx) + "," + H.S(this.dy) + "}";
+      }
+    },
+    SvgPathStringSource: {
+      "^": "Object;0_previousCommand,0_codePoints,0_idx",
+      _isHtmlSpace$1: function(character) {
+        var t1;
+        if (character <= 32)
+          t1 = character === 32 || character === 10 || character === 9 || character === 13 || character === 12;
+        else
+          t1 = false;
+        return t1;
+      },
+      _skipOptionalSvgSpaces$0: function() {
+        var t1, t2;
+        while (true) {
+          t1 = this._idx;
+          t2 = this._codePoints.__internal$_string;
+          if (!(t1 < t2.length && this._isHtmlSpace$1(C.JSString_methods._codeUnitAt$1(t2, t1))))
+            break;
+          ++this._idx;
+        }
+        return this._idx < this._codePoints.__internal$_string.length;
+      },
+      _skipOptionalSvgSpacesOrDelimiter$1: function(delimiter) {
+        var t1, t2;
+        t1 = this._idx;
+        t2 = this._codePoints.__internal$_string;
+        if (t1 < t2.length && !this._isHtmlSpace$1(C.JSString_methods._codeUnitAt$1(t2, t1)) && C.JSString_methods._codeUnitAt$1(this._codePoints.__internal$_string, this._idx) !== delimiter)
+          return false;
+        if (this._skipOptionalSvgSpaces$0()) {
+          t1 = this._idx;
+          t2 = this._codePoints.__internal$_string;
+          if (t1 < t2.length && C.JSString_methods._codeUnitAt$1(t2, t1) === delimiter) {
+            this._idx = t1 + 1;
+            this._skipOptionalSvgSpaces$0();
+          }
+        }
+        return this._idx < this._codePoints.__internal$_string.length;
+      },
+      _skipOptionalSvgSpacesOrDelimiter$0: function() {
+        return this._skipOptionalSvgSpacesOrDelimiter$1(44);
+      },
+      _maybeImplicitCommand$2: function(lookahead, nextCommand) {
+        var t1;
+        if (!(lookahead >= 48 && lookahead <= 57 || lookahead === 43 || lookahead === 45 || lookahead === 46) || this._previousCommand === C.SvgPathSegType_1)
+          return nextCommand;
+        t1 = this._previousCommand;
+        if (t1 === C.SvgPathSegType_2)
+          return C.SvgPathSegType_4;
+        if (t1 === C.SvgPathSegType_3)
+          return C.SvgPathSegType_5;
+        return t1;
+      },
+      _parseNumber$0: function() {
+        var t1, end, t2, t3, sign, t4, ptrScanIntPart, integer, multiplier, ptrScanIntPart0, decimal, frac, number, exponentIsNegative, exponent;
+        this._skipOptionalSvgSpaces$0();
+        t1 = this._codePoints.__internal$_string;
+        end = t1.length;
+        t2 = this._idx;
+        t3 = t2 < end;
+        if (t3 && C.JSString_methods._codeUnitAt$1(t1, t2) === 43) {
+          ++t2;
+          this._idx = t2;
+          sign = 1;
+        } else if (t3 && C.JSString_methods._codeUnitAt$1(t1, t2) === 45) {
+          ++t2;
+          this._idx = t2;
+          sign = -1;
+        } else
+          sign = 1;
+        if (t2 !== end) {
+          t1 = C.JSString_methods._codeUnitAt$1(t1, t2);
+          t1 = (t1 < 48 || t1 > 57) && t1 !== 46;
+        } else
+          t1 = true;
+        if (t1)
+          throw H.wrapException(P.StateError$("First character of a number must be one of [0-9+-.]"));
+        t1 = t2;
+        while (true) {
+          t3 = t1 < end;
+          if (t3) {
+            t4 = C.JSString_methods._codeUnitAt$1(this._codePoints.__internal$_string, t1);
+            t4 = t4 >= 48 && t4 <= 57;
+          } else
+            t4 = false;
+          if (!t4)
+            break;
+          ++t1;
+          this._idx = t1;
+        }
+        if (t1 !== t2) {
+          ptrScanIntPart = t1 - 1;
+          for (t4 = this._codePoints.__internal$_string, integer = 0, multiplier = 1; ptrScanIntPart >= t2; ptrScanIntPart = ptrScanIntPart0) {
+            ptrScanIntPart0 = ptrScanIntPart - 1;
+            integer += multiplier * (C.JSString_methods.codeUnitAt$1(t4, ptrScanIntPart) - 48);
+            multiplier *= 10;
+          }
+          if (!(integer >= -17976931348623157e292 && integer <= 17976931348623157e292))
+            throw H.wrapException(P.StateError$("Numeric overflow"));
+        } else
+          integer = 0;
+        if (t3 && C.JSString_methods._codeUnitAt$1(this._codePoints.__internal$_string, t1) === 46) {
+          ++t1;
+          this._idx = t1;
+          if (t1 < end) {
+            t2 = C.JSString_methods._codeUnitAt$1(this._codePoints.__internal$_string, t1);
+            t2 = t2 < 48 || t2 > 57;
+          } else
+            t2 = true;
+          if (t2)
+            throw H.wrapException(P.StateError$("There must be at least one digit following the ."));
+          decimal = 0;
+          frac = 1;
+          while (true) {
+            if (t1 < end) {
+              t2 = C.JSString_methods._codeUnitAt$1(this._codePoints.__internal$_string, t1);
+              t2 = t2 >= 48 && t2 <= 57;
+            } else
+              t2 = false;
+            if (!t2)
+              break;
+            frac *= 0.1;
+            t2 = this._codePoints;
+            t3 = t1 + 1;
+            this._idx = t3;
+            decimal += (C.JSString_methods._codeUnitAt$1(t2.__internal$_string, t1) - 48) * frac;
+            t1 = t3;
+          }
+        } else
+          decimal = 0;
+        number = (integer + decimal) * sign;
+        t1 = this._idx;
+        t2 = t1 + 1;
+        if (t2 < end) {
+          t3 = this._codePoints.__internal$_string;
+          t1 = C.JSString_methods._codeUnitAt$1(t3, t1);
+          if (t1 === 101 || t1 === 69) {
+            t1 = C.JSString_methods._codeUnitAt$1(t3, t2);
+            t1 = t1 !== 120 && t1 !== 109;
+          } else
+            t1 = false;
+        } else
+          t1 = false;
+        if (t1) {
+          this._idx = t2;
+          t1 = this._codePoints.__internal$_string;
+          t3 = C.JSString_methods._codeUnitAt$1(t1, t2);
+          if (t3 === 43) {
+            ++t2;
+            this._idx = t2;
+            exponentIsNegative = false;
+          } else if (t3 === 45) {
+            ++t2;
+            this._idx = t2;
+            exponentIsNegative = true;
+          } else
+            exponentIsNegative = false;
+          if (t2 < end) {
+            t3 = C.JSString_methods._codeUnitAt$1(t1, t2);
+            t3 = t3 < 48 || t3 > 57;
+          } else
+            t3 = true;
+          if (t3)
+            throw H.wrapException(P.StateError$("Missing exponent"));
+          exponent = 0;
+          while (true) {
+            if (t2 < end) {
+              t3 = C.JSString_methods._codeUnitAt$1(t1, t2);
+              t3 = t3 >= 48 && t3 <= 57;
+            } else
+              t3 = false;
+            if (!t3)
+              break;
+            exponent = exponent * 10 + (C.JSString_methods._codeUnitAt$1(t1, t2) - 48);
+            ++t2;
+            this._idx = t2;
+          }
+          if (exponentIsNegative)
+            exponent = -exponent;
+          if (!(exponent >= -37 && exponent <= 38))
+            throw H.wrapException(P.StateError$("Invalid exponent " + exponent));
+          if (exponent !== 0)
+            number *= Math.pow(10, exponent);
+        }
+        if (!(number >= -17976931348623157e292 && number <= 17976931348623157e292))
+          throw H.wrapException(P.StateError$("Numeric overflow"));
+        this._skipOptionalSvgSpacesOrDelimiter$0();
+        return number;
+      },
+      _parseArcFlag$0: function() {
+        var t1, t2, flagChar;
+        t1 = this._idx;
+        t2 = this._codePoints.__internal$_string;
+        if (t1 >= t2.length)
+          throw H.wrapException(P.StateError$("Expected more data"));
+        flagChar = C.JSString_methods._codeUnitAt$1(t2, t1);
+        this._idx = t1 + 1;
+        this._skipOptionalSvgSpacesOrDelimiter$0();
+        if (flagChar === 48)
+          return false;
+        else if (flagChar === 49)
+          return true;
+        else
+          throw H.wrapException(P.StateError$("Invalid flag value"));
+      },
+      parseSegments$0: function() {
+        var $async$self = this;
+        return P._makeSyncStarIterable(function() {
+          var $async$goto = 0, $async$handler = 1, $async$currentError, t1, t2, segment, lookahead, command, target;
+          return function $async$parseSegments$0($async$errorCode, $async$result) {
+            if ($async$errorCode === 1) {
+              $async$currentError = $async$result;
+              $async$goto = $async$handler;
+            }
+            while (true)
+              switch ($async$goto) {
+                case 0:
+                  // Function start
+                case 2:
+                  // for condition
+                  if (!(t1 = $async$self._idx, t2 = $async$self._codePoints.__internal$_string, t1 < t2.length)) {
+                    // goto after for
+                    $async$goto = 3;
+                    break;
+                  }
+                  segment = new T.PathSegmentData(C.SvgPathSegType_0, false, false);
+                  lookahead = C.JSString_methods._codeUnitAt$1(t2, t1);
+                  command = C.Map_ekyNK.$index(0, lookahead);
+                  if (command == null)
+                    command = C.SvgPathSegType_0;
+                  if ($async$self._previousCommand === C.SvgPathSegType_0) {
+                    if (command !== C.SvgPathSegType_3 && command !== C.SvgPathSegType_2)
+                      H.throwExpression(P.StateError$("Expected to find moveTo command"));
+                    ++$async$self._idx;
+                  } else if (command === C.SvgPathSegType_0) {
+                    command = $async$self._maybeImplicitCommand$2(lookahead, command);
+                    if (command === C.SvgPathSegType_0)
+                      H.throwExpression(P.StateError$("Expected a path command"));
+                  } else
+                    ++$async$self._idx;
+                  $async$self._previousCommand = command;
+                  segment.command = command;
+                  switch (command) {
+                    case C.SvgPathSegType_7:
+                    case C.SvgPathSegType_6:
+                      target = 1;
+                      break;
+                    case C.SvgPathSegType_17:
+                    case C.SvgPathSegType_16:
+                      target = 2;
+                      break;
+                    case C.SvgPathSegType_3:
+                    case C.SvgPathSegType_2:
+                    case C.SvgPathSegType_5:
+                    case C.SvgPathSegType_4:
+                    case C.SvgPathSegType_19:
+                    case C.SvgPathSegType_18:
+                      target = 3;
+                      break;
+                    case C.SvgPathSegType_13:
+                    case C.SvgPathSegType_12:
+                      target = 4;
+                      break;
+                    case C.SvgPathSegType_15:
+                    case C.SvgPathSegType_14:
+                      target = 5;
+                      break;
+                    case C.SvgPathSegType_1:
+                      target = 6;
+                      break;
+                    case C.SvgPathSegType_9:
+                    case C.SvgPathSegType_8:
+                      target = 7;
+                      break;
+                    case C.SvgPathSegType_11:
+                    case C.SvgPathSegType_10:
+                      target = 8;
+                      break;
+                    case C.SvgPathSegType_0:
+                      target = 9;
+                      break;
+                    default:
+                      target = null;
+                      break;
+                  }
+                  if (target)
+                    c$0:
+                      for (; true;)
+                        switch (target) {
+                          case 1:
+                            segment.point1 = new T._PathOffset($async$self._parseNumber$0(), $async$self._parseNumber$0());
+                            target = 2;
+                            continue c$0;
+                          case 2:
+                            segment.point2 = new T._PathOffset($async$self._parseNumber$0(), $async$self._parseNumber$0());
+                            target = 3;
+                            continue c$0;
+                          case 3:
+                            segment.targetPoint = new T._PathOffset($async$self._parseNumber$0(), $async$self._parseNumber$0());
+                            break c$0;
+                          case 4:
+                            t1 = $async$self._parseNumber$0();
+                            t2 = segment.targetPoint;
+                            t2 = t2 == null ? null : t2.dy;
+                            segment.targetPoint = new T._PathOffset(t1, t2 == null ? 0 : t2);
+                            break c$0;
+                          case 5:
+                            t1 = segment.targetPoint;
+                            t1 = t1 == null ? null : t1.dx;
+                            if (t1 == null)
+                              t1 = 0;
+                            segment.targetPoint = new T._PathOffset(t1, $async$self._parseNumber$0());
+                            break c$0;
+                          case 6:
+                            $async$self._skipOptionalSvgSpaces$0();
+                            break c$0;
+                          case 7:
+                            segment.point1 = new T._PathOffset($async$self._parseNumber$0(), $async$self._parseNumber$0());
+                            segment.targetPoint = new T._PathOffset($async$self._parseNumber$0(), $async$self._parseNumber$0());
+                            break c$0;
+                          case 8:
+                            segment.point1 = new T._PathOffset($async$self._parseNumber$0(), $async$self._parseNumber$0());
+                            t1 = $async$self._parseNumber$0();
+                            t2 = segment.point2;
+                            t2 = t2 == null ? null : t2.dy;
+                            segment.point2 = new T._PathOffset(t1, t2 == null ? 0 : t2);
+                            segment.arcLarge = $async$self._parseArcFlag$0();
+                            segment.arcSweep = $async$self._parseArcFlag$0();
+                            segment.targetPoint = new T._PathOffset($async$self._parseNumber$0(), $async$self._parseNumber$0());
+                            break c$0;
+                          case 9:
+                            H.throwExpression(P.StateError$("Unknown segment command"));
+                            break c$0;
+                        }
+                  $async$goto = 4;
+                  return segment;
+                case 4:
+                  // after yield
+                  // goto for condition
+                  $async$goto = 2;
+                  break;
+                case 3:
+                  // after for
+                  // implicit return
+                  return P._IterationMarker_endOfIteration();
+                case 1:
+                  // rethrow
+                  return P._IterationMarker_uncaughtError($async$currentError);
+              }
+          };
+        }, T.PathSegmentData);
+      }
+    },
+    PathSegmentData: {
+      "^": "Object;command,0targetPoint,0point1,0point2,arcSweep,arcLarge",
+      get$x: function(_) {
+        return this.targetPoint.dx;
+      },
+      get$y: function(_) {
+        return this.targetPoint.dy;
+      },
+      toString$0: function(_) {
+        return "PathSegmentData{" + this.command.toString$0(0) + " " + H.S(this.targetPoint) + " " + H.S(this.point1) + " " + H.S(this.point2) + " " + this.arcSweep + " " + this.arcLarge + "}";
+      }
+    },
+    SvgPathNormalizer: {
+      "^": "Object;_currentPoint,_subPathPoint,_controlPoint,_lastCommand",
+      _decomposeArcToCubic$3: function(currentPoint, arcSegment, path) {
+        var t1, rx, ry, angle, midPointDistance, pointTransform, transformedMidPoint, t2, t3, radiiScale, point1, point2, delta, scaleFactor, centerPoint, theta1, thetaArc, segments, i, startTheta, endTheta, t, sinStartTheta, cosStartTheta, sinEndTheta, cosEndTheta, t4, t5, t6, t7;
+        t1 = arcSegment.point1;
+        rx = Math.abs(t1.dx);
+        ry = Math.abs(t1.dy);
+        if (rx === 0 || ry === 0)
+          return false;
+        t1 = arcSegment.targetPoint;
+        if (t1 == null ? currentPoint == null : t1 === currentPoint)
+          return false;
+        angle = arcSegment.point2.dx;
+        midPointDistance = currentPoint.$sub(0, t1).$mul(0, 0.5);
+        pointTransform = new T.Matrix4(new Float32Array(16));
+        pointTransform.setIdentity$0();
+        t1 = -angle;
+        pointTransform.rotateZ$1(t1);
+        transformedMidPoint = this._mapPoint$2(pointTransform, new T._PathOffset(midPointDistance.dx, midPointDistance.dy));
+        t2 = transformedMidPoint.dx;
+        t3 = transformedMidPoint.dy;
+        radiiScale = t2 * t2 / (rx * rx) + t3 * t3 / (ry * ry);
+        if (radiiScale > 1) {
+          rx *= Math.sqrt(radiiScale);
+          ry *= Math.sqrt(radiiScale);
+        }
+        pointTransform.setIdentity$0();
+        pointTransform.scale$2(0, 1 / rx, 1 / ry);
+        pointTransform.rotateZ$1(t1);
+        point1 = this._mapPoint$2(pointTransform, currentPoint);
+        point2 = this._mapPoint$2(pointTransform, arcSegment.targetPoint);
+        delta = point2.$sub(0, point1);
+        t1 = delta.dx;
+        t2 = delta.dy;
+        scaleFactor = Math.sqrt(Math.max(1 / (t1 * t1 + t2 * t2) - 0.25, 0));
+        delta = delta.$mul(0, arcSegment.arcSweep === arcSegment.arcLarge ? -scaleFactor : scaleFactor);
+        t1 = point1.$add(0, point2).$mul(0, 0.5);
+        t2 = t1.dx + -delta.dy;
+        t1 = t1.dy + delta.dx;
+        centerPoint = new T._PathOffset(t2, t1);
+        point1 = point1.$sub(0, centerPoint);
+        theta1 = Math.atan2(point1.dy, point1.dx);
+        point2 = point2.$sub(0, centerPoint);
+        thetaArc = Math.atan2(point2.dy, point2.dx) - theta1;
+        if (thetaArc < 0 && arcSegment.arcSweep)
+          thetaArc += 6.283185307179586;
+        else if (thetaArc > 0 && !arcSegment.arcSweep)
+          thetaArc -= 6.283185307179586;
+        pointTransform.setIdentity$0();
+        pointTransform.rotateZ$1(angle);
+        pointTransform.scale$2(0, rx, ry);
+        segments = C.JSDouble_methods.ceil$0(Math.abs(thetaArc / 1.5717963267948964));
+        for (t3 = path.statements, i = 0; i < segments;) {
+          startTheta = theta1 + i * thetaArc / segments;
+          ++i;
+          endTheta = theta1 + i * thetaArc / segments;
+          t = 1.3333333333333333 * Math.tan(0.25 * (endTheta - startTheta));
+          if (!isFinite(t))
+            return false;
+          sinStartTheta = Math.sin(startTheta);
+          cosStartTheta = Math.cos(startTheta);
+          sinEndTheta = Math.sin(endTheta);
+          cosEndTheta = Math.cos(endTheta);
+          t4 = cosEndTheta + t2;
+          t5 = sinEndTheta + t1;
+          t6 = this._mapPoint$2(pointTransform, new T._PathOffset(cosStartTheta - t * sinStartTheta + t2, sinStartTheta + t * cosStartTheta + t1));
+          t7 = this._mapPoint$2(pointTransform, new T._PathOffset(t4 + t * sinEndTheta, t5 + -t * cosEndTheta));
+          t5 = this._mapPoint$2(pointTransform, new T._PathOffset(t4, t5));
+          C.JSArray_methods.add$1(t3, new X.StaticCode("path.cubicTo(" + B.toFixedDouble(t6.dx) + ", " + B.toFixedDouble(t6.dy) + ", " + B.toFixedDouble(t7.dx) + ", " + B.toFixedDouble(t7.dy) + ", " + B.toFixedDouble(t5.dx) + ", " + B.toFixedDouble(t5.dy) + ");"));
+        }
+        return true;
+      },
+      _mapPoint$2: function(transform, point) {
+        var t1, t2, t3, t4, t5;
+        t1 = transform._m4storage;
+        t2 = t1[0];
+        t3 = point.dx;
+        t4 = t1[4];
+        t5 = point.dy;
+        return new T._PathOffset(t2 * t3 + t4 * t5 + t1[12], t1[1] * t3 + t1[5] * t5 + t1[13]);
+      }
+    }
+  }], ["", "package:path_parsing/src/path_segment_type.dart",, L, {
+    "^": "",
+    SvgPathSegType: {
+      "^": "Object;index,_path_segment_type$_name",
+      toString$0: function(_) {
+        return this._path_segment_type$_name;
+      }
+    }
   }], ["quiver.core", "package:quiver/core.dart",, X, {
     "^": "",
     hashObjects: function(objects) {
@@ -46035,7 +45953,7 @@
       return 536870911 & hash + ((16383 & hash) << 15);
     },
     hashObjects_closure: {
-      "^": "Closure:107;",
+      "^": "Closure:106;",
       call$2: function(h, i) {
         var t1, hash;
         H.intTypeCheck(h);
@@ -46131,7 +46049,7 @@
         return Y._FileSpan$(this, start, end);
       }, function($receiver, start) {
         return this.span$2($receiver, start, null);
-      }, "span$1", "call$2", "call$1", "get$span", 5, 2, 108],
+      }, "span$1", "call$2", "call$1", "get$span", 5, 2, 107],
       getLine$1: function(offset) {
         var t1;
         if (typeof offset !== "number")
@@ -46473,7 +46391,7 @@
         return t1.charCodeAt(0) == 0 ? t1 : t1;
       }, function($receiver, message) {
         return this.message$2$color($receiver, message, null);
-      }, "message$1", "call$2$color", "call$1", "get$message", 5, 3, 109],
+      }, "message$1", "call$2$color", "call$1", "get$message", 5, 3, 108],
       highlight$1$color: function(_, color) {
         var t1, t2, t3, column, t4, t5, t6, context, lineStart, endIndex, textLine, toColumn, i;
         t1 = this.file;
@@ -46666,7 +46584,7 @@
         return this.error$4$length$match$position($receiver, message, null, null, null);
       }, "error$1", function($receiver, message, $length, position) {
         return this.error$4$length$match$position($receiver, message, $length, null, position);
-      }, "error$3$length$position", "call$4$length$match$position", "call$1", "call$3$length$position", "get$error", 5, 7, 110]
+      }, "error$3$length$position", "call$4$length$match$position", "call$1", "call$3$length$position", "get$error", 5, 7, 109]
     }
   }], ["", "package:vector_math/hash.dart",, A, {
     "^": "",
@@ -46680,7 +46598,7 @@
       return 536870911 & hash + ((16383 & hash) << 15);
     },
     hashObjects_closure0: {
-      "^": "Closure:111;",
+      "^": "Closure:110;",
       call$2: function(h, i) {
         var t1, hash;
         H.intTypeCheck(h);
@@ -46770,6 +46688,153 @@
         t1[3] = t2[t3];
         return new T.Vector4(t1);
       },
+      $mul: function(_, arg) {
+        var t1, out, argStorage, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13, t14, t15, t16, t17, t18, t19, t20, m00, m01, m02, m03, m10, m11, m12, m13, m20, m21, m22, m23, m30, m31, m32, m33, n00, n01, n02, n03, n10, n11, n12, n13, n20, n21, n22, n23, n30, n31, n32, n33;
+        if (typeof arg === "number") {
+          t1 = new T.Matrix4(new Float32Array(16));
+          t1.setFrom$1(this);
+          t1.scale$3(0, arg, null, null);
+          return t1;
+        }
+        t1 = J.getInterceptor(arg);
+        if (!!t1.$isVector4) {
+          out = new T.Vector4(new Float32Array(4));
+          out.setFrom$1(arg);
+          argStorage = out._v4storage;
+          t1 = this._m4storage;
+          t2 = t1[0];
+          t3 = argStorage[0];
+          t4 = t1[4];
+          t5 = argStorage[1];
+          t6 = t1[8];
+          t7 = argStorage[2];
+          t8 = t1[12];
+          t9 = argStorage[3];
+          t10 = t1[1];
+          t11 = t1[5];
+          t12 = t1[9];
+          t13 = t1[13];
+          t14 = t1[2];
+          t15 = t1[6];
+          t16 = t1[10];
+          t17 = t1[14];
+          t18 = t1[3];
+          t19 = t1[7];
+          t20 = t1[11];
+          t1 = t1[15];
+          argStorage[0] = t2 * t3 + t4 * t5 + t6 * t7 + t8 * t9;
+          argStorage[1] = t10 * t3 + t11 * t5 + t12 * t7 + t13 * t9;
+          argStorage[2] = t14 * t3 + t15 * t5 + t16 * t7 + t17 * t9;
+          argStorage[3] = t18 * t3 + t19 * t5 + t20 * t7 + t1 * t9;
+          return out;
+        }
+        if (!!t1.$isVector3) {
+          out = new T.Vector3(new Float32Array(3));
+          out.setFrom$1(arg);
+          argStorage = out._v3storage;
+          t1 = this._m4storage;
+          t2 = t1[0];
+          t3 = argStorage[0];
+          t4 = t1[4];
+          t5 = argStorage[1];
+          t6 = t1[8];
+          t7 = argStorage[2];
+          t8 = t1[12];
+          t9 = t1[1];
+          t10 = t1[5];
+          t11 = t1[9];
+          t12 = t1[13];
+          t13 = t1[2];
+          t14 = t1[6];
+          t15 = t1[10];
+          t1 = t1[14];
+          argStorage[0] = t2 * t3 + t4 * t5 + t6 * t7 + t8;
+          argStorage[1] = t9 * t3 + t10 * t5 + t11 * t7 + t12;
+          argStorage[2] = t13 * t3 + t14 * t5 + t15 * t7 + t1;
+          return out;
+        }
+        if (!!t1.$isMatrix4) {
+          t1 = new Float32Array(16);
+          t2 = new T.Matrix4(t1);
+          t2.setFrom$1(this);
+          m00 = t1[0];
+          m01 = t1[4];
+          m02 = t1[8];
+          m03 = t1[12];
+          m10 = t1[1];
+          m11 = t1[5];
+          m12 = t1[9];
+          m13 = t1[13];
+          m20 = t1[2];
+          m21 = t1[6];
+          m22 = t1[10];
+          m23 = t1[14];
+          m30 = t1[3];
+          m31 = t1[7];
+          m32 = t1[11];
+          m33 = t1[15];
+          argStorage = arg._m4storage;
+          n00 = argStorage.$index(0, 0);
+          n01 = argStorage.$index(0, 4);
+          n02 = argStorage.$index(0, 8);
+          n03 = argStorage.$index(0, 12);
+          n10 = argStorage.$index(0, 1);
+          n11 = argStorage.$index(0, 5);
+          n12 = argStorage.$index(0, 9);
+          n13 = argStorage.$index(0, 13);
+          n20 = argStorage.$index(0, 2);
+          n21 = argStorage.$index(0, 6);
+          n22 = argStorage.$index(0, 10);
+          n23 = argStorage.$index(0, 14);
+          n30 = argStorage.$index(0, 3);
+          n31 = argStorage.$index(0, 7);
+          n32 = argStorage.$index(0, 11);
+          n33 = argStorage.$index(0, 15);
+          t1[0] = C.JSNumber_methods.$mul(m00, n00) + C.JSNumber_methods.$mul(m01, n10) + C.JSNumber_methods.$mul(m02, n20) + C.JSNumber_methods.$mul(m03, n30);
+          t1[4] = C.JSNumber_methods.$mul(m00, n01) + C.JSNumber_methods.$mul(m01, n11) + C.JSNumber_methods.$mul(m02, n21) + C.JSNumber_methods.$mul(m03, n31);
+          t1[8] = C.JSNumber_methods.$mul(m00, n02) + C.JSNumber_methods.$mul(m01, n12) + C.JSNumber_methods.$mul(m02, n22) + C.JSNumber_methods.$mul(m03, n32);
+          t1[12] = C.JSNumber_methods.$mul(m00, n03) + C.JSNumber_methods.$mul(m01, n13) + C.JSNumber_methods.$mul(m02, n23) + C.JSNumber_methods.$mul(m03, n33);
+          t1[1] = C.JSNumber_methods.$mul(m10, n00) + C.JSNumber_methods.$mul(m11, n10) + C.JSNumber_methods.$mul(m12, n20) + C.JSNumber_methods.$mul(m13, n30);
+          t1[5] = C.JSNumber_methods.$mul(m10, n01) + C.JSNumber_methods.$mul(m11, n11) + C.JSNumber_methods.$mul(m12, n21) + C.JSNumber_methods.$mul(m13, n31);
+          t1[9] = C.JSNumber_methods.$mul(m10, n02) + C.JSNumber_methods.$mul(m11, n12) + C.JSNumber_methods.$mul(m12, n22) + C.JSNumber_methods.$mul(m13, n32);
+          t1[13] = C.JSNumber_methods.$mul(m10, n03) + C.JSNumber_methods.$mul(m11, n13) + C.JSNumber_methods.$mul(m12, n23) + C.JSNumber_methods.$mul(m13, n33);
+          t1[2] = C.JSNumber_methods.$mul(m20, n00) + C.JSNumber_methods.$mul(m21, n10) + C.JSNumber_methods.$mul(m22, n20) + C.JSNumber_methods.$mul(m23, n30);
+          t1[6] = C.JSNumber_methods.$mul(m20, n01) + C.JSNumber_methods.$mul(m21, n11) + C.JSNumber_methods.$mul(m22, n21) + C.JSNumber_methods.$mul(m23, n31);
+          t1[10] = C.JSNumber_methods.$mul(m20, n02) + C.JSNumber_methods.$mul(m21, n12) + C.JSNumber_methods.$mul(m22, n22) + C.JSNumber_methods.$mul(m23, n32);
+          t1[14] = C.JSNumber_methods.$mul(m20, n03) + C.JSNumber_methods.$mul(m21, n13) + C.JSNumber_methods.$mul(m22, n23) + C.JSNumber_methods.$mul(m23, n33);
+          t1[3] = C.JSNumber_methods.$mul(m30, n00) + C.JSNumber_methods.$mul(m31, n10) + C.JSNumber_methods.$mul(m32, n20) + C.JSNumber_methods.$mul(m33, n30);
+          t1[7] = C.JSNumber_methods.$mul(m30, n01) + C.JSNumber_methods.$mul(m31, n11) + C.JSNumber_methods.$mul(m32, n21) + C.JSNumber_methods.$mul(m33, n31);
+          t1[11] = C.JSNumber_methods.$mul(m30, n02) + C.JSNumber_methods.$mul(m31, n12) + C.JSNumber_methods.$mul(m32, n22) + C.JSNumber_methods.$mul(m33, n32);
+          t1[15] = C.JSNumber_methods.$mul(m30, n03) + C.JSNumber_methods.$mul(m31, n13) + C.JSNumber_methods.$mul(m32, n23) + C.JSNumber_methods.$mul(m33, n33);
+          return t2;
+        }
+        throw H.wrapException(P.ArgumentError$(arg));
+      },
+      $add: function(_, arg) {
+        var t1, t2, oStorage;
+        H.interceptedTypeCheck(arg, "$isMatrix4");
+        t1 = new Float32Array(16);
+        t2 = new T.Matrix4(t1);
+        t2.setFrom$1(this);
+        oStorage = arg._m4storage;
+        t1[0] = t1[0] + oStorage[0];
+        t1[1] = t1[1] + oStorage[1];
+        t1[2] = t1[2] + oStorage[2];
+        t1[3] = t1[3] + oStorage[3];
+        t1[4] = t1[4] + oStorage[4];
+        t1[5] = t1[5] + oStorage[5];
+        t1[6] = t1[6] + oStorage[6];
+        t1[7] = t1[7] + oStorage[7];
+        t1[8] = t1[8] + oStorage[8];
+        t1[9] = t1[9] + oStorage[9];
+        t1[10] = t1[10] + oStorage[10];
+        t1[11] = t1[11] + oStorage[11];
+        t1[12] = t1[12] + oStorage[12];
+        t1[13] = t1[13] + oStorage[13];
+        t1[14] = t1[14] + oStorage[14];
+        t1[15] = t1[15] + oStorage[15];
+        return t2;
+      },
       $sub: function(_, arg) {
         var t1, t2, oStorage;
         H.interceptedTypeCheck(arg, "$isMatrix4");
@@ -46777,28 +46842,28 @@
         t2 = new T.Matrix4(t1);
         t2.setFrom$1(this);
         oStorage = arg._m4storage;
-        t1[0] = C.JSNumber_methods.$sub(t1[0], oStorage.$index(0, 0));
-        t1[1] = C.JSNumber_methods.$sub(t1[1], oStorage.$index(0, 1));
-        t1[2] = C.JSNumber_methods.$sub(t1[2], oStorage.$index(0, 2));
-        t1[3] = C.JSNumber_methods.$sub(t1[3], oStorage.$index(0, 3));
-        t1[4] = C.JSNumber_methods.$sub(t1[4], oStorage.$index(0, 4));
-        t1[5] = C.JSNumber_methods.$sub(t1[5], oStorage.$index(0, 5));
-        t1[6] = C.JSNumber_methods.$sub(t1[6], oStorage.$index(0, 6));
-        t1[7] = C.JSNumber_methods.$sub(t1[7], oStorage.$index(0, 7));
-        t1[8] = C.JSNumber_methods.$sub(t1[8], oStorage.$index(0, 8));
-        t1[9] = C.JSNumber_methods.$sub(t1[9], oStorage.$index(0, 9));
-        t1[10] = C.JSNumber_methods.$sub(t1[10], oStorage.$index(0, 10));
-        t1[11] = C.JSNumber_methods.$sub(t1[11], oStorage.$index(0, 11));
-        t1[12] = C.JSNumber_methods.$sub(t1[12], oStorage.$index(0, 12));
-        t1[13] = C.JSNumber_methods.$sub(t1[13], oStorage.$index(0, 13));
-        t1[14] = C.JSNumber_methods.$sub(t1[14], oStorage.$index(0, 14));
-        t1[15] = C.JSNumber_methods.$sub(t1[15], oStorage.$index(0, 15));
+        t1[0] = t1[0] - oStorage[0];
+        t1[1] = t1[1] - oStorage[1];
+        t1[2] = t1[2] - oStorage[2];
+        t1[3] = t1[3] - oStorage[3];
+        t1[4] = t1[4] - oStorage[4];
+        t1[5] = t1[5] - oStorage[5];
+        t1[6] = t1[6] - oStorage[6];
+        t1[7] = t1[7] - oStorage[7];
+        t1[8] = t1[8] - oStorage[8];
+        t1[9] = t1[9] - oStorage[9];
+        t1[10] = t1[10] - oStorage[10];
+        t1[11] = t1[11] - oStorage[11];
+        t1[12] = t1[12] - oStorage[12];
+        t1[13] = t1[13] - oStorage[13];
+        t1[14] = t1[14] - oStorage[14];
+        t1[15] = t1[15] - oStorage[15];
         return t2;
       },
       rotateZ$1: function(angle) {
         var cosAngle, sinAngle, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10;
-        cosAngle = Math.cos(H.checkNum(angle));
-        sinAngle = Math.sin(H.checkNum(angle));
+        cosAngle = Math.cos(angle);
+        sinAngle = Math.sin(angle);
         t1 = this._m4storage;
         t2 = t1[0];
         t3 = t1[4];
@@ -46891,24 +46956,24 @@
       },
       add$1: function(_, o) {
         var oStorage, t1;
-        oStorage = o.get$_m4storage();
+        oStorage = o._m4storage;
         t1 = this._m4storage;
-        t1[0] = C.JSNumber_methods.$add(t1[0], oStorage.$index(0, 0));
-        t1[1] = C.JSNumber_methods.$add(t1[1], oStorage.$index(0, 1));
-        t1[2] = C.JSNumber_methods.$add(t1[2], oStorage.$index(0, 2));
-        t1[3] = C.JSNumber_methods.$add(t1[3], oStorage.$index(0, 3));
-        t1[4] = C.JSNumber_methods.$add(t1[4], oStorage.$index(0, 4));
-        t1[5] = C.JSNumber_methods.$add(t1[5], oStorage.$index(0, 5));
-        t1[6] = C.JSNumber_methods.$add(t1[6], oStorage.$index(0, 6));
-        t1[7] = C.JSNumber_methods.$add(t1[7], oStorage.$index(0, 7));
-        t1[8] = C.JSNumber_methods.$add(t1[8], oStorage.$index(0, 8));
-        t1[9] = C.JSNumber_methods.$add(t1[9], oStorage.$index(0, 9));
-        t1[10] = C.JSNumber_methods.$add(t1[10], oStorage.$index(0, 10));
-        t1[11] = C.JSNumber_methods.$add(t1[11], oStorage.$index(0, 11));
-        t1[12] = C.JSNumber_methods.$add(t1[12], oStorage.$index(0, 12));
-        t1[13] = C.JSNumber_methods.$add(t1[13], oStorage.$index(0, 13));
-        t1[14] = C.JSNumber_methods.$add(t1[14], oStorage.$index(0, 14));
-        t1[15] = C.JSNumber_methods.$add(t1[15], oStorage.$index(0, 15));
+        t1[0] = t1[0] + oStorage[0];
+        t1[1] = t1[1] + oStorage[1];
+        t1[2] = t1[2] + oStorage[2];
+        t1[3] = t1[3] + oStorage[3];
+        t1[4] = t1[4] + oStorage[4];
+        t1[5] = t1[5] + oStorage[5];
+        t1[6] = t1[6] + oStorage[6];
+        t1[7] = t1[7] + oStorage[7];
+        t1[8] = t1[8] + oStorage[8];
+        t1[9] = t1[9] + oStorage[9];
+        t1[10] = t1[10] + oStorage[10];
+        t1[11] = t1[11] + oStorage[11];
+        t1[12] = t1[12] + oStorage[12];
+        t1[13] = t1[13] + oStorage[13];
+        t1[14] = t1[14] + oStorage[14];
+        t1[15] = t1[15] + oStorage[15];
       },
       get$right: function(_) {
         var t1, x, y, z;
@@ -46960,10 +47025,25 @@
         t2 = new T.Vector3(t1);
         t2.setFrom$1(this);
         argStorage = other._v3storage;
-        t1[0] = C.JSNumber_methods.$sub(t1[0], argStorage.$index(0, 0));
-        t1[1] = C.JSNumber_methods.$sub(t1[1], argStorage.$index(0, 1));
-        t1[2] = C.JSNumber_methods.$sub(t1[2], argStorage.$index(0, 2));
+        t1[0] = t1[0] - argStorage[0];
+        t1[1] = t1[1] - argStorage[1];
+        t1[2] = t1[2] - argStorage[2];
         return t2;
+      },
+      $add: function(_, other) {
+        var t1, t2, argStorage;
+        H.interceptedTypeCheck(other, "$isVector3");
+        t1 = new Float32Array(3);
+        t2 = new T.Vector3(t1);
+        t2.setFrom$1(this);
+        argStorage = other._v3storage;
+        t1[0] = t1[0] + argStorage[0];
+        t1[1] = t1[1] + argStorage[1];
+        t1[2] = t1[2] + argStorage[2];
+        return t2;
+      },
+      $mul: function(_, scale) {
+        return this.scaled$1(scale);
       },
       $index: function(_, i) {
         var t1;
@@ -46986,11 +47066,21 @@
       },
       add$1: function(_, arg) {
         var argStorage, t1;
-        argStorage = arg.get$_v3storage();
+        argStorage = arg._v3storage;
         t1 = this._v3storage;
-        t1[0] = C.JSNumber_methods.$add(t1[0], argStorage.$index(0, 0));
-        t1[1] = C.JSNumber_methods.$add(t1[1], argStorage.$index(0, 1));
-        t1[2] = C.JSNumber_methods.$add(t1[2], argStorage.$index(0, 2));
+        t1[0] = t1[0] + argStorage[0];
+        t1[1] = t1[1] + argStorage[1];
+        t1[2] = t1[2] + argStorage[2];
+      },
+      scaled$1: function(arg) {
+        var t1, t2;
+        t1 = new Float32Array(3);
+        t2 = new T.Vector3(t1);
+        t2.setFrom$1(this);
+        t1[2] = t1[2] * arg;
+        t1[1] = t1[1] * arg;
+        t1[0] = t1[0] * arg;
+        return t2;
       },
       get$x: function(_) {
         return this._v3storage[0];
@@ -47037,11 +47127,30 @@
         t2 = new T.Vector4(t1);
         t2.setFrom$1(this);
         argStorage = other._v4storage;
-        t1[0] = C.JSNumber_methods.$sub(t1[0], argStorage.$index(0, 0));
-        t1[1] = C.JSNumber_methods.$sub(t1[1], argStorage.$index(0, 1));
-        t1[2] = C.JSNumber_methods.$sub(t1[2], argStorage.$index(0, 2));
-        t1[3] = C.JSNumber_methods.$sub(t1[3], argStorage.$index(0, 3));
+        t1[0] = t1[0] - argStorage[0];
+        t1[1] = t1[1] - argStorage[1];
+        t1[2] = t1[2] - argStorage[2];
+        t1[3] = t1[3] - argStorage[3];
         return t2;
+      },
+      $add: function(_, other) {
+        var t1, t2, argStorage;
+        H.interceptedTypeCheck(other, "$isVector4");
+        t1 = new Float32Array(4);
+        t2 = new T.Vector4(t1);
+        t2.setFrom$1(this);
+        argStorage = other._v4storage;
+        t1[0] = t1[0] + argStorage[0];
+        t1[1] = t1[1] + argStorage[1];
+        t1[2] = t1[2] + argStorage[2];
+        t1[3] = t1[3] + argStorage[3];
+        return t2;
+      },
+      $mul: function(_, scale) {
+        var t1 = new T.Vector4(new Float32Array(4));
+        t1.setFrom$1(this);
+        t1.scale$1(0, scale);
+        return t1;
       },
       $index: function(_, i) {
         var t1;
@@ -47065,12 +47174,19 @@
       },
       add$1: function(_, arg) {
         var argStorage, t1;
-        argStorage = arg.get$_v4storage();
+        argStorage = arg._v4storage;
         t1 = this._v4storage;
-        t1[0] = C.JSNumber_methods.$add(t1[0], argStorage.$index(0, 0));
-        t1[1] = C.JSNumber_methods.$add(t1[1], argStorage.$index(0, 1));
-        t1[2] = C.JSNumber_methods.$add(t1[2], argStorage.$index(0, 2));
-        t1[3] = C.JSNumber_methods.$add(t1[3], argStorage.$index(0, 3));
+        t1[0] = t1[0] + argStorage[0];
+        t1[1] = t1[1] + argStorage[1];
+        t1[2] = t1[2] + argStorage[2];
+        t1[3] = t1[3] + argStorage[3];
+      },
+      scale$1: function(_, arg) {
+        var t1 = this._v4storage;
+        t1[0] = t1[0] * arg;
+        t1[1] = t1[1] * arg;
+        t1[2] = t1[2] * arg;
+        t1[3] = t1[3] * arg;
       },
       get$x: function(_) {
         return this._v4storage[0];
@@ -47116,7 +47232,7 @@
       }
     },
     main_updateSelectedItems_closure: {
-      "^": "Closure:112;",
+      "^": "Closure:111;",
       call$1: function(item) {
         var t1, t2;
         H.interceptedTypeCheck(item, "$isElement");
@@ -47129,7 +47245,7 @@
       }
     },
     main_generateCode: {
-      "^": "Closure:38;_box_0",
+      "^": "Closure:43;_box_0",
       call$0: function() {
         var $async$goto = 0, $async$completer = P._makeAsyncAwaitCompleter(null), $async$self = this, t1, widgets, t2, generator, t3, t4, t5, t6, t7, code;
         var $async$call$0 = P._wrapJsFunctionForAsync(function($async$errorCode, $async$result) {
@@ -47159,7 +47275,7 @@
                 generator._effects = t6;
                 t1 = new Z.TextStyleGenerator(new K.CodeCatalog("_TextStyleCatalog", "ui.TextStyle", B.toVariableName("ui.TextStyle"), P.LinkedHashMap_LinkedHashMap$_empty(t1, t1)));
                 generator._textStyles = t1;
-                t7 = new B.NodeGenerator(new U.DirectiveGenerator());
+                t7 = new B.NodeGenerator(new U.DirectiveGenerator(), new G.TransformGenerator(), new G.ConstraintsGenerator());
                 t7._group = new O.GroupGenerator(t7);
                 t7._frame = new A.FrameGenerator(t3, t7);
                 t7._vector = new Y.VectorGenerator(t5, t6, t4);
@@ -47167,7 +47283,7 @@
                 generator._node = t7;
                 generator._component = new G.ComponentGenerator(t7);
                 $async$goto = 2;
-                return P._asyncAwait(generator.generateComponents$1(widgets), $async$call$0);
+                return P._asyncAwait(generator.generateComponents$2$withComments(widgets, true), $async$call$0);
               case 2:
                 // returning from await.
                 code = $async$result;
@@ -47188,7 +47304,7 @@
       }
     },
     main_createComponentLi: {
-      "^": "Closure:114;updateSelectedItems",
+      "^": "Closure:113;updateSelectedItems",
       call$1: function(widgetName) {
         var t1, li, t2, icon, checkbox, icon_check, title;
         t1 = document;
@@ -47214,7 +47330,7 @@
       }
     },
     main_createComponentLi_closure: {
-      "^": "Closure:115;widgetName,updateSelectedItems",
+      "^": "Closure:114;widgetName,updateSelectedItems",
       call$1: function(item) {
         return this.$call$body$main_createComponentLi_closure(H.interceptedTypeCheck(item, "$isMouseEvent"));
       },
@@ -47241,7 +47357,7 @@
       }
     },
     main_downloadFile: {
-      "^": "Closure:38;_box_0,token,fileKey,fileTitle,sectionComponents,createComponentLi,components",
+      "^": "Closure:43;_box_0,token,fileKey,fileTitle,sectionComponents,createComponentLi,components",
       call$0: function() {
         var $async$goto = 0, $async$completer = P._makeAsyncAwaitCompleter(null), $async$handler = 1, $async$currentError, $async$next = [], $async$self = this, api, lis, e, t1, t2, t3, file, exception, $async$exception;
         var $async$call$0 = P._wrapJsFunctionForAsync(function($async$errorCode, $async$result) {
@@ -47307,7 +47423,7 @@
       }
     },
     main_downloadFile_closure: {
-      "^": "Closure:48;createComponentLi,lis",
+      "^": "Closure:35;createComponentLi,lis",
       call$2: function(k, v) {
         var widgetName, li;
         H.stringTypeCheck(k);
@@ -47317,21 +47433,21 @@
       }
     },
     main_closure: {
-      "^": "Closure:31;downloadFile",
+      "^": "Closure:32;downloadFile",
       call$1: function(c) {
         H.interceptedTypeCheck(c, "$isMouseEvent");
         this.downloadFile.call$0();
       }
     },
     main_closure0: {
-      "^": "Closure:31;generateCode",
+      "^": "Closure:32;generateCode",
       call$1: function(c) {
         H.interceptedTypeCheck(c, "$isMouseEvent");
         this.generateCode.call$0();
       }
     },
     main_closure1: {
-      "^": "Closure:31;_box_0",
+      "^": "Closure:32;_box_0",
       call$1: function(c) {
         var t1;
         H.interceptedTypeCheck(c, "$isMouseEvent");
@@ -48121,26 +48237,26 @@
   C.TokenType_2ty = new L.TokenType(125, false, false, false, false, "}", "CLOSE_CURLY_BRACKET", 0, "}");
   C.TokenType_wOL = new L.TokenType(62, false, true, false, true, ">", "GT", 8, ">");
   C.Map_4uyfz = new H.ConstantStringMap(5, {"(": C.TokenType_coy, "[": C.TokenType_zra, "{": C.TokenType_2ty, "<": C.TokenType_wOL, "${": C.TokenType_2ty}, C.List_4uk, [P.String, L.TokenType]);
-  C.SvgPathSegType_1 = new A.SvgPathSegType(1, "SvgPathSegType.close");
-  C.SvgPathSegType_2 = new A.SvgPathSegType(2, "SvgPathSegType.moveToAbs");
-  C.SvgPathSegType_3 = new A.SvgPathSegType(3, "SvgPathSegType.moveToRel");
-  C.SvgPathSegType_4 = new A.SvgPathSegType(4, "SvgPathSegType.lineToAbs");
-  C.SvgPathSegType_5 = new A.SvgPathSegType(5, "SvgPathSegType.lineToRel");
-  C.SvgPathSegType_6 = new A.SvgPathSegType(6, "SvgPathSegType.cubicToAbs");
-  C.SvgPathSegType_7 = new A.SvgPathSegType(7, "SvgPathSegType.cubicToRel");
-  C.SvgPathSegType_8 = new A.SvgPathSegType(8, "SvgPathSegType.quadToAbs");
-  C.SvgPathSegType_9 = new A.SvgPathSegType(9, "SvgPathSegType.quadToRel");
-  C.SvgPathSegType_10 = new A.SvgPathSegType(10, "SvgPathSegType.arcToAbs");
-  C.SvgPathSegType_11 = new A.SvgPathSegType(11, "SvgPathSegType.arcToRel");
-  C.SvgPathSegType_12 = new A.SvgPathSegType(12, "SvgPathSegType.lineToHorizontalAbs");
-  C.SvgPathSegType_13 = new A.SvgPathSegType(13, "SvgPathSegType.lineToHorizontalRel");
-  C.SvgPathSegType_14 = new A.SvgPathSegType(14, "SvgPathSegType.lineToVerticalAbs");
-  C.SvgPathSegType_15 = new A.SvgPathSegType(15, "SvgPathSegType.lineToVerticalRel");
-  C.SvgPathSegType_16 = new A.SvgPathSegType(16, "SvgPathSegType.smoothCubicToAbs");
-  C.SvgPathSegType_17 = new A.SvgPathSegType(17, "SvgPathSegType.smoothCubicToRel");
-  C.SvgPathSegType_18 = new A.SvgPathSegType(18, "SvgPathSegType.smoothQuadToAbs");
-  C.SvgPathSegType_19 = new A.SvgPathSegType(19, "SvgPathSegType.smoothQuadToRel");
-  C.Map_ekyNK = new H.GeneralConstantMap([90, C.SvgPathSegType_1, 122, C.SvgPathSegType_1, 77, C.SvgPathSegType_2, 109, C.SvgPathSegType_3, 76, C.SvgPathSegType_4, 108, C.SvgPathSegType_5, 67, C.SvgPathSegType_6, 99, C.SvgPathSegType_7, 81, C.SvgPathSegType_8, 113, C.SvgPathSegType_9, 65, C.SvgPathSegType_10, 97, C.SvgPathSegType_11, 72, C.SvgPathSegType_12, 104, C.SvgPathSegType_13, 86, C.SvgPathSegType_14, 118, C.SvgPathSegType_15, 83, C.SvgPathSegType_16, 115, C.SvgPathSegType_17, 84, C.SvgPathSegType_18, 116, C.SvgPathSegType_19], [P.int, A.SvgPathSegType]);
+  C.SvgPathSegType_1 = new L.SvgPathSegType(1, "SvgPathSegType.close");
+  C.SvgPathSegType_2 = new L.SvgPathSegType(2, "SvgPathSegType.moveToAbs");
+  C.SvgPathSegType_3 = new L.SvgPathSegType(3, "SvgPathSegType.moveToRel");
+  C.SvgPathSegType_4 = new L.SvgPathSegType(4, "SvgPathSegType.lineToAbs");
+  C.SvgPathSegType_5 = new L.SvgPathSegType(5, "SvgPathSegType.lineToRel");
+  C.SvgPathSegType_6 = new L.SvgPathSegType(6, "SvgPathSegType.cubicToAbs");
+  C.SvgPathSegType_7 = new L.SvgPathSegType(7, "SvgPathSegType.cubicToRel");
+  C.SvgPathSegType_8 = new L.SvgPathSegType(8, "SvgPathSegType.quadToAbs");
+  C.SvgPathSegType_9 = new L.SvgPathSegType(9, "SvgPathSegType.quadToRel");
+  C.SvgPathSegType_10 = new L.SvgPathSegType(10, "SvgPathSegType.arcToAbs");
+  C.SvgPathSegType_11 = new L.SvgPathSegType(11, "SvgPathSegType.arcToRel");
+  C.SvgPathSegType_12 = new L.SvgPathSegType(12, "SvgPathSegType.lineToHorizontalAbs");
+  C.SvgPathSegType_13 = new L.SvgPathSegType(13, "SvgPathSegType.lineToHorizontalRel");
+  C.SvgPathSegType_14 = new L.SvgPathSegType(14, "SvgPathSegType.lineToVerticalAbs");
+  C.SvgPathSegType_15 = new L.SvgPathSegType(15, "SvgPathSegType.lineToVerticalRel");
+  C.SvgPathSegType_16 = new L.SvgPathSegType(16, "SvgPathSegType.smoothCubicToAbs");
+  C.SvgPathSegType_17 = new L.SvgPathSegType(17, "SvgPathSegType.smoothCubicToRel");
+  C.SvgPathSegType_18 = new L.SvgPathSegType(18, "SvgPathSegType.smoothQuadToAbs");
+  C.SvgPathSegType_19 = new L.SvgPathSegType(19, "SvgPathSegType.smoothQuadToRel");
+  C.Map_ekyNK = new H.GeneralConstantMap([90, C.SvgPathSegType_1, 122, C.SvgPathSegType_1, 77, C.SvgPathSegType_2, 109, C.SvgPathSegType_3, 76, C.SvgPathSegType_4, 108, C.SvgPathSegType_5, 67, C.SvgPathSegType_6, 99, C.SvgPathSegType_7, 81, C.SvgPathSegType_8, 113, C.SvgPathSegType_9, 65, C.SvgPathSegType_10, 97, C.SvgPathSegType_11, 72, C.SvgPathSegType_12, 104, C.SvgPathSegType_13, 86, C.SvgPathSegType_14, 118, C.SvgPathSegType_15, 83, C.SvgPathSegType_16, 115, C.SvgPathSegType_17, 84, C.SvgPathSegType_18, 116, C.SvgPathSegType_19], [P.int, L.SvgPathSegType]);
   C.Map_empty0 = new H.ConstantStringMap(0, {}, C.List_empty0, [P.String, B.Expression]);
   C.Map_empty = new H.ConstantStringMap(0, {}, C.List_empty0, [P.String, P.String]);
   C.List_nZ5 = H.setRuntimeTypeInfo(Isolate.makeConstantList(['"', "'", '"""', "'''", 'r"', "r'", 'r"""', "r'''"]), [P.String]);
@@ -48447,7 +48563,7 @@
   C.StyleFix_4KW = new Q.StyleFix("optional-new", 'Remove "new" keyword.');
   C.StyleFix_C7v = new Q.StyleFix("optional-const", 'Remove "const" keyword inside constant context.');
   C.StyleFix_YDa = new Q.StyleFix("named-default-separator", 'Use "=" as the separator before named parameter default values.');
-  C.SvgPathSegType_0 = new A.SvgPathSegType(0, "SvgPathSegType.unknown");
+  C.SvgPathSegType_0 = new L.SvgPathSegType(0, "SvgPathSegType.unknown");
   C.TokenType_0Ef = new L.TokenType(138, false, true, false, true, ">=", "GT_EQ", 8, ">=");
   C.TokenType_1KU = new L.TokenType(96, false, false, false, false, "`", "BACKPING", 0, "`");
   C.TokenType_2Hh = new L.TokenType(159, false, true, false, false, "^=", "CARET_EQ", 1, "^=");
@@ -48529,6 +48645,7 @@
   C.Whitespace_splitOrTwoNewlines = new L.Whitespace("splitOrTwoNewlines");
   C.Whitespace_twoNewlines = new L.Whitespace("twoNewlines");
   C._IterationMarker_null_2 = new P._IterationMarker(null, 2);
+  C._PathOffset_0_0 = new T._PathOffset(0, 0);
   $.Closure_functionCounter = 0;
   $.BoundClosure_selfFieldNameCache = null;
   $.BoundClosure_receiverFieldNameCache = null;
@@ -48751,7 +48868,7 @@
   Isolate = Isolate.$finishIsolateConstructor(Isolate);
   $ = new Isolate();
   init.metadata = [];
-  init.types = [{func: 1, ret: P.Null}, {func: 1, ret: -1}, {func: 1, ret: -1, args: [D.ParameterBuilder]}, {func: 1, ret: B.Message, args: [L.Token]}, {func: 1, ret: P.Null, args: [,]}, {func: 1, ret: -1, args: [F.FieldBuilder]}, {func: 1, ret: -1, args: [D.MethodBuilder]}, {func: 1, ret: P.String, args: [P.String]}, {func: 1, ret: -1, args: [,]}, {func: 1, ret: P.String}, {func: 1, ret: P.bool, args: [,]}, {func: 1, ret: L.Token}, {func: 1, ret: B.Message, args: [P.String]}, {func: 1, ret: -1, args: [B.Expression]}, {func: 1, ret: P.bool}, {func: 1, ret: P.Null, args: [,,]}, {func: 1, args: [,]}, {func: 1, ret: P.Null, args: [O.Rule]}, {func: 1, ret: P.Null, args: [W.ProgressEvent]}, {func: 1, ret: -1, args: [P.Object], opt: [P.StackTrace]}, {func: 1, ret: -1, args: [P.Object]}, {func: 1, ret: P.bool, args: [O.Rule]}, {func: 1, ret: P.Null, args: [P.String]}, {func: 1, ret: -1, args: [P.String, P.String]}, {func: 1, ret: P.String, args: [P.Match]}, {func: 1, ret: U.Reference, args: [U.Reference]}, {func: 1, ret: P.StringSink, args: [U.Reference]}, {func: 1, ret: -1, args: [X.BlockBuilder]}, {func: 1, ret: P.Null, args: [P.String, P.String]}, {func: 1, ret: U.KeywordState0, args: [P.int]}, {func: 1, ret: P.bool, args: [P.String]}, {func: 1, ret: P.Null, args: [W.MouseEvent]}, {func: 1, ret: -1, args: [{func: 1, ret: -1}]}, {func: 1, ret: X.Code, args: [P.String]}, {func: 1, ret: B.Message, args: [P.int]}, {func: 1, ret: -1, args: [[P.Set, P.String]]}, {func: 1, ret: P.bool, args: [L.Token]}, {func: 1, ret: P.Null, args: [, P.StackTrace]}, {func: 1, ret: P.Future}, {func: 1, ret: P.bool, args: [D.Parameter]}, {func: 1, ret: P.bool, args: [Y.Expression0]}, {func: 1, ret: P.Null, args: [Y.Expression0]}, {func: 1, ret: P.Null, args: [[P.List, E.Chunk]]}, {func: 1, ret: O.Rule, args: [E.Chunk]}, {func: 1, ret: E.Chunk}, {func: 1, ret: P.bool, args: [Y.FormalParameter]}, {func: 1, ret: X.Code, args: [,]}, {func: 1, ret: -1, args: [Y.ConstructorBuilder]}, {func: 1, ret: P.Null, args: [P.String,,]}, {func: 1, ret: -1, opt: [P.Object]}, {func: 1, ret: P.String, args: [,]}, {func: 1, ret: -1, args: [P.Uint8List, P.String, P.int]}, {func: 1, ret: P.Null, args: [, {func: 1, ret: P.String}]}, {func: 1, ret: P.Null, args: [U.Reference]}, {func: 1, ret: P.Null, args: [R.Spec]}, {func: 1, ret: -1, args: [E.TypeReferenceBuilder]}, {func: 1, ret: P.bool, args: [Y.NamedExpression]}, {func: 1, ret: P.Null, args: [P.bool]}, {func: 1, ret: Y.Directive}, {func: 1, ret: -1, args: [O.Rule]}, {func: 1, ret: P.bool, args: [E.SourceComment]}, {func: 1, ret: P.int, args: [[P.List, P.int], P.int]}, {func: 1, ret: P.bool, args: [[P.Set, P.String]]}, {func: 1, ret: P.Null, args: [{func: 1, ret: -1}]}, {func: 1, ret: Y.IndentingBuiltValueToStringHelper, args: [P.String]}, {func: 1, ret: P.Null, args: [[P.List, E.Chunk], P.String, P.int]}, {func: 1, args: [,,]}, {func: 1, ret: P.String, named: {color: P.bool}}, {func: 1, ret: P.Object, args: [P.int]}, {func: 1, ret: P.int, args: [O.Rule]}, {func: 1, ret: P.Null, args: [P.int]}, {func: 1, ret: P.Null, args: [O.Rule, P.int]}, {func: 1, ret: P.String, args: [O.Rule]}, {func: 1, ret: -1, args: [, P.StackTrace]}, {func: 1, ret: O.Rule, opt: [P.int]}, {func: 1, ret: -1, args: [L.Token], named: {after: {func: 1}, before: {func: 1}}}, {func: 1, ret: P.bool, args: [W.Node]}, {func: 1, ret: P.Null, args: [Y.Statement]}, {func: 1, ret: P.Null, args: [P.int,,]}, {func: 1, args: [P.String]}, {func: 1, ret: P.Null, args: [Y.Constructor]}, {func: 1, ret: X.Code, args: [A.PathSegmentData]}, {func: 1, ret: -1, args: [P.String, P.int]}, {func: 1, ret: -1, args: [P.String], opt: [,]}, {func: 1, ret: P.int, args: [P.int, P.int]}, {func: 1, ret: L.Token, args: [[P.List, P.int], L.Token, [P.List, P.int]]}, {func: 1, ret: P.Null, args: [F.Field]}, {func: 1, ret: -1, args: [O.LibraryBuilder]}, {func: 1, ret: W.Element, args: [W.Node]}, {func: 1, ret: -1, args: [A.ScannerErrorCode, P.int, [P.List, P.Object]]}, {func: 1, ret: P.int, args: [P.String, P.String]}, {func: 1, ret: P.Null, args: [,], opt: [,]}, {func: 1, ret: L.Token, args: [S.NonAsciiIdentifierToken]}, {func: 1, ret: P.Uint8List, args: [P.int]}, {func: 1, ret: -1, args: [A.ScannerErrorCode, [P.List, P.Object]]}, {func: 1, ret: L.Keyword}, {func: 1, ret: B.Message, args: [P.String, P.String]}, {func: 1, ret: P.Uint8List, args: [,,]}, {func: 1, ret: [P.Future, U.Response], args: [,], named: {headers: [P.Map, P.String, P.String]}}, {func: 1, ret: P.bool, args: [P.String, P.String]}, {func: 1, ret: P.int, args: [P.String]}, {func: 1, ret: -1, args: [[P.List, P.int]]}, {func: 1, ret: U.Response, args: [P.Uint8List]}, {func: 1, ret: P.bool, args: [P.Object]}, {func: 1, ret: R.MediaType}, {func: 1, ret: P.Null, args: [X.Code]}, {func: 1, ret: P.String, args: [P.int]}, {func: 1, ret: P.int, args: [P.int,,]}, {func: 1, ret: Y.FileSpan, args: [P.int], opt: [P.int]}, {func: 1, ret: P.String, args: [P.String], named: {color: null}}, {func: 1, ret: -1, args: [P.String], named: {length: P.int, match: P.Match, position: P.int}}, {func: 1, ret: P.int, args: [P.int, P.Object]}, {func: 1, ret: P.Null, args: [W.Element]}, {func: 1, ret: O.KeywordState, args: [P.int]}, {func: 1, ret: W.LIElement, args: [P.String]}, {func: 1, ret: [P.Future, P.Null], args: [W.MouseEvent]}, {func: 1, ret: [P.Future, P.String]}, {func: 1, ret: P.int, args: [,,]}, {func: 1, ret: P._Future, args: [,]}, {func: 1, ret: P.bool, args: [,,]}, {func: 1, ret: P.int, args: [,]}, {func: 1, ret: P.int, args: [P.Object]}, {func: 1, ret: P.bool, args: [P.Object, P.Object]}, {func: 1, ret: -1, args: [U.DirectiveBuilder]}, {func: 1, args: [, P.String]}, {func: 1, ret: -1, args: [W.Event]}, {func: 1, ret: B.Message, args: [P.String, P.int]}, {func: 1, ret: B.Message, args: [P.String, L.Token]}, {func: 1, ret: P.Null, args: [D.Method]}, {func: 1, ret: -1, args: [P.int, P.int]}];
+  init.types = [{func: 1, ret: P.Null}, {func: 1, ret: -1}, {func: 1, ret: -1, args: [D.ParameterBuilder]}, {func: 1, ret: B.Message, args: [L.Token]}, {func: 1, ret: P.Null, args: [,]}, {func: 1, ret: -1, args: [F.FieldBuilder]}, {func: 1, ret: -1, args: [D.MethodBuilder]}, {func: 1, ret: P.String, args: [P.String]}, {func: 1, ret: -1, args: [,]}, {func: 1, ret: P.String}, {func: 1, ret: P.bool, args: [,]}, {func: 1, ret: L.Token}, {func: 1, ret: B.Message, args: [P.String]}, {func: 1, ret: -1, args: [B.Expression]}, {func: 1, ret: P.bool}, {func: 1, ret: P.Null, args: [,,]}, {func: 1, args: [,]}, {func: 1, ret: P.Null, args: [O.Rule]}, {func: 1, ret: P.Null, args: [W.ProgressEvent]}, {func: 1, ret: P.Null, args: [P.String, P.String]}, {func: 1, ret: P.bool, args: [O.Rule]}, {func: 1, ret: P.Null, args: [P.String]}, {func: 1, ret: -1, args: [P.String, P.String]}, {func: 1, ret: P.String, args: [P.Match]}, {func: 1, ret: -1, args: [P.Object], opt: [P.StackTrace]}, {func: 1, ret: U.Reference, args: [U.Reference]}, {func: 1, ret: P.StringSink, args: [U.Reference]}, {func: 1, ret: P.bool, args: [P.String]}, {func: 1, ret: -1, args: [P.Object]}, {func: 1, ret: U.KeywordState0, args: [P.int]}, {func: 1, ret: -1, args: [{func: 1, ret: -1}]}, {func: 1, ret: -1, args: [X.BlockBuilder]}, {func: 1, ret: P.Null, args: [W.MouseEvent]}, {func: 1, ret: -1, args: [P.Uint8List, P.String, P.int]}, {func: 1, ret: P.String, args: [,]}, {func: 1, ret: P.Null, args: [P.String,,]}, {func: 1, ret: X.Code, args: [P.String]}, {func: 1, ret: -1, args: [[P.Set, P.String]]}, {func: 1, ret: -1, args: [Y.ConstructorBuilder]}, {func: 1, ret: X.Code, args: [,]}, {func: 1, ret: P.bool, args: [Y.FormalParameter]}, {func: 1, ret: E.Chunk}, {func: 1, ret: P.bool, args: [L.Token]}, {func: 1, ret: P.Future}, {func: 1, ret: -1, opt: [P.Object]}, {func: 1, ret: B.Message, args: [P.int]}, {func: 1, ret: P.Null, args: [, P.StackTrace]}, {func: 1, ret: O.Rule, args: [E.Chunk]}, {func: 1, ret: P.Null, args: [[P.List, E.Chunk]]}, {func: 1, ret: P.Null, args: [Y.Expression0]}, {func: 1, ret: P.bool, args: [D.Parameter]}, {func: 1, ret: P.bool, args: [Y.Expression0]}, {func: 1, ret: -1, args: [U.DirectiveBuilder]}, {func: 1, ret: P.Null, args: [U.Reference]}, {func: 1, ret: P.Null, args: [R.Spec]}, {func: 1, ret: -1, args: [E.TypeReferenceBuilder]}, {func: 1, ret: P.bool, args: [Y.NamedExpression]}, {func: 1, ret: P.Null, args: [X.Code]}, {func: 1, ret: P.Null, args: [D.Method]}, {func: 1, ret: -1, args: [O.Rule]}, {func: 1, ret: P.bool, args: [E.SourceComment]}, {func: 1, ret: P.Null, args: [,], opt: [,]}, {func: 1, ret: P.Null, args: [F.Field]}, {func: 1, ret: P.Null, args: [Y.Constructor]}, {func: 1, ret: Y.IndentingBuiltValueToStringHelper, args: [P.String]}, {func: 1, ret: P.Null, args: [[P.List, E.Chunk], P.String, P.int]}, {func: 1, ret: P.Null, args: [, {func: 1, ret: P.String}]}, {func: 1, ret: P.String, named: {color: P.bool}}, {func: 1, ret: P.Object, args: [P.int]}, {func: 1, ret: P.int, args: [O.Rule]}, {func: 1, ret: P.Null, args: [P.int]}, {func: 1, ret: P.Null, args: [O.Rule, P.int]}, {func: 1, ret: P.String, args: [O.Rule]}, {func: 1, ret: Y.Directive}, {func: 1, ret: O.Rule, opt: [P.int]}, {func: 1, ret: -1, args: [L.Token], named: {after: {func: 1}, before: {func: 1}}}, {func: 1, ret: -1, args: [A.ScannerErrorCode, P.int, [P.List, P.Object]]}, {func: 1, ret: P.Null, args: [Y.Statement]}, {func: 1, ret: W.Element, args: [W.Node]}, {func: 1, ret: P._Future, args: [,]}, {func: 1, ret: P.bool, args: [W.Node]}, {func: 1, args: [P.String]}, {func: 1, ret: P.bool, args: [[P.Set, P.String]]}, {func: 1, ret: P.Null, args: [P.bool]}, {func: 1, args: [,,]}, {func: 1, ret: L.Token, args: [[P.List, P.int], L.Token, [P.List, P.int]]}, {func: 1, ret: -1, args: [W.Event]}, {func: 1, ret: -1, args: [O.LibraryBuilder]}, {func: 1, ret: P.Null, args: [P.int,,]}, {func: 1, ret: P.int, args: [P.String, P.String]}, {func: 1, ret: [P.Future, P.String]}, {func: 1, ret: L.Token, args: [S.NonAsciiIdentifierToken]}, {func: 1, ret: P.Uint8List, args: [,,]}, {func: 1, ret: -1, args: [A.ScannerErrorCode, [P.List, P.Object]]}, {func: 1, ret: L.Keyword}, {func: 1, ret: O.KeywordState, args: [P.int]}, {func: 1, ret: -1, args: [, P.StackTrace]}, {func: 1, ret: [P.Future, U.Response], args: [,], named: {headers: [P.Map, P.String, P.String]}}, {func: 1, ret: P.bool, args: [P.String, P.String]}, {func: 1, ret: P.int, args: [P.String]}, {func: 1, ret: -1, args: [[P.List, P.int]]}, {func: 1, ret: U.Response, args: [P.Uint8List]}, {func: 1, ret: P.bool, args: [P.Object]}, {func: 1, ret: R.MediaType}, {func: 1, ret: P.Uint8List, args: [P.int]}, {func: 1, ret: P.String, args: [P.int]}, {func: 1, ret: P.int, args: [P.int,,]}, {func: 1, ret: Y.FileSpan, args: [P.int], opt: [P.int]}, {func: 1, ret: P.String, args: [P.String], named: {color: null}}, {func: 1, ret: -1, args: [P.String], named: {length: P.int, match: P.Match, position: P.int}}, {func: 1, ret: P.int, args: [P.int, P.Object]}, {func: 1, ret: P.Null, args: [W.Element]}, {func: 1, ret: P.int, args: [P.int, P.int]}, {func: 1, ret: W.LIElement, args: [P.String]}, {func: 1, ret: [P.Future, P.Null], args: [W.MouseEvent]}, {func: 1, ret: -1, args: [P.String], opt: [,]}, {func: 1, ret: P.int, args: [,,]}, {func: 1, ret: -1, args: [P.String, P.int]}, {func: 1, ret: P.bool, args: [,,]}, {func: 1, ret: P.int, args: [,]}, {func: 1, ret: P.int, args: [P.Object]}, {func: 1, ret: P.bool, args: [P.Object, P.Object]}, {func: 1, ret: P.int, args: [[P.List, P.int], P.int]}, {func: 1, args: [, P.String]}, {func: 1, ret: P.Null, args: [{func: 1, ret: -1}]}, {func: 1, ret: B.Message, args: [P.String, P.int]}, {func: 1, ret: B.Message, args: [P.String, L.Token]}, {func: 1, ret: B.Message, args: [P.String, P.String]}, {func: 1, ret: -1, args: [P.int, P.int]}];
   function convertToFastObject(properties) {
     function MyClass() {
     }

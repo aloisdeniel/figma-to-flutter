@@ -1,25 +1,29 @@
-
+/**
+ * Represents a custom component declaration (based on its name).
+ *
+ * Use [parse] method to get one of the available declaration types :
+ * 
+ * * [StaticItem] : a typical component declaration
+ * * [DynamicItem] : a dynamic component that can be updated by code.
+ * * [DirectiveItem] : a custom directive that implies specific behaviours
+ */
 abstract class Declaration {
-
   String get name;
 
   static Declaration parse(String value) {
-    if(value == null)
-      return StaticItem(null);
+    if (value == null) return StaticItem(null);
 
     // Dynamic
-    if(value.startsWith("\$"))
-    {
+    if (value.startsWith("\$")) {
       return DynamicItem(value.substring(1));
     }
 
     // Directive
-    if(value.startsWith("#"))
-    {
+    if (value.startsWith("#")) {
       value = value.substring(1);
       var i = value.indexOf("(");
       var directive = value.substring(0, i);
-      var child = Declaration.parse(value.substring(i+1, value.length-1));
+      var child = Declaration.parse(value.substring(i + 1, value.length - 1));
       return DirectiveItem(directive, child);
     }
 

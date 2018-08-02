@@ -1,5 +1,4 @@
-import 'dart:math';
-
+import 'package:figma_to_flutter/base/base.dart';
 import 'package:figma_to_flutter/base/effect.dart';
 import 'package:figma_to_flutter/context.dart';
 import 'package:figma_to_flutter/parsing/declaration.dart';
@@ -7,22 +6,16 @@ import 'package:figma_to_flutter/tools/format.dart';
 import '../base/paint.dart';
 import '../base/path.dart';
 
+/**
+ * A code generator that translates Figma vector nodes into
+ * Flutter equivalents.
+ */
 class VectorGenerator {
   final PaintGenerator _paint;
   final EffectsGenerator _effects;
   final PathGenerator _path;
 
   VectorGenerator(this._paint, this._effects, this._path);
-
-  Point _toPoint(dynamic map) {
-    if (map == null) {
-      return Point(0.0, 0.0);
-    }
-
-    var w = map["width"] ?? map["x"];
-    var h = map["height"] ?? map["y"];
-    return Point(w.toDouble(), h.toDouble());
-  }
 
   void generateClip(BuildContext context, dynamic map) {
     var isMask = map["isMask"] ?? false;
@@ -31,10 +24,11 @@ class VectorGenerator {
     if (isMask) {
       print("Creating mask");
 
-      var size = _toPoint(map["size"]);
+      var size = toPoint(map["size"]);
       var sx = "(frame.width / ${toFixedDouble(size.x)})";
       var sy = "(frame.height / ${toFixedDouble(size.y)})";
-      var transform = "Float64List.fromList([${sx}, 0.0, 0.0, 0.0, 0.0, ${sy}, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0,0.0, 0.0, 0.0, 1.0])";
+      var transform =
+          "Float64List.fromList([${sx}, 0.0, 0.0, 0.0, 0.0, ${sy}, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0,0.0, 0.0, 0.0, 1.0])";
       var clipGeometry = _createGeometry(map, "clipTransform");
 
       context.addPaint([
@@ -47,8 +41,11 @@ class VectorGenerator {
     }
   }
 
+  /**
+   * Indicates whether this generator supports the given node (based on its type).
+   */
   bool isSupported(dynamic map) {
-    const supported = [ 
+    const supported = [
       'RECT',
       'VECTOR',
       'ELLIPSE',
@@ -61,18 +58,19 @@ class VectorGenerator {
   }
 
   String _createGeometry(dynamic map, String transform) {
-    var size = _toPoint(map["size"]);
-    if(map["type"] == "RECTANGLE") {
+    // For rectangles, a custom geometry is created to keep
+    // consistenc corner radius while stretching
+    if (map["type"] == "RECTANGLE") {
       var radius = map["cornerRadius"]?.toDouble() ?? 0.0;
       var rect = "Rect.fromLTWH(0.0,0.0,frame.width, frame.height)";
 
-      if(radius <= 0.0) {
+      if (radius <= 0.0) {
         return "[(Path()..addRect($rect))]";
       }
 
       return "[" +
-        "Path()..addRRect(RRect.fromRectAndRadius($rect, Radius.circular($radius)))" +
-      "]";
+          "Path()..addRRect(RRect.fromRectAndRadius($rect, Radius.circular($radius)))" +
+          "]";
     }
     return "[" +
         map["fillGeometry"]
@@ -88,10 +86,11 @@ class VectorGenerator {
 
     String geometry = _createGeometry(map, "transform");
 
-    var size = _toPoint(map["size"]);
+    var size = toPoint(map["size"]);
     var sx = "(frame.width / ${toFixedDouble(size.x)})";
     var sy = "(frame.height / ${toFixedDouble(size.y)})";
-    var transform = "Float64List.fromList([${sx}, 0.0, 0.0, 0.0, 0.0, ${sy}, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0,0.0, 0.0, 0.0, 1.0])";
+    var transform =
+        "Float64List.fromList([${sx}, 0.0, 0.0, 0.0, 0.0, ${sy}, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0,0.0, 0.0, 0.0, 1.0])";
 
     context.addPaint(["var transform = $transform;"]);
 
@@ -103,7 +102,6 @@ class VectorGenerator {
         .where((f) => map["visible"] == null || map['visible'] == true);
 
     if (!fillMaps.isEmpty || !effectMaps.isEmpty) {
-      
       context.addPaint(["var fillGeometry = $geometry;"]);
 
       if (!effectMaps.isEmpty) {
@@ -112,7 +110,7 @@ class VectorGenerator {
         ]);
 
         effectMaps.forEach((e) {
-          var offset = _toPoint(e["offset"]);
+          var offset = toPoint(e["offset"]);
           context.addPaint([
             "var effectPaint = " + this._effects.generate(e).toString() + ";",
           ]);
@@ -121,7 +119,8 @@ class VectorGenerator {
           if (hasOffset) {
             context.addPaint([
               "canvas.save();",
-              "canvas.translate(${toFixedDouble(offset.x)}, ${toFixedDouble(offset.y)});"
+              "canvas.translate(${toFixedDouble(offset.x)}, ${toFixedDouble(
+                  offset.y)});"
             ]);
           }
           context.addPaint(["canvas.drawPath(path, effectPaint);"]);
@@ -143,7 +142,7 @@ class VectorGenerator {
               "fillGeometry.forEach((path) {",
               "if(${propertyName}Provider != null) {",
               "${propertyName}Provider.paint(canvas, path.getBounds(), path, ImageConfiguration());"
-              "}",
+                  "}",
               "});",
             ]);
           } else {

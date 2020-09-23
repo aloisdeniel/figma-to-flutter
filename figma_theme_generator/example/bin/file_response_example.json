@@ -58,6 +58,65 @@
                                 ]
                             },
                             {
+                                "id": "18:0",
+                                "name": "Rectangle 6",
+                                "type": "RECTANGLE",
+                                "blendMode": "PASS_THROUGH",
+                                "absoluteBoundingBox": {
+                                    "x": -181,
+                                    "y": -195,
+                                    "width": 47,
+                                    "height": 47
+                                },
+                                "constraints": {
+                                    "vertical": "TOP",
+                                    "horizontal": "LEFT"
+                                },
+                                "fills": [
+                                    {
+                                        "blendMode": "NORMAL",
+                                        "type": "SOLID",
+                                        "color": {
+                                            "r": 0.9708333611488342,
+                                            "g": 0.9708333611488342,
+                                            "b": 0.9708333611488342,
+                                            "a": 1
+                                        }
+                                    }
+                                ],
+                                "strokes": [],
+                                "strokeWeight": 1,
+                                "strokeAlign": "INSIDE",
+                                "effects": [
+                                    {
+                                        "type": "DROP_SHADOW",
+                                        "visible": true,
+                                        "color": {
+                                            "r": 0,
+                                            "g": 0,
+                                            "b": 0,
+                                            "a": 0.25
+                                        },
+                                        "blendMode": "NORMAL",
+                                        "offset": {
+                                            "x": 6,
+                                            "y": 7
+                                        },
+                                        "radius": 7
+                                    }
+                                ],
+                                "styles": {
+                                    "effect": "18:1"
+                                },
+                                "cornerRadius": 7,
+                                "rectangleCornerRadii": [
+                                    7,
+                                    7,
+                                    7,
+                                    7
+                                ]
+                            },
+                            {
                                 "id": "1:3",
                                 "name": "Rectangle 2",
                                 "type": "RECTANGLE",
@@ -260,7 +319,7 @@
                                 "blendMode": "PASS_THROUGH",
                                 "absoluteBoundingBox": {
                                     "x": -181,
-                                    "y": -192,
+                                    "y": -116,
                                     "width": 97,
                                     "height": 37
                                 },
@@ -312,7 +371,7 @@
                                 "blendMode": "PASS_THROUGH",
                                 "absoluteBoundingBox": {
                                     "x": -181,
-                                    "y": -132,
+                                    "y": -56,
                                     "width": 97,
                                     "height": 23
                                 },
@@ -364,7 +423,7 @@
                                 "blendMode": "PASS_THROUGH",
                                 "absoluteBoundingBox": {
                                     "x": -181,
-                                    "y": -82,
+                                    "y": -6,
                                     "width": 55,
                                     "height": 14
                                 },
@@ -413,8 +472,8 @@
                         "absoluteBoundingBox": {
                             "x": -221,
                             "y": -318,
-                            "width": 419,
-                            "height": 293
+                            "width": 436,
+                            "height": 395
                         },
                         "constraints": {
                             "vertical": "TOP",
@@ -521,11 +580,17 @@
             "name": "Paragraph",
             "styleType": "TEXT",
             "description": ""
+        },
+        "18:1": {
+            "key": "6aedceb5e25a2e769900336d5bf6592da1dd762a",
+            "name": "Drop",
+            "styleType": "EFFECT",
+            "description": ""
         }
     },
     "name": "figma_theme_generator",
-    "lastModified": "2020-09-23T10:01:54.04502Z",
+    "lastModified": "2020-09-23T17:20:25.291426Z",
     "thumbnailUrl": "https://s3-alpha-sig.figma.com/thumbnails/15adf683-11cf-4c68-ab3b-d64a29b6f706?Expires=1601856000&Signature=CwdmOBbZIfj0PGVw8fbh7vE8h3FdWWoU7HTndGm-Yup~tC7yn8XSttsT6iLytK7LZmXggmHfqeWZKi0Rp00vZ2YUplE~1QrTy9b-mv88IW815jhYopIhQx8njolOxZBzFt8gsqvXaMx7jXZjOBIg59536M68O-DfzqN7HMuN5U8mwQnLLLiGEExlf5MK695EUacYGrKyFUv9ux05zm9kSbwFhoM-YZKTxIfFvJKs9k81Lgh00B-~OeTqbdHa5fgxt1zju-hNyT5BlaBrFHxqUPHVobrRwWCJCWZwYFgU6ywlXEbK1UzBcCaU--3XSIS7dZ-H6e5q0rbxztlCnqxnJg__&Key-Pair-Id=APKAINTVSUGEWH5XD5UA",
-    "version": "468248112",
+    "version": "468941656",
     "role": "owner"
 }

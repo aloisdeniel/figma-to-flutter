@@ -34,6 +34,9 @@ class FileBuilder {
             if (node.node is Text)
               const TextStyleBuilder().build(context, style, node.node);
             break;
+          case StyleTypeKey.effect:
+            const EffectBuilder().build(context, style, node.node);
+            break;
           default:
         }
       }
@@ -59,12 +62,18 @@ class FileBuilder {
           '${context.gradients.builder.name}.$fallbackConstructorName()');
     }
 
+    if (context.shadows.builder.fields.isNotEmpty) {
+      theme.addField(context.shadows.builder.name, 'shadows',
+          '${context.shadows.builder.name}.$fallbackConstructorName()');
+    }
+
     context.library.body.addAll([
       theme.build(false),
       if (context.colors.builder.fields.isNotEmpty) context.colors.build(),
       if (context.text.builder.fields.isNotEmpty) context.text.build(),
       if (context.gradients.builder.fields.isNotEmpty)
         context.gradients.build(),
+      if (context.shadows.builder.fields.isNotEmpty) context.shadows.build(),
     ]);
 
     context.library.directives.addAll([
@@ -119,6 +128,32 @@ class FillStyleBuilder {
         'LinearGradient',
         name,
         buildGradientInstance(fill),
+      );
+    }
+  }
+}
+
+class EffectBuilder {
+  const EffectBuilder();
+
+  void build(FileBuildContext context, Style style, Node node) {
+    final nameFormat = ReCase(style.name);
+    final effects = node.extractEffects();
+
+    /// Extracting colors
+    final shadowEffects = effects
+        .where(
+          (x) => x.type == EffectType.dropShadow,
+        )
+        .toList();
+    for (var i = 0; i < shadowEffects.length; i++) {
+      var name = nameFormat.camelCase;
+      if (i > 0) name = '$name$i';
+      final shadowEffect = shadowEffects[i];
+      context.shadows.addField(
+        'BoxShadow',
+        name,
+        buildBoxShadowInstance(shadowEffect),
       );
     }
   }

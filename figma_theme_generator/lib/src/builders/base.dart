@@ -8,6 +8,15 @@ String buildColorInstance(Color color, double opacity) {
   return 'Color.fromARGB($ia, $ir, $ig, $ib)';
 }
 
+String buildBoxShadowInstance(Effect effect) {
+  return 'BoxShadow('
+      'color: ${buildColorInstance(effect.color, 1.0)},'
+      'blurRadius: ${effect.radius},'
+      'offset: Offset(${effect.offset.x}, ${effect.offset.y}),'
+      'spreadRadius: ${effect.radius},'
+      ')';
+}
+
 String buildTextStyleInstance(TypeStyle style, List<Paint> fills) {
   /// Only color paint should be used as text fills since Flutter
   /// is not really optimized for drawing gradient fills or image fills

@@ -3,31 +3,40 @@ import 'package:collection/collection.dart';
 
 class ExampleThemeData {
   const ExampleThemeData(
-      {@required this.colors, @required this.text, @required this.gradients})
+      {@required this.colors,
+      @required this.text,
+      @required this.gradients,
+      @required this.shadows})
       : assert(colors != null),
         assert(text != null),
-        assert(gradients != null);
+        assert(gradients != null),
+        assert(shadows != null);
 
   factory ExampleThemeData.fallback() => ExampleThemeData(
         colors: ExampleColorThemeData.fallback(),
         text: ExampleTextThemeData.fallback(),
-        gradients: ExampleGradientsThemeData.fallback(),
+        gradients: ExampleGradientThemeData.fallback(),
+        shadows: ExampleShadowThemeData.fallback(),
       );
 
   final ExampleColorThemeData colors;
 
   final ExampleTextThemeData text;
 
-  final ExampleGradientsThemeData gradients;
+  final ExampleGradientThemeData gradients;
+
+  final ExampleShadowThemeData shadows;
 
   ExampleThemeData copyWith(
           {ExampleColorThemeData colors,
           ExampleTextThemeData text,
-          ExampleGradientsThemeData gradients}) =>
+          ExampleGradientThemeData gradients,
+          ExampleShadowThemeData shadows}) =>
       ExampleThemeData(
         colors: colors ?? this.colors,
         text: text ?? this.text,
         gradients: gradients ?? this.gradients,
+        shadows: shadows ?? this.shadows,
       );
   @override
   bool operator ==(Object other) =>
@@ -35,13 +44,15 @@ class ExampleThemeData {
       (other is ExampleThemeData &&
           colors == other.colors &&
           text == other.text &&
-          gradients == other.gradients);
+          gradients == other.gradients &&
+          shadows == other.shadows);
   @override
   int get hashCode =>
       runtimeType.hashCode ^
       const DeepCollectionEquality().hash(colors) ^
       const DeepCollectionEquality().hash(text) ^
-      const DeepCollectionEquality().hash(gradients);
+      const DeepCollectionEquality().hash(gradients) ^
+      const DeepCollectionEquality().hash(shadows);
 }
 
 class ExampleColorThemeData {
@@ -151,12 +162,11 @@ class ExampleTextThemeData {
       const DeepCollectionEquality().hash(paragraph);
 }
 
-class ExampleGradientsThemeData {
-  const ExampleGradientsThemeData({@required this.gradient})
+class ExampleGradientThemeData {
+  const ExampleGradientThemeData({@required this.gradient})
       : assert(gradient != null);
 
-  factory ExampleGradientsThemeData.fallback() =>
-      const ExampleGradientsThemeData(
+  factory ExampleGradientThemeData.fallback() => const ExampleGradientThemeData(
         gradient: LinearGradient(
           begin: Alignment(-1.00, -1.00),
           end: Alignment(0.79, 1.00),
@@ -174,15 +184,41 @@ class ExampleGradientsThemeData {
 
   final LinearGradient gradient;
 
-  ExampleGradientsThemeData copyWith({LinearGradient gradient}) =>
-      ExampleGradientsThemeData(
+  ExampleGradientThemeData copyWith({LinearGradient gradient}) =>
+      ExampleGradientThemeData(
         gradient: gradient ?? this.gradient,
       );
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is ExampleGradientsThemeData && gradient == other.gradient);
+      (other is ExampleGradientThemeData && gradient == other.gradient);
   @override
   int get hashCode =>
       runtimeType.hashCode ^ const DeepCollectionEquality().hash(gradient);
+}
+
+class ExampleShadowThemeData {
+  const ExampleShadowThemeData({@required this.drop}) : assert(drop != null);
+
+  factory ExampleShadowThemeData.fallback() => const ExampleShadowThemeData(
+        drop: BoxShadow(
+          color: Color.fromARGB(63, 0, 0, 0),
+          blurRadius: 7,
+          offset: Offset(6, 7),
+          spreadRadius: 7,
+        ),
+      );
+
+  final BoxShadow drop;
+
+  ExampleShadowThemeData copyWith({BoxShadow drop}) => ExampleShadowThemeData(
+        drop: drop ?? this.drop,
+      );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ExampleShadowThemeData && drop == other.drop);
+  @override
+  int get hashCode =>
+      runtimeType.hashCode ^ const DeepCollectionEquality().hash(drop);
 }

@@ -5,10 +5,10 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "generate_example_theme",
-            "cwd": "example/bin",
+            "name": "example",
+            "cwd": "example",
             "request": "launch",
-            "program": "generate_theme.dart",
+            "program": "lib/main.dart",
             "type": "dart"
         }
     ]

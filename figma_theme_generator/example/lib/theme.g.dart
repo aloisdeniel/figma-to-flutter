@@ -210,7 +210,7 @@ class ExampleThemeShadowData {
           color: Color.fromARGB(63, 0, 0, 0),
           blurRadius: 7.0,
           offset: Offset(6.0, 7.0),
-          spreadRadius: 7.0,
+          spreadRadius: 0.0,
         ),
       );
 

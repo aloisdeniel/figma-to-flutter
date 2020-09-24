@@ -1,5 +1,6 @@
 import 'package:example/credentials.dart';
 import 'package:figma_theme/figma_theme.dart';
+import 'package:flutter/widgets.dart';
 
 part 'theme.g.dart';
 
@@ -8,4 +9,24 @@ part 'theme.g.dart';
   fileKey: fileKey,
   apiToken: apiToken,
 )
-class ExampleTheme {}
+class ExampleTheme extends InheritedWidget {
+  final ExampleThemeData data;
+  ExampleTheme({
+    Key key,
+    @required Widget child,
+    @required this.data,
+  }) : super(
+          key: key,
+          child: child,
+        );
+
+  static ExampleThemeData of(BuildContext context) {
+    return context.dependOnInheritedWidgetOfExactType<ExampleTheme>()?.data ??
+        ExampleThemeData.fallback();
+  }
+
+  @override
+  bool updateShouldNotify(ExampleTheme oldWidget) {
+    return oldWidget.data != data;
+  }
+}

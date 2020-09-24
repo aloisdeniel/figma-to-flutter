@@ -13,7 +13,6 @@ String buildBoxShadowInstance(Effect effect) {
       'color: ${buildColorInstance(effect.color, 1.0)},'
       'blurRadius: ${effect.radius},'
       'offset: Offset(${effect.offset.x}, ${effect.offset.y}),'
-      'spreadRadius: ${effect.radius},'
       ')';
 }
 

@@ -76,13 +76,6 @@ class FileBuilder {
       if (context.shadows.builder.fields.isNotEmpty) context.shadows.build(),
     ]);
 
-    context.library.directives.addAll([
-      Directive.import("package:flutter/widgets.dart"),
-      Directive.import(
-        "package:collection/collection.dart",
-      ),
-    ]);
-
     library.body.add(context.library.build());
   }
 }

@@ -7,14 +7,14 @@ packages:
       name: _fe_analyzer_shared
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "7.0.0"
+    version: "6.0.0"
   analyzer:
     dependency: "direct main"
     description:
       name: analyzer
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.39.17"
+    version: "0.39.14"
   args:
     dependency: transitive
     description:
@@ -77,7 +77,7 @@ packages:
       name: cli_util
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.2.0"
+    version: "0.1.4"
   clock:
     dependency: transitive
     description:
@@ -145,8 +145,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "9b3de4b7add173659da5dcf923556148bf0499dd"
-      resolved-ref: "9b3de4b7add173659da5dcf923556148bf0499dd"
+      ref: f286c803bb5afd7718523d79942d18c771945544
+      resolved-ref: f286c803bb5afd7718523d79942d18c771945544
       url: "https://github.com/aloisdeniel/figma"
     source: git
     version: "1.0.3"
@@ -188,20 +188,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.14.0+3"
-  http:
-    dependency: transitive
+  http2:
+    dependency: "direct main"
     description:
-      name: http
+      name: http2
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.12.2"
-  http_parser:
-    dependency: transitive
-    description:
-      name: http_parser
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "3.1.4"
+    version: "1.0.1"
   js:
     dependency: transitive
     description:

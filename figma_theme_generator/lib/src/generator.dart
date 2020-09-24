@@ -1,13 +1,14 @@
 import 'dart:async';
 
 import 'package:analyzer/dart/element/element.dart';
-import 'package:figma_theme/figma_theme.dart';
+import 'package:figma_theme/figma_theme.dart' as annotation;
 import 'package:source_gen/source_gen.dart';
 import 'package:build/build.dart';
 
 import 'builders/builder.dart';
 
-class FigmaThemeGenerator extends GeneratorForAnnotation<FigmaTheme> {
+class FigmaThemeGenerator
+    extends GeneratorForAnnotation<annotation.FigmaTheme> {
   const FigmaThemeGenerator();
 
   @override

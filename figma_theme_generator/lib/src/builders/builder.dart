@@ -1,7 +1,11 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:code_builder/code_builder.dart';
 import 'package:dart_style/dart_style.dart';
 import 'package:figma/figma.dart';
 import 'package:meta/meta.dart';
+import 'package:http2/http2.dart';
 
 import 'nodes.dart';
 
@@ -18,8 +22,11 @@ class FigmaThemeBuilder {
   }) async {
     assert(apiToken != null);
     assert(fileKey != null);
+
+    // FIXME this gives a bad request
     final client = FigmaClient(apiToken);
     final file = await client.getFile(fileKey);
+
     return build(name, file);
   }
 

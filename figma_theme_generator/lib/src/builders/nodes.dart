@@ -43,7 +43,7 @@ class FileBuilder {
     });
 
     final theme = DataClassBuilder(
-      name: '${name}ThemeData',
+      name: '${name}Data',
       fallbackConstructorName: fallbackConstructorName,
     );
 

@@ -8,19 +8,19 @@ environment:
   flutter: ">=1.17.0 <2.0.0"
 
 dependencies:
+  http2:
   figma_theme:
-    path: ../figma_theme
   recase: ^3.0.0
-  analyzer: ^0.39.17
+  analyzer: 0.39.14
   code_builder: ^3.2.0
-  build: ^1.5.0
+  build: ^1.0.0
   source_gen: ^0.9.7
   meta: ^1.1.8
   dart_style:
   figma: #^1.0.3
     git: 
       url: https://github.com/aloisdeniel/figma
-      ref: 9b3de4b7add173659da5dcf923556148bf0499dd
+      ref: f286c803bb5afd7718523d79942d18c771945544
 
   flutter:
     sdk: flutter
@@ -28,5 +28,9 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
+dependency_overrides:
+  figma_theme:
+    path: ../figma_theme
 
 flutter:

@@ -1,0 +1,20 @@
+name: figma_theme
+description: Annotations for the figma_theme_generator.
+version: 0.1.0
+author:
+homepage:
+
+environment:
+  sdk: ">=2.7.0 <3.0.0"
+  flutter: ">=1.17.0 <2.0.0"
+
+dependencies:
+  meta: ^1.1.8
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:

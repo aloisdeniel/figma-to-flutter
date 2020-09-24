@@ -30,19 +30,19 @@ class FileBuildContext {
     String gradientsThemeClassName,
     String shadowsThemeClassName,
   })  : this.colors = DataClassBuilder(
-          name: colorThemeClassName ?? '${name}ColorThemeData',
+          name: colorThemeClassName ?? '${name}ColorData',
           fallbackConstructorName: fallbackConstructorName,
         ),
         this.text = DataClassBuilder(
-          name: textThemeClassName ?? '${name}TextThemeData',
+          name: textThemeClassName ?? '${name}TextData',
           fallbackConstructorName: fallbackConstructorName,
         ),
         this.gradients = DataClassBuilder(
-          name: gradientsThemeClassName ?? '${name}GradientThemeData',
+          name: gradientsThemeClassName ?? '${name}GradientData',
           fallbackConstructorName: fallbackConstructorName,
         ),
         this.shadows = DataClassBuilder(
-          name: shadowsThemeClassName ?? '${name}ShadowThemeData',
+          name: shadowsThemeClassName ?? '${name}ShadowData',
           fallbackConstructorName: fallbackConstructorName,
         );
 

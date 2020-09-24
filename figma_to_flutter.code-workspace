@@ -1,0 +1,18 @@
+{
+    "folders": [
+        {
+            "name": "Theme",
+            "path": "figma_theme"
+        },
+        {
+            "name": "Theme Generator",
+            "path": "figma_theme_generator"
+        },
+    ],
+    "settings": {
+        "git.ignoreLimitWarning": true,
+        "editor.formatOnPaste": true,
+        "editor.formatOnSave": true,
+        "editor.formatOnType": true
+    }
+}

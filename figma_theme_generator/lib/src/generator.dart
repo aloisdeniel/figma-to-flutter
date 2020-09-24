@@ -29,7 +29,7 @@ class FigmaThemeGenerator
 
     final builder = FigmaThemeBuilder();
     return await builder.download(
-      name: classElement.displayName.replaceAll('Theme', ''),
+      name: classElement.displayName,
       apiToken: apiToken,
       fileKey: fileKey,
     );

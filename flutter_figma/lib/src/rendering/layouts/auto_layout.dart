@@ -13,16 +13,28 @@ class RenderFigmaAutoLayout extends RenderBox
   RenderFigmaAutoLayout({
     List<RenderBox> children,
     @required figma.LayoutMode layoutMode,
+    @required Size designSize,
     @required figma.CounterAxisSizingMode counterAxisSizingMode,
     @required num horizontalPadding,
     @required num verticalPadding,
     @required num itemSpacing,
   })  : _layoutMode = layoutMode,
+        _designSize = designSize,
         _counterAxisSizingMode = counterAxisSizingMode,
         _horizontalPadding = horizontalPadding,
         _verticalPadding = verticalPadding,
         _itemSpacing = itemSpacing {
     addAll(children);
+  }
+
+  Size _designSize;
+  Size get designSize => _designSize;
+  set designSize(Size value) {
+    assert(value != null);
+    if (_designSize != value) {
+      _designSize = value;
+      markNeedsLayout();
+    }
   }
 
   figma.LayoutMode _layoutMode;
@@ -101,12 +113,10 @@ class RenderFigmaAutoLayout extends RenderBox
   }
 
   double _computeIntrinsicWidth(double height, bool minChild) {
-    final parentData = this.parentData as FigmaAutoData;
-
     // We should get the maximum child of children or fixed
     if (layoutMode == figma.LayoutMode.vertical) {
       if (counterAxisSizingMode == figma.CounterAxisSizingMode.fixed) {
-        return parentData.designSize.width;
+        return designSize.width;
       }
       var size = horizontalPadding * 2;
       var child = firstChild;
@@ -135,12 +145,10 @@ class RenderFigmaAutoLayout extends RenderBox
   }
 
   double _computeIntrinsicHeight(double width, bool minChild) {
-    final parentData = this.parentData as FigmaAutoData;
-
     // We should get the maximum child of children or fixed
     if (layoutMode == figma.LayoutMode.horizontal) {
       if (counterAxisSizingMode == figma.CounterAxisSizingMode.fixed) {
-        return parentData.designSize.height;
+        return designSize.height;
       }
       var size = verticalPadding * 2;
       var child = firstChild;
@@ -202,6 +210,10 @@ class RenderFigmaAutoLayout extends RenderBox
     if (isHorizontal) {
       constraintsMinCross = constraints.minHeight;
       constraintsMaxCross = constraints.maxHeight;
+      if (isCrossFixed) {
+        constraintsMaxCross = designSize.height.clamp(0.0, constraintsMaxCross);
+        constraintsMinCross = constraintsMaxCross;
+      }
       constraintsMinMain = constraints.minWidth;
       constraintsMaxMain = constraints.maxWidth;
       crossPadding = verticalPadding ?? 0.0;
@@ -209,6 +221,10 @@ class RenderFigmaAutoLayout extends RenderBox
     } else {
       constraintsMinCross = constraints.minWidth;
       constraintsMaxCross = constraints.maxWidth;
+      if (isCrossFixed) {
+        constraintsMaxCross = designSize.width.clamp(0.0, constraintsMaxCross);
+        constraintsMinCross = constraintsMaxCross;
+      }
       constraintsMinMain = constraints.minHeight;
       constraintsMaxMain = constraints.maxHeight;
       crossPadding = horizontalPadding ?? 0.0;

@@ -4,10 +4,10 @@ import 'package:figma/figma.dart' as figma;
 import 'package:flutter_figma/src/rendering/layouts/auto_layout.dart';
 
 class FigmaAutoLayout extends MultiChildRenderObjectWidget {
-  final Size size;
+  final Size designSize;
   FigmaAutoLayout({
     Key key,
-    this.size = Size.zero,
+    @required this.designSize,
     this.layoutMode = figma.LayoutMode.vertical,
     this.counterAxisSizingMode = figma.CounterAxisSizingMode.auto,
     this.horizontalPadding = 0,
@@ -29,6 +29,7 @@ class FigmaAutoLayout extends MultiChildRenderObjectWidget {
   @override
   RenderObject createRenderObject(BuildContext context) {
     return RenderFigmaAutoLayout(
+      designSize: designSize,
       layoutMode: layoutMode ?? figma.LayoutMode.none,
       counterAxisSizingMode:
           counterAxisSizingMode ?? figma.CounterAxisSizingMode.auto,
@@ -42,6 +43,7 @@ class FigmaAutoLayout extends MultiChildRenderObjectWidget {
   void updateRenderObject(
       BuildContext context, covariant RenderFigmaAutoLayout renderObject) {
     renderObject
+      ..designSize = designSize
       ..layoutMode = layoutMode ?? figma.LayoutMode.none
       ..counterAxisSizingMode =
           counterAxisSizingMode ?? figma.CounterAxisSizingMode.auto

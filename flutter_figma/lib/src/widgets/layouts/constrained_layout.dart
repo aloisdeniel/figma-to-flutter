@@ -4,11 +4,9 @@ import 'package:flutter_figma/src/rendering/layouts/constrained_layout.dart';
 import 'package:figma/figma.dart' as figma;
 
 class FigmaConstrainedLayout extends MultiChildRenderObjectWidget {
-  final Size size;
   final Size designSize;
   FigmaConstrainedLayout({
     Key key,
-    this.size = Size.zero,
     @required this.designSize,
     List<Widget> children = const <Widget>[],
   }) : super(

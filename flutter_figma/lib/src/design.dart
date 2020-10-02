@@ -19,6 +19,12 @@ class FigmaDesignFile extends StatefulWidget {
     designState.refresh();
   }
 
+  static FileResponse file(BuildContext context) {
+    final designState =
+        context.dependOnInheritedWidgetOfExactType<_InheritedDesignState>();
+    return designState?.file;
+  }
+
   @override
   _FigmaDesignState createState() => _FigmaDesignState();
 }

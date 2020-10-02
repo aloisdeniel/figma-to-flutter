@@ -1,6 +1,5 @@
 import 'dart:ui';
 
-import 'package:figma/figma.dart' as figma;
 import 'package:flutter/widgets.dart';
 import 'package:flutter_figma/src/helpers/api_extensions.dart';
 import 'package:flutter_figma/src/rendering/decoration.dart';

@@ -15,7 +15,6 @@ class FigmaFrame extends StatelessWidget {
   final double opacity;
   final Size designSize;
   final Decoration decoration;
-  final List<figma.Effect> blurEffects;
   final List<List<num>> relativeTransform;
   final List<num> rectangleCornerRadii;
   final List<Widget> children;
@@ -29,7 +28,6 @@ class FigmaFrame extends StatelessWidget {
     @required this.layoutMode,
     @required this.opacity,
     @required this.decoration,
-    @required this.blurEffects,
     @required this.relativeTransform,
     @required this.rectangleCornerRadii,
     this.counterAxisSizingMode,
@@ -41,6 +39,7 @@ class FigmaFrame extends StatelessWidget {
   }) : super(key: key);
 
   factory FigmaFrame.api(figma.Frame node) {
+    final effects = node.effects.map((x) => FigmaEffect.api(x)).toList();
     Decoration decoration;
     if (node.fills.isNotEmpty ||
         node.strokes.isNotEmpty ||
@@ -53,7 +52,7 @@ class FigmaFrame extends StatelessWidget {
         ),
         fills: node.fills.map((x) => FigmaPaint.api(x)).toList(),
         strokes: node.strokes.map((x) => FigmaPaint.api(x)).toList(),
-        effects: node.effects.map((x) => FigmaEffect.api(x)).toList(),
+        effects: effects,
       );
     }
 
@@ -66,7 +65,6 @@ class FigmaFrame extends StatelessWidget {
     return FigmaFrame(
       key: node.id != null ? Key(node.id) : null,
       opacity: node.opacity ?? 1.0,
-      blurEffects: blurEffects,
       decoration: decoration,
       relativeTransform: node.relativeTransform,
       rectangleCornerRadii: node.rectangleCornerRadii,
@@ -90,6 +88,7 @@ class FigmaFrame extends StatelessWidget {
             verticalPadding: verticalPadding,
             itemSpacing: itemSpacing,
             layoutMode: layoutMode,
+            designSize: designSize,
             children: children,
           )
         : FigmaConstrainedLayout(

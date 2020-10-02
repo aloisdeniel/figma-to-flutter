@@ -8,7 +8,7 @@ import 'package:flutter_figma/src/widgets/layouts/rotated.dart';
 class FigmaRectangle extends StatelessWidget {
   final double opacity;
   final Decoration decoration;
-  final List<figma.Effect> blurEffects;
+  final List<FigmaBackgroundBlurEffect> blurEffects;
   final List<List<num>> relativeTransform;
   final List<num> rectangleCornerRadii;
 
@@ -24,32 +24,27 @@ class FigmaRectangle extends StatelessWidget {
         );
 
   factory FigmaRectangle.api(figma.Rectangle node) {
+    final effects = node.effects.map((x) => FigmaEffect.api(x)).toList();
     Decoration decoration;
     if (node.fills.isNotEmpty ||
         node.strokes.isNotEmpty ||
         node.effects.isNotEmpty) {
       decoration = FigmaPaintDecoration(
         strokeWeight: node.strokeWeight,
-        shape: FigmaBoxPaintShape(
+        shape: FigmaRectangleShape(
           rectangleCornerRadii:
               node.rectangleCornerRadii ?? const <num>[0, 0, 0, 0],
         ),
-        fills: node.fills,
-        strokes: node.strokes,
-        effects: node.effects,
+        fills: node.fills.map((x) => FigmaPaint.api(x)).toList(),
+        strokes: node.strokes.map((x) => FigmaPaint.api(x)).toList(),
+        effects: effects,
       );
     }
 
-    final blurEffects = <figma.Effect>[];
-    if (node.effects != null) {
-      blurEffects.addAll(
-        node.effects.where((x) => x.type == figma.EffectType.backgroundBlur),
-      );
-    }
     return FigmaRectangle(
       key: node.id != null ? Key(node.id) : null,
       opacity: node.opacity ?? 1.0,
-      blurEffects: blurEffects,
+      blurEffects: effects.whereType<FigmaBackgroundBlurEffect>().toList(),
       decoration: decoration,
       relativeTransform: node.relativeTransform,
       rectangleCornerRadii: node.rectangleCornerRadii,

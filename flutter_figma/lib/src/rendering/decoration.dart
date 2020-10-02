@@ -4,18 +4,18 @@ import 'package:figma/figma.dart' as figma;
 import '../helpers/api_extensions.dart';
 
 class FigmaPaintDecoration extends Decoration {
-  final FigmaPaintShape shape;
+  final FigmaShape shape;
   final double strokeWeight;
-  final List<figma.Effect> effects;
-  final List<figma.Paint> fills;
-  final List<figma.Paint> strokes;
+  final List<FigmaEffect> effects;
+  final List<FigmaPaint> fills;
+  final List<FigmaPaint> strokes;
 
   const FigmaPaintDecoration({
     this.strokeWeight = 1.0,
-    this.effects = const <figma.Effect>[],
-    this.shape = const FigmaBoxPaintShape(),
-    this.fills = const <figma.Paint>[],
-    this.strokes = const <figma.Paint>[],
+    this.effects = const <FigmaEffect>[],
+    this.shape = const FigmaRectangleShape(),
+    this.fills = const <FigmaPaint>[],
+    this.strokes = const <FigmaPaint>[],
   })  : assert(shape != null),
         assert(fills != null),
         assert(strokes != null),
@@ -30,7 +30,7 @@ class FigmaPaintDecoration extends Decoration {
   Path getClipPath(Rect rect, TextDirection textDirection) {
     Path clipPath;
     final shape = this.shape;
-    if (shape is FigmaBoxPaintShape) {
+    if (shape is FigmaRectangleShape) {
       final rectangleCornerRadii = shape.rectangleCornerRadii.toBorderRadius();
       clipPath = Path()
         ..addRRect(
@@ -42,7 +42,7 @@ class FigmaPaintDecoration extends Decoration {
             bottomLeft: rectangleCornerRadii.bottomLeft,
           ),
         );
-    } else if (shape is FigmaPathPaintShape) {
+    } else if (shape is FigmaPathShape) {
       clipPath = Path();
       for (var geometry in shape.fillGeometry) {
         final bounds = geometry.getBounds();
@@ -102,16 +102,16 @@ class _FigmaPaintDecoration extends BoxPainter {
         super(onChanged);
 
   void _paintDropShadows(Canvas canvas, Path path) {
-    for (final shadow in _decoration.effects
-        .where((x) => x.type == figma.EffectType.dropShadow)) {
+    for (final shadow
+        in _decoration.effects.whereType<FigmaDropShadowEffect>()) {
       final paint = Paint()
-        ..color = shadow.color.toFlutterColor()
+        ..color = shadow.color
         ..maskFilter = MaskFilter.blur(
             BlurStyle.normal, convertRadiusToSigma(shadow.radius));
-      if (shadow.offset != figma.Vector2D(x: 0, y: 0)) {
+      if (shadow.offset != Offset.zero) {
         path = path.transform(Matrix4.translationValues(
-          shadow.offset.x,
-          shadow.offset.y,
+          shadow.offset.dx,
+          shadow.offset.dy,
           0,
         ).storage);
       }
@@ -120,43 +120,17 @@ class _FigmaPaintDecoration extends BoxPainter {
   }
 
   // TODO caching of paints
-  Paint _paint(PaintingStyle style, figma.Paint paint, Rect frame) {
+  Paint _paint(PaintingStyle style, FigmaPaint paint, Rect frame) {
     final result = Paint()
       ..style = style
       ..strokeWidth = _decoration.strokeWeight;
 
-    if (paint.type == figma.PaintType.solid) {
-      result.color = paint.color.toFlutterColor(paint.opacity ?? 1.0);
-    } else if (paint.type == figma.PaintType.gradientLinear) {
-      var begin = paint.gradientHandlePositions[0];
-      var end = paint.gradientHandlePositions[1];
-      final beginAlign =
-          Alignment((begin.x - 0.5) * 2.0, (begin.y - 0.5) * 2.0);
-      final endAlign = Alignment((end.x - 0.5) * 2.0, (end.y - 0.5) * 2.0);
-      final gradient = LinearGradient(
-        begin: beginAlign,
-        end: endAlign,
-        colors:
-            paint.gradientStops.map((x) => x.color.toFlutterColor()).toList(),
-        stops: paint.gradientStops.map((x) => x.position).toList(),
-        tileMode: TileMode.clamp,
-      );
-      result.shader = gradient.createShader(frame);
-    } else if (paint.type == figma.PaintType.gradientRadial) {
-      var begin = paint.gradientHandlePositions[0];
-      var end = paint.gradientHandlePositions[1];
-      final beginAlign =
-          Alignment((begin.x - 0.5) * 2.0, (begin.y - 0.5) * 2.0);
-      final endAlign = Alignment((end.x - 0.5) * 2.0, (end.y - 0.5) * 2.0);
-      final gradient = RadialGradient(
-        center: beginAlign,
-        radius: (endAlign.x - beginAlign.x).abs(),
-        colors:
-            paint.gradientStops.map((x) => x.color.toFlutterColor()).toList(),
-        stops: paint.gradientStops.map((x) => x.position).toList(),
-        tileMode: TileMode.clamp,
-      );
-      result.shader = gradient.createShader(frame);
+    if (paint is FigmaSolidPaint) {
+      result.color = paint.color;
+    } else if (paint is FigmaGradientLinearPaint) {
+      result.shader = paint.gradient.createShader(frame);
+    } else if (paint is FigmaGradientRadialPaint) {
+      result.shader = paint.gradient.createShader(frame);
     }
 
     return result;
@@ -186,14 +160,182 @@ double convertRadiusToSigma(double radius) {
   return radius * 0.57735 + 0.5;
 }
 
-abstract class FigmaPaintShape {
-  const FigmaPaintShape();
+abstract class FigmaEffect {
+  const FigmaEffect();
+
+  factory FigmaEffect.api(figma.Effect effect) {
+    if (effect.type == figma.EffectType.dropShadow) {
+      return FigmaDropShadowEffect(
+        color: effect.color?.toFlutterColor(),
+        offset: Offset(effect.offset?.x ?? 0.0, effect.offset?.y ?? 0.0),
+        radius: effect.radius?.toDouble() ?? 0.0,
+      );
+    }
+    if (effect.type == figma.EffectType.backgroundBlur) {
+      return FigmaBackgroundBlurEffect(
+        radius: effect.radius?.toDouble() ?? 0.0,
+      );
+    }
+
+    return null;
+  }
 }
 
-class FigmaBoxPaintShape extends FigmaPaintShape {
+class FigmaDropShadowEffect extends FigmaEffect {
+  final Color color;
+  final Offset offset;
+  final double radius;
+  const FigmaDropShadowEffect({
+    @required this.color,
+    @required this.offset,
+    @required this.radius,
+  });
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other.runtimeType != runtimeType) return false;
+    return other is FigmaDropShadowEffect &&
+        color != other.color &&
+        offset != other.offset &&
+        radius != other.radius;
+  }
+
+  @override
+  int get hashCode {
+    return (color.hashCode ^ offset.hashCode ^ radius.hashCode) ?? 0;
+  }
+}
+
+class FigmaBackgroundBlurEffect extends FigmaEffect {
+  final double radius;
+  const FigmaBackgroundBlurEffect({
+    @required this.radius,
+  });
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other.runtimeType != runtimeType) return false;
+    return other is FigmaBackgroundBlurEffect && radius != other.radius;
+  }
+
+  @override
+  int get hashCode {
+    return (radius.hashCode) ?? 0;
+  }
+}
+
+abstract class FigmaPaint {
+  const FigmaPaint();
+
+  factory FigmaPaint.api(figma.Paint paint) {
+    if (paint.type == figma.PaintType.solid) {
+      return FigmaSolidPaint(
+        color: paint.color.toFlutterColor(paint.opacity ?? 1.0),
+      );
+    } else if (paint.type == figma.PaintType.gradientLinear) {
+      var begin = paint.gradientHandlePositions[0];
+      var end = paint.gradientHandlePositions[1];
+      final beginAlign =
+          Alignment((begin.x - 0.5) * 2.0, (begin.y - 0.5) * 2.0);
+      final endAlign = Alignment((end.x - 0.5) * 2.0, (end.y - 0.5) * 2.0);
+      return FigmaGradientLinearPaint(
+        gradient: LinearGradient(
+          begin: beginAlign,
+          end: endAlign,
+          colors:
+              paint.gradientStops.map((x) => x.color.toFlutterColor()).toList(),
+          stops: paint.gradientStops.map((x) => x.position).toList(),
+          tileMode: TileMode.clamp,
+        ),
+      );
+    } else if (paint.type == figma.PaintType.gradientRadial) {
+      var begin = paint.gradientHandlePositions[0];
+      var end = paint.gradientHandlePositions[1];
+      final beginAlign =
+          Alignment((begin.x - 0.5) * 2.0, (begin.y - 0.5) * 2.0);
+      final endAlign = Alignment((end.x - 0.5) * 2.0, (end.y - 0.5) * 2.0);
+      return FigmaGradientRadialPaint(
+        gradient: RadialGradient(
+          center: beginAlign,
+          radius: (endAlign.x - beginAlign.x).abs(),
+          colors:
+              paint.gradientStops.map((x) => x.color.toFlutterColor()).toList(),
+          stops: paint.gradientStops.map((x) => x.position).toList(),
+          tileMode: TileMode.clamp,
+        ),
+      );
+    }
+    return null;
+  }
+}
+
+class FigmaSolidPaint extends FigmaPaint {
+  final Color color;
+  const FigmaSolidPaint({
+    @required this.color,
+  });
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other.runtimeType != runtimeType) return false;
+    return other is FigmaSolidPaint && color != other.color;
+  }
+
+  @override
+  int get hashCode {
+    return color?.hashCode ?? 0;
+  }
+}
+
+class FigmaGradientLinearPaint extends FigmaPaint {
+  final LinearGradient gradient;
+  const FigmaGradientLinearPaint({
+    @required this.gradient,
+  });
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other.runtimeType != runtimeType) return false;
+    return other is FigmaGradientLinearPaint && gradient != other.gradient;
+  }
+
+  @override
+  int get hashCode {
+    return gradient?.hashCode ?? 0;
+  }
+}
+
+class FigmaGradientRadialPaint extends FigmaPaint {
+  final RadialGradient gradient;
+  const FigmaGradientRadialPaint({
+    @required this.gradient,
+  });
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other.runtimeType != runtimeType) return false;
+    return other is FigmaGradientRadialPaint && gradient != other.gradient;
+  }
+
+  @override
+  int get hashCode {
+    return gradient?.hashCode ?? 0;
+  }
+}
+
+abstract class FigmaShape {
+  const FigmaShape();
+}
+
+class FigmaRectangleShape extends FigmaShape {
   final List<num> rectangleCornerRadii;
 
-  const FigmaBoxPaintShape({
+  const FigmaRectangleShape({
     this.rectangleCornerRadii = const <num>[0, 0, 0, 0],
   }) : assert(rectangleCornerRadii != null);
 
@@ -201,7 +343,7 @@ class FigmaBoxPaintShape extends FigmaPaintShape {
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
     if (other.runtimeType != runtimeType) return false;
-    return other is FigmaBoxPaintShape &&
+    return other is FigmaRectangleShape &&
         other.rectangleCornerRadii.length == rectangleCornerRadii.length &&
         other.rectangleCornerRadii
             .asMap()
@@ -215,10 +357,10 @@ class FigmaBoxPaintShape extends FigmaPaintShape {
   }
 }
 
-class FigmaPathPaintShape extends FigmaPaintShape {
+class FigmaPathShape extends FigmaShape {
   final List<Path> fillGeometry;
 
-  const FigmaPathPaintShape({
+  const FigmaPathShape({
     @required this.fillGeometry,
   });
 
@@ -226,7 +368,7 @@ class FigmaPathPaintShape extends FigmaPaintShape {
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
     if (other.runtimeType != runtimeType) return false;
-    return other is FigmaPathPaintShape && fillGeometry != other.fillGeometry;
+    return other is FigmaPathShape && fillGeometry != other.fillGeometry;
   }
 
   @override

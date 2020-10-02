@@ -47,13 +47,13 @@ class FigmaFrame extends StatelessWidget {
         node.effects.isNotEmpty) {
       decoration = FigmaPaintDecoration(
         strokeWeight: node.strokeWeight,
-        shape: FigmaBoxPaintShape(
+        shape: FigmaRectangleShape(
           rectangleCornerRadii:
               node.rectangleCornerRadii ?? const <num>[0, 0, 0, 0],
         ),
-        fills: node.fills,
-        strokes: node.strokes,
-        effects: node.effects,
+        fills: node.fills.map((x) => FigmaPaint.api(x)).toList(),
+        strokes: node.strokes.map((x) => FigmaPaint.api(x)).toList(),
+        effects: node.effects.map((x) => FigmaEffect.api(x)).toList(),
       );
     }
 
@@ -72,12 +72,12 @@ class FigmaFrame extends StatelessWidget {
       rectangleCornerRadii: node.rectangleCornerRadii,
       layoutMode: node.layoutMode,
       clipsContent: node.clipsContent ?? false,
-      children: FigmaNode.children(node.layoutMode, node.children),
       designSize: node.designSize(),
       counterAxisSizingMode: node.counterAxisSizingMode,
-      horizontalPadding: node.horizontalPadding,
-      verticalPadding: node.verticalPadding,
-      itemSpacing: node.itemSpacing,
+      horizontalPadding: node.horizontalPadding ?? 0.0,
+      verticalPadding: node.verticalPadding ?? 0.0,
+      itemSpacing: node.itemSpacing ?? 0.0,
+      children: FigmaNode.children(node.layoutMode, node.children),
     );
   }
 
@@ -100,6 +100,7 @@ class FigmaFrame extends StatelessWidget {
     if (decoration != null) {
       child = DecoratedBox(
         decoration: decoration,
+        child: child,
       );
     }
 

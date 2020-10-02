@@ -19,17 +19,17 @@ class FigmaVector extends StatelessWidget {
           key: key,
         );
 
-  factory FigmaVector.api(figma.Rectangle node) {
+  factory FigmaVector.api(figma.Vector node) {
     Decoration decoration;
     if (node.fills.isNotEmpty ||
         node.strokes.isNotEmpty ||
         node.effects.isNotEmpty) {
       decoration = FigmaPaintDecoration(
         strokeWeight: node.strokeWeight,
-        fills: node.fills,
-        strokes: node.strokes,
-        effects: node.effects,
-        shape: FigmaPathPaintShape(
+        fills: node.fills.map((x) => FigmaPaint.api(x)).toList(),
+        strokes: node.strokes.map((x) => FigmaPaint.api(x)).toList(),
+        effects: node.effects.map((x) => FigmaEffect.api(x)).toList(),
+        shape: FigmaPathShape(
           fillGeometry: node.fillGeometry
               .map(
                 (x) => parseSvgPathData(x['path']),

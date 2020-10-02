@@ -126,7 +126,7 @@ class _FigmaPaintDecoration extends BoxPainter {
       ..strokeWidth = _decoration.strokeWeight;
 
     if (paint.type == figma.PaintType.solid) {
-      result.color = paint.color.toFlutterColor();
+      result.color = paint.color.toFlutterColor(paint.opacity ?? 1.0);
     } else if (paint.type == figma.PaintType.gradientLinear) {
       var begin = paint.gradientHandlePositions[0];
       var end = paint.gradientHandlePositions[1];

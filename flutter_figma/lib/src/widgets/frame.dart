@@ -6,66 +6,120 @@ import 'package:flutter_figma/src/widgets/layouts/auto_layout.dart';
 import 'package:flutter_figma/src/widgets/layouts/constrained_layout.dart';
 
 import 'layouts/rotated.dart';
+import 'node.dart';
 
 class FigmaFrame extends StatelessWidget {
-  final figma.Frame node;
+  final figma.LayoutMode layoutMode;
+  final figma.CounterAxisSizingMode counterAxisSizingMode;
+  final bool clipsContent;
+  final double opacity;
+  final Size designSize;
+  final Decoration decoration;
+  final List<figma.Effect> blurEffects;
+  final List<List<num>> relativeTransform;
+  final List<num> rectangleCornerRadii;
   final List<Widget> children;
+  final double horizontalPadding;
+  final double verticalPadding;
+  final double itemSpacing;
 
-  FigmaFrame({
+  const FigmaFrame({
     Key key,
-    @required this.node,
+    @required this.clipsContent,
+    @required this.layoutMode,
+    @required this.opacity,
+    @required this.decoration,
+    @required this.blurEffects,
+    @required this.relativeTransform,
+    @required this.rectangleCornerRadii,
+    this.counterAxisSizingMode,
+    this.designSize,
     this.children = const <Widget>[],
-  }) : super(
-          key: key ?? (node.id != null ? Key(node.id) : null),
-        );
+    this.horizontalPadding = 0,
+    this.verticalPadding = 0,
+    this.itemSpacing = 0,
+  }) : super(key: key);
 
-  @override
-  Widget build(BuildContext context) {
-    Widget child =
-        node.layoutMode != null && node.layoutMode != figma.LayoutMode.none
-            ? FigmaAutoLayout(
-                counterAxisSizingMode: node.counterAxisSizingMode,
-                horizontalPadding: node.horizontalPadding,
-                verticalPadding: node.verticalPadding,
-                itemSpacing: node.itemSpacing,
-                layoutMode: node.layoutMode,
-                children: children,
-              )
-            : FigmaConstrainedLayout(
-                children: children,
-                designSize: node.designSize(),
-              );
-
+  factory FigmaFrame.api(figma.Frame node) {
+    Decoration decoration;
     if (node.fills.isNotEmpty ||
         node.strokes.isNotEmpty ||
         node.effects.isNotEmpty) {
-      child = DecoratedBox(
-        decoration: FigmaPaintDecoration(
-          fills: node.fills,
-          strokes: node.strokes,
-          effects: node.effects,
+      decoration = FigmaPaintDecoration(
+        strokeWeight: node.strokeWeight,
+        shape: FigmaBoxPaintShape(
+          rectangleCornerRadii:
+              node.rectangleCornerRadii ?? const <num>[0, 0, 0, 0],
         ),
-        child: child,
+        fills: node.fills,
+        strokes: node.strokes,
+        effects: node.effects,
       );
     }
 
-    if (node.opacity != null && node.opacity < 1) {
+    final blurEffects = <figma.Effect>[];
+    if (node.effects != null) {
+      blurEffects.addAll(
+        node.effects.where((x) => x.type == figma.EffectType.backgroundBlur),
+      );
+    }
+    return FigmaFrame(
+      key: node.id != null ? Key(node.id) : null,
+      opacity: node.opacity ?? 1.0,
+      blurEffects: blurEffects,
+      decoration: decoration,
+      relativeTransform: node.relativeTransform,
+      rectangleCornerRadii: node.rectangleCornerRadii,
+      layoutMode: node.layoutMode,
+      clipsContent: node.clipsContent ?? false,
+      children: FigmaNode.children(node.layoutMode, node.children),
+      designSize: node.designSize(),
+      counterAxisSizingMode: node.counterAxisSizingMode,
+      horizontalPadding: node.horizontalPadding,
+      verticalPadding: node.verticalPadding,
+      itemSpacing: node.itemSpacing,
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    Widget child = layoutMode != null && layoutMode != figma.LayoutMode.none
+        ? FigmaAutoLayout(
+            counterAxisSizingMode: counterAxisSizingMode,
+            horizontalPadding: horizontalPadding,
+            verticalPadding: verticalPadding,
+            itemSpacing: itemSpacing,
+            layoutMode: layoutMode,
+            children: children,
+          )
+        : FigmaConstrainedLayout(
+            children: children,
+            designSize: designSize,
+          );
+
+    if (decoration != null) {
+      child = DecoratedBox(
+        decoration: decoration,
+      );
+    }
+
+    if (opacity < 1) {
       child = Opacity(
-        opacity: node.opacity,
+        opacity: opacity,
         child: child,
       );
     }
 
-    if (node.clipsContent == true) {
+    if (clipsContent == true) {
       child = ClipRRect(
-        borderRadius: node.rectangleCornerRadii.toBorderRadius(),
+        borderRadius: rectangleCornerRadii.toBorderRadius(),
         child: child,
       );
     }
 
-    if (node.relativeTransform != null && node.relativeTransform.isRotated) {
+    if (relativeTransform != null && relativeTransform.isRotated) {
       child = FigmaRotated(
-        transform: node.relativeTransform,
+        transform: relativeTransform,
         child: child,
       );
     }

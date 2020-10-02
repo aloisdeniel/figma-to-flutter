@@ -15,7 +15,12 @@ class FigmaNode extends StatelessWidget {
     @required this.node,
   }) : super(key: key);
 
-  List<Widget> _children(figma.LayoutMode mode, List<figma.Node> children) {
+  /// Converts the list of [children] nodes to a list of widgets.
+  ///
+  /// Each widget has a [FigmaConstrained] wrapper when [mode] is `none` or a
+  /// [FigmaAuto] wrapper when [mode] is horizontal or vertical auto layout.
+  static List<Widget> children(
+      figma.LayoutMode mode, List<figma.Node> children) {
     switch (mode) {
       case figma.LayoutMode.vertical:
       case figma.LayoutMode.horizontal:
@@ -25,7 +30,8 @@ class FigmaNode extends StatelessWidget {
     }
   }
 
-  List<Widget> _autoChildren(figma.LayoutMode mode, List<figma.Node> children) {
+  static List<Widget> _autoChildren(
+      figma.LayoutMode mode, List<figma.Node> children) {
     return children.map(
       (node) {
         final child = FigmaNode(
@@ -64,7 +70,7 @@ class FigmaNode extends StatelessWidget {
     ).toList();
   }
 
-  List<Widget> _constrainedChildren(List<figma.Node> children) {
+  static List<Widget> _constrainedChildren(List<figma.Node> children) {
     return children.map(
       (node) {
         final child = FigmaNode(
@@ -104,25 +110,16 @@ class FigmaNode extends StatelessWidget {
   Widget build(BuildContext context) {
     final node = this.node;
     if (node is figma.Text) {
-      return FigmaText(
-        node: node,
-      );
+      return FigmaText.api(node);
     }
     if (node is figma.Rectangle) {
-      return FigmaRectangle(
-        node: node,
-      );
+      return FigmaRectangle.api(node);
     }
     if (node is figma.Frame) {
-      return FigmaFrame(
-        node: node,
-        children: _children(node.layoutMode, node.children),
-      );
+      return FigmaFrame.api(node);
     }
     if (node is figma.Vector) {
-      return FigmaVector(
-        node: node,
-      );
+      return FigmaVector.api(node);
     }
     throw Exception('Unsupported figma node : ${node}');
   }

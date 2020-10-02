@@ -122,11 +122,11 @@ extension ListListNumExtension on List<List<num>> {
 }
 
 extension ColorExtension on figma.Color {
-  Color toFlutterColor() {
+  Color toFlutterColor([double opacity = 1.0]) {
     var ir = ((r ?? 0.0) * 255).toInt();
     var ig = ((g ?? 0.0) * 255).toInt();
     var ib = ((b ?? 0.0) * 255).toInt();
-    var ia = ((a ?? 1.0) * 255).toInt();
+    var ia = (opacity * (a ?? 1.0) * 255).toInt();
     return Color.fromARGB(ia, ir, ig, ib);
   }
 }

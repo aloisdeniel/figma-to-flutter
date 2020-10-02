@@ -7,31 +7,38 @@ import 'layouts/rotated.dart';
 
 class FigmaText extends StatelessWidget {
   final figma.Text node;
+  final TextAlign textAlign;
   final TextStyle defaultStyle;
-  final Map<int, TextStyle> styleTable;
   final List<InlineSpan> spans;
 
-  FigmaText._({
+  const FigmaText({
     Key key,
     @required this.node,
     @required this.spans,
-    @required this.styleTable,
+    @required this.textAlign,
     @required this.defaultStyle,
-  }) : super(
-          key: key ?? (node.id != null ? Key(node.id) : null),
-        );
+  }) : super(key: key);
 
-  factory FigmaText({
-    Key key,
-    @required figma.Text node,
-  }) {
+  factory FigmaText.api(figma.Text node) {
     final defaultStyle = _buildDefaultStyle(node);
     final styleTable = _buildStyleTable(node, defaultStyle);
-    return FigmaText._(
+    return FigmaText(
+      key: node.id != null ? Key(node.id) : null,
       node: node,
       defaultStyle: defaultStyle,
       spans: _buildSpans(node, styleTable),
-      styleTable: styleTable,
+      textAlign: () {
+        switch (node.style.textAlignHorizontal) {
+          case figma.TextAlignHorizontal.right:
+            return TextAlign.right;
+          case figma.TextAlignHorizontal.center:
+            return TextAlign.center;
+          case figma.TextAlignHorizontal.justified:
+            return TextAlign.justify;
+          default:
+            return TextAlign.left;
+        }
+      }(),
     );
   }
 
@@ -98,6 +105,7 @@ class FigmaText extends StatelessWidget {
     Widget child;
     if (spans.isNotEmpty) {
       child = RichText(
+        textAlign: textAlign,
         text: TextSpan(
           style: defaultStyle,
           children: spans,
@@ -106,7 +114,8 @@ class FigmaText extends StatelessWidget {
     } else {
       Text(
         node.characters,
-        style: styleTable[0],
+        textAlign: textAlign,
+        style: defaultStyle,
       );
     }
 

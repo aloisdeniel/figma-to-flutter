@@ -7,48 +7,66 @@ import 'package:flutter_figma/src/helpers/api_extensions.dart';
 import 'layouts/rotated.dart';
 
 class FigmaVector extends StatelessWidget {
-  final figma.Vector node;
-  FigmaVector({
+  final double opacity;
+  final Decoration decoration;
+  final List<List<num>> relativeTransform;
+  const FigmaVector({
     Key key,
-    @required this.node,
+    @required this.opacity,
+    @required this.decoration,
+    @required this.relativeTransform,
   }) : super(
-          key: key ?? (node.id != null ? Key(node.id) : null),
+          key: key,
         );
+
+  factory FigmaVector.api(figma.Rectangle node) {
+    Decoration decoration;
+    if (node.fills.isNotEmpty ||
+        node.strokes.isNotEmpty ||
+        node.effects.isNotEmpty) {
+      decoration = FigmaPaintDecoration(
+        strokeWeight: node.strokeWeight,
+        fills: node.fills,
+        strokes: node.strokes,
+        effects: node.effects,
+        shape: FigmaPathPaintShape(
+          fillGeometry: node.fillGeometry
+              .map(
+                (x) => parseSvgPathData(x['path']),
+              )
+              .toList(),
+        ),
+      );
+    }
+
+    return FigmaVector(
+      key: node.id != null ? Key(node.id) : null,
+      decoration: decoration,
+      opacity: node.opacity ?? 1.0,
+      relativeTransform: node.relativeTransform,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     Widget child = SizedBox();
 
-    if (node.fills.isNotEmpty ||
-        node.strokes.isNotEmpty ||
-        node.effects.isNotEmpty) {
+    if (decoration != null) {
       child = DecoratedBox(
-        decoration: FigmaPaintDecoration(
-          strokeWeight: node.strokeWeight,
-          fills: node.fills,
-          strokes: node.strokes,
-          effects: node.effects,
-          shape: FigmaPathPaintShape(
-            fillGeometry: node.fillGeometry
-                .map(
-                  (x) => parseSvgPathData(x['path']),
-                )
-                .toList(),
-          ),
-        ),
+        decoration: decoration,
       );
     }
 
-    if (node.opacity != null && node.opacity < 1) {
+    if (opacity < 1) {
       child = Opacity(
-        opacity: node.opacity,
+        opacity: opacity,
         child: child,
       );
     }
 
-    if (node.relativeTransform != null && node.relativeTransform.isRotated) {
+    if (relativeTransform != null && relativeTransform.isRotated) {
       child = FigmaRotated(
-        transform: node.relativeTransform,
+        transform: relativeTransform,
         child: child,
       );
     }

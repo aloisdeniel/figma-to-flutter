@@ -113,3 +113,24 @@ extension ColorExtension on figma.Color {
     return Color.fromARGB(ia, ir, ig, ib);
   }
 }
+
+extension TypeStyleExtension on figma.TypeStyle {
+  TextStyle toFlutterTextStyle() {
+    final color = fills
+        ?.firstWhere(
+          (x) => x.color != null,
+          orElse: () => null,
+        )
+        ?.color
+        ?.toFlutterColor();
+    return TextStyle(
+      color: color,
+      fontFamily: fontFamily,
+      fontSize: fontSize?.toDouble(),
+      fontWeight: FontWeight.values.firstWhere(
+        (x) => x.index == (fontWeight.toInt() / 100) - 1,
+        orElse: () => FontWeight.w400,
+      ),
+    );
+  }
+}

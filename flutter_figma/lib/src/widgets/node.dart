@@ -2,6 +2,7 @@ import 'package:figma/figma.dart' as figma;
 import 'package:flutter/widgets.dart';
 import 'package:flutter_figma/src/widgets/layouts/constrained_layout.dart';
 import 'package:flutter_figma/src/widgets/rectangle.dart';
+import 'package:flutter_figma/src/widgets/vector.dart';
 import 'package:flutter_figma/widgets.dart';
 
 import '../helpers/api_extensions.dart';
@@ -30,7 +31,15 @@ class FigmaNode extends StatelessWidget {
         final child = FigmaNode(
           node: node,
         );
-
+        if (node is figma.Text) {
+          return FigmaAuto(
+            isMainAxisFixed: false,
+            isCrossAxisFixed: false,
+            designSize: Size(node.size.x, node.size.y),
+            layoutAlign: node.layoutAlign,
+            child: child,
+          );
+        }
         if (node is figma.Vector) {
           return FigmaAuto(
             isMainAxisFixed: true,
@@ -44,7 +53,7 @@ class FigmaNode extends StatelessWidget {
           return FigmaAuto(
             isCrossAxisFixed: node.layoutMode == node.layoutMode &&
                 node.counterAxisSizingMode == figma.CounterAxisSizingMode.fixed,
-            isMainAxisFixed: node.layoutMode != node.layoutMode,
+            isMainAxisFixed: node.layoutMode != mode,
             designSize: Size(node.size.x, node.size.y),
             layoutAlign: node.layoutAlign,
             child: child,
@@ -62,6 +71,14 @@ class FigmaNode extends StatelessWidget {
           node: node,
         );
 
+        if (node is figma.Text) {
+          return FigmaConstrained(
+            designPosition: node.relativeTransform.position,
+            designSize: Size(node.size.x, node.size.y),
+            constraints: node.constraints,
+            child: child,
+          );
+        }
         if (node is figma.Vector) {
           return FigmaConstrained(
             designPosition: node.relativeTransform.position,
@@ -86,6 +103,11 @@ class FigmaNode extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final node = this.node;
+    if (node is figma.Text) {
+      return FigmaText(
+        node: node,
+      );
+    }
     if (node is figma.Rectangle) {
       return FigmaRectangle(
         node: node,
@@ -97,7 +119,11 @@ class FigmaNode extends StatelessWidget {
         children: _children(node.layoutMode, node.children),
       );
     }
-
+    if (node is figma.Vector) {
+      return FigmaVector(
+        node: node,
+      );
+    }
     throw Exception('Unsupported figma node : ${node}');
   }
 }

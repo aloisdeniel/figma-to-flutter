@@ -23,7 +23,7 @@ class FigmaPaintDecoration extends Decoration {
 
   @override
   BoxPainter createBoxPainter([onChanged]) {
-    return _FigmaPaintDecoration(this, onChanged);
+    return _FigmaPaintDecoration(this, strokeWeight, onChanged);
   }
 
   @override
@@ -43,18 +43,21 @@ class FigmaPaintDecoration extends Decoration {
           ),
         );
     } else if (shape is FigmaPathPaintShape) {
-      final bounds = shape.fillGeometry.getBounds();
-      final transform = Matrix4.translationValues(
-            rect.left,
-            rect.top,
-            0,
-          ) *
-          (Matrix4.identity()
-            ..scale(
-              rect.width / (bounds.left + bounds.width),
-              rect.height / (bounds.top + bounds.height),
-            ));
-      clipPath = shape.fillGeometry.transform(transform.storage);
+      clipPath = Path();
+      for (var geometry in shape.fillGeometry) {
+        final bounds = geometry.getBounds();
+        final transform = Matrix4.translationValues(
+              rect.left,
+              rect.top,
+              0,
+            ) *
+            (Matrix4.identity()
+              ..scale(
+                rect.width / (bounds.left + bounds.width),
+                rect.height / (bounds.top + bounds.height),
+              ));
+        clipPath.addPath(geometry.transform(transform.storage), Offset.zero);
+      }
     } else {
       clipPath = Path();
     }
@@ -89,9 +92,13 @@ class FigmaPaintDecoration extends Decoration {
 
 class _FigmaPaintDecoration extends BoxPainter {
   final FigmaPaintDecoration _decoration;
+  final double _strokeWidth;
 
-  _FigmaPaintDecoration(this._decoration, VoidCallback onChanged)
-      : assert(_decoration != null),
+  _FigmaPaintDecoration(
+    this._decoration,
+    this._strokeWidth,
+    VoidCallback onChanged,
+  )   : assert(_decoration != null),
         super(onChanged);
 
   void _paintDropShadows(Canvas canvas, Path path) {
@@ -169,6 +176,7 @@ class _FigmaPaintDecoration extends BoxPainter {
 
     for (var stroke in _decoration.strokes) {
       final paint = _paint(PaintingStyle.stroke, stroke, rect);
+      paint.strokeWidth = _strokeWidth;
       canvas.drawPath(path, paint);
     }
   }
@@ -208,7 +216,7 @@ class FigmaBoxPaintShape extends FigmaPaintShape {
 }
 
 class FigmaPathPaintShape extends FigmaPaintShape {
-  final Path fillGeometry;
+  final List<Path> fillGeometry;
 
   const FigmaPathPaintShape({
     @required this.fillGeometry,

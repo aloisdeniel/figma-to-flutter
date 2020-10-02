@@ -1,10 +1,11 @@
 import 'package:figma/figma.dart' as figma;
 import 'package:flutter/widgets.dart';
 import 'package:flutter_figma/src/rendering/decoration.dart';
+import 'package:path_drawing/path_drawing.dart';
 
-class FigmaRectangle extends StatelessWidget {
-  final figma.Rectangle node;
-  FigmaRectangle({
+class FigmaVector extends StatelessWidget {
+  final figma.Vector node;
+  FigmaVector({
     Key key,
     @required this.node,
   }) : super(
@@ -21,9 +22,12 @@ class FigmaRectangle extends StatelessWidget {
       child = DecoratedBox(
         decoration: FigmaPaintDecoration(
           strokeWeight: node.strokeWeight,
-          shape: FigmaBoxPaintShape(
-            rectangleCornerRadii:
-                node.rectangleCornerRadii ?? const <num>[0, 0, 0, 0],
+          shape: FigmaPathPaintShape(
+            fillGeometry: node.fillGeometry
+                .map(
+                  (x) => parseSvgPathData(x['path']),
+                )
+                .toList(),
           ),
           fills: node.fills,
           strokes: node.strokes,

@@ -5,6 +5,8 @@ import 'package:flutter_figma/src/helpers/api_extensions.dart';
 import 'package:flutter_figma/src/widgets/layouts/auto_layout.dart';
 import 'package:flutter_figma/src/widgets/layouts/constrained_layout.dart';
 
+import 'layouts/rotated.dart';
+
 class FigmaFrame extends StatelessWidget {
   final figma.Frame node;
   final List<Widget> children;
@@ -57,6 +59,13 @@ class FigmaFrame extends StatelessWidget {
     if (node.clipsContent == true) {
       child = ClipRRect(
         borderRadius: node.rectangleCornerRadii.toBorderRadius(),
+        child: child,
+      );
+    }
+
+    if (node.relativeTransform != null && node.relativeTransform.isRotated) {
+      child = FigmaRotated(
+        transform: node.relativeTransform,
         child: child,
       );
     }

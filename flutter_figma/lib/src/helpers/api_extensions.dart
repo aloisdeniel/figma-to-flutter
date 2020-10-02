@@ -81,6 +81,12 @@ extension FileResponseExtension on figma.FileResponse {
   }
 }
 
+extension NumExtension on num {
+  bool isAlmostSame(num other) {
+    return (this > other - 0.001) && (this < other + 0.001);
+  }
+}
+
 extension ListNumExtension on List<num> {
   /// Converts the list of values to a border radius.
   BorderRadius toBorderRadius() {
@@ -102,6 +108,17 @@ extension ListListNumExtension on List<List<num>> {
   Offset get position => Offset(this[0][2], this[1][2]);
 
   double get rotation => atan2(-this[0][1], this[0][0]);
+
+  bool get isRotated {
+    final r00 = this[0][0];
+    final r01 = this[0][1];
+    final r10 = this[1][0];
+    final r11 = this[1][1];
+    return !(r00.isAlmostSame(1.0) &&
+        r01.isAlmostSame(0.0) &&
+        r10.isAlmostSame(0.0) &&
+        r11.isAlmostSame(1.0));
+  }
 }
 
 extension ColorExtension on figma.Color {

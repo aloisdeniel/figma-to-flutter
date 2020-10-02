@@ -91,7 +91,11 @@ class FigmaDesignNode extends StatelessWidget {
   Widget build(BuildContext context) {
     final designState =
         context.dependOnInheritedWidgetOfExactType<_InheritedDesignState>();
-    if (designState.file == null) return CircularProgressIndicator();
+    if (designState.file == null) {
+      return Center(
+        child: CircularProgressIndicator(),
+      );
+    }
     final node = componentName != null
         ? designState.file.findComponentWithName(componentName)
         : designState.file.document.findNodeWithName(name);

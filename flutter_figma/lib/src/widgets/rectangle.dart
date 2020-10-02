@@ -1,6 +1,8 @@
 import 'package:figma/figma.dart' as figma;
 import 'package:flutter/widgets.dart';
 import 'package:flutter_figma/src/rendering/decoration.dart';
+import 'package:flutter_figma/src/helpers/api_extensions.dart';
+import 'package:flutter_figma/src/widgets/layouts/rotated.dart';
 
 class FigmaRectangle extends StatelessWidget {
   final figma.Rectangle node;
@@ -35,6 +37,13 @@ class FigmaRectangle extends StatelessWidget {
     if (node.opacity != null && node.opacity < 1) {
       child = Opacity(
         opacity: node.opacity,
+        child: child,
+      );
+    }
+
+    if (node.relativeTransform != null && node.relativeTransform.isRotated) {
+      child = FigmaRotated(
+        transform: node.relativeTransform,
         child: child,
       );
     }

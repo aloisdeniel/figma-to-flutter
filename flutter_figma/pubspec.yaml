@@ -1,13 +1,14 @@
 name: flutter_figma
 description: Rendering Figma components as Flutter widgets.
-version: 0.0.1
+version: 0.0.1-alpha.3
 homepage: https://github.com/aloisdeniel/figma-to-flutter/tree/master/figma_theme_generator
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
-  figma: ^2.0.0
+  collection: ^1.15.0-nullsafety.3
+  figma: ^2.0.2
   path_drawing: ^0.4.1
   flutter:
     sdk: flutter
@@ -16,11 +17,6 @@ dev_dependencies:
   pedantic:
   flutter_test:
     sdk: flutter
-
-dependency_overrides:
-  figma:
-    git:
-      url: https://github.com/aloisdeniel/figma
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

@@ -1,6 +1,7 @@
 import 'package:example/pages/component_preview.dart';
 import 'package:flutter/material.dart';
 import 'package:figma/figma.dart' as figma;
+import 'package:flutter_figma/figma.dart';
 
 class FileComponentsPage extends StatefulWidget {
   final String apiKey;
@@ -47,8 +48,8 @@ class _FileComponentsPageState extends State<FileComponentsPage> {
             }
             return _ComponentsList(
               fileKey: widget.fileKey,
-              components: snapshot.data.components.entries.toList(),
               apiKey: widget.apiKey,
+              file: snapshot.data,
             );
           }
           if (snapshot.error != null) {
@@ -90,26 +91,48 @@ class _ComponentsList extends StatelessWidget {
   final String apiKey;
   final String fileKey;
   final List<MapEntry<String, figma.Component>> components;
-  const _ComponentsList({
+  final figma.FileResponse file;
+  _ComponentsList({
     Key key,
     @required this.apiKey,
     @required this.fileKey,
-    @required this.components,
-  }) : super(key: key);
+    @required this.file,
+  })  : components = file.components.entries.toList(),
+        super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final components = this.components;
+    components.sort((x, y) => x.value.name.compareTo(y.value.name));
     return ListView(
       children: [
-        ...components.map(
-          (x) => _ComponentTile(
-            apiKey: apiKey,
-            fileKey: fileKey,
-            nodeId: x.key,
-            component: x.value,
-            key: Key(x.key),
-          ),
-        ),
+        ...components
+            .map<List<Widget>>(
+              (x) => [
+                _ComponentTile(
+                  apiKey: apiKey,
+                  fileKey: fileKey,
+                  nodeId: x.key,
+                  name: x.value.name,
+                  type: 'Component',
+                  key: Key(x.key),
+                ),
+                ...file.document.findInstances(x.key).map(
+                      (y) => _ComponentTile(
+                        apiKey: apiKey,
+                        fileKey: fileKey,
+                        nodeId: y.id,
+                        name: y.name,
+                        type: '${x.value.name} (Instance)',
+                        key: Key(y.id),
+                      ),
+                    ),
+                Divider(
+                  thickness: 2,
+                ),
+              ],
+            )
+            .expand((x) => x),
       ],
     );
   }
@@ -119,20 +142,22 @@ class _ComponentTile extends StatelessWidget {
   final String apiKey;
   final String fileKey;
   final String nodeId;
-  final figma.Component component;
+  final String name;
+  final String type;
   const _ComponentTile({
     Key key,
     @required this.apiKey,
     @required this.fileKey,
-    @required this.component,
+    @required this.name,
+    @required this.type,
     @required this.nodeId,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: Text(component.name),
-      subtitle: Text(component.key),
+      title: Text(name),
+      subtitle: Text(type),
       onTap: () {
         Navigator.push(
           context,
@@ -140,7 +165,6 @@ class _ComponentTile extends StatelessWidget {
             builder: (context) => ComponentPreviewPage(
               apiKey: apiKey,
               fileKey: fileKey,
-              component: component,
               nodeId: nodeId,
             ),
           ),

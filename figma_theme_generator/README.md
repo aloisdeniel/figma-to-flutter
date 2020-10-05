@@ -8,7 +8,7 @@
 </p>
 
 
-Generate a set of Flutter classes from the style library (colors, gradients, effects, text styles) of a Figma document.
+Generate a set of Flutter classes from the style library (colors, borders, corner radii, gradients, effects, text styles) of a Figma document.
 
 ## Install
 
@@ -65,7 +65,7 @@ import 'package:flutter/widgets.dart';
 part 'theme.g.dart';
 
 @FigmaTheme(
-  1,
+  1, // Increment this number each time an update is needed
   fileKey: '<file_key>',
   apiToken: '<api_token>',
 )

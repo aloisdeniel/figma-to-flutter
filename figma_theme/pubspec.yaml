@@ -1,8 +1,7 @@
 name: figma_theme
 description: Annotations for the figma_theme_generator.
 version: 0.1.0
-author:
-homepage:
+homepage: https://github.com/aloisdeniel/figma-to-flutter/tree/master/figma_theme
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
@@ -10,11 +9,6 @@ environment:
 
 dependencies:
   meta: ^1.1.8
+  collection: ^1.14.13
   flutter:
     sdk: flutter
-
-dev_dependencies:
-  flutter_test:
-    sdk: flutter
-
-flutter:

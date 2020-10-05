@@ -1,4 +1,28 @@
 import 'package:figma/figma.dart';
+import 'package:recase/recase.dart';
+
+String createFieldName(String name) {
+  final cased = ReCase(name);
+  return _removeSpecialCharacters(cased.camelCase);
+}
+
+String createClassName(String name) {
+  final cased = ReCase(name);
+  return _removeSpecialCharacters(cased.pascalCase);
+}
+
+String _removeSpecialCharacters(String value) {
+  final result = StringBuffer();
+  final regexp = RegExp('[a-zA-Z0-9]');
+  for (var i = 0; i < value.length; i++) {
+    final character = value[i];
+    if (regexp.allMatches(character).isNotEmpty) {
+      result.write(character);
+    }
+  }
+
+  return result.toString();
+}
 
 String buildColorInstance(Color color, double opacity) {
   var ir = ((color.r ?? 0.0) * 255).toInt();
@@ -87,6 +111,32 @@ String buildGradientInstance(Paint paint) {
           'colors: $colors,'
           'tileMode: TileMode.clamp, '
           ')';
+}
+
+String buildBorderSideInstance(Paint colorPaint, double width) {
+  final color = buildColorInstance(colorPaint.color, colorPaint.opacity);
+  return 'BorderSide('
+      'style: BorderStyle.solid,'
+      'width: ${width.buildDouble()},'
+      'color: $color,'
+      ')';
+}
+
+String buildBorderRadiusInstance(List<num> radius) {
+  final topLeft = radius.length > 0 ? radius[0] : 0;
+  final topRight = radius.length > 1 ? radius[1] : 0;
+  final bottomRight = radius.length > 2 ? radius[2] : 0;
+  final bottomLeft = radius.length > 3 ? radius[3] : 0;
+
+  if (topLeft == topRight && topLeft == bottomLeft && topLeft == bottomRight) {
+    return 'BorderRadius.circular(${topLeft.buildDouble()})';
+  }
+  return 'BorderRadius.only('
+      'topLeft: Radius.circular(${topLeft.buildDouble()}),'
+      'topRight: Radius.circular(${topRight.buildDouble()}),'
+      'bottomLeft: Radius.circular(${bottomLeft.buildDouble()}),'
+      'bottomRight: Radius.circular(${bottomRight.buildDouble()}),'
+      ')';
 }
 
 extension on num {

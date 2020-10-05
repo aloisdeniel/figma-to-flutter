@@ -2,7 +2,6 @@ import 'package:code_builder/code_builder.dart';
 import 'package:figma/figma.dart';
 import 'package:figma_theme_generator/src/helpers/data_class_builder.dart';
 import 'package:meta/meta.dart';
-import 'package:recase/recase.dart';
 
 import '../helpers/extensions.dart';
 import 'base.dart';
@@ -16,28 +15,33 @@ class FileBuilder {
     @required String fallbackConstructorName,
     @required FileResponse response,
   }) {
-    final nameFormat = ReCase(name);
+    final nameFormat = createClassName(name);
     final context = FileBuildContext(
-      name: nameFormat.pascalCase,
+      name: nameFormat,
       fallbackConstructorName: fallbackConstructorName,
       library: library,
       response: response,
     );
     response.styles.forEach((key, style) {
-      final node = context.findNodeWithStyle(key);
-      if (node != null) {
-        switch (node.type) {
-          case StyleTypeKey.fill:
-            const FillStyleBuilder().build(context, style, node.node);
-            break;
-          case StyleTypeKey.text:
-            if (node.node is Text)
-              const TextStyleBuilder().build(context, style, node.node);
-            break;
-          case StyleTypeKey.effect:
-            const EffectBuilder().build(context, style, node.node);
-            break;
-          default:
+      final styles = context.findNodeWithStyle(key);
+      if (styles.isNotEmpty) {
+        for (var node in styles) {
+          switch (node.type) {
+            case StyleTypeKey.stroke:
+              const BorderStyleBuilder().build(context, style, node.node);
+              break;
+            case StyleTypeKey.fill:
+              const FillStyleBuilder().build(context, style, node.node);
+              break;
+            case StyleTypeKey.text:
+              if (node.node is Text)
+                const TextStyleBuilder().build(context, style, node.node);
+              break;
+            case StyleTypeKey.effect:
+              const EffectBuilder().build(context, style, node.node);
+              break;
+            default:
+          }
         }
       }
     });
@@ -62,9 +66,19 @@ class FileBuilder {
           '${context.gradients.builder.name}.$fallbackConstructorName()');
     }
 
+    if (context.borders.builder.fields.isNotEmpty) {
+      theme.addField(context.borders.builder.name, 'borders',
+          '${context.borders.builder.name}.$fallbackConstructorName()');
+    }
+
     if (context.shadows.builder.fields.isNotEmpty) {
       theme.addField(context.shadows.builder.name, 'shadows',
           '${context.shadows.builder.name}.$fallbackConstructorName()');
+    }
+
+    if (context.radius.builder.fields.isNotEmpty) {
+      theme.addField(context.radius.builder.name, 'radii',
+          '${context.radius.builder.name}.$fallbackConstructorName()');
     }
 
     context.library.body.addAll([
@@ -73,7 +87,9 @@ class FileBuilder {
       if (context.text.builder.fields.isNotEmpty) context.text.build(),
       if (context.gradients.builder.fields.isNotEmpty)
         context.gradients.build(),
+      if (context.borders.builder.fields.isNotEmpty) context.borders.build(),
       if (context.shadows.builder.fields.isNotEmpty) context.shadows.build(),
+      if (context.radius.builder.fields.isNotEmpty) context.radius.build(false),
     ]);
 
     library.body.add(context.library.build());
@@ -84,7 +100,7 @@ class FillStyleBuilder {
   const FillStyleBuilder();
 
   void build(FileBuildContext context, Style style, Node node) {
-    final nameFormat = ReCase(style.name);
+    final nameFormat = createFieldName(style.name);
     final fills = node.extractFills();
 
     /// Extracting colors
@@ -94,7 +110,7 @@ class FillStyleBuilder {
         )
         .toList();
     for (var i = 0; i < colorFills.length; i++) {
-      var name = nameFormat.camelCase;
+      var name = nameFormat;
       if (i > 0) name = '$name$i';
       final fill = colorFills[i];
       context.colors.addField(
@@ -114,7 +130,7 @@ class FillStyleBuilder {
         )
         .toList();
     for (var i = 0; i < linearGradientFills.length; i++) {
-      var name = nameFormat.camelCase;
+      var name = nameFormat;
       if (i > 0) name = '$name$i';
       final fill = linearGradientFills[i];
       context.gradients.addField(
@@ -126,11 +142,49 @@ class FillStyleBuilder {
   }
 }
 
+class BorderStyleBuilder {
+  const BorderStyleBuilder();
+
+  void build(FileBuildContext context, Style style, Node node) {
+    final nameFormat = createFieldName(style.name);
+    final strokes = node.extractStrokes();
+
+    /// Extracting colors
+    final colorStrokes = strokes
+        .where(
+          (x) => x.paint.type == PaintType.solid && x.paint.color != null,
+        )
+        .toList();
+    for (var i = 0; i < colorStrokes.length; i++) {
+      var name = nameFormat;
+      if (i > 0) name = '$name$i';
+      final stroke = colorStrokes[i];
+      context.colors.addField(
+        'Color',
+        name,
+        buildColorInstance(stroke.paint.color, stroke.paint.opacity),
+      );
+      context.borders.addField(
+        'BorderSide',
+        name,
+        buildBorderSideInstance(stroke.paint, stroke.strokeWeight),
+      );
+      if (stroke.rectangleCornerRadii.isNotEmpty) {
+        context.radius.addField(
+          'BorderRadius',
+          name,
+          buildBorderRadiusInstance(stroke.rectangleCornerRadii),
+        );
+      }
+    }
+  }
+}
+
 class EffectBuilder {
   const EffectBuilder();
 
   void build(FileBuildContext context, Style style, Node node) {
-    final nameFormat = ReCase(style.name);
+    final nameFormat = createFieldName(style.name);
     final effects = node.extractEffects();
 
     /// Extracting colors
@@ -140,7 +194,7 @@ class EffectBuilder {
         )
         .toList();
     for (var i = 0; i < shadowEffects.length; i++) {
-      var name = nameFormat.camelCase;
+      var name = nameFormat;
       if (i > 0) name = '$name$i';
       final shadowEffect = shadowEffects[i];
       context.shadows.addField(
@@ -155,8 +209,7 @@ class EffectBuilder {
 class TextStyleBuilder {
   const TextStyleBuilder();
   void build(FileBuildContext context, Style style, Text node) {
-    final nameFormat = ReCase(style.name);
-    var name = nameFormat.camelCase;
+    final name = createFieldName(style.name);
 
     context.text.addField(
       'TextStyle',

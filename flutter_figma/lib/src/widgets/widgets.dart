@@ -1,5 +1,4 @@
 export 'frame.dart';
-export 'node.dart';
 export 'rectangle.dart';
 export 'text.dart';
 export 'vector.dart';

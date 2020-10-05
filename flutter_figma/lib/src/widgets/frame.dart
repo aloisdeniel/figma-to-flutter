@@ -5,8 +5,8 @@ import 'package:flutter_figma/src/helpers/api_extensions.dart';
 import 'package:flutter_figma/src/widgets/layouts/auto_layout.dart';
 import 'package:flutter_figma/src/widgets/layouts/constrained_layout.dart';
 
+import '../design.dart';
 import 'layouts/rotated.dart';
-import 'node.dart';
 
 class FigmaFrame extends StatelessWidget {
   final figma.LayoutMode layoutMode;

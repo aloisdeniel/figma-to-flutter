@@ -20,6 +20,8 @@ class FileBuildContext {
   final DataClassBuilder text;
   final DataClassBuilder gradients;
   final DataClassBuilder shadows;
+  final DataClassBuilder borders;
+  final DataClassBuilder radius;
   FileBuildContext({
     @required this.name,
     @required this.response,
@@ -29,8 +31,10 @@ class FileBuildContext {
     String textThemeClassName,
     String gradientsThemeClassName,
     String shadowsThemeClassName,
+    String bordersThemeClassName,
+    String radiusThemeClassName,
   })  : this.colors = DataClassBuilder(
-          name: colorThemeClassName ?? '${name}ColorData',
+          name: colorThemeClassName ?? '${name}ColorsData',
           fallbackConstructorName: fallbackConstructorName,
         ),
         this.text = DataClassBuilder(
@@ -38,45 +42,52 @@ class FileBuildContext {
           fallbackConstructorName: fallbackConstructorName,
         ),
         this.gradients = DataClassBuilder(
-          name: gradientsThemeClassName ?? '${name}GradientData',
+          name: gradientsThemeClassName ?? '${name}GradientsData',
           fallbackConstructorName: fallbackConstructorName,
         ),
         this.shadows = DataClassBuilder(
-          name: shadowsThemeClassName ?? '${name}ShadowData',
+          name: shadowsThemeClassName ?? '${name}ShadowsData',
+          fallbackConstructorName: fallbackConstructorName,
+        ),
+        this.borders = DataClassBuilder(
+          name: bordersThemeClassName ?? '${name}BordersData',
+          fallbackConstructorName: fallbackConstructorName,
+        ),
+        this.radius = DataClassBuilder(
+          name: radiusThemeClassName ?? '${name}RadiiData',
           fallbackConstructorName: fallbackConstructorName,
         );
 
-  NodeStyle findNodeWithStyle(String id) {
+  List<NodeStyle> findNodeWithStyle(String id) {
     return _findNodeWithStyle(response.document, id);
   }
 
-  NodeStyle _findNodeWithStyle(Node node, String id) {
+  List<NodeStyle> _findNodeWithStyle(Node node, String id) {
     if (node is Vector) {
       if (node.styles != null) {
-        final found = node.styles.entries.firstWhere(
-          (x) => x.value == id,
-          orElse: () => null,
-        );
-        if (found != null) {
-          return NodeStyle(node, found.key);
-        }
+        return node.styles.entries
+            .where(
+              (x) => x.value == id,
+            )
+            .map((e) => NodeStyle(node, e.key))
+            .toList();
       }
     } else if (node is Canvas) {
       for (var child in node.children) {
         final result = _findNodeWithStyle(child, id);
-        if (result != null) return result;
+        if (result.isNotEmpty) return result;
       }
     } else if (node is Document) {
       for (var child in node.children) {
         final result = _findNodeWithStyle(child, id);
-        if (result != null) return result;
+        if (result.isNotEmpty) return result;
       }
     } else if (node is Frame) {
       for (var child in node.children) {
         final result = _findNodeWithStyle(child, id);
-        if (result != null) return result;
+        if (result.isNotEmpty) return result;
       }
     }
-    return null;
+    return const <NodeStyle>[];
   }
 }

@@ -11,37 +11,51 @@ class ExampleThemeData {
       {@required this.colors,
       @required this.text,
       @required this.gradients,
-      @required this.shadows})
+      @required this.borders,
+      @required this.shadows,
+      @required this.radii})
       : assert(colors != null),
         assert(text != null),
         assert(gradients != null),
-        assert(shadows != null);
+        assert(borders != null),
+        assert(shadows != null),
+        assert(radii != null);
 
   factory ExampleThemeData.fallback() => ExampleThemeData(
-        colors: ExampleThemeColorData.fallback(),
+        colors: ExampleThemeColorsData.fallback(),
         text: ExampleThemeTextData.fallback(),
-        gradients: ExampleThemeGradientData.fallback(),
-        shadows: ExampleThemeShadowData.fallback(),
+        gradients: ExampleThemeGradientsData.fallback(),
+        borders: ExampleThemeBordersData.fallback(),
+        shadows: ExampleThemeShadowsData.fallback(),
+        radii: ExampleThemeRadiiData.fallback(),
       );
 
-  final ExampleThemeColorData colors;
+  final ExampleThemeColorsData colors;
 
   final ExampleThemeTextData text;
 
-  final ExampleThemeGradientData gradients;
+  final ExampleThemeGradientsData gradients;
 
-  final ExampleThemeShadowData shadows;
+  final ExampleThemeBordersData borders;
+
+  final ExampleThemeShadowsData shadows;
+
+  final ExampleThemeRadiiData radii;
 
   ExampleThemeData copyWith(
-          {ExampleThemeColorData colors,
+          {ExampleThemeColorsData colors,
           ExampleThemeTextData text,
-          ExampleThemeGradientData gradients,
-          ExampleThemeShadowData shadows}) =>
+          ExampleThemeGradientsData gradients,
+          ExampleThemeBordersData borders,
+          ExampleThemeShadowsData shadows,
+          ExampleThemeRadiiData radii}) =>
       ExampleThemeData(
         colors: colors ?? this.colors,
         text: text ?? this.text,
         gradients: gradients ?? this.gradients,
+        borders: borders ?? this.borders,
         shadows: shadows ?? this.shadows,
+        radii: radii ?? this.radii,
       );
   @override
   bool operator ==(Object other) =>
@@ -50,18 +64,22 @@ class ExampleThemeData {
           colors == other.colors &&
           text == other.text &&
           gradients == other.gradients &&
-          shadows == other.shadows);
+          borders == other.borders &&
+          shadows == other.shadows &&
+          radii == other.radii);
   @override
   int get hashCode =>
       runtimeType.hashCode ^
       const DeepCollectionEquality().hash(colors) ^
       const DeepCollectionEquality().hash(text) ^
       const DeepCollectionEquality().hash(gradients) ^
-      const DeepCollectionEquality().hash(shadows);
+      const DeepCollectionEquality().hash(borders) ^
+      const DeepCollectionEquality().hash(shadows) ^
+      const DeepCollectionEquality().hash(radii);
 }
 
-class ExampleThemeColorData {
-  const ExampleThemeColorData(
+class ExampleThemeColorsData {
+  const ExampleThemeColorsData(
       {@required this.red,
       @required this.blue,
       @required this.green,
@@ -71,7 +89,7 @@ class ExampleThemeColorData {
         assert(green != null),
         assert(black != null);
 
-  factory ExampleThemeColorData.fallback() => const ExampleThemeColorData(
+  factory ExampleThemeColorsData.fallback() => const ExampleThemeColorsData(
         red: Color.fromARGB(255, 255, 93, 93),
         blue: Color.fromARGB(255, 108, 128, 230),
         green: Color.fromARGB(255, 108, 230, 157),
@@ -86,9 +104,9 @@ class ExampleThemeColorData {
 
   final Color black;
 
-  ExampleThemeColorData copyWith(
+  ExampleThemeColorsData copyWith(
           {Color red, Color blue, Color green, Color black}) =>
-      ExampleThemeColorData(
+      ExampleThemeColorsData(
         red: red ?? this.red,
         blue: blue ?? this.blue,
         green: green ?? this.green,
@@ -97,7 +115,7 @@ class ExampleThemeColorData {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is ExampleThemeColorData &&
+      (other is ExampleThemeColorsData &&
           red == other.red &&
           blue == other.blue &&
           green == other.green &&
@@ -167,11 +185,12 @@ class ExampleThemeTextData {
       const DeepCollectionEquality().hash(paragraph);
 }
 
-class ExampleThemeGradientData {
-  const ExampleThemeGradientData({@required this.gradient})
+class ExampleThemeGradientsData {
+  const ExampleThemeGradientsData({@required this.gradient})
       : assert(gradient != null);
 
-  factory ExampleThemeGradientData.fallback() => const ExampleThemeGradientData(
+  factory ExampleThemeGradientsData.fallback() =>
+      const ExampleThemeGradientsData(
         gradient: LinearGradient(
           begin: Alignment(-1.00, -1.00),
           end: Alignment(0.79, 1.00),
@@ -189,41 +208,87 @@ class ExampleThemeGradientData {
 
   final LinearGradient gradient;
 
-  ExampleThemeGradientData copyWith({LinearGradient gradient}) =>
-      ExampleThemeGradientData(
+  ExampleThemeGradientsData copyWith({LinearGradient gradient}) =>
+      ExampleThemeGradientsData(
         gradient: gradient ?? this.gradient,
       );
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is ExampleThemeGradientData && gradient == other.gradient);
+      (other is ExampleThemeGradientsData && gradient == other.gradient);
   @override
   int get hashCode =>
       runtimeType.hashCode ^ const DeepCollectionEquality().hash(gradient);
 }
 
-class ExampleThemeShadowData {
-  const ExampleThemeShadowData({@required this.drop}) : assert(drop != null);
+class ExampleThemeBordersData {
+  const ExampleThemeBordersData({@required this.blue}) : assert(blue != null);
 
-  factory ExampleThemeShadowData.fallback() => const ExampleThemeShadowData(
+  factory ExampleThemeBordersData.fallback() => const ExampleThemeBordersData(
+        blue: BorderSide(
+          style: BorderStyle.solid,
+          width: 6.00,
+          color: Color.fromARGB(255, 108, 128, 230),
+        ),
+      );
+
+  final BorderSide blue;
+
+  ExampleThemeBordersData copyWith({BorderSide blue}) =>
+      ExampleThemeBordersData(
+        blue: blue ?? this.blue,
+      );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ExampleThemeBordersData && blue == other.blue);
+  @override
+  int get hashCode =>
+      runtimeType.hashCode ^ const DeepCollectionEquality().hash(blue);
+}
+
+class ExampleThemeShadowsData {
+  const ExampleThemeShadowsData({@required this.drop}) : assert(drop != null);
+
+  factory ExampleThemeShadowsData.fallback() => const ExampleThemeShadowsData(
         drop: BoxShadow(
           color: Color.fromARGB(63, 0, 0, 0),
           blurRadius: 7.0,
           offset: Offset(6.0, 7.0),
-          spreadRadius: 0.0,
         ),
       );
 
   final BoxShadow drop;
 
-  ExampleThemeShadowData copyWith({BoxShadow drop}) => ExampleThemeShadowData(
+  ExampleThemeShadowsData copyWith({BoxShadow drop}) => ExampleThemeShadowsData(
         drop: drop ?? this.drop,
       );
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is ExampleThemeShadowData && drop == other.drop);
+      (other is ExampleThemeShadowsData && drop == other.drop);
   @override
   int get hashCode =>
       runtimeType.hashCode ^ const DeepCollectionEquality().hash(drop);
+}
+
+class ExampleThemeRadiiData {
+  const ExampleThemeRadiiData({@required this.blue}) : assert(blue != null);
+
+  factory ExampleThemeRadiiData.fallback() => ExampleThemeRadiiData(
+        blue: BorderRadius.circular(7.00),
+      );
+
+  final BorderRadius blue;
+
+  ExampleThemeRadiiData copyWith({BorderRadius blue}) => ExampleThemeRadiiData(
+        blue: blue ?? this.blue,
+      );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ExampleThemeRadiiData && blue == other.blue);
+  @override
+  int get hashCode =>
+      runtimeType.hashCode ^ const DeepCollectionEquality().hash(blue);
 }

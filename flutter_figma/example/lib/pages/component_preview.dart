@@ -5,13 +5,11 @@ import 'package:flutter_figma/figma.dart';
 class ComponentPreviewPage extends StatefulWidget {
   final String apiKey;
   final String fileKey;
-  final figma.Component component;
   final String nodeId;
   const ComponentPreviewPage({
     Key key,
     @required this.apiKey,
     @required this.fileKey,
-    @required this.component,
     @required this.nodeId,
   }) : super(key: key);
 
@@ -24,8 +22,11 @@ class _ComponentPreviewPageState extends State<ComponentPreviewPage> {
   Axis axis;
   @override
   Widget build(BuildContext context) {
-    final preview = FigmaDesignNode.component(
-      name: widget.component.name,
+    final preview = FigmaDesignNode.node(
+      id: widget.nodeId,
+      builder: (context, node) => FigmaNode(
+        node: node.replaceText('Title', 'Hello world!'),
+      ),
     );
     final body = axis == null
         ? InteractiveViewer(
@@ -51,7 +52,7 @@ class _ComponentPreviewPageState extends State<ComponentPreviewPage> {
         fileId: widget.fileKey,
         child: Scaffold(
           appBar: AppBar(
-            title: Text(widget.component.name),
+            title: Text(widget.nodeId),
           ),
           endDrawer: SizedBox(
             width: 200,

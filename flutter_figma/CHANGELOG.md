@@ -1,3 +1,12 @@
-## [0.0.1] - TODO: Add release date.
+## [0.0.1-alpha.3]
 
-* TODO: Describe initial release.
+* Added node override.
+
+## [0.0.1-alpha.2]
+
+* Upgraded figma dependency
+
+
+## [0.0.1-alpha] - Initial rendering engine
+
+* Rendering basic elements.

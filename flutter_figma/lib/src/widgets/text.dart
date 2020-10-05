@@ -112,7 +112,7 @@ class FigmaText extends StatelessWidget {
         ),
       );
     } else {
-      Text(
+      child = Text(
         node.characters,
         textAlign: textAlign,
         style: defaultStyle,

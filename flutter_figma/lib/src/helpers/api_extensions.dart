@@ -36,6 +36,115 @@ extension NodeExtension on figma.Node {
         );
   }
 
+  figma.Node replaceText(String name, String value) {
+    final $this = this;
+    if ($this is figma.Text && $this.name == name) {
+      return figma.Text(
+        id: $this.id,
+        name: $this.name,
+        absoluteBoundingBox: $this.absoluteBoundingBox,
+        blendMode: $this.blendMode,
+        characterStyleOverrides: [],
+        characters: value,
+        constraints: $this.constraints,
+        effects: $this.effects,
+        exportSettings: $this.exportSettings,
+        fillGeometry: $this.fillGeometry,
+        fills: $this.fills,
+        isMask: $this.isMask,
+        layoutAlign: $this.layoutAlign,
+        locked: $this.locked,
+        opacity: $this.opacity,
+        pluginData: $this.pluginData,
+        preserveRatio: $this.preserveRatio,
+        relativeTransform: $this.relativeTransform,
+        sharedPluginData: $this.sharedPluginData,
+        size: $this.size,
+        strokeAlign: $this.strokeAlign,
+        strokeCap: $this.strokeCap,
+        strokeDashes: $this.strokeDashes,
+        strokeGeometry: $this.strokeGeometry,
+        strokeJoin: $this.strokeJoin,
+        strokeMiterAngle: $this.strokeMiterAngle,
+        strokeWeight: $this.strokeWeight,
+        strokes: $this.strokes,
+        style: $this.style,
+        styleOverrideTable: {},
+        styles: $this.styles,
+        transitionDuration: $this.transitionDuration,
+        transitionEasing: $this.transitionEasing,
+        transitionNodeID: $this.transitionNodeID,
+        visible: $this.visible,
+      );
+    }
+    if ($this is figma.Canvas) {
+      return figma.Canvas(
+        id: $this.id,
+        name: $this.name,
+        backgroundColor: $this.backgroundColor,
+        exportSettings: $this.exportSettings,
+        pluginData: $this.pluginData,
+        prototypeStartNodeID: $this.prototypeStartNodeID,
+        sharedPluginData: $this.sharedPluginData,
+        visible: $this.visible,
+        children:
+            $this.children.map((x) => x.replaceText(name, value)).toList(),
+      );
+    } else if ($this is figma.Document) {
+      return figma.Document(
+        id: $this.id,
+        name: $this.name,
+        pluginData: $this.pluginData,
+        sharedPluginData: $this.sharedPluginData,
+        visible: $this.visible,
+        children:
+            $this.children.map((x) => x.replaceText(name, value)).toList(),
+      );
+    } else if ($this is figma.Frame) {
+      return figma.Frame(
+        id: $this.id,
+        name: $this.name,
+        fills: $this.fills,
+        strokes: $this.strokes,
+        absoluteBoundingBox: $this.absoluteBoundingBox,
+        blendMode: $this.blendMode,
+        clipsContent: $this.clipsContent,
+        constraints: $this.constraints,
+        cornerRadius: $this.cornerRadius,
+        counterAxisSizingMode: $this.counterAxisSizingMode,
+        effects: $this.effects,
+        isMask: $this.isMask,
+        layoutAlign: $this.layoutAlign,
+        horizontalPadding: $this.horizontalPadding,
+        isMaskOutline: $this.isMaskOutline,
+        itemSpacing: $this.itemSpacing,
+        layoutGrids: $this.layoutGrids,
+        layoutMode: $this.layoutMode,
+        locked: $this.locked,
+        opacity: $this.opacity,
+        overflowDirection: $this.overflowDirection,
+        preserveRatio: $this.preserveRatio,
+        rectangleCornerRadii: $this.rectangleCornerRadii,
+        relativeTransform: $this.relativeTransform,
+        size: $this.size,
+        strokeAlign: $this.strokeAlign,
+        strokeWeight: $this.strokeWeight,
+        transitionDuration: $this.transitionDuration,
+        transitionEasing: $this.transitionEasing,
+        transitionNodeID: $this.transitionNodeID,
+        verticalPadding: $this.verticalPadding,
+        exportSettings: $this.exportSettings,
+        pluginData: $this.pluginData,
+        sharedPluginData: $this.sharedPluginData,
+        visible: $this.visible,
+        children:
+            $this.children.map((x) => x.replaceText(name, value)).toList(),
+      );
+    }
+
+    return this;
+  }
+
   /// Find the descendent node with the given [name].
   ///
   /// Returns `null` if not found.
@@ -52,6 +161,24 @@ extension NodeExtension on figma.Node {
           (x) => x != null,
           orElse: () => null,
         );
+  }
+
+  /// Finds all descendent instances of the component with the [componentId].
+  List<figma.Instance> findInstances(String componentId) {
+    final $this = this;
+    if ($this is figma.Instance && $this.componentId == componentId) {
+      return [$this];
+    }
+    if ($this.type?.toUpperCase() == 'COMPONENT') {
+      return const <figma.Instance>[];
+    }
+
+    return getChildren()
+        .map(
+          (e) => e.findInstances(componentId),
+        )
+        .expand((x) => x)
+        .toList();
   }
 
   Size designSize() {

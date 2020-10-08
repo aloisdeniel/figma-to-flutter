@@ -79,7 +79,8 @@ class RenderFigmaConstrainedLayout extends RenderBox
       if (isStretchHorizontal) {
         final width = size.width -
             (position.dx) -
-            (size.width - (position.dx + childParentData.designSize.width));
+            (designSize.width -
+                (position.dx + childParentData.designSize.width));
         minWidth = width;
         maxWidth = width;
       } else {
@@ -90,7 +91,8 @@ class RenderFigmaConstrainedLayout extends RenderBox
       if (isStretchVertical) {
         final height = size.height -
             (position.dy) -
-            (size.height - (position.dy + childParentData.designSize.height));
+            (designSize.height -
+                (position.dy + childParentData.designSize.height));
         minHeight = height;
         maxHeight = height;
       } else {

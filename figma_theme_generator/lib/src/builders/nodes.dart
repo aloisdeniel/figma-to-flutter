@@ -12,6 +12,7 @@ class FileBuilder {
   void build({
     @required LibraryBuilder library,
     @required String name,
+    @required String package,
     @required String fallbackConstructorName,
     @required FileResponse response,
   }) {
@@ -35,7 +36,7 @@ class FileBuilder {
               break;
             case StyleTypeKey.text:
               if (node.node is Text)
-                const TextStyleBuilder().build(context, style, node.node);
+                TextStyleBuilder(package).build(context, style, node.node);
               break;
             case StyleTypeKey.effect:
               const EffectBuilder().build(context, style, node.node);
@@ -207,14 +208,15 @@ class EffectBuilder {
 }
 
 class TextStyleBuilder {
-  const TextStyleBuilder();
+  final String package;
+  const TextStyleBuilder(this.package);
   void build(FileBuildContext context, Style style, Text node) {
     final name = createFieldName(style.name);
 
     context.text.addField(
       'TextStyle',
       name,
-      buildTextStyleInstance(node.style, node.fills),
+      buildTextStyleInstance(package, node.style, node.fills),
     );
   }
 }

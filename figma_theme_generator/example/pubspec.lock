@@ -203,14 +203,14 @@ packages:
       name: figma_theme
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.1.0"
+    version: "0.1.1"
   figma_theme_generator:
     dependency: "direct dev"
     description:
       path: ".."
       relative: true
     source: path
-    version: "0.1.2"
+    version: "0.1.7"
   fixnum:
     dependency: transitive
     description:

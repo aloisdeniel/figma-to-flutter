@@ -19,18 +19,28 @@ class FigmaVector extends StatelessWidget {
           key: key,
         );
 
-  factory FigmaVector.api(figma.Vector node) {
+  factory FigmaVector.api(figma.Vector node, {String package}) {
     Decoration decoration;
-    if (node.fills.isNotEmpty ||
-        node.strokes.isNotEmpty ||
-        node.effects.isNotEmpty) {
+    if ((node.fillGeometry != null || node.strokeGeometry != null) &&
+        (node.fills.isNotEmpty ||
+            node.strokes.isNotEmpty ||
+            node.effects.isNotEmpty)) {
       decoration = FigmaPaintDecoration(
         strokeWeight: node.strokeWeight,
-        fills: node.fills.map((x) => FigmaPaint.api(x)).toList(),
-        strokes: node.strokes.map((x) => FigmaPaint.api(x)).toList(),
-        effects: node.effects.map((x) => FigmaEffect.api(x)).toList(),
+        fills: node.fills
+            .where((x) => x.visible ?? true)
+            .map((x) => FigmaPaint.api(x))
+            .toList(),
+        strokes: node.strokes
+            .where((x) => x.visible ?? true)
+            .map((x) => FigmaPaint.api(x))
+            .toList(),
+        effects: node.effects
+            .where((x) => x.visible ?? true)
+            .map((x) => FigmaEffect.api(x))
+            .toList(),
         shape: FigmaPathShape(
-          fillGeometry: node.fillGeometry
+          fillGeometry: (node.fillGeometry ?? node.strokeGeometry)
               .map(
                 (x) => parseSvgPathData(x['path']),
               )

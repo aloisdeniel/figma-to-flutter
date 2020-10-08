@@ -23,8 +23,11 @@ class FigmaRectangle extends StatelessWidget {
           key: key,
         );
 
-  factory FigmaRectangle.api(figma.Rectangle node) {
-    final effects = node.effects.map((x) => FigmaEffect.api(x)).toList();
+  factory FigmaRectangle.api(figma.Rectangle node, {String package}) {
+    final effects = node.effects
+        .where((x) => x.visible ?? true)
+        .map((x) => FigmaEffect.api(x))
+        .toList();
     Decoration decoration;
     if (node.fills.isNotEmpty ||
         node.strokes.isNotEmpty ||
@@ -35,8 +38,14 @@ class FigmaRectangle extends StatelessWidget {
           rectangleCornerRadii:
               node.rectangleCornerRadii ?? const <num>[0, 0, 0, 0],
         ),
-        fills: node.fills.map((x) => FigmaPaint.api(x)).toList(),
-        strokes: node.strokes.map((x) => FigmaPaint.api(x)).toList(),
+        fills: node.fills
+            .where((x) => x.visible ?? true)
+            .map((x) => FigmaPaint.api(x))
+            .toList(),
+        strokes: node.strokes
+            .where((x) => x.visible ?? true)
+            .map((x) => FigmaPaint.api(x))
+            .toList(),
         effects: effects,
       );
     }

@@ -19,9 +19,9 @@ class FigmaText extends StatelessWidget {
     @required this.defaultStyle,
   }) : super(key: key);
 
-  factory FigmaText.api(figma.Text node) {
-    final defaultStyle = _buildDefaultStyle(node);
-    final styleTable = _buildStyleTable(node, defaultStyle);
+  factory FigmaText.api(figma.Text node, {String package}) {
+    final defaultStyle = _buildDefaultStyle(node, package);
+    final styleTable = _buildStyleTable(node, defaultStyle, package);
     return FigmaText(
       key: node.id != null ? Key(node.id) : null,
       node: node,
@@ -42,7 +42,7 @@ class FigmaText extends StatelessWidget {
     );
   }
 
-  static TextStyle _buildDefaultStyle(figma.Text node) {
+  static TextStyle _buildDefaultStyle(figma.Text node, String package) {
     final color = node.fills
         .firstWhere(
           (x) => x.color != null,
@@ -50,17 +50,17 @@ class FigmaText extends StatelessWidget {
         )
         ?.color
         ?.toFlutterColor();
-    var style = node.style.toFlutterTextStyle();
+    var style = node.style.toFlutterTextStyle(package);
     style = style.copyWith(color: color ?? style.color);
     return style;
   }
 
   static Map<int, TextStyle> _buildStyleTable(
-      figma.Text node, TextStyle defaultStyle) {
+      figma.Text node, TextStyle defaultStyle, String package) {
     final styleTable = node.styleOverrideTable.map((key, value) {
       return MapEntry(
         key,
-        defaultStyle.merge(value.toFlutterTextStyle()),
+        defaultStyle.merge(value.toFlutterTextStyle(package)),
       );
     });
     styleTable[0] = defaultStyle;

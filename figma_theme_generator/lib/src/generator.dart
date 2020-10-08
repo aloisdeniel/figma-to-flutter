@@ -26,10 +26,12 @@ class FigmaThemeGenerator
     final apiToken =
         annotation.objectValue.getField('apiToken').toStringValue();
     final fileKey = annotation.objectValue.getField('fileKey').toStringValue();
+    final package = annotation.objectValue.getField('package').toStringValue();
 
     final builder = FigmaThemeBuilder();
     return await builder.download(
       name: classElement.displayName,
+      package: package,
       apiToken: apiToken,
       fileKey: fileKey,
     );

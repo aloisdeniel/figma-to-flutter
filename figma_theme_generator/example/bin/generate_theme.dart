@@ -9,7 +9,7 @@ void main() {
 
   final content = File('file_response_example.json').readAsStringSync();
   final file = FileResponse.fromJson(jsonDecode(content));
-  final result = generator.build('Example', file);
+  final result = generator.build('Example', null, file);
 
   File('../lib/theme_data.g.dart').writeAsStringSync(result);
   print('generated!');

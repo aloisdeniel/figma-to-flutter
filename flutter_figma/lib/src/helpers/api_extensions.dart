@@ -3,6 +3,10 @@ import 'dart:math';
 import 'package:figma/figma.dart' as figma;
 import 'package:flutter/material.dart';
 
+import 'api_copy_with.dart';
+
+export 'api_copy_with.dart';
+
 extension NodeExtension on figma.Node {
   /// Extract all children for nodes that have children, else return
   /// an empty list.
@@ -39,106 +43,136 @@ extension NodeExtension on figma.Node {
   figma.Node replaceText(String name, String value) {
     final $this = this;
     if ($this is figma.Text && $this.name == name) {
-      return figma.Text(
-        id: $this.id,
-        name: $this.name,
-        absoluteBoundingBox: $this.absoluteBoundingBox,
-        blendMode: $this.blendMode,
-        characterStyleOverrides: [],
+      return $this.copyWith(
         characters: value,
-        constraints: $this.constraints,
-        effects: $this.effects,
-        exportSettings: $this.exportSettings,
-        fillGeometry: $this.fillGeometry,
-        fills: $this.fills,
-        isMask: $this.isMask,
-        layoutAlign: $this.layoutAlign,
-        locked: $this.locked,
-        opacity: $this.opacity,
-        pluginData: $this.pluginData,
-        preserveRatio: $this.preserveRatio,
-        relativeTransform: $this.relativeTransform,
-        sharedPluginData: $this.sharedPluginData,
-        size: $this.size,
-        strokeAlign: $this.strokeAlign,
-        strokeCap: $this.strokeCap,
-        strokeDashes: $this.strokeDashes,
-        strokeGeometry: $this.strokeGeometry,
-        strokeJoin: $this.strokeJoin,
-        strokeMiterAngle: $this.strokeMiterAngle,
-        strokeWeight: $this.strokeWeight,
-        strokes: $this.strokes,
-        style: $this.style,
-        styleOverrideTable: {},
-        styles: $this.styles,
-        transitionDuration: $this.transitionDuration,
-        transitionEasing: $this.transitionEasing,
-        transitionNodeID: $this.transitionNodeID,
-        visible: $this.visible,
       );
     }
     if ($this is figma.Canvas) {
-      return figma.Canvas(
-        id: $this.id,
-        name: $this.name,
-        backgroundColor: $this.backgroundColor,
-        exportSettings: $this.exportSettings,
-        pluginData: $this.pluginData,
-        prototypeStartNodeID: $this.prototypeStartNodeID,
-        sharedPluginData: $this.sharedPluginData,
-        visible: $this.visible,
-        children:
-            $this.children.map((x) => x.replaceText(name, value)).toList(),
+      return $this.copyWith(
+        children: $this.children
+            .map(
+              (x) => x.replaceText(name, value),
+            )
+            .toList(),
       );
     } else if ($this is figma.Document) {
-      return figma.Document(
-        id: $this.id,
-        name: $this.name,
-        pluginData: $this.pluginData,
-        sharedPluginData: $this.sharedPluginData,
-        visible: $this.visible,
-        children:
-            $this.children.map((x) => x.replaceText(name, value)).toList(),
+      return $this.copyWith(
+        children: $this.children
+            .map(
+              (x) => x.replaceText(name, value),
+            )
+            .toList(),
       );
     } else if ($this is figma.Frame) {
-      return figma.Frame(
-        id: $this.id,
-        name: $this.name,
-        fills: $this.fills,
-        strokes: $this.strokes,
-        absoluteBoundingBox: $this.absoluteBoundingBox,
-        blendMode: $this.blendMode,
-        clipsContent: $this.clipsContent,
-        constraints: $this.constraints,
-        cornerRadius: $this.cornerRadius,
-        counterAxisSizingMode: $this.counterAxisSizingMode,
-        effects: $this.effects,
-        isMask: $this.isMask,
-        layoutAlign: $this.layoutAlign,
-        horizontalPadding: $this.horizontalPadding,
-        isMaskOutline: $this.isMaskOutline,
-        itemSpacing: $this.itemSpacing,
-        layoutGrids: $this.layoutGrids,
-        layoutMode: $this.layoutMode,
-        locked: $this.locked,
-        opacity: $this.opacity,
-        overflowDirection: $this.overflowDirection,
-        preserveRatio: $this.preserveRatio,
-        rectangleCornerRadii: $this.rectangleCornerRadii,
-        relativeTransform: $this.relativeTransform,
-        size: $this.size,
-        strokeAlign: $this.strokeAlign,
-        strokeWeight: $this.strokeWeight,
-        transitionDuration: $this.transitionDuration,
-        transitionEasing: $this.transitionEasing,
-        transitionNodeID: $this.transitionNodeID,
-        verticalPadding: $this.verticalPadding,
-        exportSettings: $this.exportSettings,
-        pluginData: $this.pluginData,
-        sharedPluginData: $this.sharedPluginData,
-        visible: $this.visible,
-        children:
-            $this.children.map((x) => x.replaceText(name, value)).toList(),
+      return $this.copyWith(
+        children: $this.children
+            .map(
+              (x) => x.replaceText(name, value),
+            )
+            .toList(),
+      );
+    }
+
+    return this;
+  }
+
+  /// Replaces the given [color] by the [replacement] in all
+  /// fills, strokes and effects in the tree.
+  ///
+  /// This considers that color is the same even if alpha different,
+  /// and it will apply the original alpha to the [replacement].
+  figma.Node replaceColor(Color color, Color replacement) {
+    final $this = this;
+
+    if ($this is figma.Rectangle) {
+      return $this.copyWith(
+        fills: $this.fills
+            ?.map(
+              (x) => x.replaceColor(color, replacement),
+            )
+            ?.toList(),
+        strokes: $this.strokes
+            ?.map(
+              (x) => x.replaceColor(color, replacement),
+            )
+            ?.toList(),
+        effects: $this.effects
+            ?.map(
+              (x) => x.replaceColor(color, replacement),
+            )
+            ?.toList(),
+      );
+    }
+    if ($this is figma.Vector) {
+      return $this.copyWith(
+        fills: $this.fills
+            ?.map(
+              (x) => x.replaceColor(color, replacement),
+            )
+            ?.toList(),
+        strokes: $this.strokes
+            ?.map(
+              (x) => x.replaceColor(color, replacement),
+            )
+            ?.toList(),
+        effects: $this.effects
+            ?.map(
+              (x) => x.replaceColor(color, replacement),
+            )
+            ?.toList(),
+      );
+    }
+    if ($this is figma.Text) {
+      return $this.copyWith(
+        fills: $this.fills
+            ?.map(
+              (x) => x.replaceColor(color, replacement),
+            )
+            ?.toList(),
+        strokes: $this.strokes
+            ?.map(
+              (x) => x.replaceColor(color, replacement),
+            )
+            ?.toList(),
+        effects: $this.effects
+            ?.map(
+              (x) => x.replaceColor(color, replacement),
+            )
+            ?.toList(),
+      );
+    }
+    if ($this is figma.Canvas) {
+      return $this.copyWith(
+        children: $this.children
+            .map((x) => x.replaceColor(color, replacement))
+            .toList(),
+      );
+    } else if ($this is figma.Document) {
+      return $this.copyWith(
+        children: $this.children
+            .map((x) => x.replaceColor(color, replacement))
+            .toList(),
+      );
+    } else if ($this is figma.Frame) {
+      return $this.copyWith(
+        fills: $this.fills
+            ?.map(
+              (x) => x.replaceColor(color, replacement),
+            )
+            ?.toList(),
+        strokes: $this.strokes
+            ?.map(
+              (x) => x.replaceColor(color, replacement),
+            )
+            ?.toList(),
+        effects: $this.effects
+            ?.map(
+              (x) => x.replaceColor(color, replacement),
+            )
+            ?.toList(),
+        children: $this.children
+            .map((x) => x.replaceColor(color, replacement))
+            .toList(),
       );
     }
 
@@ -256,10 +290,27 @@ extension ColorExtension on figma.Color {
     var ia = (opacity * (a ?? 1.0) * 255).toInt();
     return Color.fromARGB(ia, ir, ig, ib);
   }
+
+  figma.Color replaceColor(Color color, Color replacement) {
+    final thisFlutter = toFlutterColor();
+
+    if (thisFlutter.red == color.red &&
+        thisFlutter.blue == color.blue &&
+        thisFlutter.green == color.green) {
+      return figma.Color(
+        r: replacement.red / 255.0,
+        g: replacement.green / 255.0,
+        b: replacement.blue / 255.0,
+        a: replacement.alpha / 255.0,
+      );
+    }
+
+    return this;
+  }
 }
 
 extension TypeStyleExtension on figma.TypeStyle {
-  TextStyle toFlutterTextStyle() {
+  TextStyle toFlutterTextStyle([String package]) {
     final color = fills
         ?.firstWhere(
           (x) => x.color != null,
@@ -270,11 +321,63 @@ extension TypeStyleExtension on figma.TypeStyle {
     return TextStyle(
       color: color,
       fontFamily: fontFamily,
+      package: package,
       fontSize: fontSize?.toDouble(),
+      decoration: textDecoration == figma.TextDecoration.underline
+          ? TextDecoration.underline
+          : TextDecoration.none,
+      decorationColor: color,
+      decorationStyle: textDecoration == figma.TextDecoration.underline
+          ? TextDecorationStyle.solid
+          : null,
+      decorationThickness:
+          textDecoration == figma.TextDecoration.underline ? 1 : null,
       fontWeight: FontWeight.values.firstWhere(
         (x) => x.index == (fontWeight.toInt() / 100) - 1,
         orElse: () => FontWeight.w400,
       ),
+    );
+  }
+}
+
+extension PaintExtension on figma.Paint {
+  figma.Paint replaceColor(Color color, Color replacement) {
+    return figma.Paint(
+        color: this.color?.replaceColor(color, replacement),
+        gradientStops: gradientStops
+            ?.map((x) => x.replaceColor(color, replacement))
+            ?.toList(),
+        opacity: opacity,
+        blendMode: blendMode,
+        gifRef: gifRef,
+        gradientHandlePositions: gradientHandlePositions,
+        imageRef: imageRef,
+        imageTransform: imageTransform,
+        scaleMode: scaleMode,
+        scalingFactor: scalingFactor,
+        type: type,
+        visible: visible);
+  }
+}
+
+extension EffectExtension on figma.Effect {
+  figma.Effect replaceColor(Color color, Color replacement) {
+    return figma.Effect(
+      color: this.color?.replaceColor(color, replacement),
+      blendMode: blendMode,
+      type: type,
+      visible: visible,
+      offset: offset,
+      radius: radius,
+    );
+  }
+}
+
+extension ColorStopExtension on figma.ColorStop {
+  figma.ColorStop replaceColor(Color color, Color replacement) {
+    return figma.ColorStop(
+      position: position,
+      color: this.color.replaceColor(color, replacement),
     );
   }
 }

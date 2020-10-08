@@ -8,11 +8,16 @@
             "name": "Theme Generator",
             "path": "figma_theme_generator"
         },
+        {
+            "name": "Flutter Figma",
+            "path": "flutter_figma"
+        },
     ],
     "settings": {
         "git.ignoreLimitWarning": true,
         "editor.formatOnPaste": true,
         "editor.formatOnSave": true,
-        "editor.formatOnType": true
+        "editor.formatOnType": true,
+        "dart.flutterSdkPath": "/Users/alois/Sources/flutter"
     }
 }

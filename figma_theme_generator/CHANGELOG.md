@@ -1,3 +1,11 @@
+## [0.1.7] - 2020/10/05
+
+* Added missing generated comma.
+
+## [0.1.6] - 2020/10/05
+
+* Added asset package.
+
 ## [0.1.5] - 2020/10/05
 
 * Fixed name formatting.

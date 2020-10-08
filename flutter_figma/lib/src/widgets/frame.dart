@@ -5,7 +5,7 @@ import 'package:flutter_figma/src/helpers/api_extensions.dart';
 import 'package:flutter_figma/src/widgets/layouts/auto_layout.dart';
 import 'package:flutter_figma/src/widgets/layouts/constrained_layout.dart';
 
-import '../design.dart';
+import '../design/design.dart';
 import 'layouts/rotated.dart';
 
 class FigmaFrame extends StatelessWidget {
@@ -38,8 +38,11 @@ class FigmaFrame extends StatelessWidget {
     this.itemSpacing = 0,
   }) : super(key: key);
 
-  factory FigmaFrame.api(figma.Frame node) {
-    final effects = node.effects.map((x) => FigmaEffect.api(x)).toList();
+  factory FigmaFrame.api(figma.Frame node, {String package}) {
+    final effects = node.effects
+        .where((x) => x.visible ?? true)
+        .map((x) => FigmaEffect.api(x))
+        .toList();
     Decoration decoration;
     if (node.fills.isNotEmpty ||
         node.strokes.isNotEmpty ||
@@ -50,8 +53,14 @@ class FigmaFrame extends StatelessWidget {
           rectangleCornerRadii:
               node.rectangleCornerRadii ?? const <num>[0, 0, 0, 0],
         ),
-        fills: node.fills.map((x) => FigmaPaint.api(x)).toList(),
-        strokes: node.strokes.map((x) => FigmaPaint.api(x)).toList(),
+        fills: node.fills
+            .where((x) => x.visible ?? true)
+            .map((x) => FigmaPaint.api(x))
+            .toList(),
+        strokes: node.strokes
+            .where((x) => x.visible ?? true)
+            .map((x) => FigmaPaint.api(x))
+            .toList(),
         effects: effects,
       );
     }
@@ -75,7 +84,7 @@ class FigmaFrame extends StatelessWidget {
       horizontalPadding: node.horizontalPadding ?? 0.0,
       verticalPadding: node.verticalPadding ?? 0.0,
       itemSpacing: node.itemSpacing ?? 0.0,
-      children: FigmaNode.children(node.layoutMode, node.children),
+      children: FigmaNode.children(node.layoutMode, node.children, package),
     );
   }
 

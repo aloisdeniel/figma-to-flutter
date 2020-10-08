@@ -7,13 +7,25 @@ import 'package:figma/figma.dart' as figma;
 import 'package:flutter_figma/src/helpers/api_extensions.dart';
 import 'package:flutter_figma/widgets.dart';
 
+import 'storage.dart';
+
+enum FigmaDesignCacheMode {
+  never,
+  useCacheAlwaysWhenAvailable,
+  useCacheRefreshFailed,
+}
+
 class FigmaDesignFile extends StatefulWidget {
   final String fileId;
   final Widget child;
+  final FigmaDesignCacheMode cacheMode;
+  final FigmaDesignStorage cacheStorage;
 
   const FigmaDesignFile({
     @required this.fileId,
     @required this.child,
+    this.cacheMode = FigmaDesignCacheMode.never,
+    this.cacheStorage = const FileFigmaDesignStorage(),
   });
 
   static void refresh(BuildContext context) {
@@ -37,21 +49,54 @@ class _FigmaDesignState extends State<FigmaDesignFile> {
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      refresh();
+      _init();
     });
 
     super.initState();
   }
 
-  Future<void> refresh() async {
+  Future<void> _init() async {
+    /// Always starting by loading the local cache if
+    /// enabled.
+    if (widget.cacheMode != FigmaDesignCacheMode.never) {
+      try {
+        if (await widget.cacheStorage.exists(widget.fileId)) {
+          final json = await widget.cacheStorage.load(widget.fileId);
+          setState(() {
+            file = FileResponse.fromJson(json);
+          });
+        }
+      } catch (e) {
+        // Failed to load from cache, trying to reload from
+        // distant file.
+      }
+    }
+
+    if (widget.cacheMode != FigmaDesignCacheMode.useCacheAlwaysWhenAvailable ||
+        file == null) {
+      final json = await refresh();
+
+      if (widget.cacheMode != FigmaDesignCacheMode.never) {
+        await widget.cacheStorage.save(widget.fileId, json);
+      }
+    }
+  }
+
+  Future<Map<String, dynamic>> refresh() async {
     final figma = Figma.of(context);
-    final newFile = await figma.api.getFile(
-      widget.fileId,
-      FigmaQuery(geometry: 'paths'),
+
+    final uri = Uri.https(
+      base,
+      '${figma.api.apiVersion}/files/${widget.fileId}',
+      FigmaQuery(geometry: 'paths').params,
     );
+    final json = await figma.api.authenticatedGet(uri.toString());
+
     setState(() {
-      file = newFile;
+      file = FileResponse.fromJson(json);
     });
+
+    return json;
   }
 
   @override
@@ -82,20 +127,28 @@ class _InheritedDesignState extends InheritedWidget {
 
 typedef FigmaNodeBuilder = Widget Function(BuildContext context, Node node);
 
+typedef FigmaNodePreprocessor = Node Function(Node node);
+
 class FigmaDesignNode extends StatelessWidget {
   final String id;
   final String componentName;
   final FigmaNodeBuilder builder;
+  final FigmaNodePreprocessor preprocessor;
+  final String package;
   const FigmaDesignNode.component({
     @required String name,
     this.builder,
+    this.package,
+    this.preprocessor,
   })  : assert(name != null),
         id = null,
         componentName = name;
 
   const FigmaDesignNode.node({
     @required String id,
+    this.package,
     this.builder,
+    this.preprocessor,
   })  : assert(id != null),
         id = id,
         componentName = null;
@@ -115,17 +168,27 @@ class FigmaDesignNode extends StatelessWidget {
         child: CircularProgressIndicator(),
       );
     }
-    final node = componentName != null
+    var node = componentName != null
         ? designState.file.findComponentWithName(componentName)
         : designState.file.document.findNodeWithId(id);
 
-    if (builder != null) {
-      return builder(context, node);
+    if (node == null) {
+      throw Exception(
+        componentName != null
+            ? 'Figma component with name ${componentName} not found in file'
+            : 'Figma node with id ${id} not found in file',
+      );
     }
+
+    if (preprocessor != null) {
+      node = preprocessor(node);
+    }
+
     return _FigmaNodeBuilderProvider(
       builder: builder,
       child: _FigmaCustomNode(
         node: node,
+        package: package,
       ),
     );
   }
@@ -150,9 +213,11 @@ class _FigmaNodeBuilderProvider extends InheritedWidget {
 
 class _FigmaCustomNode extends StatelessWidget {
   final figma.Node node;
+  final String package;
   const _FigmaCustomNode({
     Key key,
     @required this.node,
+    this.package,
   }) : super(key: key);
 
   @override
@@ -171,9 +236,11 @@ class _FigmaCustomNode extends StatelessWidget {
 
 class FigmaNode extends StatelessWidget {
   final figma.Node node;
+  final String package;
   const FigmaNode({
     Key key,
     @required this.node,
+    this.package,
   }) : super(key: key);
 
   /// Converts the list of [children] nodes to a list of widgets.
@@ -181,22 +248,24 @@ class FigmaNode extends StatelessWidget {
   /// Each widget has a [FigmaConstrained] wrapper when [mode] is `none` or a
   /// [FigmaAuto] wrapper when [mode] is horizontal or vertical auto layout.
   static List<Widget> children(
-      figma.LayoutMode mode, List<figma.Node> children) {
+      figma.LayoutMode mode, List<figma.Node> children, String package) {
+    children = children.where((x) => x.visible ?? true).toList();
     switch (mode) {
       case figma.LayoutMode.vertical:
       case figma.LayoutMode.horizontal:
-        return _autoChildren(mode, children);
+        return _autoChildren(mode, children, package);
       default:
-        return _constrainedChildren(children);
+        return _constrainedChildren(children, package);
     }
   }
 
   static List<Widget> _autoChildren(
-      figma.LayoutMode mode, List<figma.Node> children) {
+      figma.LayoutMode mode, List<figma.Node> children, String package) {
     return children.map(
       (node) {
         final child = _FigmaCustomNode(
           node: node,
+          package: package,
         );
         if (node is figma.Text) {
           return FigmaAuto(
@@ -231,11 +300,13 @@ class FigmaNode extends StatelessWidget {
     ).toList();
   }
 
-  static List<Widget> _constrainedChildren(List<figma.Node> children) {
+  static List<Widget> _constrainedChildren(
+      List<figma.Node> children, String package) {
     return children.map(
       (node) {
         final child = _FigmaCustomNode(
           node: node,
+          package: package,
         );
 
         if (node is figma.Text) {
@@ -269,17 +340,20 @@ class FigmaNode extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (!(node.visible ?? true)) {
+      return SizedBox();
+    }
     if (node is figma.Text) {
-      return FigmaText.api(node);
+      return FigmaText.api(node, package: package);
     }
     if (node is figma.Rectangle) {
-      return FigmaRectangle.api(node);
+      return FigmaRectangle.api(node, package: package);
     }
     if (node is figma.Frame) {
-      return FigmaFrame.api(node);
+      return FigmaFrame.api(node, package: package);
     }
     if (node is figma.Vector) {
-      return FigmaVector.api(node);
+      return FigmaVector.api(node, package: package);
     }
     throw Exception('Unsupported figma node : ${node}');
   }

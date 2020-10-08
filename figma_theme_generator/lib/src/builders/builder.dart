@@ -13,6 +13,7 @@ class FigmaThemeBuilder {
 
   Future<String> download({
     @required String name,
+    @required String package,
     @required String apiToken,
     @required String fileKey,
   }) async {
@@ -22,14 +23,15 @@ class FigmaThemeBuilder {
     final client = FigmaClient(apiToken);
     final file = await client.getFile(fileKey);
 
-    return build(name, file);
+    return build(name, package, file);
   }
 
-  String build(String name, FileResponse response) {
+  String build(String name, String package, FileResponse response) {
     final library = LibraryBuilder();
 
     const FileBuilder().build(
       library: library,
+      package: package,
       name: name,
       response: response,
       fallbackConstructorName: fallbackConstructorName,

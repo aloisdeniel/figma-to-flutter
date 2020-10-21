@@ -1,3 +1,7 @@
+## [0.1.8] - 2020/10/21
+
+* Upgraded figma dependency.
+
 ## [0.1.7] - 2020/10/05
 
 * Added missing generated comma.

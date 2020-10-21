@@ -125,6 +125,9 @@ class RenderFigmaConstrainedLayout extends RenderBox
         case figma.VerticalConstraint.bottom:
           y = size.height - (designSize.height - position.dy);
           break;
+        case figma.VerticalConstraint.center:
+          y = size.height / 2 - (designSize.height / 2 - position.dy);
+          break;
         default:
           y = position.dy;
       }

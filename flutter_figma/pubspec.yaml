@@ -1,6 +1,6 @@
 name: flutter_figma
 description: Rendering Figma components as Flutter widgets.
-version: 0.0.1-alpha.17
+version: 0.0.1-alpha.19
 homepage: https://github.com/aloisdeniel/figma-to-flutter/tree/master/figma_theme_generator
 
 environment:

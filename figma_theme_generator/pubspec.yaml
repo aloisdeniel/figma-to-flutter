@@ -1,6 +1,6 @@
 name: figma_theme_generator
 description: Generate themes from Figma styles.
-version: 0.1.7
+version: 0.1.8
 homepage: https://github.com/aloisdeniel/figma-to-flutter/tree/master/figma_theme_generator
 
 environment:
@@ -16,7 +16,7 @@ dependencies:
   source_gen: ^0.9.7
   meta: ^1.1.8
   dart_style: ^1.3.6
-  figma: ^2.0.2
+  figma: ^2.0.3
 
   flutter:
     sdk: flutter

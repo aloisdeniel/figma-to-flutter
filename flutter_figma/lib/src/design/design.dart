@@ -67,17 +67,26 @@ class _FigmaDesignState extends State<FigmaDesignFile> {
           });
         }
       } catch (e) {
-        // Failed to load from cache, trying to reload from
-        // distant file.
+        print('[flutter_figma] Failed to load cached file ${widget.fileId}');
       }
     }
 
     if (widget.cacheMode != FigmaDesignCacheMode.useCacheAlwaysWhenAvailable ||
         file == null) {
-      final json = await refresh();
+      try {
+        final json = await refresh();
 
-      if (widget.cacheMode != FigmaDesignCacheMode.never) {
-        await widget.cacheStorage.save(widget.fileId, json);
+        if (widget.cacheMode != FigmaDesignCacheMode.never) {
+          await widget.cacheStorage.save(widget.fileId, json);
+        }
+      } catch (e) {
+        if (file != null) {
+          print(
+              '[flutter_figma] Loading from file failed but using the cached file ${widget.fileId}');
+          print('[flutter_figma] Error: $e');
+        } else {
+          rethrow;
+        }
       }
     }
   }
@@ -175,8 +184,8 @@ class FigmaDesignNode extends StatelessWidget {
     if (node == null) {
       throw Exception(
         componentName != null
-            ? 'Figma component with name ${componentName} not found in file'
-            : 'Figma node with id ${id} not found in file',
+            ? 'Figma component with name ${componentName} not found in file ${designState.file.name}'
+            : 'Figma node with id ${id} not found in file ${designState.file.name}',
       );
     }
 

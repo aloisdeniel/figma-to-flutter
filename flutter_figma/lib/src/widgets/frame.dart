@@ -1,10 +1,11 @@
 import 'package:figma/figma.dart' as figma;
+import 'package:flutter_figma/src/design/node.dart';
 import 'package:flutter_figma/src/rendering/decoration.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_figma/src/helpers/api_extensions.dart';
 import 'package:flutter_figma/src/rendering/shape.dart';
+import 'package:collection/collection.dart';
 
-import '../design/design.dart';
 import 'layouts/rotated.dart';
 
 class FigmaFrame extends StatelessWidget {
@@ -80,12 +81,16 @@ class FigmaFrame extends StatelessWidget {
       horizontalPadding: node.horizontalPadding?.toDouble(),
       verticalPadding: node.verticalPadding?.toDouble(),
       itemSpacing: node.itemSpacing?.toDouble(),
-      children: FigmaNode.children(node.layoutMode, node.children, package),
+      children: FigmaNode.children(
+        node.layoutMode ?? figma.LayoutMode.none,
+        node.children?.whereNotNull().toList() ?? const <figma.Node>[],
+        package,
+      ),
     );
   }
 
   Widget _layout(BuildContext context) {
-    if (layoutMode != null && layoutMode != figma.LayoutMode.none) {}
+    if (layoutMode != figma.LayoutMode.none) {}
   }
 
   @override

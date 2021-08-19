@@ -252,19 +252,22 @@ extension ListNumExtension on List<num>? {
   }
 }
 
-extension ListListNumExtension on List<List<num>> {
-  Offset get position => Offset(
-        this[0][2].toDouble(),
-        this[1][2].toDouble(),
-      );
+extension ListListNumExtension on List<List<num>>? {
+  Offset get position => this == null
+      ? Offset.zero
+      : Offset(
+          this![0][2].toDouble(),
+          this![1][2].toDouble(),
+        );
 
-  double get rotation => atan2(-this[0][1], this[0][0]);
+  double get rotation => this == null ? 0.0 : atan2(-this![0][1], this![0][0]);
 
   bool get isRotated {
-    final r00 = this[0][0];
-    final r01 = this[0][1];
-    final r10 = this[1][0];
-    final r11 = this[1][1];
+    if (this == null) return false;
+    final r00 = this![0][0];
+    final r01 = this![0][1];
+    final r10 = this![1][0];
+    final r11 = this![1][1];
     return !(r00.isAlmostSame(1.0) &&
         r01.isAlmostSame(0.0) &&
         r10.isAlmostSame(0.0) &&
@@ -379,6 +382,13 @@ extension ColorStopExtension on figma.ColorStop {
 extension Vector2DExtension on figma.Vector2D? {
   Offset toOffset() {
     return Offset(
+      this?.x.toDouble() ?? 0.0,
+      this?.y.toDouble() ?? 0.0,
+    );
+  }
+
+  Size toSize() {
+    return Size(
       this?.x.toDouble() ?? 0.0,
       this?.y.toDouble() ?? 0.0,
     );

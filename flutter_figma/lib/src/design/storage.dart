@@ -7,8 +7,8 @@ import 'package:path/path.dart' as path;
 abstract class FigmaDesignStorage {
   const FigmaDesignStorage();
   Future<bool> exists(String fileId);
-  Future<Map<String, dynamic>> load(String fileId);
-  Future<void> save(String fileId, Map<String, dynamic> json);
+  Future<Map<String, dynamic>?> load(String fileId);
+  Future<void> save(String fileId, Map<String, dynamic>? json);
 }
 
 class FileFigmaDesignStorage extends FigmaDesignStorage {
@@ -25,7 +25,7 @@ class FileFigmaDesignStorage extends FigmaDesignStorage {
   }
 
   @override
-  Future<Map<String, dynamic>> load(String fileId) async {
+  Future<Map<String, dynamic>?> load(String fileId) async {
     final localFile = await _cacheFile(fileId);
 
     if (await localFile.exists()) {
@@ -37,7 +37,7 @@ class FileFigmaDesignStorage extends FigmaDesignStorage {
   }
 
   @override
-  Future<void> save(String fileId, Map<String, dynamic> json) async {
+  Future<void> save(String fileId, Map<String, dynamic>? json) async {
     if (json != null) {
       final localFile = await _cacheFile(fileId);
 

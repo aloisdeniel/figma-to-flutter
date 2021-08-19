@@ -2,34 +2,33 @@ import 'package:figma/figma.dart' as figma;
 import 'package:flutter_figma/src/rendering/decoration.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_figma/src/helpers/api_extensions.dart';
-import 'package:flutter_figma/src/widgets/layouts/auto_layout.dart';
-import 'package:flutter_figma/src/widgets/layouts/constrained_layout.dart';
+import 'package:flutter_figma/src/rendering/shape.dart';
 
 import '../design/design.dart';
 import 'layouts/rotated.dart';
 
 class FigmaFrame extends StatelessWidget {
   final figma.LayoutMode layoutMode;
-  final figma.CounterAxisSizingMode counterAxisSizingMode;
+  final figma.CounterAxisSizingMode? counterAxisSizingMode;
   final bool clipsContent;
-  final double opacity;
-  final Size designSize;
-  final Decoration decoration;
-  final List<List<num>> relativeTransform;
+  final double? opacity;
+  final Size? designSize;
+  final Decoration? decoration;
+  final List<List<num>>? relativeTransform;
   final List<num> rectangleCornerRadii;
   final List<Widget> children;
-  final double horizontalPadding;
-  final double verticalPadding;
-  final double itemSpacing;
+  final double? horizontalPadding;
+  final double? verticalPadding;
+  final double? itemSpacing;
 
   const FigmaFrame({
-    Key key,
-    @required this.clipsContent,
-    @required this.layoutMode,
-    @required this.opacity,
-    @required this.decoration,
-    @required this.relativeTransform,
-    @required this.rectangleCornerRadii,
+    Key? key,
+    this.clipsContent = false,
+    required this.layoutMode,
+    this.opacity,
+    this.decoration,
+    this.relativeTransform,
+    this.rectangleCornerRadii = const <num>[0, 0, 0, 0],
     this.counterAxisSizingMode,
     this.designSize,
     this.children = const <Widget>[],
@@ -38,81 +37,71 @@ class FigmaFrame extends StatelessWidget {
     this.itemSpacing = 0,
   }) : super(key: key);
 
-  factory FigmaFrame.api(figma.Frame node, {String package}) {
-    final effects = node.effects
-        .where((x) => x.visible ?? true)
-        .map((x) => FigmaEffect.api(x))
-        .toList();
-    Decoration decoration;
-    if (node.fills.isNotEmpty ||
-        node.strokes.isNotEmpty ||
-        node.effects.isNotEmpty) {
+  factory FigmaFrame.api(figma.Frame node, {String? package}) {
+    Decoration? decoration;
+    final fills = node.fills.toFlutter();
+    final strokes = node.strokes.toFlutter();
+    final effects = node.effects.toFlutter();
+    if (fills.isNotEmpty || strokes.isNotEmpty || effects.isNotEmpty) {
       decoration = FigmaPaintDecoration(
-        strokeWeight: node.strokeWeight,
+        strokeWeight: (node.strokeWeight ?? 1.0).toDouble(),
+        fills: fills,
+        strokes: strokes,
+        effects: effects,
         shape: FigmaRectangleShape(
           rectangleCornerRadii:
               node.rectangleCornerRadii ?? const <num>[0, 0, 0, 0],
         ),
-        fills: node.fills
-            .where((x) => x.visible ?? true)
-            .map((x) => FigmaPaint.api(x))
-            .toList(),
-        strokes: node.strokes
-            .where((x) => x.visible ?? true)
-            .map((x) => FigmaPaint.api(x))
-            .toList(),
-        effects: effects,
       );
     }
 
     final blurEffects = <figma.Effect>[];
     if (node.effects != null) {
       blurEffects.addAll(
-        node.effects.where((x) => x.type == figma.EffectType.backgroundBlur),
+        node.effects!.where((x) => x.type == figma.EffectType.backgroundBlur),
       );
     }
     return FigmaFrame(
-      key: node.id != null ? Key(node.id) : null,
-      opacity: node.opacity ?? 1.0,
+      key: Key(node.id),
+      opacity: node.opacity,
       decoration: decoration,
       relativeTransform: node.relativeTransform,
-      rectangleCornerRadii: node.rectangleCornerRadii,
-      layoutMode: node.layoutMode,
+      rectangleCornerRadii: node.rectangleCornerRadii ??
+          const <num>[
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+          ],
+      layoutMode: node.layoutMode ?? figma.LayoutMode.vertical,
       clipsContent: node.clipsContent ?? false,
       designSize: node.designSize(),
       counterAxisSizingMode: node.counterAxisSizingMode,
-      horizontalPadding: node.horizontalPadding ?? 0.0,
-      verticalPadding: node.verticalPadding ?? 0.0,
-      itemSpacing: node.itemSpacing ?? 0.0,
+      horizontalPadding: node.horizontalPadding?.toDouble(),
+      verticalPadding: node.verticalPadding?.toDouble(),
+      itemSpacing: node.itemSpacing?.toDouble(),
       children: FigmaNode.children(node.layoutMode, node.children, package),
     );
   }
 
+  Widget _layout(BuildContext context) {
+    if (layoutMode != null && layoutMode != figma.LayoutMode.none) {}
+  }
+
   @override
   Widget build(BuildContext context) {
-    Widget child = layoutMode != null && layoutMode != figma.LayoutMode.none
-        ? FigmaAutoLayout(
-            counterAxisSizingMode: counterAxisSizingMode,
-            horizontalPadding: horizontalPadding,
-            verticalPadding: verticalPadding,
-            itemSpacing: itemSpacing,
-            layoutMode: layoutMode,
-            designSize: designSize,
-            children: children,
-          )
-        : FigmaConstrainedLayout(
-            children: children,
-            designSize: designSize,
-          );
+    var child = _layout(context);
+
+    final decoration = this.decoration;
+    final opacity = this.opacity;
+    final relativeTransform = this.relativeTransform;
 
     if (decoration != null) {
       child = DecoratedBox(
         decoration: decoration,
-        child: child,
       );
     }
-
-    if (opacity < 1) {
+    if (opacity != null && opacity < 1) {
       child = Opacity(
         opacity: opacity,
         child: child,

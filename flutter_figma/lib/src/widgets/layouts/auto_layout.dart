@@ -6,15 +6,15 @@ import 'package:flutter_figma/src/rendering/layouts/auto_layout.dart';
 class FigmaAutoLayout extends MultiChildRenderObjectWidget {
   final Size designSize;
   FigmaAutoLayout({
-    Key key,
-    @required this.designSize,
+    Key? key,
+    required this.designSize,
     this.layoutMode = figma.LayoutMode.vertical,
     this.counterAxisSizingMode = figma.CounterAxisSizingMode.auto,
     this.horizontalPadding = 0,
     this.verticalPadding = 0,
     this.itemSpacing = 0,
     List<Widget> children = const <Widget>[],
-  })  : assert(layoutMode != null && layoutMode != figma.LayoutMode.none),
+  })  : assert(layoutMode != figma.LayoutMode.none),
         super(
           key: key,
           children: children,
@@ -30,12 +30,11 @@ class FigmaAutoLayout extends MultiChildRenderObjectWidget {
   RenderObject createRenderObject(BuildContext context) {
     return RenderFigmaAutoLayout(
       designSize: designSize,
-      layoutMode: layoutMode ?? figma.LayoutMode.none,
-      counterAxisSizingMode:
-          counterAxisSizingMode ?? figma.CounterAxisSizingMode.auto,
-      horizontalPadding: horizontalPadding ?? 0.0,
-      verticalPadding: verticalPadding ?? 0.0,
-      itemSpacing: itemSpacing ?? 0.0,
+      layoutMode: layoutMode,
+      counterAxisSizingMode: counterAxisSizingMode,
+      horizontalPadding: horizontalPadding,
+      verticalPadding: verticalPadding,
+      itemSpacing: itemSpacing,
     );
   }
 
@@ -44,20 +43,19 @@ class FigmaAutoLayout extends MultiChildRenderObjectWidget {
       BuildContext context, covariant RenderFigmaAutoLayout renderObject) {
     renderObject
       ..designSize = designSize
-      ..layoutMode = layoutMode ?? figma.LayoutMode.none
-      ..counterAxisSizingMode =
-          counterAxisSizingMode ?? figma.CounterAxisSizingMode.auto
-      ..horizontalPadding = horizontalPadding ?? 0.0
-      ..verticalPadding = verticalPadding ?? 0.0
-      ..itemSpacing = itemSpacing ?? 0.0;
+      ..layoutMode = layoutMode
+      ..counterAxisSizingMode = counterAxisSizingMode
+      ..horizontalPadding = horizontalPadding
+      ..verticalPadding = verticalPadding
+      ..itemSpacing = itemSpacing;
   }
 }
 
 class FigmaAutoData extends ContainerBoxParentData<RenderBox> {
-  figma.LayoutAlign layoutAlign;
-  bool isMainAxisFixed;
-  bool isCrossAxisFixed;
-  Size designSize;
+  figma.LayoutAlign? layoutAlign;
+  bool? isMainAxisFixed;
+  bool? isCrossAxisFixed;
+  Size? designSize;
   @override
   String toString() =>
       '${super.toString()}; size=$designSize; layoutAlign=$layoutAlign; isMainAxisFixed=$isMainAxisFixed';
@@ -65,18 +63,18 @@ class FigmaAutoData extends ContainerBoxParentData<RenderBox> {
 
 class FigmaAuto extends ParentDataWidget<FigmaAutoData> {
   const FigmaAuto({
-    Key key,
-    @required this.layoutAlign,
-    @required this.designSize,
-    @required this.isMainAxisFixed,
-    @required this.isCrossAxisFixed,
-    @required Widget child,
+    Key? key,
+    required this.layoutAlign,
+    this.designSize,
+    this.isMainAxisFixed,
+    this.isCrossAxisFixed,
+    required Widget child,
   }) : super(key: key, child: child);
 
   final figma.LayoutAlign layoutAlign;
-  final Size designSize;
-  final bool isMainAxisFixed;
-  final bool isCrossAxisFixed;
+  final Size? designSize;
+  final bool? isMainAxisFixed;
+  final bool? isCrossAxisFixed;
 
   @override
   void applyParentData(RenderObject renderObject) {

@@ -2,56 +2,49 @@ import 'package:figma/figma.dart' as figma;
 import 'package:flutter/widgets.dart';
 import 'package:flutter_figma/src/rendering/decoration.dart';
 import 'package:flutter_figma/src/helpers/api_extensions.dart';
+import 'package:flutter_figma/src/rendering/effect.dart';
+import 'package:flutter_figma/src/rendering/shape.dart';
 import 'package:flutter_figma/src/widgets/blurred.dart';
 import 'package:flutter_figma/src/widgets/layouts/rotated.dart';
 
 class FigmaRectangle extends StatelessWidget {
-  final double opacity;
-  final Decoration decoration;
+  final double? opacity;
+  final Decoration? decoration;
   final List<FigmaBackgroundBlurEffect> blurEffects;
-  final List<List<num>> relativeTransform;
-  final List<num> rectangleCornerRadii;
+  final List<List<num>>? relativeTransform;
+  final List<num>? rectangleCornerRadii;
 
   const FigmaRectangle({
-    Key key,
-    @required this.opacity,
-    @required this.decoration,
-    @required this.blurEffects,
-    @required this.relativeTransform,
-    @required this.rectangleCornerRadii,
+    Key? key,
+    this.opacity,
+    this.decoration,
+    this.blurEffects = const <FigmaBackgroundBlurEffect>[],
+    this.relativeTransform,
+    this.rectangleCornerRadii,
   }) : super(
           key: key,
         );
 
-  factory FigmaRectangle.api(figma.Rectangle node, {String package}) {
-    final effects = node.effects
-        .where((x) => x.visible ?? true)
-        .map((x) => FigmaEffect.api(x))
-        .toList();
-    Decoration decoration;
-    if (node.fills.isNotEmpty ||
-        node.strokes.isNotEmpty ||
-        node.effects.isNotEmpty) {
+  factory FigmaRectangle.api(figma.Rectangle node, {String? package}) {
+    final fills = node.fills.toFlutter();
+    final strokes = node.strokes.toFlutter();
+    final effects = node.effects.toFlutter();
+    Decoration? decoration;
+    if (fills.isNotEmpty || strokes.isNotEmpty || effects.isNotEmpty) {
       decoration = FigmaPaintDecoration(
-        strokeWeight: node.strokeWeight,
+        strokeWeight: node.strokeWeight ?? 0,
         shape: FigmaRectangleShape(
           rectangleCornerRadii:
               node.rectangleCornerRadii ?? const <num>[0, 0, 0, 0],
         ),
-        fills: node.fills
-            .where((x) => x.visible ?? true)
-            .map((x) => FigmaPaint.api(x))
-            .toList(),
-        strokes: node.strokes
-            .where((x) => x.visible ?? true)
-            .map((x) => FigmaPaint.api(x))
-            .toList(),
+        fills: fills,
+        strokes: strokes,
         effects: effects,
       );
     }
 
     return FigmaRectangle(
-      key: node.id != null ? Key(node.id) : null,
+      key: Key(node.id),
       opacity: node.opacity ?? 1.0,
       blurEffects: effects.whereType<FigmaBackgroundBlurEffect>().toList(),
       decoration: decoration,
@@ -64,6 +57,10 @@ class FigmaRectangle extends StatelessWidget {
   Widget build(BuildContext context) {
     Widget child = SizedBox();
 
+    final decoration = this.decoration;
+    final opacity = this.opacity;
+    final relativeTransform = this.relativeTransform;
+
     if (decoration != null) {
       child = DecoratedBox(
         decoration: decoration,
@@ -72,13 +69,13 @@ class FigmaRectangle extends StatelessWidget {
 
     if (blurEffects.isNotEmpty) {
       child = FigmaBlurred(
-        cornerRadii: rectangleCornerRadii,
+        cornerRadii: rectangleCornerRadii ?? const <num>[0, 0, 0, 0],
         effects: blurEffects,
         child: child,
       );
     }
 
-    if (opacity < 1) {
+    if (opacity != null && opacity < 1) {
       child = Opacity(
         opacity: opacity,
         child: child,

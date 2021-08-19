@@ -6,10 +6,9 @@ import 'package:flutter_figma/src/helpers/api_extensions.dart';
 class RenderFigmaRotated extends RenderBox
     with RenderObjectWithChildMixin<RenderBox> {
   RenderFigmaRotated({
-    @required List<List<num>> transform,
-    RenderBox child,
-  })  : assert(transform != null),
-        _transform = transform {
+    required List<List<num>> transform,
+    RenderBox? child,
+  }) : _transform = transform {
     this.child = child;
   }
 

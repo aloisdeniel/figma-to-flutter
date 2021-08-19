@@ -1,56 +1,46 @@
 import 'package:figma/figma.dart' as figma;
 import 'package:flutter/widgets.dart';
 import 'package:flutter_figma/src/rendering/decoration.dart';
-import 'package:path_drawing/path_drawing.dart';
 import 'package:flutter_figma/src/helpers/api_extensions.dart';
+import 'package:flutter_figma/src/rendering/shape.dart';
 
 import 'layouts/rotated.dart';
 
 class FigmaVector extends StatelessWidget {
-  final double opacity;
-  final Decoration decoration;
-  final List<List<num>> relativeTransform;
   const FigmaVector({
-    Key key,
-    @required this.opacity,
-    @required this.decoration,
-    @required this.relativeTransform,
+    Key? key,
+    this.opacity,
+    this.decoration,
+    this.relativeTransform,
   }) : super(
           key: key,
         );
 
-  factory FigmaVector.api(figma.Vector node, {String package}) {
-    Decoration decoration;
-    if ((node.fillGeometry != null || node.strokeGeometry != null) &&
-        (node.fills.isNotEmpty ||
-            node.strokes.isNotEmpty ||
-            node.effects.isNotEmpty)) {
+  final double? opacity;
+  final Decoration? decoration;
+  final List<List<num>>? relativeTransform;
+
+  factory FigmaVector.api(figma.Vector node, {String? package}) {
+    Decoration? decoration;
+    final fillGeometry = (node.fillGeometry ?? node.strokeGeometry).toPaths();
+    final fills = node.fills.toFlutter();
+    final strokes = node.strokes.toFlutter();
+    final effects = node.effects.toFlutter();
+    if (fillGeometry.isNotEmpty &&
+        (fills.isNotEmpty || strokes.isNotEmpty || effects.isNotEmpty)) {
       decoration = FigmaPaintDecoration(
-        strokeWeight: node.strokeWeight,
-        fills: node.fills
-            .where((x) => x.visible ?? true)
-            .map((x) => FigmaPaint.api(x))
-            .toList(),
-        strokes: node.strokes
-            .where((x) => x.visible ?? true)
-            .map((x) => FigmaPaint.api(x))
-            .toList(),
-        effects: node.effects
-            .where((x) => x.visible ?? true)
-            .map((x) => FigmaEffect.api(x))
-            .toList(),
+        strokeWeight: node.strokeWeight ?? 1,
+        fills: fills,
+        strokes: strokes,
+        effects: effects,
         shape: FigmaPathShape(
-          fillGeometry: (node.fillGeometry ?? node.strokeGeometry)
-              .map(
-                (x) => parseSvgPathData(x['path']),
-              )
-              .toList(),
+          fillGeometry: fillGeometry,
         ),
       );
     }
 
     return FigmaVector(
-      key: node.id != null ? Key(node.id) : null,
+      key: Key(node.id),
       decoration: decoration,
       opacity: node.opacity ?? 1.0,
       relativeTransform: node.relativeTransform,
@@ -61,13 +51,16 @@ class FigmaVector extends StatelessWidget {
   Widget build(BuildContext context) {
     Widget child = SizedBox();
 
+    final decoration = this.decoration;
+    final opacity = this.opacity;
+    final relativeTransform = this.relativeTransform;
+
     if (decoration != null) {
       child = DecoratedBox(
         decoration: decoration,
       );
     }
-
-    if (opacity < 1) {
+    if (opacity != null && opacity < 1) {
       child = Opacity(
         opacity: opacity,
         child: child,

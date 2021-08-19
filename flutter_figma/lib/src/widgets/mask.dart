@@ -1,14 +1,14 @@
 import 'package:flutter/widgets.dart';
-import 'package:flutter_figma/src/rendering/decoration.dart';
+import 'package:flutter_figma/src/rendering/shape.dart';
 import '../helpers/api_extensions.dart';
 
 class FigmaMask extends StatelessWidget {
-  final FigmaShape shape;
+  final FigmaShape? shape;
   final Widget child;
   const FigmaMask({
-    Key key,
-    @required this.shape,
-    @required this.child,
+    Key? key,
+    this.shape,
+    required this.child,
   }) : super(key: key);
 
   @override
@@ -44,14 +44,16 @@ class _Clipper extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {
     final clipPath = Path();
-    for (var geometry in shape.fillGeometry) {
-      final bounds = geometry.getBounds();
-      final transform = (Matrix4.identity()
-        ..scale(
-          size.width / (bounds.left + bounds.width),
-          size.height / (bounds.top + bounds.height),
-        ));
-      clipPath.addPath(geometry.transform(transform.storage), Offset.zero);
+    if (shape.fillGeometry != null) {
+      for (var geometry in shape.fillGeometry!) {
+        final bounds = geometry.getBounds();
+        final transform = (Matrix4.identity()
+          ..scale(
+            size.width / (bounds.left + bounds.width),
+            size.height / (bounds.top + bounds.height),
+          ));
+        clipPath.addPath(geometry.transform(transform.storage), Offset.zero);
+      }
     }
     return clipPath;
   }

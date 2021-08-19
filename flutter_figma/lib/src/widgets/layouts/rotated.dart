@@ -3,11 +3,10 @@ import 'package:flutter_figma/src/rendering/layouts/rotated.dart';
 
 class FigmaRotated extends SingleChildRenderObjectWidget {
   const FigmaRotated({
-    Key key,
-    @required this.transform,
-    Widget child,
-  })  : assert(transform != null),
-        super(key: key, child: child);
+    Key? key,
+    required this.transform,
+    required Widget child,
+  }) : super(key: key, child: child);
 
   final List<List<num>> transform;
 
@@ -21,5 +20,3 @@ class FigmaRotated extends SingleChildRenderObjectWidget {
     renderObject.transform = transform;
   }
 }
-
-RotatedBox e;

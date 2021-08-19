@@ -6,8 +6,8 @@ import 'package:figma/figma.dart' as figma;
 class FigmaConstrainedLayout extends MultiChildRenderObjectWidget {
   final Size designSize;
   FigmaConstrainedLayout({
-    Key key,
-    @required this.designSize,
+    Key? key,
+    required this.designSize,
     List<Widget> children = const <Widget>[],
   }) : super(
           key: key,
@@ -29,9 +29,9 @@ class FigmaConstrainedLayout extends MultiChildRenderObjectWidget {
 }
 
 class FigmaConstrainedData extends ContainerBoxParentData<RenderBox> {
-  figma.LayoutConstraint constraints;
-  Size designSize;
-  Offset designPosition;
+  figma.LayoutConstraint? constraints;
+  Size? designSize;
+  Offset? designPosition;
   @override
   String toString() =>
       '${super.toString()}; designSize=$designSize; designPosition=$designPosition; constraints=$constraints';
@@ -39,11 +39,11 @@ class FigmaConstrainedData extends ContainerBoxParentData<RenderBox> {
 
 class FigmaConstrained extends ParentDataWidget<FigmaConstrainedData> {
   const FigmaConstrained({
-    Key key,
-    @required this.constraints,
-    @required this.designSize,
-    @required this.designPosition,
-    @required Widget child,
+    Key? key,
+    required this.constraints,
+    required this.designSize,
+    required this.designPosition,
+    required Widget child,
   }) : super(key: key, child: child);
 
   final figma.LayoutConstraint constraints;

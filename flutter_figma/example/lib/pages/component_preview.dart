@@ -46,7 +46,7 @@ class _ComponentPreviewPageState extends State<ComponentPreviewPage> {
             scrollDirection: axis,
             children: [preview],
           );
-    return Figma(
+    return FlutterFigma(
       token: widget.apiKey,
       child: FigmaDesignFile(
         fileId: widget.fileKey,

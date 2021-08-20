@@ -12,11 +12,9 @@ class RenderFigmaRotated extends RenderBox
     this.child = child;
   }
 
-  /// The number of clockwise quarter turns the child should be rotated.
   List<List<num>> get transform => _transform;
   List<List<num>> _transform;
   set transform(List<List<num>> value) {
-    assert(value != null);
     if (_transform == value) return;
     _transform = value;
     markNeedsLayout();
@@ -24,6 +22,7 @@ class RenderFigmaRotated extends RenderBox
 
   @override
   double computeMinIntrinsicWidth(double height) {
+    final child = this.child;
     if (child == null) return 0.0;
     return math.min(
       child.getMinIntrinsicHeight(height),
@@ -33,6 +32,7 @@ class RenderFigmaRotated extends RenderBox
 
   @override
   double computeMaxIntrinsicWidth(double height) {
+    final child = this.child;
     if (child == null) return 0.0;
     return math.max(
       child.getMaxIntrinsicHeight(height),
@@ -42,6 +42,7 @@ class RenderFigmaRotated extends RenderBox
 
   @override
   double computeMinIntrinsicHeight(double width) {
+    final child = this.child;
     if (child == null) return 0.0;
     return math.min(
       child.getMinIntrinsicHeight(width),
@@ -51,6 +52,7 @@ class RenderFigmaRotated extends RenderBox
 
   @override
   double computeMaxIntrinsicHeight(double width) {
+    final child = this.child;
     if (child == null) return 0.0;
     return math.max(
       child.getMaxIntrinsicHeight(width),
@@ -58,22 +60,26 @@ class RenderFigmaRotated extends RenderBox
     );
   }
 
-  Matrix4 _paintTransform;
+  Matrix4? _paintTransform;
+
+  Matrix4 _calculateTransform(Size childSize) => Matrix4.identity()
+    ..translate(childSize.width / 2.0, childSize.height / 2.0)
+    ..rotateZ(_transform.rotation)
+    ..translate(-childSize.width / 2.0, -childSize.height / 2.0);
 
   @override
   void performLayout() {
     _paintTransform = null;
+    final child = this.child;
     if (child != null) {
       child.layout(
         constraints,
         parentUsesSize: true,
       );
-      _paintTransform = Matrix4.identity()
-        ..translate(child.size.width / 2.0, child.size.height / 2.0)
-        ..rotateZ(_transform.rotation)
-        ..translate(-child.size.width / 2.0, -child.size.height / 2.0);
-      final rect = Path()..addRect(Offset.zero & child.size);
-      rect.transform(_paintTransform.storage);
+      _paintTransform = _calculateTransform(child.size);
+      final rect = Path()
+        ..addRect(Offset.zero & child.size)
+        ..transform(_paintTransform!.storage);
       size = rect.getBounds().size;
     } else {
       performResize();
@@ -81,7 +87,23 @@ class RenderFigmaRotated extends RenderBox
   }
 
   @override
-  bool hitTestChildren(BoxHitTestResult result, {Offset position}) {
+  Size computeDryLayout(BoxConstraints constraints) {
+    final child = this.child;
+    if (child == null) {
+      return constraints.smallest;
+    }
+
+    final childSize = child.getDryLayout(constraints);
+    final dryTransform = _calculateTransform(childSize);
+    final rect = Path()
+      ..addRect(Offset.zero & childSize)
+      ..transform(dryTransform.storage);
+    return rect.getBounds().size;
+  }
+
+  @override
+  bool hitTestChildren(BoxHitTestResult result, {required Offset position}) {
+    final child = this.child;
     assert(_paintTransform != null || debugNeedsLayout || child == null);
     if (child == null || _paintTransform == null) return false;
     return result.addWithPaintTransform(
@@ -94,19 +116,30 @@ class RenderFigmaRotated extends RenderBox
   }
 
   void _paintChild(PaintingContext context, Offset offset) {
-    context.paintChild(child, offset);
+    context.paintChild(child!, offset);
   }
 
   @override
   void paint(PaintingContext context, Offset offset) {
-    if (child != null)
-      context.pushTransform(
-          needsCompositing, offset, _paintTransform, _paintChild);
+    final child = this.child;
+    final transform = this._paintTransform;
+    if (child != null) {
+      if (transform != null) {
+        context.pushTransform(
+          needsCompositing,
+          offset,
+          transform,
+          _paintChild,
+        );
+      } else {
+        _paintChild(context, Offset.zero);
+      }
+    }
   }
 
   @override
   void applyPaintTransform(RenderBox child, Matrix4 transform) {
-    if (_paintTransform != null) transform.multiply(_paintTransform);
+    if (_paintTransform != null) transform.multiply(_paintTransform!);
     super.applyPaintTransform(child, transform);
   }
 }

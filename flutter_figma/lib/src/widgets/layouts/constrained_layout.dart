@@ -17,6 +17,7 @@ class FigmaConstrainedLayout extends MultiChildRenderObjectWidget {
   @override
   RenderObject createRenderObject(BuildContext context) {
     return RenderFigmaConstrainedLayout(
+      children: const <RenderBox>[],
       designSize: designSize,
     );
   }

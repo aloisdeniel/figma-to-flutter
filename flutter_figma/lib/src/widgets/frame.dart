@@ -5,6 +5,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_figma/src/helpers/api_extensions.dart';
 import 'package:flutter_figma/src/rendering/shape.dart';
 import 'package:collection/collection.dart';
+import 'package:flutter_figma/widgets.dart';
 
 import 'layouts/rotated.dart';
 
@@ -90,7 +91,24 @@ class FigmaFrame extends StatelessWidget {
   }
 
   Widget _layout(BuildContext context) {
-    if (layoutMode != figma.LayoutMode.none) {}
+    if (layoutMode == figma.LayoutMode.vertical ||
+        layoutMode == figma.LayoutMode.horizontal) {
+      return FigmaAutoLayout(
+        designSize: designSize!,
+        children: children,
+        counterAxisSizingMode:
+            counterAxisSizingMode ?? figma.CounterAxisSizingMode.auto,
+        horizontalPadding: horizontalPadding ?? 0.0,
+        verticalPadding: verticalPadding ?? 0.0,
+        itemSpacing: itemSpacing ?? 0.0,
+        layoutMode: layoutMode,
+      );
+    }
+
+    return FigmaConstrainedLayout(
+      designSize: designSize!,
+      children: children,
+    );
   }
 
   @override

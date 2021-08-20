@@ -11,13 +11,13 @@ class RenderFigmaAutoLayout extends RenderBox
         RenderBoxContainerDefaultsMixin<RenderBox, FigmaAutoData>,
         DebugOverflowIndicatorMixin {
   RenderFigmaAutoLayout({
-    List<RenderBox> children,
-    @required figma.LayoutMode layoutMode,
-    @required Size designSize,
-    @required figma.CounterAxisSizingMode counterAxisSizingMode,
-    @required num horizontalPadding,
-    @required num verticalPadding,
-    @required num itemSpacing,
+    List<RenderBox> children = const <RenderBox>[],
+    required figma.LayoutMode layoutMode,
+    required Size designSize,
+    required figma.CounterAxisSizingMode counterAxisSizingMode,
+    required num horizontalPadding,
+    required num verticalPadding,
+    required num itemSpacing,
   })  : _layoutMode = layoutMode,
         _designSize = designSize,
         _counterAxisSizingMode = counterAxisSizingMode,
@@ -30,7 +30,6 @@ class RenderFigmaAutoLayout extends RenderBox
   Size _designSize;
   Size get designSize => _designSize;
   set designSize(Size value) {
-    assert(value != null);
     if (_designSize != value) {
       _designSize = value;
       markNeedsLayout();
@@ -40,7 +39,6 @@ class RenderFigmaAutoLayout extends RenderBox
   figma.LayoutMode _layoutMode;
   figma.LayoutMode get layoutMode => _layoutMode;
   set layoutMode(figma.LayoutMode value) {
-    assert(value != null);
     if (_layoutMode != value) {
       _layoutMode = value;
       markNeedsLayout();
@@ -51,7 +49,6 @@ class RenderFigmaAutoLayout extends RenderBox
   figma.CounterAxisSizingMode get counterAxisSizingMode =>
       _counterAxisSizingMode;
   set counterAxisSizingMode(figma.CounterAxisSizingMode value) {
-    assert(value != null);
     if (_counterAxisSizingMode != value) {
       _counterAxisSizingMode = value;
       markNeedsLayout();
@@ -61,7 +58,6 @@ class RenderFigmaAutoLayout extends RenderBox
   num _horizontalPadding;
   num get horizontalPadding => _horizontalPadding;
   set horizontalPadding(num value) {
-    assert(value != null);
     if (_horizontalPadding != value) {
       _horizontalPadding = value;
       markNeedsLayout();
@@ -71,7 +67,6 @@ class RenderFigmaAutoLayout extends RenderBox
   num _verticalPadding;
   num get verticalPadding => _verticalPadding;
   set verticalPadding(num value) {
-    assert(value != null);
     if (_verticalPadding != value) {
       _verticalPadding = value;
       markNeedsLayout();
@@ -81,7 +76,6 @@ class RenderFigmaAutoLayout extends RenderBox
   num _itemSpacing;
   num get itemSpacing => _itemSpacing;
   set itemSpacing(num value) {
-    assert(value != null);
     if (_itemSpacing != value) {
       _itemSpacing = value;
       markNeedsLayout();
@@ -89,7 +83,7 @@ class RenderFigmaAutoLayout extends RenderBox
   }
 
   // Set during layout if overflow occurred on the main axis.
-  double _overflow;
+  double? _overflow;
   // Check whether any meaningful overflow is present. Values below an epsilon
   // are treated as not overflowing.
   bool get _hasOverflow => false; // _overflow > precisionErrorTolerance;
@@ -126,7 +120,7 @@ class RenderFigmaAutoLayout extends RenderBox
         final childParentData = child.parentData as FigmaAutoData;
         child = childParentData.nextSibling;
       }
-      return size;
+      return size.toDouble();
     }
 
     // We should add all children widths
@@ -158,7 +152,7 @@ class RenderFigmaAutoLayout extends RenderBox
         final childParentData = child.parentData as FigmaAutoData;
         child = childParentData.nextSibling;
       }
-      return size;
+      return size.toDouble();
     }
 
     // We should add all children heights
@@ -173,7 +167,7 @@ class RenderFigmaAutoLayout extends RenderBox
       child = childParentData.nextSibling;
       if (child != null) size += itemSpacing;
     }
-    return size;
+    return size.toDouble();
   }
 
   @override
@@ -196,12 +190,12 @@ class RenderFigmaAutoLayout extends RenderBox
   void performLayout() {
     assert(constraints != null);
 
-    double constraintsMaxCross;
-    double constraintsMinCross;
-    double constraintsMaxMain;
-    double constraintsMinMain;
-    double crossPadding;
-    double mainPadding;
+    late double constraintsMaxCross;
+    late double constraintsMinCross;
+    late double constraintsMaxMain;
+    late double constraintsMinMain;
+    late double crossPadding;
+    late double mainPadding;
 
     final isHorizontal = layoutMode == figma.LayoutMode.horizontal;
     final isCrossFixed =
@@ -216,8 +210,8 @@ class RenderFigmaAutoLayout extends RenderBox
       }
       constraintsMinMain = constraints.minWidth;
       constraintsMaxMain = constraints.maxWidth;
-      crossPadding = verticalPadding ?? 0.0;
-      mainPadding = horizontalPadding ?? 0.0;
+      crossPadding = verticalPadding.toDouble();
+      mainPadding = horizontalPadding.toDouble();
     } else {
       constraintsMinCross = constraints.minWidth;
       constraintsMaxCross = constraints.maxWidth;
@@ -227,8 +221,8 @@ class RenderFigmaAutoLayout extends RenderBox
       }
       constraintsMinMain = constraints.minHeight;
       constraintsMaxMain = constraints.maxHeight;
-      crossPadding = horizontalPadding ?? 0.0;
-      mainPadding = verticalPadding ?? 0.0;
+      crossPadding = horizontalPadding.toDouble();
+      mainPadding = verticalPadding.toDouble();
     }
 
     var child = firstChild;
@@ -248,34 +242,22 @@ class RenderFigmaAutoLayout extends RenderBox
       if (childParentData.layoutAlign == figma.LayoutAlign.stretch) {
         stretchedChildren.add(child);
       } else {
+        final isCrossAxisFixed = childParentData.isCrossAxisFixed ?? true;
+        final isMainAxisFixed = childParentData.isMainAxisFixed ?? true;
+        final designSize = childParentData.designSize ?? Size.zero;
         final childConstraints = isHorizontal
             ? BoxConstraints(
-                minHeight: childParentData.isCrossAxisFixed
-                    ? childParentData.designSize.height
-                    : 0.0,
-                maxHeight: childParentData.isCrossAxisFixed
-                    ? childParentData.designSize.height
-                    : maxChildCross,
-                minWidth: childParentData.isMainAxisFixed
-                    ? childParentData.designSize.width
-                    : 0.0,
-                maxWidth: childParentData.isMainAxisFixed
-                    ? childParentData.designSize.width
-                    : double.infinity,
+                minHeight: isCrossAxisFixed ? designSize.height : 0.0,
+                maxHeight: isCrossAxisFixed ? designSize.height : maxChildCross,
+                minWidth: isMainAxisFixed ? designSize.width : 0.0,
+                maxWidth: isMainAxisFixed ? designSize.width : double.infinity,
               )
             : BoxConstraints(
-                minHeight: childParentData.isMainAxisFixed
-                    ? childParentData.designSize.height
-                    : 0.0,
-                maxHeight: childParentData.isMainAxisFixed
-                    ? childParentData.designSize.height
-                    : double.infinity,
-                minWidth: childParentData.isCrossAxisFixed
-                    ? childParentData.designSize.width
-                    : 0.0,
-                maxWidth: childParentData.isCrossAxisFixed
-                    ? childParentData.designSize.width
-                    : maxChildCross,
+                minHeight: isMainAxisFixed ? designSize.height : 0.0,
+                maxHeight:
+                    isMainAxisFixed ? designSize.height : double.infinity,
+                minWidth: isCrossAxisFixed ? designSize.width : 0.0,
+                maxWidth: isCrossAxisFixed ? designSize.width : maxChildCross,
               );
 
         child.layout(
@@ -301,24 +283,19 @@ class RenderFigmaAutoLayout extends RenderBox
     // 2. Layout of stretched items
     for (var child in stretchedChildren) {
       final childParentData = child.parentData as FigmaAutoData;
+      final isCrossAxisFixed = childParentData.isCrossAxisFixed ?? true;
+      final isMainAxisFixed = childParentData.isMainAxisFixed ?? true;
+      final designSize = childParentData.designSize ?? Size.zero;
       final innerConstraints = isHorizontal
           ? BoxConstraints(
               minHeight: maxChildCross,
               maxHeight: maxChildCross,
-              minWidth: childParentData.isMainAxisFixed
-                  ? childParentData.designSize.width
-                  : 0.0,
-              maxWidth: childParentData.isMainAxisFixed
-                  ? childParentData.designSize.width
-                  : double.infinity,
+              minWidth: isMainAxisFixed ? designSize.width : 0.0,
+              maxWidth: isMainAxisFixed ? designSize.width : double.infinity,
             )
           : BoxConstraints(
-              minHeight: childParentData.isMainAxisFixed
-                  ? childParentData.designSize.height
-                  : 0.0,
-              maxHeight: childParentData.isMainAxisFixed
-                  ? childParentData.designSize.height
-                  : double.infinity,
+              minHeight: isMainAxisFixed ? designSize.height : 0.0,
+              maxHeight: isMainAxisFixed ? designSize.height : double.infinity,
               minWidth: maxChildCross,
               maxWidth: maxChildCross,
             );
@@ -385,31 +362,12 @@ class RenderFigmaAutoLayout extends RenderBox
   }
 
   @override
-  bool hitTestChildren(BoxHitTestResult result, {Offset position}) {
+  bool hitTestChildren(BoxHitTestResult result, {required Offset position}) {
     return defaultHitTestChildren(result, position: position);
   }
 
   @override
   void paint(PaintingContext context, Offset offset) {
     defaultPaint(context, offset);
-    return;
-  }
-
-  @override
-  String toStringShort() {
-    var header = super.toStringShort();
-    if (_overflow is double && _hasOverflow) header += ' OVERFLOWING';
-    return header;
-  }
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties.add(EnumProperty<figma.LayoutMode>('layoutMode', layoutMode));
-    properties.add(EnumProperty<figma.CounterAxisSizingMode>(
-        'counterAxisSizingMode', counterAxisSizingMode));
-    properties.add(EnumProperty<num>('verticalPadding', verticalPadding));
-    properties.add(EnumProperty<num>('horizontalPadding', horizontalPadding));
-    properties.add(EnumProperty<num>('itemSpacing', itemSpacing));
   }
 }

@@ -11,17 +11,15 @@ class RenderFigmaConstrainedLayout extends RenderBox
         RenderBoxContainerDefaultsMixin<RenderBox, FigmaConstrainedData>,
         DebugOverflowIndicatorMixin {
   RenderFigmaConstrainedLayout({
-    List<RenderBox> children,
-    @required Size designSize,
-  }) {
-    _designSize = designSize;
+    required List<RenderBox> children,
+    required Size designSize,
+  }) : _designSize = designSize {
     addAll(children);
   }
 
   Size _designSize;
   Size get designSize => _designSize;
   set designSize(Size value) {
-    assert(value != null);
     if (_designSize != value) {
       _designSize = value;
       markNeedsLayout();
@@ -53,8 +51,6 @@ class RenderFigmaConstrainedLayout extends RenderBox
 
   @override
   void performLayout() {
-    assert(constraints != null);
-
     size = Size(
       constraints.biggest.width.isFinite
           ? constraints.biggest.width
@@ -68,36 +64,40 @@ class RenderFigmaConstrainedLayout extends RenderBox
 
     while (child != null) {
       final childParentData = child.parentData as FigmaConstrainedData;
-      final position = childParentData.designPosition;
-      final isStretchHorizontal = childParentData.constraints.horizontal ==
-          figma.HorizontalConstraint.leftRight;
-      final isStretchVertical = childParentData.constraints.vertical ==
-          figma.VerticalConstraint.topBottom;
+      final position = childParentData.designPosition ?? Offset.zero;
+      final designSize = childParentData.designSize ?? Size.zero;
+      final layoutConstraints = childParentData.constraints ??
+          figma.LayoutConstraint(
+            horizontal: figma.HorizontalConstraint.left,
+            vertical: figma.VerticalConstraint.top,
+          );
+      final isStretchHorizontal =
+          layoutConstraints.horizontal == figma.HorizontalConstraint.leftRight;
+      final isStretchVertical =
+          layoutConstraints.vertical == figma.VerticalConstraint.topBottom;
 
       double minWidth, maxWidth, minHeight, maxHeight;
 
       if (isStretchHorizontal) {
         final width = size.width -
             (position.dx) -
-            (designSize.width -
-                (position.dx + childParentData.designSize.width));
+            (designSize.width - (position.dx + designSize.width));
         minWidth = width;
         maxWidth = width;
       } else {
-        minWidth = childParentData.designSize.width;
-        maxWidth = childParentData.designSize.width;
+        minWidth = designSize.width;
+        maxWidth = designSize.width;
       }
 
       if (isStretchVertical) {
         final height = size.height -
             (position.dy) -
-            (designSize.height -
-                (position.dy + childParentData.designSize.height));
+            (designSize.height - (position.dy + designSize.height));
         minHeight = height;
         maxHeight = height;
       } else {
-        minHeight = childParentData.designSize.height;
-        maxHeight = childParentData.designSize.height;
+        minHeight = designSize.height;
+        maxHeight = designSize.height;
       }
 
       final innerConstraints = BoxConstraints(
@@ -109,7 +109,7 @@ class RenderFigmaConstrainedLayout extends RenderBox
       child.layout(innerConstraints);
 
       double x, y;
-      switch (childParentData.constraints.horizontal) {
+      switch (layoutConstraints.horizontal) {
         case figma.HorizontalConstraint.right:
           x = size.width - (designSize.width - position.dx);
           break;
@@ -121,7 +121,7 @@ class RenderFigmaConstrainedLayout extends RenderBox
           x = position.dx;
       }
 
-      switch (childParentData.constraints.vertical) {
+      switch (layoutConstraints.vertical) {
         case figma.VerticalConstraint.bottom:
           y = size.height - (designSize.height - position.dy);
           break;
@@ -139,7 +139,19 @@ class RenderFigmaConstrainedLayout extends RenderBox
   }
 
   @override
-  bool hitTestChildren(BoxHitTestResult result, {Offset position}) {
+  Size computeDryLayout(BoxConstraints constraints) {
+    return Size(
+      constraints.biggest.width.isFinite
+          ? constraints.biggest.width
+          : designSize.width,
+      constraints.biggest.height.isFinite
+          ? constraints.biggest.height
+          : designSize.height,
+    );
+  }
+
+  @override
+  bool hitTestChildren(BoxHitTestResult result, {required Offset position}) {
     return defaultHitTestChildren(result, position: position);
   }
 
@@ -154,7 +166,8 @@ class RenderFigmaConstrainedLayout extends RenderBox
     var child = firstChild;
     while (child != null) {
       final childParentData = child.parentData as FigmaConstrainedData;
-      final position = childParentData.designPosition;
+      final position = childParentData.designPosition ?? Offset.zero;
+
       final mainSize = minChild
           ? child.getMinIntrinsicWidth(height - position.dx)
           : child.getMaxIntrinsicWidth(double.infinity);
@@ -170,7 +183,7 @@ class RenderFigmaConstrainedLayout extends RenderBox
     var child = firstChild;
     while (child != null) {
       final childParentData = child.parentData as FigmaConstrainedData;
-      final position = childParentData.designPosition;
+      final position = childParentData.designPosition ?? Offset.zero;
       final mainSize = minChild
           ? child.getMinIntrinsicHeight(width - position.dy)
           : child.getMaxIntrinsicHeight(double.infinity);

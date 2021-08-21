@@ -11,7 +11,9 @@ import 'layouts/rotated.dart';
 
 class FigmaFrame extends StatelessWidget {
   final figma.LayoutMode layoutMode;
-  final figma.CounterAxisSizingMode? counterAxisSizingMode;
+  final figma.CounterAxisSizingMode counterAxisSizingMode;
+  final figma.PrimaryAxisAlignItems primaryAxisAlignItems;
+  final figma.CounterAxisAlignItems counterAxisAlignItems;
   final bool clipsContent;
   final double? opacity;
   final Size? designSize;
@@ -31,7 +33,9 @@ class FigmaFrame extends StatelessWidget {
     this.relativeTransform,
     this.padding = EdgeInsets.zero,
     this.rectangleCornerRadii = const <num>[0, 0, 0, 0],
-    this.counterAxisSizingMode,
+    this.counterAxisSizingMode = figma.CounterAxisSizingMode.auto,
+    this.primaryAxisAlignItems = figma.PrimaryAxisAlignItems.min,
+    this.counterAxisAlignItems = figma.CounterAxisAlignItems.min,
     this.designSize,
     this.children = const <Widget>[],
     this.itemSpacing = 0,
@@ -76,7 +80,12 @@ class FigmaFrame extends StatelessWidget {
       layoutMode: node.layoutMode ?? figma.LayoutMode.none,
       clipsContent: node.clipsContent ?? false,
       designSize: node.designSize(),
-      counterAxisSizingMode: node.counterAxisSizingMode,
+      counterAxisSizingMode:
+          node.counterAxisSizingMode ?? figma.CounterAxisSizingMode.auto,
+      counterAxisAlignItems:
+          node.counterAxisAlignItems ?? figma.CounterAxisAlignItems.min,
+      primaryAxisAlignItems:
+          node.primaryAxisAlignItems ?? figma.PrimaryAxisAlignItems.min,
       padding: EdgeInsets.only(
         top: node.paddingTop ?? 0.0,
         bottom: node.paddingBottom ?? 0.0,
@@ -105,8 +114,9 @@ class FigmaFrame extends StatelessWidget {
       return FigmaAutoLayout(
         designSize: designSize!,
         children: children,
-        counterAxisSizingMode:
-            counterAxisSizingMode ?? figma.CounterAxisSizingMode.auto,
+        counterAxisSizingMode: counterAxisSizingMode,
+        primaryAxisAlignItems: primaryAxisAlignItems,
+        counterAxisAlignItems: counterAxisAlignItems,
         itemSpacing: itemSpacing ?? 0.0,
         padding: padding,
         layoutMode: layoutMode,

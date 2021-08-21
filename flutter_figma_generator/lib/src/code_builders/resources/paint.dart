@@ -1,19 +1,19 @@
 import 'package:figma/figma.dart';
-
-import 'package:flutter_figma/src/code_builders/helpers/instance.dart';
+import 'package:flutter_figma_generator/src/code_builders/helpers/instance.dart';
 
 extension PaintCodeBuilderExtensions on Paint {
   ValueBuilder toCodeBuilder({
-    ValueBuilder paintColor,
-    ListValueBuilder gradientColors,
+    required ValueBuilder paintColor,
+    required ListValueBuilder gradientColors,
   }) {
     if (type == PaintType.solid) {
       return InstanceBuilder('FigmaSolidPaint', [
         NamedArgument('color', paintColor),
       ]);
     } else if (type == PaintType.gradientLinear) {
-      final begin = gradientHandlePositions[0];
-      final end = gradientHandlePositions[1];
+      final begin =
+          gradientHandlePositions?.elementAt(0) ?? Vector2D(x: 0, y: 0);
+      final end = gradientHandlePositions?.elementAt(1) ?? Vector2D(x: 0, y: 0);
       final beginAlign = InstanceBuilder('Alignment', [
         RequiredArgument((begin.x - 0.5) * 2.0),
         RequiredArgument((begin.y - 0.5) * 2.0),
@@ -23,7 +23,8 @@ extension PaintCodeBuilderExtensions on Paint {
         RequiredArgument((end.y - 0.5) * 2.0),
       ]);
       final stops = ListValueBuilder(
-        gradientStops.map((x) => ConstantBuilder(x.position)).toList(),
+        gradientStops?.map((x) => ConstantBuilder(x.position)).toList() ??
+            const <ConstantBuilder>[],
       );
       return InstanceBuilder('FigmaGradientLinearPaint', [
         NamedArgument(
@@ -38,8 +39,9 @@ extension PaintCodeBuilderExtensions on Paint {
         ),
       ]);
     } else if (type == PaintType.gradientRadial) {
-      final begin = gradientHandlePositions[0];
-      final end = gradientHandlePositions[1];
+      final begin =
+          gradientHandlePositions?.elementAt(0) ?? Vector2D(x: 0, y: 0);
+      final end = gradientHandlePositions?.elementAt(1) ?? Vector2D(x: 0, y: 0);
       final beginAlign = InstanceBuilder('Alignment', [
         RequiredArgument((begin.x - 0.5) * 2.0),
         RequiredArgument((begin.y - 0.5) * 2.0),
@@ -48,7 +50,8 @@ extension PaintCodeBuilderExtensions on Paint {
         ((end.x - 0.5) * 2.0) - ((begin.x - 0.5) * 2.0),
       );
       final stops = ListValueBuilder(
-        gradientStops.map((x) => ConstantBuilder(x.position)).toList(),
+        gradientStops?.map((x) => ConstantBuilder(x.position)).toList() ??
+            const <ConstantBuilder>[],
       );
       return InstanceBuilder('FigmaGradientRadialPaint', [
         NamedArgument(
@@ -63,6 +66,6 @@ extension PaintCodeBuilderExtensions on Paint {
         ),
       ]);
     }
-    return null;
+    return ConstantBuilder(null);
   }
 }

@@ -12,12 +12,15 @@
             "name": "Flutter Figma",
             "path": "flutter_figma"
         },
+        {
+            "name": "Flutter Figma Generator",
+            "path": "flutter_figma_generator"
+        }
     ],
     "settings": {
         "git.ignoreLimitWarning": true,
         "editor.formatOnPaste": true,
         "editor.formatOnSave": true,
-        "editor.formatOnType": true,
-        "dart.flutterSdkPath": "/Users/alois/Sources/flutter"
+        "editor.formatOnType": true
     }
 }

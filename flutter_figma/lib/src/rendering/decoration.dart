@@ -120,7 +120,7 @@ class _FigmaPaintDecoration extends BoxPainter {
   }
 
   // TODO caching of paints
-  Paint _paint(PaintingStyle style, FigmaPaint paint, Rect frame) {
+  Paint _buildPaint(PaintingStyle style, FigmaPaint paint, Rect frame) {
     final result = Paint()
       ..style = style
       ..strokeWidth = _decoration.strokeWeight;
@@ -146,12 +146,12 @@ class _FigmaPaintDecoration extends BoxPainter {
     _paintDropShadows(canvas, path);
 
     for (var fill in _decoration.fills) {
-      final paint = _paint(PaintingStyle.fill, fill, rect);
+      final paint = _buildPaint(PaintingStyle.fill, fill, rect);
       canvas.drawPath(path, paint);
     }
 
     for (var stroke in _decoration.strokes) {
-      final paint = _paint(PaintingStyle.stroke, stroke, rect);
+      final paint = _buildPaint(PaintingStyle.stroke, stroke, rect);
       paint.strokeWidth = _strokeWidth;
       canvas.drawPath(path, paint);
     }

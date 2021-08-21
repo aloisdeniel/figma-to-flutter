@@ -3,7 +3,6 @@ import 'dart:math';
 import 'package:figma/figma.dart' as figma;
 import 'package:flutter/material.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter_figma/src/rendering/decoration.dart';
 import 'package:flutter_figma/src/rendering/effect.dart';
 import 'package:flutter_figma/src/rendering/paint.dart';
 import 'package:path_drawing/path_drawing.dart';
@@ -210,6 +209,16 @@ extension NodeExtension on figma.Node {
     }
     return Size.zero;
   }
+
+  figma.Node removeGroups() {
+    final $this = this;
+    if ($this is figma.Frame) {
+      return $this.copyWith(
+        children: $this.children.removeGroups().toList(),
+      );
+    }
+    return $this;
+  }
 }
 
 extension FileResponseExtension on figma.FileResponse {
@@ -230,8 +239,67 @@ extension FileResponseExtension on figma.FileResponse {
 }
 
 extension NumExtension on num {
-  bool isAlmostSame(num other) {
-    return (this > other - 0.001) && (this < other + 0.001);
+  bool isAlmostSame(num other, [double threshold = 0.001]) {
+    return (this > other - threshold) && (this < other + threshold);
+  }
+}
+
+extension ListNodeExtension on List<figma.Node?>? {
+  Iterable<figma.Node> removeGroups() sync* {
+    final $this = this;
+    if ($this != null) {
+      for (var child in $this) {
+        if (child is figma.Group) {
+          final groupTransform = child.relativeTransform;
+          final subchildren = child.children.removeGroups();
+          for (var subchild in subchildren) {
+            if (subchild is figma.Frame) {
+              yield subchild
+                  .copyWith(
+                    constraints: subchild.constraints ?? child.constraints,
+                    relativeTransform: subchild.relativeTransform.applyOther(
+                      groupTransform,
+                      subchild.size.toOffset(),
+                    ),
+                  )
+                  .removeGroups();
+            } else if (subchild is figma.Rectangle) {
+              yield subchild
+                  .copyWith(
+                    constraints: subchild.constraints ?? child.constraints,
+                    relativeTransform: subchild.relativeTransform.applyOther(
+                      groupTransform,
+                      subchild.size.toOffset(),
+                    ),
+                  )
+                  .removeGroups();
+            } else if (subchild is figma.Vector) {
+              yield subchild
+                  .copyWith(
+                    constraints: subchild.constraints ?? child.constraints,
+                    relativeTransform: subchild.relativeTransform.applyOther(
+                      groupTransform,
+                      subchild.size.toOffset(),
+                    ),
+                  )
+                  .removeGroups();
+            } else if (subchild is figma.Text) {
+              yield subchild
+                  .copyWith(
+                    constraints: subchild.constraints ?? child.constraints,
+                    relativeTransform: subchild.relativeTransform.applyOther(
+                      groupTransform,
+                      subchild.size.toOffset(),
+                    ),
+                  )
+                  .removeGroups();
+            }
+          }
+        } else if (child != null) {
+          yield child.removeGroups();
+        }
+      }
+    }
   }
 }
 
@@ -263,15 +331,43 @@ extension ListListNumExtension on List<List<num>>? {
   double get rotation => this == null ? 0.0 : atan2(-this![0][1], this![0][0]);
 
   bool get isRotated {
-    if (this == null) return false;
-    final r00 = this![0][0];
-    final r01 = this![0][1];
-    final r10 = this![1][0];
-    final r11 = this![1][1];
+    final $this = this;
+    if ($this == null) return false;
+    final r00 = $this[0][0];
+    final r01 = $this[0][1];
+    final r10 = $this[1][0];
+    final r11 = $this[1][1];
     return !(r00.isAlmostSame(1.0) &&
         r01.isAlmostSame(0.0) &&
         r10.isAlmostSame(0.0) &&
         r11.isAlmostSame(1.0));
+  }
+
+  List<List<num>>? applyOther(List<List<num>>? other, Offset pivot) {
+    final $this = this;
+
+    if (other == null) return this;
+    if ($this == null) {
+      return other;
+    }
+    final nr00 = other[0][0];
+    final nr01 = other[0][1];
+    final nr02 = other[0][2];
+    final nr10 = other[1][0];
+    final nr11 = other[1][1];
+    final nr12 = other[1][2];
+
+    final r00 = $this[0][0];
+    final r01 = $this[0][1];
+    final r02 = $this[0][2];
+    final r10 = $this[1][0];
+    final r11 = $this[1][1];
+    final r12 = $this[1][2];
+
+    return [
+      [r00 * nr00 + r01 * nr01, r00 * nr01 + r01 * nr11, r02 + nr02],
+      [r10 * nr10 + r11 * nr10, r10 * nr01 + r11 * nr11, r12 + nr12],
+    ];
   }
 }
 

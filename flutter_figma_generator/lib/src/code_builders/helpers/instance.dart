@@ -33,7 +33,7 @@ class InstanceBuilder extends ValueBuilder {
 
 abstract class ArgumentsBuilder {
   const ArgumentsBuilder();
-  String build([int level]);
+  String build([int level = 0]);
 }
 
 class RequiredArgument extends ArgumentsBuilder {
@@ -54,7 +54,7 @@ class NamedArgument extends ArgumentsBuilder {
       : value = value is ValueBuilder ? value : ConstantBuilder(value);
 
   @override
-  String build([int level]) {
+  String build([int level = 0]) {
     return '$name: ${value.build()}';
   }
 }
@@ -87,7 +87,7 @@ class ListValueBuilder extends ValueBuilder {
 }
 
 class ConstantBuilder extends ValueBuilder {
-  final Object value;
+  final Object? value;
   const ConstantBuilder(this.value);
 
   @override
@@ -102,7 +102,7 @@ class ConstantBuilder extends ValueBuilder {
       return "'$value'";
     }
 
-    return value?.toString();
+    return value.toString();
   }
 }
 
@@ -112,6 +112,6 @@ class RawValueBuilder extends ValueBuilder {
 
   @override
   String build([int level = 0]) {
-    return value?.toString();
+    return value.toString();
   }
 }

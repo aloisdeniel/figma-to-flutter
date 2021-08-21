@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:figma/figma.dart' as figma;
-import 'package:flutter_figma/figma.dart';
+import 'package:flutter_figma/flutter_figma.dart';
 
 class ComponentPreviewPage extends StatefulWidget {
   final String apiKey;
   final String fileKey;
   final String nodeId;
   const ComponentPreviewPage({
-    Key key,
-    @required this.apiKey,
-    @required this.fileKey,
-    @required this.nodeId,
+    Key? key,
+    required this.apiKey,
+    required this.fileKey,
+    required this.nodeId,
   }) : super(key: key);
 
   @override
@@ -18,8 +17,8 @@ class ComponentPreviewPage extends StatefulWidget {
 }
 
 class _ComponentPreviewPageState extends State<ComponentPreviewPage> {
-  Size size;
-  Axis axis;
+  Size? size;
+  Axis? axis;
   @override
   Widget build(BuildContext context) {
     final preview = FigmaDesignNode.node(
@@ -29,21 +28,21 @@ class _ComponentPreviewPageState extends State<ComponentPreviewPage> {
       ),
     );
     final body = axis == null
-        ? InteractiveViewer(
-            maxScale: 10,
-            child: size != null
-                ? FittedBox(
-                    fit: BoxFit.contain,
-                    child: SizedBox(
-                      height: size.height,
-                      width: size.width,
-                      child: preview,
-                    ),
-                  )
-                : preview,
-          )
+        ? size != null
+            ? InteractiveViewer(
+                maxScale: 10,
+                child: FittedBox(
+                  fit: BoxFit.contain,
+                  child: SizedBox(
+                    height: size!.height,
+                    width: size!.width,
+                    child: preview,
+                  ),
+                ),
+              )
+            : preview
         : ListView(
-            scrollDirection: axis,
+            scrollDirection: axis!,
             children: [preview],
           );
     return FlutterFigma(
@@ -73,16 +72,16 @@ class _ComponentPreviewPageState extends State<ComponentPreviewPage> {
 }
 
 class _SettingsPanel extends StatelessWidget {
-  final ValueChanged<Size> onSizeChanged;
-  final ValueChanged<Axis> onAxisChanged;
-  final Size size;
-  final Axis axis;
+  final ValueChanged<Size?> onSizeChanged;
+  final ValueChanged<Axis?> onAxisChanged;
+  final Size? size;
+  final Axis? axis;
   const _SettingsPanel({
-    Key key,
-    @required this.size,
-    @required this.axis,
-    @required this.onSizeChanged,
-    @required this.onAxisChanged,
+    Key? key,
+    required this.size,
+    required this.axis,
+    required this.onSizeChanged,
+    required this.onAxisChanged,
   }) : super(key: key);
 
   @override
@@ -94,6 +93,10 @@ class _SettingsPanel extends StatelessWidget {
       ),
       body: ListView(
         children: [
+          ElevatedButton(
+            child: Text('Refresh'),
+            onPressed: () => FigmaDesignFile.refresh(context),
+          ),
           ListTile(
             title: Text(
               'Scroll',
@@ -197,11 +200,11 @@ class _SettingsPanel extends StatelessWidget {
 
 class _SizeTile extends StatelessWidget {
   final Size size;
-  final ValueChanged<Size> onSizeChanged;
+  final ValueChanged<Size?> onSizeChanged;
   const _SizeTile({
-    Key key,
-    @required this.size,
-    @required this.onSizeChanged,
+    Key? key,
+    required this.size,
+    required this.onSizeChanged,
   }) : super(key: key);
 
   @override

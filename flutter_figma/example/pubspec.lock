@@ -43,8 +43,15 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.15.0"
+  copy_with_extension:
+    dependency: transitive
+    description:
+      name: copy_with_extension
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.2"
   cupertino_icons:
-    dependency: "direct overridden"
+    dependency: "direct main"
     description:
       name: cupertino_icons
       url: "https://pub.dartlang.org"
@@ -56,7 +63,7 @@ packages:
       name: equatable
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.2.5"
+    version: "2.0.3"
   fake_async:
     dependency: transitive
     description:
@@ -72,14 +79,12 @@ packages:
     source: hosted
     version: "1.1.2"
   figma:
-    dependency: "direct overridden"
+    dependency: transitive
     description:
-      path: "."
-      ref: HEAD
-      resolved-ref: "9c5e9282b4f1ca225ea413ca6c11b88d8cb4cff0"
-      url: "https://github.com/aloisdeniel/figma"
-    source: git
-    version: "2.0.0+1"
+      name: figma
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.0.0"
   file:
     dependency: transitive
     description:
@@ -115,7 +120,7 @@ packages:
       name: http2
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.1"
+    version: "2.0.0"
   js:
     dependency: transitive
     description:
@@ -129,7 +134,7 @@ packages:
       name: json_annotation
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.1.0"
+    version: "4.0.1"
   matcher:
     dependency: transitive
     description:

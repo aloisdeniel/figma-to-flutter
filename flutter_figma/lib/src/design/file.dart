@@ -1,7 +1,7 @@
 import 'package:figma/figma.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_figma/figma.dart';
+import 'package:flutter_figma/flutter_figma.dart';
 
 import 'storage.dart';
 

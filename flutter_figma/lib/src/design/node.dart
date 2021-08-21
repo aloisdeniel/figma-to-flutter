@@ -3,7 +3,7 @@ import 'package:figma/figma.dart' as figma;
 import 'package:flutter_figma/src/helpers/api_extensions.dart';
 import 'package:flutter_figma/widgets.dart';
 
-import 'design.dart';
+import 'file.dart';
 
 class FigmaNode extends StatelessWidget {
   final figma.Node node;
@@ -40,8 +40,8 @@ class FigmaNode extends StatelessWidget {
         );
         if (node is figma.Text) {
           return FigmaAuto(
-            isMainAxisFixed: false,
-            isCrossAxisFixed: false,
+            isMainAxisFixed: (node.layoutGrow ?? 0.0) >= 1.0,
+            isCrossAxisFixed: true,
             designSize: node.size.toSize(),
             layoutAlign: node.layoutAlign ?? _kDefaultLayoutAlign,
             child: child,
@@ -49,7 +49,7 @@ class FigmaNode extends StatelessWidget {
         }
         if (node is figma.Vector) {
           return FigmaAuto(
-            isMainAxisFixed: true,
+            isMainAxisFixed: (node.layoutGrow ?? 0.0) >= 1.0,
             isCrossAxisFixed: true,
             designSize: node.size.toSize(),
             layoutAlign: node.layoutAlign ?? _kDefaultLayoutAlign,
@@ -58,7 +58,7 @@ class FigmaNode extends StatelessWidget {
         }
         if (node is figma.Frame) {
           return FigmaAuto(
-            isCrossAxisFixed: node.layoutMode == node.layoutMode &&
+            isCrossAxisFixed: node.layoutMode == mode &&
                 node.counterAxisSizingMode == figma.CounterAxisSizingMode.fixed,
             isMainAxisFixed: node.layoutMode != mode,
             designSize: node.size.toSize(),
@@ -119,21 +119,33 @@ class FigmaNode extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final node = this.node;
+    final node = this.node.removeGroups();
     if (!(node.visible)) {
       return SizedBox();
     }
     if (node is figma.Text) {
-      return FigmaText.api(node, package: package);
+      return FigmaText.api(
+        node,
+        package: package,
+      );
     }
     if (node is figma.Rectangle) {
-      return FigmaRectangle.api(node, package: package);
+      return FigmaRectangle.api(
+        node,
+        package: package,
+      );
     }
     if (node is figma.Frame) {
-      return FigmaFrame.api(node, package: package);
+      return FigmaFrame.api(
+        node,
+        package: package,
+      );
     }
     if (node is figma.Vector) {
-      return FigmaVector.api(node, package: package);
+      return FigmaVector.api(
+        node,
+        package: package,
+      );
     }
     throw Exception('Unsupported figma node : ${node}');
   }
@@ -150,7 +162,7 @@ class _FigmaCustomNode extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final node = this.node;
+    final node = this.node.removeGroups();
     final builder = FigmaDesignNode.builderOf(context);
     final result = builder != null ? builder.call(context, node) : null;
     if (result != null) {

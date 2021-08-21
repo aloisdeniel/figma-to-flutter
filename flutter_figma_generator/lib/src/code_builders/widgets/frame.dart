@@ -1,19 +1,18 @@
-import 'package:flutter_figma/src/code_builders/helpers/instance.dart';
-import 'package:flutter_figma/src/code_builders/resources/resources.dart';
-import 'package:flutter_figma/src/code_builders/widgets/widget.dart';
-
 import 'package:figma/figma.dart' as figma;
+import 'package:flutter_figma_generator/src/code_builders/helpers/instance.dart';
+import 'package:flutter_figma_generator/src/code_builders/resources/resources.dart';
+import 'package:flutter_figma_generator/src/code_builders/widgets/widget.dart';
 
 class FrameBuilder extends FigmaWidgetCodeBuilder<figma.Frame> {
   @override
   ValueBuilder buildInstance(ResourcesBuilder resources, figma.Frame node) {
     return InstanceBuilder('FigmaFrame', [
-      if (node.id != null)
-        NamedArgument('key', RawValueBuilder('Key(${node.id})')),
-      NamedArgument('key', decoration(resources, node)),
-      if (node.opacity != null && node.opacity < 1)
-        NamedArgument('opacity', node.opacity),
-      NamedArgument('relativeTransform', node.relativeTransform),
+      NamedArgument('key', RawValueBuilder('Key(${node.id})')),
+      NamedArgument('decoration', decoration(resources, node)),
+      if (node.opacity != null && node.opacity! < 1)
+        NamedArgument('opacity', node.opacity!),
+      if (node.relativeTransform != null)
+        NamedArgument('relativeTransform', node.relativeTransform!),
     ]);
   }
 
@@ -22,11 +21,11 @@ class FrameBuilder extends FigmaWidgetCodeBuilder<figma.Frame> {
         node.strokes.isNotEmpty ||
         node.effects.isNotEmpty) {
       final fills = node.fills
-          .where((x) => x.visible ?? true)
+          .where((x) => x.visible)
           .map((x) => resources.addPaint(node.name, x))
           .toList();
       final strokes = node.strokes
-          .where((x) => x.visible ?? true)
+          .where((x) => x.visible)
           .map((x) => resources.addPaint(node.name, x))
           .toList();
 

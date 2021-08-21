@@ -1,6 +1,5 @@
 import 'dart:math' as math;
 import 'package:figma/figma.dart' as figma;
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_figma/src/widgets/layouts/auto_layout.dart';
@@ -15,14 +14,12 @@ class RenderFigmaAutoLayout extends RenderBox
     required figma.LayoutMode layoutMode,
     required Size designSize,
     required figma.CounterAxisSizingMode counterAxisSizingMode,
-    required num horizontalPadding,
-    required num verticalPadding,
     required num itemSpacing,
+    required EdgeInsets padding,
   })  : _layoutMode = layoutMode,
         _designSize = designSize,
+        _padding = padding,
         _counterAxisSizingMode = counterAxisSizingMode,
-        _horizontalPadding = horizontalPadding,
-        _verticalPadding = verticalPadding,
         _itemSpacing = itemSpacing {
     addAll(children);
   }
@@ -55,20 +52,11 @@ class RenderFigmaAutoLayout extends RenderBox
     }
   }
 
-  num _horizontalPadding;
-  num get horizontalPadding => _horizontalPadding;
-  set horizontalPadding(num value) {
-    if (_horizontalPadding != value) {
-      _horizontalPadding = value;
-      markNeedsLayout();
-    }
-  }
-
-  num _verticalPadding;
-  num get verticalPadding => _verticalPadding;
-  set verticalPadding(num value) {
-    if (_verticalPadding != value) {
-      _verticalPadding = value;
+  EdgeInsets _padding;
+  EdgeInsets get padding => _padding;
+  set padding(EdgeInsets value) {
+    if (_padding != value) {
+      _padding = value;
       markNeedsLayout();
     }
   }
@@ -112,7 +100,7 @@ class RenderFigmaAutoLayout extends RenderBox
       if (counterAxisSizingMode == figma.CounterAxisSizingMode.fixed) {
         return designSize.width;
       }
-      var size = horizontalPadding * 2;
+      var size = padding.vertical;
       var child = firstChild;
       while (child != null) {
         final mainSize = child.getMinIntrinsicWidth(height);
@@ -124,7 +112,7 @@ class RenderFigmaAutoLayout extends RenderBox
     }
 
     // We should add all children widths
-    var size = horizontalPadding * 2.0;
+    var size = padding.horizontal;
     var child = firstChild;
     while (child != null) {
       final mainSize = minChild
@@ -144,7 +132,7 @@ class RenderFigmaAutoLayout extends RenderBox
       if (counterAxisSizingMode == figma.CounterAxisSizingMode.fixed) {
         return designSize.height;
       }
-      var size = verticalPadding * 2;
+      var size = padding.vertical;
       var child = firstChild;
       while (child != null) {
         final mainSize = child.getMinIntrinsicHeight(width);
@@ -156,7 +144,7 @@ class RenderFigmaAutoLayout extends RenderBox
     }
 
     // We should add all children heights
-    var size = verticalPadding * 2;
+    var size = padding.vertical;
     var child = firstChild;
     while (child != null) {
       final mainSize = minChild
@@ -186,16 +174,17 @@ class RenderFigmaAutoLayout extends RenderBox
   double computeMaxIntrinsicHeight(double width) =>
       _computeIntrinsicHeight(width, false);
 
-  @override
-  void performLayout() {
-    assert(constraints != null);
-
+  Size _calculateLayout({
+    required Size layoutChild(RenderBox box, BoxConstraints constraints),
+  }) {
     late double constraintsMaxCross;
     late double constraintsMinCross;
     late double constraintsMaxMain;
     late double constraintsMinMain;
-    late double crossPadding;
-    late double mainPadding;
+    late double crossPaddingStart;
+    late double crossPaddingEnd;
+    late double mainPaddingStart;
+    late double mainPaddingEnd;
 
     final isHorizontal = layoutMode == figma.LayoutMode.horizontal;
     final isCrossFixed =
@@ -210,8 +199,10 @@ class RenderFigmaAutoLayout extends RenderBox
       }
       constraintsMinMain = constraints.minWidth;
       constraintsMaxMain = constraints.maxWidth;
-      crossPadding = verticalPadding.toDouble();
-      mainPadding = horizontalPadding.toDouble();
+      crossPaddingStart = padding.top;
+      crossPaddingEnd = padding.bottom;
+      mainPaddingStart = padding.left;
+      mainPaddingEnd = padding.right;
     } else {
       constraintsMinCross = constraints.minWidth;
       constraintsMaxCross = constraints.maxWidth;
@@ -221,28 +212,31 @@ class RenderFigmaAutoLayout extends RenderBox
       }
       constraintsMinMain = constraints.minHeight;
       constraintsMaxMain = constraints.maxHeight;
-      crossPadding = horizontalPadding.toDouble();
-      mainPadding = verticalPadding.toDouble();
+      mainPaddingStart = padding.top;
+      mainPaddingEnd = padding.bottom;
+      crossPaddingStart = padding.left;
+      crossPaddingEnd = padding.right;
     }
 
     var child = firstChild;
 
     // Children stretched along the cross axis
     final stretchedChildren = <RenderBox>[];
+    final Map<RenderBox, Size> childSizes = {};
 
     // 1. we calculate children sizes
 
-    var cross = 2 * crossPadding;
+    var cross = crossPaddingStart + crossPaddingEnd;
     final maxChildCross = constraintsMaxCross.isInfinite
         ? constraintsMaxCross
-        : math.max(constraintsMaxCross - 2 * crossPadding, 0.0);
+        : math.max(constraintsMaxCross - cross, 0.0);
 
     while (child != null) {
       final childParentData = child.parentData as FigmaAutoData;
       if (childParentData.layoutAlign == figma.LayoutAlign.stretch) {
         stretchedChildren.add(child);
       } else {
-        final isCrossAxisFixed = childParentData.isCrossAxisFixed ?? true;
+        final isCrossAxisFixed = true;
         final isMainAxisFixed = childParentData.isMainAxisFixed ?? true;
         final designSize = childParentData.designSize ?? Size.zero;
         final childConstraints = isHorizontal
@@ -260,15 +254,17 @@ class RenderFigmaAutoLayout extends RenderBox
                 maxWidth: isCrossAxisFixed ? designSize.width : maxChildCross,
               );
 
-        child.layout(
+        final childSize = layoutChild(
+          child,
           childConstraints,
-          parentUsesSize: true,
         );
 
+        childSizes[child] = childSize;
+
         if (!isCrossFixed) {
-          final childCross =
-              isHorizontal ? child.size.height : child.size.width;
-          cross = math.max(cross, childCross + crossPadding * 2);
+          final childCross = isHorizontal ? childSize.height : childSize.width;
+          cross =
+              math.max(cross, childCross + crossPaddingStart + crossPaddingEnd);
         }
       }
 
@@ -283,7 +279,6 @@ class RenderFigmaAutoLayout extends RenderBox
     // 2. Layout of stretched items
     for (var child in stretchedChildren) {
       final childParentData = child.parentData as FigmaAutoData;
-      final isCrossAxisFixed = childParentData.isCrossAxisFixed ?? true;
       final isMainAxisFixed = childParentData.isMainAxisFixed ?? true;
       final designSize = childParentData.designSize ?? Size.zero;
       final innerConstraints = isHorizontal
@@ -299,19 +294,21 @@ class RenderFigmaAutoLayout extends RenderBox
               minWidth: maxChildCross,
               maxWidth: maxChildCross,
             );
-      child.layout(
+
+      childSizes[child] = layoutChild(
+        child,
         innerConstraints,
-        parentUsesSize: true,
       );
     }
 
     // 2. we update children position along the main axis
     child = firstChild;
-    var main = mainPadding;
+    var main = mainPaddingStart;
     while (child != null) {
+      final childSize = childSizes[child]!;
       final childParentData = child.parentData as FigmaAutoData;
-      final childCross = isHorizontal ? child.size.height : child.size.width;
-      final childMain = isHorizontal ? child.size.width : child.size.height;
+      final childCross = isHorizontal ? childSize.height : childSize.width;
+      final childMain = isHorizontal ? childSize.width : childSize.height;
 
       double crossOffset;
       switch (childParentData.layoutAlign) {
@@ -319,10 +316,10 @@ class RenderFigmaAutoLayout extends RenderBox
           crossOffset = (cross / 2) - (childCross / 2);
           break;
         case figma.LayoutAlign.max:
-          crossOffset = cross - crossPadding - childCross;
+          crossOffset = cross - crossPaddingEnd - childCross;
           break;
         default:
-          crossOffset = crossPadding;
+          crossOffset = crossPaddingStart;
       }
 
       childParentData.offset = isHorizontal
@@ -340,10 +337,10 @@ class RenderFigmaAutoLayout extends RenderBox
       if (child != null) main += itemSpacing;
     }
 
-    main += mainPadding;
+    main += mainPaddingEnd;
 
     if (!isHorizontal) {
-      size = Size(
+      return Size(
         cross,
         main.clamp(
           constraints.smallest.height,
@@ -351,7 +348,7 @@ class RenderFigmaAutoLayout extends RenderBox
         ),
       );
     } else {
-      size = Size(
+      return Size(
         main.clamp(
           constraints.smallest.width,
           constraints.biggest.width,
@@ -359,6 +356,26 @@ class RenderFigmaAutoLayout extends RenderBox
         cross,
       );
     }
+  }
+
+  @override
+  void performLayout() {
+    size = _calculateLayout(
+      layoutChild: (box, constraints) {
+        box.layout(
+          constraints,
+          parentUsesSize: true,
+        );
+        return box.size;
+      },
+    );
+  }
+
+  @override
+  Size computeDryLayout(BoxConstraints constraints) {
+    return _calculateLayout(
+      layoutChild: (box, constraints) => box.getDryLayout(constraints),
+    );
   }
 
   @override

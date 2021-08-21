@@ -15,12 +15,11 @@ class FigmaFrame extends StatelessWidget {
   final bool clipsContent;
   final double? opacity;
   final Size? designSize;
+  final EdgeInsets padding;
   final Decoration? decoration;
   final List<List<num>>? relativeTransform;
   final List<num> rectangleCornerRadii;
   final List<Widget> children;
-  final double? horizontalPadding;
-  final double? verticalPadding;
   final double? itemSpacing;
 
   const FigmaFrame({
@@ -30,12 +29,11 @@ class FigmaFrame extends StatelessWidget {
     this.opacity,
     this.decoration,
     this.relativeTransform,
+    this.padding = EdgeInsets.zero,
     this.rectangleCornerRadii = const <num>[0, 0, 0, 0],
     this.counterAxisSizingMode,
     this.designSize,
     this.children = const <Widget>[],
-    this.horizontalPadding = 0,
-    this.verticalPadding = 0,
     this.itemSpacing = 0,
   }) : super(key: key);
 
@@ -75,12 +73,16 @@ class FigmaFrame extends StatelessWidget {
             0.0,
             0.0,
           ],
-      layoutMode: node.layoutMode ?? figma.LayoutMode.vertical,
+      layoutMode: node.layoutMode ?? figma.LayoutMode.none,
       clipsContent: node.clipsContent ?? false,
       designSize: node.designSize(),
       counterAxisSizingMode: node.counterAxisSizingMode,
-      horizontalPadding: node.horizontalPadding?.toDouble(),
-      verticalPadding: node.verticalPadding?.toDouble(),
+      padding: EdgeInsets.only(
+        top: node.paddingTop ?? 0.0,
+        bottom: node.paddingBottom ?? 0.0,
+        left: node.paddingLeft ?? 0.0,
+        right: node.paddingRight ?? 0.0,
+      ),
       itemSpacing: node.itemSpacing?.toDouble(),
       children: FigmaNode.children(
         node.layoutMode ?? figma.LayoutMode.none,
@@ -91,6 +93,13 @@ class FigmaFrame extends StatelessWidget {
   }
 
   Widget _layout(BuildContext context) {
+    if (children.isEmpty) {
+      return SizedBox(
+        width: double.infinity,
+        height: double.infinity,
+      );
+    }
+
     if (layoutMode == figma.LayoutMode.vertical ||
         layoutMode == figma.LayoutMode.horizontal) {
       return FigmaAutoLayout(
@@ -98,9 +107,8 @@ class FigmaFrame extends StatelessWidget {
         children: children,
         counterAxisSizingMode:
             counterAxisSizingMode ?? figma.CounterAxisSizingMode.auto,
-        horizontalPadding: horizontalPadding ?? 0.0,
-        verticalPadding: verticalPadding ?? 0.0,
         itemSpacing: itemSpacing ?? 0.0,
+        padding: padding,
         layoutMode: layoutMode,
       );
     }
@@ -122,6 +130,7 @@ class FigmaFrame extends StatelessWidget {
     if (decoration != null) {
       child = DecoratedBox(
         decoration: decoration,
+        child: child,
       );
     }
     if (opacity != null && opacity < 1) {

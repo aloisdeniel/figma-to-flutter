@@ -1,5 +1,4 @@
-import 'package:flutter_figma/src/code_builders/helpers/instance.dart';
-import 'package:recase/recase.dart';
+import 'package:flutter_figma_generator/src/code_builders/helpers/instance.dart';
 import 'color.dart';
 import 'paint.dart';
 import 'text_style.dart';
@@ -30,7 +29,7 @@ class ResourcesBuilder {
     figma.Text node,
   ) {
     final color = node.fills
-        .firstWhere(
+        ?.firstWhere(
           (x) => x.color != null,
           orElse: () => null,
         )

@@ -63,9 +63,10 @@ class RenderFigmaRotated extends RenderBox
   Matrix4? _paintTransform;
 
   Matrix4 _calculateTransform(Size childSize) => Matrix4.identity()
-    ..translate(childSize.width / 2.0, childSize.height / 2.0)
-    ..rotateZ(_transform.rotation)
-    ..translate(-childSize.width / 2.0, -childSize.height / 2.0);
+        //..translate(childSize.width, childSize.height)
+        ..rotateZ(_transform.rotation)
+      //..translate(-childSize.width / 2.0, -childSize.height / 2.0);
+      ;
 
   @override
   void performLayout() {

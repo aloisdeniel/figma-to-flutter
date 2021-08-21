@@ -65,7 +65,7 @@ class RenderFigmaConstrainedLayout extends RenderBox
     while (child != null) {
       final childParentData = child.parentData as FigmaConstrainedData;
       final position = childParentData.designPosition ?? Offset.zero;
-      final designSize = childParentData.designSize ?? Size.zero;
+      final childDesignSize = childParentData.designSize ?? Size.zero;
       final layoutConstraints = childParentData.constraints ??
           figma.LayoutConstraint(
             horizontal: figma.HorizontalConstraint.left,
@@ -76,57 +76,71 @@ class RenderFigmaConstrainedLayout extends RenderBox
       final isStretchVertical =
           layoutConstraints.vertical == figma.VerticalConstraint.topBottom;
 
-      double minWidth, maxWidth, minHeight, maxHeight;
+      final newWidth = () {
+        if (isStretchHorizontal)
+          return size.width -
+              (position.dx) -
+              (designSize.width - (position.dx + childDesignSize.width));
+        switch (layoutConstraints.horizontal) {
+          case figma.HorizontalConstraint.scale:
+            return size.width * (childDesignSize.width / designSize.width);
+          default:
+            return childDesignSize.width;
+        }
+      }();
 
-      if (isStretchHorizontal) {
-        final width = size.width -
-            (position.dx) -
-            (designSize.width - (position.dx + designSize.width));
-        minWidth = width;
-        maxWidth = width;
-      } else {
-        minWidth = designSize.width;
-        maxWidth = designSize.width;
-      }
-
-      if (isStretchVertical) {
-        final height = size.height -
-            (position.dy) -
-            (designSize.height - (position.dy + designSize.height));
-        minHeight = height;
-        maxHeight = height;
-      } else {
-        minHeight = designSize.height;
-        maxHeight = designSize.height;
-      }
+      final newHeight = () {
+        if (isStretchVertical)
+          return size.height -
+              position.dy -
+              (designSize.height - (position.dy + childDesignSize.height));
+        switch (layoutConstraints.vertical) {
+          case figma.VerticalConstraint.scale:
+            return size.height * (childDesignSize.height / designSize.height);
+          default:
+            return childDesignSize.height;
+        }
+      }();
 
       final innerConstraints = BoxConstraints(
-        minWidth: minWidth,
-        maxWidth: maxWidth,
-        minHeight: minHeight,
-        maxHeight: maxHeight,
+        minWidth: math.max(0, newWidth),
+        maxWidth: math.max(0, newWidth),
+        minHeight: math.max(0, newHeight),
+        maxHeight: math.max(0, newHeight),
       );
       child.layout(innerConstraints);
 
       double x, y;
       switch (layoutConstraints.horizontal) {
         case figma.HorizontalConstraint.right:
-          x = size.width - (designSize.width - position.dx);
+          final designRightMargin =
+              designSize.width - position.dx - childDesignSize.width;
+          x = size.width - innerConstraints.minWidth - designRightMargin;
           break;
         case figma.HorizontalConstraint.center:
-          x = size.width / 2 - (designSize.width / 2 - position.dx);
+          final designDistanceFromCenter = (designSize.width / 2 - position.dx);
+          x = size.width / 2 - designDistanceFromCenter;
           break;
-
+        case figma.HorizontalConstraint.scale:
+          x = size.width * (position.dx / designSize.width);
+          break;
         default:
           x = position.dx;
       }
 
       switch (layoutConstraints.vertical) {
         case figma.VerticalConstraint.bottom:
-          y = size.height - (designSize.height - position.dy);
+          final designBottomtMargin =
+              designSize.height - position.dy - childDesignSize.height;
+          y = size.height - innerConstraints.minHeight - designBottomtMargin;
           break;
         case figma.VerticalConstraint.center:
-          y = size.height / 2 - (designSize.height / 2 - position.dy);
+          final designDistanceFromCenter =
+              (designSize.height / 2 - position.dy);
+          y = size.height / 2 - designDistanceFromCenter;
+          break;
+        case figma.VerticalConstraint.scale:
+          y = size.height * (position.dy / designSize.height);
           break;
         default:
           y = position.dy;

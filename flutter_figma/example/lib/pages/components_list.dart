@@ -1,15 +1,15 @@
 import 'package:example/pages/component_preview.dart';
 import 'package:flutter/material.dart';
 import 'package:figma/figma.dart' as figma;
-import 'package:flutter_figma/figma.dart';
+import 'package:flutter_figma/flutter_figma.dart';
 
 class FileComponentsPage extends StatefulWidget {
   final String apiKey;
   final String fileKey;
   const FileComponentsPage({
-    Key key,
-    @required this.apiKey,
-    @required this.fileKey,
+    Key? key,
+    required this.apiKey,
+    required this.fileKey,
   }) : super(key: key);
 
   @override
@@ -17,8 +17,8 @@ class FileComponentsPage extends StatefulWidget {
 }
 
 class _FileComponentsPageState extends State<FileComponentsPage> {
-  Future<figma.FileResponse> fileFuture;
-  figma.FigmaClient client;
+  late Future<figma.FileResponse> fileFuture;
+  late figma.FigmaClient client;
 
   @override
   void initState() {
@@ -49,7 +49,7 @@ class _FileComponentsPageState extends State<FileComponentsPage> {
             return _ComponentsList(
               fileKey: widget.fileKey,
               apiKey: widget.apiKey,
-              file: snapshot.data,
+              file: snapshot.data!,
             );
           }
           if (snapshot.error != null) {
@@ -69,8 +69,8 @@ class _FileComponentsPageState extends State<FileComponentsPage> {
 class _Error extends StatelessWidget {
   final String message;
   const _Error({
-    Key key,
-    @required this.message,
+    Key? key,
+    required this.message,
   }) : super(key: key);
 
   @override
@@ -79,7 +79,7 @@ class _Error extends StatelessWidget {
     return Center(
       child: Text(
         message,
-        style: theme.textTheme.headline6.copyWith(
+        style: theme.textTheme.headline6?.copyWith(
           color: theme.errorColor,
         ),
       ),
@@ -93,17 +93,17 @@ class _ComponentsList extends StatelessWidget {
   final List<MapEntry<String, figma.Component>> components;
   final figma.FileResponse file;
   _ComponentsList({
-    Key key,
-    @required this.apiKey,
-    @required this.fileKey,
-    @required this.file,
-  })  : components = file.components.entries.toList(),
+    Key? key,
+    required this.apiKey,
+    required this.fileKey,
+    required this.file,
+  })  : components = file.components?.entries.toList() ?? [],
         super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final components = this.components;
-    components.sort((x, y) => x.value.name.compareTo(y.value.name));
+    components.sort((x, y) => x.value.name!.compareTo(y.value.name!));
     return ListView(
       children: [
         ...components
@@ -113,20 +113,21 @@ class _ComponentsList extends StatelessWidget {
                   apiKey: apiKey,
                   fileKey: fileKey,
                   nodeId: x.key,
-                  name: x.value.name,
+                  name: x.value.name!,
                   type: 'Component',
                   key: Key(x.key),
                 ),
-                ...file.document.findInstances(x.key).map(
-                      (y) => _ComponentTile(
-                        apiKey: apiKey,
-                        fileKey: fileKey,
-                        nodeId: y.id,
-                        name: y.name,
-                        type: '${x.value.name} (Instance)',
-                        key: Key(y.id),
+                if (file.document != null)
+                  ...file.document!.findInstances(x.key).map(
+                        (y) => _ComponentTile(
+                          apiKey: apiKey,
+                          fileKey: fileKey,
+                          nodeId: y.id,
+                          name: y.name!,
+                          type: '${x.value.name} (Instance)',
+                          key: Key(y.id),
+                        ),
                       ),
-                    ),
                 Divider(
                   thickness: 2,
                 ),
@@ -145,12 +146,12 @@ class _ComponentTile extends StatelessWidget {
   final String name;
   final String type;
   const _ComponentTile({
-    Key key,
-    @required this.apiKey,
-    @required this.fileKey,
-    @required this.name,
-    @required this.type,
-    @required this.nodeId,
+    Key? key,
+    required this.apiKey,
+    required this.fileKey,
+    required this.name,
+    required this.type,
+    required this.nodeId,
   }) : super(key: key);
 
   @override

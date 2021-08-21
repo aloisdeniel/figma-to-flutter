@@ -10,9 +10,8 @@ class FigmaAutoLayout extends MultiChildRenderObjectWidget {
     required this.designSize,
     this.layoutMode = figma.LayoutMode.vertical,
     this.counterAxisSizingMode = figma.CounterAxisSizingMode.auto,
-    this.horizontalPadding = 0,
-    this.verticalPadding = 0,
     this.itemSpacing = 0,
+    this.padding = EdgeInsets.zero,
     List<Widget> children = const <Widget>[],
   })  : assert(layoutMode != figma.LayoutMode.none),
         super(
@@ -22,9 +21,8 @@ class FigmaAutoLayout extends MultiChildRenderObjectWidget {
 
   final figma.LayoutMode layoutMode;
   final figma.CounterAxisSizingMode counterAxisSizingMode;
-  final num horizontalPadding;
-  final num verticalPadding;
   final num itemSpacing;
+  final EdgeInsets padding;
 
   @override
   RenderObject createRenderObject(BuildContext context) {
@@ -32,9 +30,8 @@ class FigmaAutoLayout extends MultiChildRenderObjectWidget {
       designSize: designSize,
       layoutMode: layoutMode,
       counterAxisSizingMode: counterAxisSizingMode,
-      horizontalPadding: horizontalPadding,
-      verticalPadding: verticalPadding,
       itemSpacing: itemSpacing,
+      padding: padding,
     );
   }
 
@@ -45,8 +42,7 @@ class FigmaAutoLayout extends MultiChildRenderObjectWidget {
       ..designSize = designSize
       ..layoutMode = layoutMode
       ..counterAxisSizingMode = counterAxisSizingMode
-      ..horizontalPadding = horizontalPadding
-      ..verticalPadding = verticalPadding
+      ..padding = padding
       ..itemSpacing = itemSpacing;
   }
 }

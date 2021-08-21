@@ -1,6 +1,5 @@
 import 'package:figma/figma.dart';
-
-import 'package:flutter_figma/src/code_builders/helpers/instance.dart';
+import 'package:flutter_figma_generator/src/code_builders/helpers/instance.dart';
 
 extension ColorCodeBuilderExtensions on Color {
   InstanceBuilder toCodeBuilder(

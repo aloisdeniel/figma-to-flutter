@@ -4,7 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class EnterKeysPage extends StatefulWidget {
   const EnterKeysPage({
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   @override
@@ -12,15 +12,15 @@ class EnterKeysPage extends StatefulWidget {
 }
 
 class _EnterKeysPageState extends State<EnterKeysPage> {
-  TextEditingController _apiKeycontroller;
-  TextEditingController _fileKeycontroller;
+  late TextEditingController _apiKeycontroller;
+  late TextEditingController _fileKeycontroller;
   bool isLoading = true;
 
   @override
   void initState() {
     _apiKeycontroller = TextEditingController();
     _fileKeycontroller = TextEditingController();
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+    WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
       _loadFromPreferences();
     });
     super.initState();

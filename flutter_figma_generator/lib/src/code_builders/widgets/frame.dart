@@ -1,11 +1,12 @@
 import 'package:figma/figma.dart' as figma;
+import 'package:flutter_figma_generator/src/code_builders/context.dart';
 import 'package:flutter_figma_generator/src/code_builders/helpers/instance.dart';
-import 'package:flutter_figma_generator/src/code_builders/resources/resources.dart';
-import 'package:flutter_figma_generator/src/code_builders/widgets/widget.dart';
 
-class FrameBuilder extends FigmaWidgetCodeBuilder<figma.Frame> {
+import 'widget.dart';
+
+class FrameBuilder extends FigmaWidgetBuilder<figma.Frame> {
   @override
-  ValueBuilder buildInstance(ResourcesBuilder resources, figma.Frame node) {
+  ValueBuilder buildInstance(GeneratorContext context, figma.Frame node) {
     return InstanceBuilder('FigmaFrame', [
       NamedArgument('key', RawValueBuilder('Key(${node.id})')),
       NamedArgument('decoration', decoration(resources, node)),
@@ -16,7 +17,7 @@ class FrameBuilder extends FigmaWidgetCodeBuilder<figma.Frame> {
     ]);
   }
 
-  static ValueBuilder decoration(ResourcesBuilder resources, figma.Frame node) {
+  static ValueBuilder decoration(GeneratorContext resources, figma.Frame node) {
     if (node.fills.isNotEmpty ||
         node.strokes.isNotEmpty ||
         node.effects.isNotEmpty) {

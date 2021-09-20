@@ -1,11 +1,12 @@
 import 'package:figma/figma.dart' as figma;
+import 'package:flutter_figma_generator/src/code_builders/context.dart';
 import 'package:flutter_figma_generator/src/code_builders/helpers/instance.dart';
 import 'package:flutter_figma_generator/src/code_builders/resources/resources.dart';
 import 'package:flutter_figma_generator/src/code_builders/widgets/widget.dart';
 
-class TextCodeBuilder extends FigmaWidgetCodeBuilder<figma.Text> {
+class TextCodeBuilder extends FigmaWidgetBuilder<figma.Text> {
   @override
-  ValueBuilder buildInstance(ResourcesBuilder resources, figma.Text node) {
+  ValueBuilder buildInstance(GeneratorContext context, figma.Text node) {
     final textAlign = () {
       switch (node.style?.textAlignHorizontal) {
         case figma.TextAlignHorizontal.right:
@@ -19,12 +20,16 @@ class TextCodeBuilder extends FigmaWidgetCodeBuilder<figma.Text> {
       }
     }();
 
-    final defaultStyle = resources.addTextStyle(node.name ?? 'style', node);
+    final defaultStyle = context.resources.addTextStyle(
+      node.style!,
+      color: node.fills!.first.color!,
+      name: node.name,
+    );
 
     return InstanceBuilder(
       'FigmaText',
       [
-        NamedArgument('key', 'Key(${node.id})'),
+        NamedArgument('key', 'Key(\'${node.id}\')'),
         NamedArgument('defaultStyle', defaultStyle),
         NamedArgument('textAlign', textAlign),
         if (node.characterStyleOverrides?.isNotEmpty ?? false)

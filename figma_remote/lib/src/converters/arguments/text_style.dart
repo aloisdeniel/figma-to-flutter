@@ -1,7 +1,8 @@
 import 'package:figma/figma.dart' as figma;
 import 'package:figma_remote/src/converters/arguments/color.dart';
+import 'package:rfw/rfw.dart';
 
-Object? convertTextStyle(figma.TypeStyle style, figma.Paint? fill) {
+DynamicMap convertTextStyle(figma.TypeStyle style, figma.Paint? fill) {
   final decoration = style.textDecoration == figma.TextDecoration.underline
       ? 'underline'
       : 'none';

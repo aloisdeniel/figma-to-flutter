@@ -207,6 +207,23 @@ extension NodeExtension on figma.Node {
     return Size.zero;
   }
 
+  Offset designPosition() {
+    final $this = this;
+    if ($this is figma.Vector) {
+      return $this.relativeTransform.position;
+    }
+    if ($this is figma.Rectangle) {
+      return $this.relativeTransform.position;
+    }
+    if ($this is figma.Frame) {
+      return $this.relativeTransform.position;
+    }
+    if ($this is figma.Text) {
+      return $this.relativeTransform.position;
+    }
+    return Offset.zero;
+  }
+
   figma.Node removeGroups() {
     final $this = this;
     if ($this is figma.Frame) {

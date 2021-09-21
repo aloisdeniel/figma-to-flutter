@@ -1,5 +1,8 @@
 import 'package:figma/figma.dart';
 
+import 'data.dart';
+import 'theme.dart';
+
 class NodeStyle {
   final StyleTypeKey type;
   final Node node;
@@ -9,11 +12,17 @@ class NodeStyle {
   );
 }
 
-class FigmaContext {
-  final FileResponse response;
-  FigmaContext({
+class FigmaComponentContext {
+  FigmaComponentContext({
     required this.response,
-  });
+  }) {
+    theme = FigmaComponentTheme(this);
+    data = FigmaComponentData(this);
+  }
+
+  final FileResponse response;
+  late final FigmaComponentTheme theme;
+  late final FigmaComponentData data;
 
   List<NodeStyle> findNodeWithStyle(String id) {
     if (response.document == null) return const <NodeStyle>[];

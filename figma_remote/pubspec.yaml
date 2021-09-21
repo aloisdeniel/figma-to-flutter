@@ -13,10 +13,11 @@ dependencies:
   rfw: ^1.0.0
   recase: ^4.0.0
   path: ^1.8.0
-  path_provider: ^2.0.2
+  path_drawing: ^0.5.1
   collection: ^1.15.0
   gap:
-  figma: ^3.0.0
+  figma: #^3.0.0
+    git: https://github.com/aloisdeniel/figma-1.git
 
 dev_dependencies:
   flutter_test:

@@ -15,9 +15,25 @@ class MyApp extends StatelessWidget {
       fileId: 'FMUAbSfit7nA1Qf4OFIccK',
       child: MaterialApp(
         title: 'Figma Remote',
-        home: Center(
-          child: RemoteFigmaComponent(
-            componentName: 'Label',
+        home: RemoteFigmaComponent(
+          componentName: 'Label',
+          variants: {
+            'Mode': 'Red',
+            'Test': 'Default',
+          },
+          data: RemoteFigmaData(
+            text: {
+              'ok': '~OWOWO~',
+            },
+          ),
+          theme: RemoteFigmaTheme(
+            textStyles: {
+              'ok': TextStyle(
+                fontSize: 6,
+                color: Colors.red,
+                fontWeight: FontWeight.bold,
+              ),
+            },
           ),
         ),
       ),

@@ -11,12 +11,14 @@ class RemoteFigmaComponent extends StatefulWidget {
     this.data = const RemoteFigmaData(),
     this.theme = const RemoteFigmaTheme(),
     this.variants = const <String, String>{},
+    this.renderer,
   }) : super(key: key);
 
   final String componentName;
   final Map<String, String> variants;
   final RemoteFigmaData data;
   final RemoteFigmaTheme theme;
+  final ComponentRenderer? renderer;
 
   @override
   _RemoteFigmaComponentState createState() => _RemoteFigmaComponentState();
@@ -36,7 +38,7 @@ class _RemoteFigmaComponentState extends State<RemoteFigmaComponent> {
     );
     _runtime.update(
       const LibraryName(<String>['addons', 'widgets']),
-      createCoreAddonsWidgets(),
+      createCoreAddonsWidgets(widget.renderer),
     );
   }
 
@@ -62,8 +64,10 @@ class _RemoteFigmaComponentState extends State<RemoteFigmaComponent> {
     var data = <String, Object?>{};
 
     if (_library != null) {
-      data.addAll(
-          _library!.componentDefaultData[widget.componentName]!.toMap());
+      final values = _library!.componentDefaultData[widget.componentName]!;
+      final variantKey = VariantDefinition.createKey(widget.variants);
+      final variantValues = values[variantKey];
+      data.addAll(variantValues!.toMap());
     }
 
     final dataMap = widget.data.asMap();
@@ -85,8 +89,10 @@ class _RemoteFigmaComponentState extends State<RemoteFigmaComponent> {
     var result = <String, Object?>{};
 
     if (_library != null) {
-      result.addAll(
-          _library!.componentDefaultTheme[widget.componentName]!.toMap());
+      final values = _library!.componentDefaultTheme[widget.componentName]!;
+      final variantKey = VariantDefinition.createKey(widget.variants);
+      final variantValues = values[variantKey];
+      result.addAll(variantValues!.toMap());
     }
 
     final dataMap = widget.theme.asMap();

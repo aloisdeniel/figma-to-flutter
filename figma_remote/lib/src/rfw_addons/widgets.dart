@@ -4,15 +4,57 @@ import 'package:figma_remote/src/rfw_addons/path_view.dart';
 import 'package:figma_remote/src/rfw_addons/variants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:figma_squircle/figma_squircle.dart';
 import 'package:path_drawing/path_drawing.dart';
 import 'package:rfw/flutter/argument_decoders.dart';
 import 'package:rfw/rfw.dart';
 
-LocalWidgetLibrary createCoreAddonsWidgets() =>
-    LocalWidgetLibrary(_coreWidgetsDefinitions);
+typedef ComponentRenderer = Widget Function(
+  Widget Function() render,
+  String name,
+  Map<String, String> variants,
+  String instanceName,
+);
 
-Map<String, LocalWidgetBuilder> get _coreWidgetsDefinitions =>
+LocalWidgetLibrary createCoreAddonsWidgets([ComponentRenderer? renderer]) {
+  return LocalWidgetLibrary(_coreWidgetsDefinitions(((Widget Function() render,
+      String name, Map<String, String> variants, String instanceName) {
+    if (renderer != null) return renderer(render, name, variants, instanceName);
+    return render();
+  })));
+}
+
+Map<String, LocalWidgetBuilder> _coreWidgetsDefinitions(
+        ComponentRenderer renderer) =>
     <String, LocalWidgetBuilder>{
+      'ComponentRenderer': (BuildContext context, DataSource source) {
+        final name = source.v<String>(['name']);
+        final instanceName = source.v<String>(['instanceName']);
+        final values = <MapEntry<String, String>>[];
+        final valueCount = source.length(['variants']);
+        for (var v = 0; v < valueCount; v++) {
+          final property = source.v<String>([
+            'variants',
+            v,
+            'name',
+          ]);
+          final value = source.v<String>([
+            'variants',
+            v,
+            'value',
+          ]);
+          values.add(MapEntry(
+            property ?? '',
+            value ?? '',
+          ));
+        }
+        return renderer(
+          () => source.child(['child']),
+          name ?? '',
+          Map.fromEntries(values),
+          instanceName ?? '',
+        );
+      },
       'Variants': (BuildContext context, DataSource source) {
         final definitionCount = source.length(['definitions']);
         if (definitionCount == 0) {
@@ -63,12 +105,16 @@ Map<String, LocalWidgetBuilder> get _coreWidgetsDefinitions =>
         );
       },
       'ClipRRect': (BuildContext context, DataSource source) {
+        var borderRadius = ArgumentDecoders.borderRadius(
+          source,
+          ['borderRadius'],
+        );
+
+        if (borderRadius is BorderRadiusDirectional) {
+          borderRadius = borderRadius.resolve(Directionality.of(context));
+        }
         return ClipRRect(
-          borderRadius: ArgumentDecoders.borderRadius(
-                source,
-                ['borderRadius'],
-              ) as BorderRadius? ??
-              BorderRadius.zero,
+          borderRadius: borderRadius as BorderRadius? ?? BorderRadius.zero,
           child: source.child(['child']),
         );
       },
@@ -102,10 +148,10 @@ Map<String, LocalWidgetBuilder> get _coreWidgetsDefinitions =>
           strokes: strokes,
         );
       },
-      'DecoratedBorder': (BuildContext context, DataSource source) {
+      'SmoothContainer': (BuildContext context, DataSource source) {
         return Container(
           decoration:
-              _ArgumentDecoders.borderDecoration(source, ['decoration']),
+              _ArgumentDecoders.smoothDecoration(source, ['decoration']),
           child: source.optionalChild(['child']),
         );
       },
@@ -141,28 +187,39 @@ abstract class _ArgumentDecoders {
     }
   }
 
-  static Decoration? borderDecoration(DataSource source, List<Object> key) {
-    return BoxDecoration(
-      color: ArgumentDecoders.color(source, [...key, 'color']),
-      border: border(source, [...key, 'border']),
-      borderRadius: borderRadius(source, [...key, 'borderRadius']),
-      gradient: ArgumentDecoders.gradient(source, [...key, 'gradient']),
+  static Decoration? smoothDecoration(DataSource source, List<Object> key) {
+    final shape = smoothBorder(source, [...key, 'shape']);
+    final color = ArgumentDecoders.color(source, [...key, 'color']);
+    final gradient = ArgumentDecoders.gradient(source, [...key, 'gradient']);
+    if (shape == null) {
+      return BoxDecoration(
+        color: color,
+        gradient: gradient,
+      );
+    }
+    return ShapeDecoration(
+      color: color,
+      gradient: gradient,
+      shape: shape,
     );
   }
 
-  static BoxBorder? border(DataSource source, List<Object> key) {
-    final BorderSide? a = borderSide(source, [...key, 0]);
-    if (a == null) {
-      return null;
-    }
-    final BorderSide? b = borderSide(source, [...key, 1]);
-    final BorderSide? c = borderSide(source, [...key, 2]);
-    final BorderSide? d = borderSide(source, [...key, 3]);
-    return Border(
-      left: a,
-      top: b ?? a,
-      right: c ?? a,
-      bottom: d ?? b ?? a,
+  static ShapeBorder? smoothBorder(DataSource source, List<Object> key) {
+    final BorderSide? side = borderSide(source, [...key, 'side']);
+    final borderRadius = _ArgumentDecoders.smoothBorderRadius(
+            source, [...key, 'borderRadius']) ??
+        SmoothBorderRadius.zero;
+    final borderAlign = ArgumentDecoders.enumValue<BorderAlign>(
+          BorderAlign.values,
+          source,
+          [...key, 'borderAlign'],
+        ) ??
+        BorderAlign.inside;
+
+    return SmoothRectangleBorder(
+      side: side ?? BorderSide.none,
+      borderRadius: borderRadius,
+      borderAlign: borderAlign,
     );
   }
 
@@ -180,20 +237,32 @@ abstract class _ArgumentDecoders {
     );
   }
 
-  static BorderRadiusGeometry? borderRadius(
+  static SmoothBorderRadius? smoothBorderRadius(
       DataSource source, List<Object> key) {
-    final Radius? a = ArgumentDecoders.radius(source, [...key, 0]);
+    final a = smoothRadius(source, [...key, 0]);
     if (a == null) {
       return null;
     }
-    final Radius? b = ArgumentDecoders.radius(source, [...key, 1]);
-    final Radius? c = ArgumentDecoders.radius(source, [...key, 2]);
-    final Radius? d = ArgumentDecoders.radius(source, [...key, 3]);
-    return BorderRadius.only(
+    final b = smoothRadius(source, [...key, 1]);
+    final c = smoothRadius(source, [...key, 2]);
+    final d = smoothRadius(source, [...key, 3]);
+    return SmoothBorderRadius.only(
       topLeft: a,
       topRight: b ?? a,
       bottomLeft: c ?? a,
       bottomRight: d ?? b ?? a,
+    );
+  }
+
+  static SmoothRadius? smoothRadius(DataSource source, List<Object> key) {
+    final double? radius = source.v<double>([...key, 'x']);
+    if (radius == null) {
+      return null;
+    }
+    final double smoothing = source.v<double>([...key, 'smoothing']) ?? 0.0;
+    return SmoothRadius(
+      cornerRadius: radius,
+      cornerSmoothing: smoothing,
     );
   }
 }

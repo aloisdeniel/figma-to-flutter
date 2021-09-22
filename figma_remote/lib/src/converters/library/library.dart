@@ -12,25 +12,37 @@ class FigmaRemoteLibrary {
     required this.library,
     required this.componentDefaultData,
     required this.componentDefaultTheme,
+    required this.components,
+    required this.componentSets,
   });
 
-  final Map<String, FigmaComponentData> componentDefaultData;
-  final Map<String, FigmaComponentTheme> componentDefaultTheme;
+  final List<Node> components;
+  final List<Node> componentSets;
+  final Map<String, Map<String, FigmaComponentData>> componentDefaultData;
+  final Map<String, Map<String, FigmaComponentTheme>> componentDefaultTheme;
 
   factory FigmaRemoteLibrary({
     required FileResponse file,
     required String componentName,
   }) {
-    final components = file.components?.entries.map(
-      (x) => file.document!.findNodeWithId(x.key),
-    );
-    final componentSets = file.componentSets?.entries.map(
-      (x) => file.document!.findNodeWithId(x.key),
-    );
+    final components = file.components?.entries
+            .map(
+              (x) => file.document!.findNodeWithId(x.key),
+            )
+            .whereNotNull()
+            .toList() ??
+        const <Node>[];
+    final componentSets = file.componentSets?.entries
+            .map(
+              (x) => file.document!.findNodeWithId(x.key),
+            )
+            .whereNotNull()
+            .toList() ??
+        const <Node>[];
 
     var index = 0;
-    final componentDefaultData = <String, FigmaComponentData>{};
-    final componentDefaultTheme = <String, FigmaComponentTheme>{};
+    final componentDefaultData = <String, Map<String, FigmaComponentData>>{};
+    final componentDefaultTheme = <String, Map<String, FigmaComponentTheme>>{};
     final library = RemoteWidgetLibrary(
       [
         const Import(
@@ -45,15 +57,23 @@ class FigmaRemoteLibrary {
           ...components.whereNotNull().map(
             (node) {
               final name = node.name ?? 'Component${index++}';
-              final context = FigmaComponentContext(response: file);
+              final context = FigmaComponentContext(
+                response: file,
+                componentSets: componentSets,
+                components: components,
+              );
               final declaration = WidgetDeclaration(
                 name,
                 null,
                 convertNode(context, node)!,
               );
 
-              componentDefaultData[name] = context.data;
-              componentDefaultTheme[name] = context.theme;
+              componentDefaultData[name] = {
+                '': context.data,
+              };
+              componentDefaultTheme[name] = {
+                '': context.theme,
+              };
 
               return declaration;
             },
@@ -61,11 +81,18 @@ class FigmaRemoteLibrary {
         if (componentSets != null)
           ...componentSets.whereType<Frame>().whereNotNull().map(
             (frame) {
-              final context = FigmaComponentContext(response: file);
               final variants = <VariantDefinition>[];
+
+              final defaultData = <String, FigmaComponentData>{};
+              final defaultTheme = <String, FigmaComponentTheme>{};
 
               if (frame.children != null) {
                 for (var child in frame.children!.whereNotNull()) {
+                  final context = FigmaComponentContext(
+                    response: file,
+                    componentSets: componentSets,
+                    components: components,
+                  );
                   final properties = VariantDefinition.parseProperties(
                     child.name ?? '',
                   );
@@ -76,6 +103,10 @@ class FigmaRemoteLibrary {
                       child: convertNode(context, child)!,
                     ),
                   );
+
+                  final variantKey = VariantDefinition.createKey(properties);
+                  defaultData[variantKey] = context.data;
+                  defaultTheme[variantKey] = context.theme;
                 }
               }
 
@@ -106,8 +137,8 @@ class FigmaRemoteLibrary {
                 ),
               );
 
-              componentDefaultData[name] = context.data;
-              componentDefaultTheme[name] = context.theme;
+              componentDefaultData[name] = defaultData;
+              componentDefaultTheme[name] = defaultTheme;
 
               return declaration;
             },
@@ -116,6 +147,8 @@ class FigmaRemoteLibrary {
     );
     return FigmaRemoteLibrary._(
       library: library,
+      componentSets: componentSets,
+      components: components,
       componentDefaultData: componentDefaultData,
       componentDefaultTheme: componentDefaultTheme,
     );
@@ -138,11 +171,20 @@ class VariantDefinition {
     final properties = name.split(',').map((x) => x.trim());
     for (var property in properties) {
       final parts = property.split('=');
+      if (parts.length < 2) return const <String, String>{};
       final name = parts[0].trim();
       final value = parts[1].trim();
       result[name] = value;
     }
 
     return result;
+  }
+
+  static String createKey(Map<String, String> values) {
+    if (values.isEmpty) return '';
+    final entries = [
+      ...values.entries.map((e) => '${e.key}=${e.value}'),
+    ]..sort((x, y) => x.compareTo(y));
+    return '{${entries.join(',')}';
   }
 }

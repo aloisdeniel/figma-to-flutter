@@ -1,4 +1,5 @@
 import 'package:figma/figma.dart';
+import 'package:collection/collection.dart';
 
 import 'data.dart';
 import 'theme.dart';
@@ -15,12 +16,16 @@ class NodeStyle {
 class FigmaComponentContext {
   FigmaComponentContext({
     required this.response,
+    required this.components,
+    required this.componentSets,
   }) {
     theme = FigmaComponentTheme(this);
     data = FigmaComponentData(this);
   }
 
   final FileResponse response;
+  final List<Node> components;
+  final List<Node> componentSets;
   late final FigmaComponentTheme theme;
   late final FigmaComponentData data;
 

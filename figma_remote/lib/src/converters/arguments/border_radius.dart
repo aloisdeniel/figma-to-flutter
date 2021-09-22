@@ -1,6 +1,7 @@
 import 'package:rfw/dart/model.dart';
 
-DynamicList convertBorderRadius(List<num>? rectangleCornerRadii) {
+DynamicList convertBorderRadius(
+    List<num>? rectangleCornerRadii, num? smoothing) {
   if (rectangleCornerRadii == null) return [];
 
   final topLeft =
@@ -12,15 +13,13 @@ DynamicList convertBorderRadius(List<num>? rectangleCornerRadii) {
   final bottomRight =
       rectangleCornerRadii.length > 3 ? rectangleCornerRadii[3] : 0.0;
   return [
-    convertRadius(topLeft),
-    convertRadius(topRight),
-    convertRadius(bottomRight),
-    convertRadius(bottomLeft),
+    convertRadius(topLeft, smoothing),
+    convertRadius(topRight, smoothing),
+    convertRadius(bottomRight, smoothing),
+    convertRadius(bottomLeft, smoothing),
   ];
 }
 
-Object? convertRadius(num radius) {
-  return {
-    'x': radius,
-  };
+Object? convertRadius(num radius, num? smoothing) {
+  return {'x': radius, if (smoothing != null) 'smoothing': smoothing};
 }

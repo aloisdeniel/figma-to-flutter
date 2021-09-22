@@ -226,6 +226,11 @@ extension NodeExtension on figma.Node {
 
   figma.Node removeGroups() {
     final $this = this;
+    if ($this is figma.Instance) {
+      return $this.copyWith(
+        children: $this.children.removeGroups().toList(),
+      );
+    }
     if ($this is figma.Frame) {
       return $this.copyWith(
         children: $this.children.removeGroups().toList(),

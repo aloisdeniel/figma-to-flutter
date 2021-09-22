@@ -7,6 +7,7 @@ import 'text.dart' as text;
 import 'rectangle.dart' as rectangle;
 import 'vector.dart' as vector;
 import 'frame.dart' as frame;
+import 'instance.dart' as instance;
 
 BlobNode? convertNode(FigmaComponentContext context, figma.Node node) {
   node = node.removeGroups();
@@ -19,6 +20,9 @@ BlobNode? convertNode(FigmaComponentContext context, figma.Node node) {
     }
     if (node is figma.Vector) {
       return vector.convert(context, node);
+    }
+    if (node is figma.Instance) {
+      return instance.convert(context, node);
     }
     if (node is figma.Frame) {
       return frame.convert(context, node);

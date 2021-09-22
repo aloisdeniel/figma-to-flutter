@@ -87,6 +87,13 @@ packages:
       relative: true
     source: path
     version: "0.0.1"
+  figma_squircle:
+    dependency: transitive
+    description:
+      name: figma_squircle
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.5.3"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -244,4 +251,4 @@ packages:
     version: "2.1.0"
 sdks:
   dart: ">=2.13.0 <3.0.0"
-  flutter: ">=1.24.0-7.0"
+  flutter: ">=2.0.0"

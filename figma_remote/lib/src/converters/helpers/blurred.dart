@@ -6,6 +6,7 @@ BlobNode wrapBackgroundBlurred(
   BlobNode node,
   List<figma.Effect>? effects,
   List<num>? rectangleCornerRadii,
+  num? cornerSmoothing,
 ) {
   if (effects == null) {
     return node;
@@ -28,14 +29,15 @@ BlobNode wrapBackgroundBlurred(
         'child': node,
         'filter': {
           'type': 'blur',
-          'sigmaX': effect.radius,
-          'sigmaY': effect.radius,
+          'sigmaX': (effect.radius ?? 0) / 5,
+          'sigmaY': (effect.radius ?? 0) / 5,
         }
       },
     );
   }
 
-  final borderRadius = convertBorderRadius(rectangleCornerRadii);
+  final borderRadius =
+      convertBorderRadius(rectangleCornerRadii, cornerSmoothing);
 
   return ConstructorCall(
     'ClipRRect',

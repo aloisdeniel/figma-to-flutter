@@ -1,5 +1,6 @@
 import 'package:figma/figma.dart' as figma;
 import 'package:figma_remote/src/converters/context/context.dart';
+import 'package:figma_remote/src/converters/helpers/blurred.dart';
 import 'package:figma_remote/src/converters/helpers/decorated.dart';
 import 'package:figma_remote/src/converters/helpers/expanded.dart';
 import 'package:figma_remote/src/converters/helpers/opacity.dart';
@@ -24,6 +25,13 @@ BlobNode convert(FigmaComponentContext context, figma.Frame node) {
     }
   }();
 
+  result = wrapBackgroundBlurred(
+    result,
+    node.effects,
+    node.rectangleCornerRadii,
+    0.0, //TODO
+  );
+
   result = wrapDecorated(
     context,
     node.name ?? 'frame',
@@ -31,7 +39,9 @@ BlobNode convert(FigmaComponentContext context, figma.Frame node) {
     node.strokes,
     node.cornerRadius,
     node.rectangleCornerRadii,
+    0.0, //TODO
     node.strokeWeight,
+    node.strokeAlign,
     result,
   )!;
 

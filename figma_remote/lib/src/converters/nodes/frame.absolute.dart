@@ -18,6 +18,7 @@ BlobNode _absoluteLayout(FigmaComponentContext context, figma.Frame node) {
   var result = ConstructorCall(
     'Stack',
     {
+      'clipBehavior': node.clipsContent ?? false ? 'hardEdge' : 'none',
       if (node.children != null) 'children': children,
     },
   );
@@ -34,14 +35,19 @@ BlobNode _constrainedChild(
   final position = node.designPosition();
   final constraints = _constraints(node);
 
-  ConstructorCall(
-    'SizedBox',
-    {
-      'width': size.width,
-      'height': size.height,
-      'child': result,
-    },
-  );
+  if (constraints?.horizontal != figma.HorizontalConstraint.leftRight ||
+      constraints?.vertical != figma.VerticalConstraint.topBottom) {
+    result = ConstructorCall(
+      'SizedBox',
+      {
+        if (constraints?.horizontal != figma.HorizontalConstraint.leftRight)
+          'width': size.width,
+        if (constraints?.vertical != figma.VerticalConstraint.topBottom)
+          'height': size.height,
+        'child': result,
+      },
+    );
+  }
   // TODO Scale / Center constraints
   result = ConstructorCall(
     'Positioned',

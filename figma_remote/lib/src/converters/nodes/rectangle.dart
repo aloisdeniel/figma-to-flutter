@@ -12,7 +12,9 @@ BlobNode? convert(FigmaComponentContext context, figma.Rectangle node) {
     node.strokes,
     node.cornerRadius,
     node.rectangleCornerRadii,
+    0.0, //TODO
     node.strokeWeight,
+    node.strokeAlign,
     null,
   );
 

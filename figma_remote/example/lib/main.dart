@@ -8,14 +8,17 @@ void main() {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
 
   @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  @override
   Widget build(BuildContext context) {
-    return RemoteFigma(
-      token: '239258-424aeb15-66f3-4a5c-9121-08fdc6537a33',
-      fileId: 'FMUAbSfit7nA1Qf4OFIccK',
+    return RemoteFigma.fromAsset(
       child: MaterialApp(
         title: 'Figma Remote',
         home: Scaffold(
@@ -24,7 +27,9 @@ class MyApp extends StatelessWidget {
             return Stack(
               children: [
                 ListView(
-                  padding: const EdgeInsets.all(20) + mediaQuery.padding,
+                  padding: const EdgeInsets.all(20) +
+                      mediaQuery.padding +
+                      const EdgeInsets.only(bottom: 60),
                   children: const [
                     SpotTile(
                       name: 'Saint-Lunaire',
@@ -41,8 +46,8 @@ class MyApp extends StatelessWidget {
                       height: 20,
                     ),
                     SpotTile(
-                      name: 'Saint-Malo',
-                      positive: 0.25,
+                      name: 'Hendaye',
+                      positive: 0.95,
                     ),
                     SizedBox(
                       height: 20,
@@ -55,8 +60,8 @@ class MyApp extends StatelessWidget {
                       height: 20,
                     ),
                     SpotTile(
-                      name: 'Hendaye',
-                      positive: 0.95,
+                      name: 'Saint-Malo',
+                      positive: 0.25,
                     ),
                   ],
                 ),

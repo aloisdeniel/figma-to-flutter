@@ -8,18 +8,27 @@ import '../local/tabbar.dart' as local;
 class Tabbar extends local.Tabbar {
   const Tabbar({
     Key? key,
-    required int tabCount,
+    int tabCount = 3,
+    int selectedTab = 0,
+    ValueChanged<int>? onSelectedTabChanged,
   }) : super(
           key: key,
           tabCount: tabCount,
+          selectedTab: selectedTab,
+          onSelectedTabChanged: onSelectedTabChanged,
         );
 
   @override
   Widget build(BuildContext context) {
+    const indexToVariants = {
+      0: 'Spots',
+      1: 'Search',
+      2: 'Settings',
+    };
     return RemoteFigmaComponent(
       componentName: 'Tabbar',
-      variants: const {
-        'Selected': 'Search',
+      variants: {
+        'Selected': indexToVariants[selectedTab] ?? '',
         'Count': '3',
       },
       renderer: (parent, name, variants, instanceName) {
@@ -27,10 +36,7 @@ class Tabbar extends local.Tabbar {
           return Tap(
             child: parent(),
             onTap: () {
-              print('---TAP---');
-              print(name);
-              print(instanceName);
-              print(variants);
+              onSelectedTabChanged?.call(int.parse(instanceName));
             },
           );
         }

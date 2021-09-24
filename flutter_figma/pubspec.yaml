@@ -1,26 +1,44 @@
 name: flutter_figma
 description: Rendering Figma components as Flutter widgets.
-version: 0.2.0-alpha.1
-homepage: https://github.com/aloisdeniel/figma-to-flutter/tree/master/figma_theme_generator
+version: 0.5.0-alpha.1
+homepage: https://github.com/aloisdeniel/figma-to-flutter/tree/master/flutter_figma
 
 environment:
   sdk: ">=2.12.0 <3.0.0"
+  flutter: ">=1.17.0"
 
 dependencies:
+  flutter:
+    sdk: flutter
   rfw: ^1.0.0
   recase: ^4.0.0
   path: ^1.8.0
-  path_provider: ^2.0.2
+  path_drawing: ^0.5.1
   collection: ^1.15.0
   gap:
-  figma: ^3.0.0
-  path_drawing: ^0.5.1
-  flutter:
-    sdk: flutter
+  figma: #^3.0.0
+    git: https://github.com/aloisdeniel/figma-1.git
+  figma_squircle: ^0.5.3
+  path_parsing: ^0.2.1
 
 dev_dependencies:
-  flutter_lints:
   flutter_test:
     sdk: flutter
+  flutter_lints: ^1.0.0
 
+# For information on the generic Dart part of this file, see the
+# following page: https://dart.dev/tools/pub/pubspec
+
+# The following section is specific to Flutter.
 flutter:
+
+  # To add assets to your package, add an assets section, like this:
+  # assets:
+  #   - images/a_dot_burr.jpeg
+  #   - images/a_dot_ham.jpeg
+  #
+  # For details regarding assets in packages, see
+  # https://flutter.dev/assets-and-images/#from-packages
+  #
+  # An image asset can refer to one or more resolution-specific "variants", see
+  # https://flutter.dev/assets-and-images/#resolution-aware.

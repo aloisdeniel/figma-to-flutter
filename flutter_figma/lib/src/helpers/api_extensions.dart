@@ -3,9 +3,6 @@ import 'dart:math';
 import 'package:figma/figma.dart' as figma;
 import 'package:flutter/material.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter_figma/src/rendering/effect.dart';
-import 'package:flutter_figma/src/rendering/paint.dart';
-import 'package:path_drawing/path_drawing.dart';
 
 extension NodeExtension on figma.Node {
   /// Extract all children for nodes that have children, else return
@@ -210,8 +207,30 @@ extension NodeExtension on figma.Node {
     return Size.zero;
   }
 
+  Offset designPosition() {
+    final $this = this;
+    if ($this is figma.Vector) {
+      return $this.relativeTransform.position;
+    }
+    if ($this is figma.Rectangle) {
+      return $this.relativeTransform.position;
+    }
+    if ($this is figma.Frame) {
+      return $this.relativeTransform.position;
+    }
+    if ($this is figma.Text) {
+      return $this.relativeTransform.position;
+    }
+    return Offset.zero;
+  }
+
   figma.Node removeGroups() {
     final $this = this;
+    if ($this is figma.Instance) {
+      return $this.copyWith(
+        children: $this.children.removeGroups().toList(),
+      );
+    }
     if ($this is figma.Frame) {
       return $this.copyWith(
         children: $this.children.removeGroups().toList(),
@@ -489,39 +508,5 @@ extension Vector2DExtension on figma.Vector2D? {
       this?.x.toDouble() ?? 0.0,
       this?.y.toDouble() ?? 0.0,
     );
-  }
-}
-
-extension ListPaintExtension on List<figma.Paint>? {
-  /// Converts the list of values to a border radius.
-  List<FigmaPaint> toFlutter() {
-    return this
-            ?.where((x) => x.visible)
-            .map((x) => FigmaPaint.api(x))
-            .toList() ??
-        const <FigmaPaint>[];
-  }
-}
-
-extension ListEffectsExtension on List<figma.Effect>? {
-  /// Converts the list of values to a border radius.
-  List<FigmaEffect> toFlutter() {
-    return this
-            ?.where((x) => x.visible)
-            .map((x) => FigmaEffect.api(x))
-            .toList() ??
-        const <FigmaEffect>[];
-  }
-}
-
-extension ListGeometryExtension on List<dynamic>? {
-  /// Converts the list of values to a border radius.
-  List<Path> toPaths() {
-    return this
-            ?.map(
-              (x) => parseSvgPathData(x['path']),
-            )
-            .toList() ??
-        const <Path>[];
   }
 }

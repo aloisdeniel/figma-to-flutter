@@ -1,21 +1,9 @@
 {
     "folders": [
         {
-            "name": "Theme",
-            "path": "figma_theme"
-        },
-        {
-            "name": "Theme Generator",
-            "path": "figma_theme_generator"
-        },
-        {
             "name": "Flutter Figma",
             "path": "flutter_figma"
         },
-        {
-            "name": "Flutter Figma Generator",
-            "path": "flutter_figma_generator"
-        }
     ],
     "settings": {
         "git.ignoreLimitWarning": true,

@@ -1,14 +1,4 @@
-export 'src/flutter_figma.dart';
-export 'src/design/design.dart';
-export 'src/design/storage.dart';
-export 'src/helpers/api_extensions.dart';
+library flutter_figma;
 
-export 'package:figma/figma.dart'
-    show
-        LayoutConstraint,
-        HorizontalConstraint,
-        VerticalConstraint,
-        LayoutMode,
-        LayoutAlign,
-        CounterAxisSizingMode,
-        PrimaryAxisSizingMode;
+export 'src/widgets/component.dart';
+export 'src/widgets/remote.dart';

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_figma_app/layouts/home/layout.dart';
-import 'package:flutter_figma_app/library_loader.dart';
+import 'package:flutter_figma_app/layouts/result/widgets/library_loader.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class EditorApp extends StatelessWidget {
@@ -12,10 +12,8 @@ class EditorApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const ProviderScope(
-      child: LibraryLoader(
-        child: MaterialApp(
-          home: HomeLayout(),
-        ),
+      child: MaterialApp(
+        home: HomeLayout(),
       ),
     );
   }

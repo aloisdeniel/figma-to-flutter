@@ -56,55 +56,6 @@ Map<String, LocalWidgetBuilder> _coreWidgetsDefinitions(
           instanceName ?? '',
         );
       },
-      'Variants': (BuildContext context, DataSource source) {
-        final definitionCount = source.length(['definitions']);
-        if (definitionCount == 0) {
-          return const SizedBox();
-        }
-        final definitions = <VariantDefinition>[];
-        for (var d = 0; d < definitionCount; d++) {
-          final properties = <MapEntry<String, String>>[];
-          final propertyCount = source.length(['definitions', d, 'properties']);
-          for (var p = 0; p < propertyCount; p++) {
-            final property =
-                source.v<String>(['definitions', d, 'properties', p, 'name']);
-            final value =
-                source.v<String>(['definitions', d, 'properties', p, 'value']);
-
-            properties.add(MapEntry(property ?? '', value ?? ''));
-          }
-
-          final child = source.child(['definitions', d, 'child']);
-          definitions.add(
-            VariantDefinition(
-              properties: Map.fromEntries(properties),
-              child: child,
-            ),
-          );
-        }
-        final values = <MapEntry<String, String>>[];
-        final valueCount = source.length(['variants']);
-        for (var v = 0; v < valueCount; v++) {
-          final property = source.v<String>([
-            'variants',
-            v,
-            'name',
-          ]);
-          final value = source.v<String>([
-            'variants',
-            v,
-            'value',
-          ]);
-          values.add(MapEntry(
-            property ?? '',
-            value ?? '',
-          ));
-        }
-        return Variants(
-          variants: Map.fromEntries(values),
-          definitions: definitions,
-        );
-      },
       'ClipRRect': (BuildContext context, DataSource source) {
         var borderRadius = ArgumentDecoders.borderRadius(
           source,

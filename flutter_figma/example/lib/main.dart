@@ -27,7 +27,7 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return RemoteFigma.fromAsset(
+    return FigmaRemote.fromAsset(
       child: MaterialApp(
         title: 'Demo',
         home: Scaffold(
@@ -43,8 +43,11 @@ class _MyAppState extends State<MyApp> {
                       padding: mediaQuery.padding.copyWith(top: 0) +
                           const EdgeInsets.only(bottom: 60),
                       children: [
-                        const HomeHeader(
-                          name: 'Brice',
+                        const SizedBox(
+                          height: 280,
+                          child: HomeHeader(
+                            name: 'Brice',
+                          ),
                         ),
                         ...const <Widget>[
                           SpotTile(

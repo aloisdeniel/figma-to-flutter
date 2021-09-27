@@ -1,5 +1,6 @@
 import 'package:figma/figma.dart' as figma;
 import 'package:flutter_figma/src/converters/context/context.dart';
+import 'package:flutter_figma/src/converters/helpers/blurred.dart';
 import 'package:flutter_figma/src/converters/helpers/decorated.dart';
 import 'package:flutter_figma/src/converters/helpers/opacity.dart';
 import 'package:rfw/formats.dart';
@@ -19,7 +20,16 @@ BlobNode? convert(FigmaComponentContext context, figma.Rectangle node) {
   );
 
   if (result != null) {
-    result = wrapOpacity(result, node.opacity);
+    result = wrapBackgroundBlurred(
+      result,
+      node.effects,
+      node.rectangleCornerRadii,
+      0.0, //TODO
+    );
+    result = wrapOpacity(
+      result,
+      node.opacity,
+    );
   }
 
   return result;

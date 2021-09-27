@@ -29,7 +29,7 @@ BlobNode? convert(FigmaComponentContext context, figma.Vector node) {
               .create(convertColor(stroke.color!), node.name ?? 'stroke');
       return {
         'width': node.strokeWeight,
-        'color': DataReference(['theme', 'colors', colorName!]),
+        'color': StateReference(['theme', 'colors', colorName!]),
       };
     },
   );

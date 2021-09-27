@@ -35,6 +35,10 @@ BlobNode _constrainedChild(
   final position = node.designPosition();
   final constraints = _constraints(node);
 
+  if (node.name == 'ValueBar') {
+    print('OK');
+  }
+
   if (constraints?.horizontal != figma.HorizontalConstraint.leftRight ||
       constraints?.vertical != figma.VerticalConstraint.topBottom) {
     result = ConstructorCall(

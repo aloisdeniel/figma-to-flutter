@@ -1,30 +1,29 @@
 import 'package:figma/figma.dart';
 import 'package:flutter_figma/src/converters/context/context.dart';
-import 'package:flutter_figma/src/converters/context/data.dart';
-import 'package:flutter_figma/src/converters/context/theme.dart';
 import 'package:flutter_figma/src/converters/nodes/node.dart';
 import 'package:flutter_figma/src/helpers/api_extensions.dart';
+import 'package:flutter_figma/src/helpers/naming.dart';
+import 'package:flutter_figma/src/remote/figma.dart';
 import 'package:rfw/dart/model.dart';
 import 'package:collection/collection.dart';
 import 'package:rfw/rfw.dart';
 
-class FigmaRemoteLibrary {
+class FigmaRemoteLibrary extends RemoteWidgetLibrary {
   FigmaRemoteLibrary._({
-    required this.library,
-    required this.componentDefaultData,
-    required this.componentDefaultTheme,
+    required List<Import> imports,
+    required List<WidgetDeclaration> widgets,
+    required this.images,
     required this.components,
     required this.componentSets,
-  });
+  }) : super(imports, widgets);
 
+  final Map<String, String>? images;
   final List<Node> components;
   final List<Node> componentSets;
-  final Map<String, Map<String, FigmaComponentData>> componentDefaultData;
-  final Map<String, Map<String, FigmaComponentTheme>> componentDefaultTheme;
 
   factory FigmaRemoteLibrary({
     required FileResponse file,
-    required String componentName,
+    required Map<String, String>? images,
   }) {
     final components = file.components?.entries
             .map(
@@ -42,8 +41,6 @@ class FigmaRemoteLibrary {
         const <Node>[];
 
     var index = 0;
-    final componentDefaultData = <String, Map<String, FigmaComponentData>>{};
-    final componentDefaultTheme = <String, Map<String, FigmaComponentTheme>>{};
     final library = RemoteWidgetLibrary(
       [
         const Import(
@@ -56,7 +53,7 @@ class FigmaRemoteLibrary {
       [
         ...components.whereNotNull().map(
           (node) {
-            final name = node.name ?? 'Component${index++}';
+            final name = node.name?.asClassName() ?? 'Component${index++}';
             final context = FigmaComponentContext(
               response: file,
               componentSets: componentSets,
@@ -64,26 +61,22 @@ class FigmaRemoteLibrary {
             );
             final declaration = WidgetDeclaration(
               name,
-              null,
+              {
+                'data': context.data.toMap(),
+                'theme': context.theme.toMap(),
+              },
               convertNode(context, node, true)!,
             );
-
-            componentDefaultData[name] = {
-              '': context.data,
-            };
-            componentDefaultTheme[name] = {
-              '': context.theme,
-            };
 
             return declaration;
           },
         ),
         ...componentSets.whereType<Frame>().whereNotNull().map(
           (frame) {
-            final variants = <VariantDefinition>[];
+            final variants = <WidgetDeclaration>[];
 
-            final defaultData = <String, FigmaComponentData>{};
-            final defaultTheme = <String, FigmaComponentTheme>{};
+            final componentName =
+                frame.name?.asClassName() ?? 'Component${index++}';
 
             if (frame.children != null) {
               for (var child in frame.children!.whereNotNull()) {
@@ -92,68 +85,42 @@ class FigmaRemoteLibrary {
                   componentSets: componentSets,
                   components: components,
                 );
+
                 final properties = VariantDefinition.parseProperties(
                   child.name ?? '',
                 );
-
-                variants.add(
-                  VariantDefinition(
-                    properties: properties,
-                    child: convertNode(context, child, true)!,
-                  ),
+                final variantName = FigmaRemote.nameForVariants(
+                  componentName,
+                  properties,
                 );
 
-                final variantKey = VariantDefinition.createKey(properties);
-                defaultData[variantKey] = context.data;
-                defaultTheme[variantKey] = context.theme;
+                variants.add(
+                  WidgetDeclaration(
+                    variantName,
+                    {
+                      'data': context.data.toMap(),
+                      'theme': context.theme.toMap(),
+                    },
+                    convertNode(context, child, true)!,
+                  ),
+                );
               }
             }
 
-            final name = frame.name ?? 'Component${index++}';
-            final declaration = WidgetDeclaration(
-              name,
-              null,
-              ConstructorCall(
-                'Variants',
-                {
-                  'variants': const DataReference([
-                    'variants',
-                  ]),
-                  'definitions': [
-                    ...variants.map(
-                      (v) => {
-                        'properties': [
-                          ...v.properties.entries.map((e) => {
-                                'name': e.key,
-                                'value': e.value,
-                              }),
-                        ],
-                        'child': v.child,
-                      },
-                    ),
-                  ],
-                },
-              ),
-            );
-
-            componentDefaultData[name] = defaultData;
-            componentDefaultTheme[name] = defaultTheme;
-
-            return declaration;
+            return variants;
           },
-        ),
+        ).expand((element) => element),
       ],
     );
 
     return FigmaRemoteLibrary._(
-      library: library,
+      widgets: library.widgets,
+      imports: library.imports,
+      images: images,
       componentSets: componentSets,
       components: components,
-      componentDefaultData: componentDefaultData,
-      componentDefaultTheme: componentDefaultTheme,
     );
   }
-  final RemoteWidgetLibrary library;
 }
 
 class VariantDefinition {

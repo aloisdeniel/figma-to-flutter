@@ -33,7 +33,7 @@ Object? convertPaint(
     if (fill != null) ...{
       if (fill.type == figma.PaintType.image && fill.imageRef != null)
         'image': {
-          'source': DataReference(['theme', 'images', fill.imageRef!]),
+          'source': StateReference(['theme', 'images', fill.imageRef!]),
           'fit': () {
             switch (fill.scaleMode) {
               case figma.ScaleMode.fit:
@@ -44,7 +44,7 @@ Object? convertPaint(
           }()
         },
       if (fill.type == figma.PaintType.solid && fillColorName != null)
-        'color': DataReference(['theme', 'colors', fillColorName]),
+        'color': StateReference(['theme', 'colors', fillColorName]),
       if (fill.type != figma.PaintType.solid)
         'gradient': convertGradient(context, name, fill),
     },
@@ -77,10 +77,10 @@ Object? convertPaint(
         'side': {
           'width': strokeWeight,
           if (stroke.type == figma.PaintType.solid && strokeColorName != null)
-            'color': DataReference(['theme', 'colors', strokeColorName]),
+            'color': StateReference(['theme', 'colors', strokeColorName]),
           if (stroke.type !=
               figma.PaintType.solid) // TODO custom gradient borders
-            'color': DataReference(
+            'color': StateReference(
               [
                 'theme',
                 'colors',

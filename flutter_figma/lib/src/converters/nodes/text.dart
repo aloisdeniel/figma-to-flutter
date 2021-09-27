@@ -31,10 +31,10 @@ BlobNode convert(FigmaComponentContext context, figma.Text node) {
   BlobNode result = ConstructorCall(
     'Text',
     {
-      'text': DataReference(['data', 'text', text]),
+      'text': StateReference(['data', 'text', text]),
       'textAlign': textAlign,
       if (node.style != null)
-        'style': DataReference(['theme', 'textStyles', styleName]),
+        'style': StateReference(['theme', 'textStyles', styleName]),
     },
   );
 

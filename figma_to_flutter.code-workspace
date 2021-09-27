@@ -1,8 +1,16 @@
 {
     "folders": [
         {
-            "name": "Flutter Figma",
+            "name": "Core (Flutter Figma)",
             "path": "flutter_figma"
+        },
+        {
+            "name": "Code generators (Flutter Figma)",
+            "path": "flutter_figma_generator"
+        },
+        {
+            "name": "App (Flutter Figma)",
+            "path": "flutter_figma_app"
         },
     ],
     "settings": {

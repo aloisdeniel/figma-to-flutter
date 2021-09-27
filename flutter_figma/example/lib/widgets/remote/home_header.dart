@@ -1,33 +1,36 @@
-import 'package:flutter_figma/flutter_figma.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_figma/flutter_figma.dart';
 
-import '../local/home_header.dart' as local;
-
-class HomeHeader extends local.HomeHeader {
+class HomeHeader extends RemoteWidget {
   const HomeHeader({
     Key? key,
-    String welcome = 'Welcome',
-    required String name,
-  }) : super(
-          key: key,
-          name: name,
-          welcome: welcome,
-        );
+    this.welcome = 'Welcome',
+    required this.name,
+  }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: 280,
-      child: RemoteFigmaComponent(
-        componentName: 'HomeHeader',
-        data: RemoteFigmaData(
-          text: {
-            'name': name,
-            'welcome': welcome,
-          },
-        ),
-      ),
-    );
+  String get remoteIdentifier => 'figma';
+
+  @override
+  String get remoteWidgetName => 'HomeHeader';
+
+  @override
+  int get version => 1;
+
+  @override
+  Map<String, Object?> get remoteData => {
+        'text': {
+          'welcome': welcome,
+          'name': name,
+        },
+      };
+
+  final String welcome;
+
+  final String name;
+
+  @override
+  Widget buildLocal(BuildContext context) {
+    return const Text('Not Implemented');
   }
 }

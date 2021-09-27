@@ -24,7 +24,7 @@ DynamicMap convertGradient(
             (x) {
               final colorName = context.theme.colors
                   .create(convertColor(x.color!, paint.opacity ?? 1.0), name);
-              return DataReference(['theme', 'colors', colorName]);
+              return StateReference(['theme', 'colors', colorName]);
             },
           )
           .whereNotNull()

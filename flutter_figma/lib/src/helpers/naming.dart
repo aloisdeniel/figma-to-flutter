@@ -1,24 +1,26 @@
 import 'package:recase/recase.dart';
 
-String createFieldName(String name) {
-  final cased = ReCase(name);
-  return _removeSpecialCharacters(cased.camelCase);
-}
-
-String createClassName(String name) {
-  final cased = ReCase(name);
-  return _removeSpecialCharacters(cased.pascalCase);
-}
-
-String _removeSpecialCharacters(String value) {
-  final result = StringBuffer();
-  final regexp = RegExp('[a-zA-Z0-9]');
-  for (var i = 0; i < value.length; i++) {
-    final character = value[i];
-    if (regexp.allMatches(character).isNotEmpty) {
-      result.write(character);
-    }
+extension NamingExtensions on String {
+  String asFieldName() {
+    final cased = ReCase(this);
+    return cased.camelCase._removeSpecialCharacters();
   }
 
-  return result.toString();
+  String asClassName({bool isPrivate = false}) {
+    final cased = ReCase(this);
+    return (isPrivate ? '_' : '') + cased.pascalCase._removeSpecialCharacters();
+  }
+
+  String _removeSpecialCharacters() {
+    final result = StringBuffer();
+    final regexp = RegExp('[a-zA-Z0-9]');
+    for (var i = 0; i < length; i++) {
+      final character = this[i];
+      if (regexp.allMatches(character).isNotEmpty) {
+        result.write(character);
+      }
+    }
+
+    return result.toString();
+  }
 }

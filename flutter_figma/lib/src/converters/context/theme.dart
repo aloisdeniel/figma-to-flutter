@@ -15,7 +15,7 @@ class FigmaResourceTheme<T> {
 
   String create(T value, String name) {
     /// Normalized name
-    final baseName = createFieldName(name);
+    final baseName = name.asFieldName();
     name = baseName;
 
     final existingValue = _values.entries.firstWhereOrNull(

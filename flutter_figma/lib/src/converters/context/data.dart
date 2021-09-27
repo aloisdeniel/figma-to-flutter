@@ -14,7 +14,7 @@ class FigmaResourceData<T> {
 
   String create(T value, String name) {
     /// Normalized name
-    final baseName = createFieldName(name);
+    final baseName = name.asFieldName();
     name = baseName;
 
     /// Create a new resource

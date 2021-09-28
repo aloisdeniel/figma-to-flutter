@@ -1,7 +1,6 @@
 import 'dart:ui';
 
 import 'package:flutter_figma/src/rfw_addons/path_view.dart';
-import 'package:flutter_figma/src/rfw_addons/variants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:figma_squircle/figma_squircle.dart';

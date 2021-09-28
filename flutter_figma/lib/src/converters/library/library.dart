@@ -8,8 +8,10 @@ import 'package:rfw/dart/model.dart';
 import 'package:collection/collection.dart';
 import 'package:rfw/rfw.dart';
 
+import 'component.dart';
+
 class FigmaRemoteLibrary extends RemoteWidgetLibrary {
-  FigmaRemoteLibrary._({
+  FigmaRemoteLibrary.fromDetails({
     required List<Import> imports,
     required List<WidgetDeclaration> widgets,
     required this.images,
@@ -18,21 +20,21 @@ class FigmaRemoteLibrary extends RemoteWidgetLibrary {
   }) : super(imports, widgets);
 
   final Map<String, String>? images;
-  final List<Node> components;
-  final List<Node> componentSets;
+  final List<FigmaComponent> components;
+  final List<FigmaComponentSet> componentSets;
 
   factory FigmaRemoteLibrary({
     required FileResponse file,
     required Map<String, String>? images,
   }) {
-    final components = file.components?.entries
+    final componentNodes = file.components?.entries
             .map(
               (x) => file.document!.findNodeWithId(x.key),
             )
             .whereNotNull()
             .toList() ??
         const <Node>[];
-    final componentSets = file.componentSets?.entries
+    final componentSetNodes = file.componentSets?.entries
             .map(
               (x) => file.document!.findNodeWithId(x.key),
             )
@@ -41,84 +43,118 @@ class FigmaRemoteLibrary extends RemoteWidgetLibrary {
         const <Node>[];
 
     var index = 0;
-    final library = RemoteWidgetLibrary(
-      [
-        const Import(
-          LibraryName(<String>['core', 'widgets']),
-        ),
-        const Import(
-          LibraryName(<String>['addons', 'widgets']),
-        ),
-      ],
-      [
-        ...components.whereNotNull().map(
-          (node) {
-            final name = node.name?.asClassName() ?? 'Component${index++}';
+    final imports = [
+      const Import(
+        LibraryName(<String>['core', 'widgets']),
+      ),
+      const Import(
+        LibraryName(<String>['addons', 'widgets']),
+      ),
+    ];
+
+    final componentSets =
+        componentSetNodes.whereType<Frame>().whereNotNull().map(
+      (frame) {
+        final variants = <FigmaComponentVariant>[];
+
+        final componentName =
+            frame.name?.asClassName() ?? 'Component${index++}';
+
+        if (frame.children != null) {
+          for (var child in frame.children!.whereNotNull()) {
             final context = FigmaComponentContext(
               response: file,
-              componentSets: componentSets,
-              components: components,
-            );
-            final declaration = WidgetDeclaration(
-              name,
-              {
-                'data': context.data.toMap(),
-                'theme': context.theme.toMap(),
-              },
-              convertNode(context, node, true)!,
+              componentSets: componentSetNodes,
+              components: componentNodes,
             );
 
-            return declaration;
-          },
-        ),
-        ...componentSets.whereType<Frame>().whereNotNull().map(
-          (frame) {
-            final variants = <WidgetDeclaration>[];
+            final properties = VariantDefinition.parseProperties(
+              child.name ?? '',
+            );
+            final variantName = FigmaRemote.nameForVariants(
+              componentName,
+              properties,
+            );
 
-            final componentName =
-                frame.name?.asClassName() ?? 'Component${index++}';
+            final defaultData = context.data.toMap();
+            final defaultTheme = context.theme.toMap();
+            variants.add(
+              FigmaComponentVariant(
+                figmaNode: child,
+                variants: properties,
+                defaultData: defaultData,
+                defaultTheme: defaultTheme,
+                declaration: WidgetDeclaration(
+                  variantName,
+                  {
+                    'data': defaultData,
+                    'theme': defaultTheme,
+                  },
+                  convertNode(context, child, true)!,
+                ),
+              ),
+            );
+          }
+        }
 
-            if (frame.children != null) {
-              for (var child in frame.children!.whereNotNull()) {
-                final context = FigmaComponentContext(
-                  response: file,
-                  componentSets: componentSets,
-                  components: components,
-                );
-
-                final properties = VariantDefinition.parseProperties(
-                  child.name ?? '',
-                );
-                final variantName = FigmaRemote.nameForVariants(
-                  componentName,
-                  properties,
-                );
-
-                variants.add(
-                  WidgetDeclaration(
-                    variantName,
-                    {
-                      'data': context.data.toMap(),
-                      'theme': context.theme.toMap(),
-                    },
-                    convertNode(context, child, true)!,
-                  ),
-                );
-              }
-            }
-
-            return variants;
-          },
-        ).expand((element) => element),
-      ],
+        return FigmaComponentSet(
+          figmaNode: frame,
+          name: componentName,
+          variants: variants,
+        );
+      },
     );
 
-    return FigmaRemoteLibrary._(
-      widgets: library.widgets,
-      imports: library.imports,
+    final components = componentNodes
+        .whereNotNull()
+        .where(
+          (node) => !componentSets.any(
+            (cset) => cset.variants.any(
+              (variant) => variant.figmaNode.id == node.id,
+            ),
+          ),
+        )
+        .map(
+      (node) {
+        final name = node.name?.asClassName() ?? 'Component${index++}';
+        final context = FigmaComponentContext(
+          response: file,
+          componentSets: componentSetNodes,
+          components: componentNodes,
+        );
+        final defaultData = context.data.toMap();
+        final defaultTheme = context.theme.toMap();
+        final declaration = WidgetDeclaration(
+          name,
+          {
+            'data': defaultData,
+            'theme': defaultTheme,
+          },
+          convertNode(context, node, true)!,
+        );
+
+        return FigmaComponent(
+          figmaNode: node,
+          defaultData: defaultData,
+          defaultTheme: defaultTheme,
+          declaration: declaration,
+        );
+      },
+    );
+
+    final widgets = [
+      ...components.map((e) => e.declaration),
+      ...componentSets
+          .map((e) => e.variants.map((e) => e.declaration))
+          .expand((element) => element),
+    ];
+
+    return FigmaRemoteLibrary.fromDetails(
+      widgets: widgets,
+      imports: imports,
       images: images,
-      componentSets: componentSets,
-      components: components,
+      componentSets: componentSets.toList(),
+      components: components.toList(),
     );
   }
 }

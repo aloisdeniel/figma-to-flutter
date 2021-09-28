@@ -8,7 +8,7 @@ extension NamingExtensions on String {
 
   String asClassName({bool isPrivate = false}) {
     final cased = ReCase(this);
-    return (isPrivate ? '_' : '') + cased.camelCase._removeSpecialCharacters();
+    return (isPrivate ? '_' : '') + cased.pascalCase._removeSpecialCharacters();
   }
 
   String _removeSpecialCharacters() {

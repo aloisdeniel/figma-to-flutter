@@ -1,6 +1,5 @@
 import 'package:flutter_figma/src/helpers/naming.dart';
 import 'package:rfw/rfw.dart';
-import 'package:collection/collection.dart';
 
 import 'context.dart';
 
@@ -17,15 +16,6 @@ class FigmaResourceTheme<T> {
     /// Normalized name
     final baseName = name.asFieldName();
     name = baseName;
-
-    final existingValue = _values.entries.firstWhereOrNull(
-      (resource) =>
-          const DeepCollectionEquality().equals(resource.value, value),
-    );
-
-    if (existingValue != null) {
-      return existingValue.key;
-    }
 
     /// Create a new resource
     int index = 0;

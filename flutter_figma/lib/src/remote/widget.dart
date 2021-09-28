@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_figma/flutter_figma.dart';
 import 'package:flutter_figma/src/helpers/deep_copy.dart';
 import 'package:flutter_figma/src/rfw_addons/widgets.dart';
 import 'package:rfw/rfw.dart' as rfw;
@@ -55,7 +56,7 @@ abstract class RemoteWidget extends StatelessWidget {
       return buildLocal(context);
     }
 
-    return _Remote(
+    return RemoteWidgetPreview(
       remoteIdentifier: remoteIdentifier,
       remoteWidgetName: remoteWidgetName,
       data: remoteData,
@@ -66,29 +67,29 @@ abstract class RemoteWidget extends StatelessWidget {
   }
 }
 
-class _Remote extends StatefulWidget {
-  const _Remote({
+class RemoteWidgetPreview extends StatefulWidget {
+  const RemoteWidgetPreview({
     Key? key,
     required this.remoteIdentifier,
     required this.remoteWidgetName,
     required this.data,
-    required this.renderer,
-    required this.onRemoteEvent,
     required this.fallbackBuilder,
+    this.onRemoteEvent,
+    this.renderer,
   }) : super(key: key);
 
   final String remoteIdentifier;
   final String remoteWidgetName;
-  final RemoteEventHandler onRemoteEvent;
   final Map<String, Object?> data;
   final WidgetBuilder fallbackBuilder;
-  final ComponentRenderer renderer;
+  final RemoteEventHandler? onRemoteEvent;
+  final ComponentRenderer? renderer;
 
   @override
   _RemoteState createState() => _RemoteState();
 }
 
-class _RemoteState extends State<_Remote> {
+class _RemoteState extends State<RemoteWidgetPreview> {
   static const libName = LibraryName(['main']);
   late final DynamicContent data = DynamicContent(widget.data);
   Runtime? runtime;
@@ -130,7 +131,9 @@ class _RemoteState extends State<_Remote> {
       );
       runtime.update(
         const LibraryName(<String>['addons', 'widgets']),
-        createCoreAddonsWidgets(widget.renderer),
+        createCoreAddonsWidgets(
+          widget.renderer ?? (render, name, variants, instanceName) => render(),
+        ),
       );
       runtime.update(libName, library);
       this.runtime = runtime;
@@ -138,7 +141,7 @@ class _RemoteState extends State<_Remote> {
   }
 
   @override
-  void didUpdateWidget(covariant _Remote oldWidget) {
+  void didUpdateWidget(covariant RemoteWidgetPreview oldWidget) {
     if (!const MapEquality().equals(widget.data, oldWidget.data)) {
       data.updateAll({
         'data': widget.data,

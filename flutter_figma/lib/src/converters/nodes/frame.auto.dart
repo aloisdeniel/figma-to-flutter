@@ -56,17 +56,19 @@ BlobNode _autoLayout(FigmaComponentContext context, figma.Frame node) {
     ).toList();
 
     /// Inserting sized boxes for spaces between items
-    if (children.isNotEmpty &&
-        node.itemSpacing != null &&
-        node.itemSpacing! > 0) {
+    final itemSpacing = node.itemSpacing;
+    if (children.isNotEmpty && itemSpacing != null && itemSpacing > 0) {
+      final refName = context.theme.spacing
+          .create(itemSpacing, '${node.name}SpaceBetween'.asFieldName());
       children = children
           .map((c) => [
                 ConstructorCall(
                   'SizedBox',
                   {
                     (node.layoutMode == figma.LayoutMode.vertical
-                        ? 'height'
-                        : 'width'): node.itemSpacing,
+                            ? 'height'
+                            : 'width'):
+                        StateReference(['theme', 'spacing', refName]),
                   },
                 ),
                 c,
@@ -88,6 +90,8 @@ BlobNode _autoLayout(FigmaComponentContext context, figma.Frame node) {
   );
 
   result = wrapPadding(
+    context,
+    node.name ?? 'frame',
     result,
     node.paddingLeft,
     node.paddingTop,

@@ -48,3 +48,27 @@ extension ProviderRefBaseExtension on ProviderRefBase {
     return completer.future;
   }
 }
+
+extension WidgetRefBaseExtension on WidgetRef {
+  Future<T> wait<T>(ProviderBase<AsyncValue<T>> provider) {
+    final completer = Completer<T>();
+
+    void onChange(AsyncValue<T> value) {
+      value.when(
+        loading: () {},
+        data: (value) {
+          completer.complete(value);
+        },
+        error: (err, stack) {
+          completer.completeError(err, stack);
+        },
+      );
+    }
+
+    final v = read(provider);
+    listen<AsyncValue<T>>(provider, onChange);
+    onChange(v);
+
+    return completer.future;
+  }
+}

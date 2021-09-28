@@ -8,6 +8,7 @@ BlobNode _absoluteLayout(FigmaComponentContext context, figma.Frame node) {
       context,
       node.children!,
       (a, b) => _constrainedChild(
+        context,
         a,
         layoutSize,
         b,
@@ -27,6 +28,7 @@ BlobNode _absoluteLayout(FigmaComponentContext context, figma.Frame node) {
 }
 
 BlobNode _constrainedChild(
+  FigmaComponentContext context,
   figma.Node node,
   figma.Vector2D layoutDesignSize,
   BlobNode result,
@@ -34,10 +36,6 @@ BlobNode _constrainedChild(
   final size = node.designSize();
   final position = node.designPosition();
   final constraints = _constraints(node);
-
-  if (node.name == 'ValueBar') {
-    print('OK');
-  }
 
   if (constraints?.horizontal != figma.HorizontalConstraint.leftRight ||
       constraints?.vertical != figma.VerticalConstraint.topBottom) {
@@ -60,17 +58,37 @@ BlobNode _constrainedChild(
         switch (constraints?.horizontal) {
           case figma.HorizontalConstraint.scale:
           case figma.HorizontalConstraint.leftRight:
+            final start = position.dx;
+            final end = layoutDesignSize.x - position.dx - size.width;
+            final startName = context.theme.spacing.create(
+              start,
+              node.name ?? 'pos',
+            );
+            final endName = context.theme.spacing.create(
+              end,
+              node.name ?? 'pos',
+            );
             return {
-              'start': position.dx,
-              'end': layoutDesignSize.x - position.dx - size.width,
+              'start': StateReference(['theme', 'spacing', startName]),
+              'end': StateReference(['theme', 'spacing', endName]),
             };
           case figma.HorizontalConstraint.right:
+            final end = layoutDesignSize.x - position.dx - size.width;
+            final endName = context.theme.spacing.create(
+              end,
+              node.name ?? 'pos',
+            );
             return {
-              'end': layoutDesignSize.x - position.dx - size.width,
+              'end': StateReference(['theme', 'spacing', endName]),
             };
           case figma.HorizontalConstraint.left:
+            final start = position.dx;
+            final startName = context.theme.spacing.create(
+              start,
+              node.name ?? 'pos',
+            );
             return {
-              'start': position.dx,
+              'start': StateReference(['theme', 'spacing', startName]),
             };
           default:
             return {};
@@ -80,17 +98,37 @@ BlobNode _constrainedChild(
         switch (constraints?.vertical) {
           case figma.VerticalConstraint.scale:
           case figma.VerticalConstraint.topBottom:
+            final top = position.dy;
+            final bottom = layoutDesignSize.y - position.dy - size.height;
+            final topName = context.theme.spacing.create(
+              top,
+              node.name ?? 'pos',
+            );
+            final bottomName = context.theme.spacing.create(
+              bottom,
+              node.name ?? 'pos',
+            );
             return {
-              'top': position.dy,
-              'bottom': layoutDesignSize.y - position.dy - size.height,
+              'top': StateReference(['theme', 'spacing', topName]),
+              'bottom': StateReference(['theme', 'spacing', bottomName]),
             };
           case figma.VerticalConstraint.bottom:
+            final bottom = layoutDesignSize.y - position.dy - size.height;
+            final bottomName = context.theme.spacing.create(
+              bottom,
+              node.name ?? 'pos',
+            );
             return {
-              'bottom': layoutDesignSize.y - position.dy - size.height,
+              'bottom': StateReference(['theme', 'spacing', bottomName]),
             };
           case figma.VerticalConstraint.top:
+            final top = position.dy;
+            final topName = context.theme.spacing.create(
+              top,
+              node.name ?? 'pos',
+            );
             return {
-              'top': position.dy,
+              'top': StateReference(['theme', 'spacing', topName]),
             };
           default:
             return {};

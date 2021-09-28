@@ -6,6 +6,7 @@ import 'package:flutter_figma/src/converters/helpers/expanded.dart';
 import 'package:flutter_figma/src/converters/helpers/opacity.dart';
 import 'package:flutter_figma/src/converters/helpers/padding.dart';
 import 'package:flutter_figma/src/helpers/api_extensions.dart';
+import 'package:flutter_figma/src/helpers/naming.dart';
 import 'package:rfw/formats.dart';
 import 'package:collection/collection.dart';
 

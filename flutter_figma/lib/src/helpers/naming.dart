@@ -1,14 +1,29 @@
 import 'package:recase/recase.dart';
 
+var _digit = RegExp(r'[0-9]');
+
 extension NamingExtensions on String {
   String asFieldName() {
     final cased = ReCase(this);
-    return cased.camelCase._removeSpecialCharacters();
+    final result = cased.camelCase._removeSpecialCharacters();
+
+    if (result.startsWith(_digit)) {
+      return 'd$result';
+    }
+
+    return result;
   }
 
   String asClassName({bool isPrivate = false}) {
     final cased = ReCase(this);
-    return (isPrivate ? '_' : '') + cased.pascalCase._removeSpecialCharacters();
+    final result =
+        (isPrivate ? '_' : '') + cased.pascalCase._removeSpecialCharacters();
+
+    if (result.startsWith(_digit)) {
+      return 'd$result';
+    }
+
+    return result;
   }
 
   String _removeSpecialCharacters() {

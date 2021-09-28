@@ -9,3 +9,4 @@ export 'src/remote/services/remote.dart';
 export 'src/remote/services/storage.dart';
 
 export 'src/converters/library/library.dart';
+export 'src/converters/library/component.dart';

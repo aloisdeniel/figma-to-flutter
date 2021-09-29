@@ -6,6 +6,7 @@ import 'package:flutter_figma_generator/src/generator.dart';
 import 'package:flutter_figma_generator/src/helpers/naming.dart';
 import 'package:rfw/dart/model.dart';
 
+import 'helpers/data.dart';
 import 'helpers/nodes.dart';
 import 'helpers/theme.dart';
 import 'helpers/widget.dart';
@@ -25,10 +26,11 @@ class DartFigmaCodeGenerator extends FigmaCodeGenerator {
         ])
         ..directives.addAll([
           Directive.import('package:flutter/widgets.dart'),
+          Directive.import('package:flutter_figma/flutter_figma.dart'),
         ]),
     );
 
-    final emitter = DartEmitter();
+    final emitter = DartEmitter(useNullSafetySyntax: true);
     final source = '${dartLibrary.accept(emitter)}';
     return DartFormatter().format(source);
   }
@@ -69,21 +71,25 @@ class DartFigmaCodeGenerator extends FigmaCodeGenerator {
         buildBody: block.build(),
       ).build(),
       if (declaration.initialState != null) ...[
-        _widgetDataClass(declaration).build(),
+        ..._widgetDataClass(declaration),
         ..._widgetThemeClass(declaration),
       ],
     ];
   }
 
-  ClassBuilder _widgetDataClass(WidgetDeclaration declaration) {
+  List<Class> _widgetDataClass(WidgetDeclaration declaration) {
     final data = declaration.initialState!['data'];
-    return ClassBuilder()..name = '${declaration.name}Data'.asClassName();
+    return buildWidgetData(
+      name: declaration.name,
+      values: data,
+    );
   }
 
   List<Class> _widgetThemeClass(WidgetDeclaration declaration) {
     final theme = declaration.initialState!['theme'];
 
-    final builder = buildInheritedWidget(name: declaration.name);
+    final builder =
+        buildInheritedWidget(name: '${declaration.name}Theme'.asClassName());
     final dataBuilder = buildThemeData(name: declaration.name, values: theme);
     return [
       builder.build(),

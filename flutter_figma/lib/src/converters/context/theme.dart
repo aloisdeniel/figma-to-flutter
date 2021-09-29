@@ -46,7 +46,7 @@ class FigmaComponentTheme {
 
   DynamicMap toMap() {
     return {
-      'colors': colors.toMap(),
+      'color': colors.toMap(),
       'spacing': spacing.toMap(),
       'textStyles': textStyles.toMap(),
     };

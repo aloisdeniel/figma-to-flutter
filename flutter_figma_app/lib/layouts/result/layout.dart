@@ -65,7 +65,7 @@ class _ResultLayoutState extends State<ResultLayout> {
                   ),
                 ],
               ),
-            )
+            ),
           ],
         ),
       ),

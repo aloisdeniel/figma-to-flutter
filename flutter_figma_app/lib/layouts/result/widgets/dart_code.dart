@@ -4,6 +4,7 @@ import 'package:flutter_figma/flutter_figma.dart';
 import 'package:flutter_figma_app/state/result.dart';
 import 'package:flutter_figma_app/theme/data.dart';
 import 'package:flutter_figma_app/theme/theme.dart';
+import 'package:flutter_figma_app/widgets/highlight.dart';
 import 'package:flutter_figma_generator/flutter_figma_generator.dart';
 import 'package:flutter_highlight/flutter_highlight.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -51,9 +52,8 @@ class DartCode extends ConsumerWidget {
         componentSets: remoteLibrary.componentSets,
       ),
     );
-
     return SingleChildScrollView(
-      child: HighlightView(
+      child: SelectableHighlightView(
         source,
         language: 'dart',
         tabSize: 4,

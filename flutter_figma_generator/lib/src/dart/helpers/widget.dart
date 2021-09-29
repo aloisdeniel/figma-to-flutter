@@ -34,7 +34,6 @@ ClassBuilder buildStatelessWidget({
             Parameter(
               (b) => b
                 ..name = 'this.data'
-                ..required = true
                 ..defaultTo = Code('const $dataName()')
                 ..named = true,
             ),
@@ -81,6 +80,24 @@ ClassBuilder buildWidgetWithVariantFactories({
   builder.name = name;
   builder.extend = refer('StatelessWidget');
 
+  builder.constructors.add(
+    Constructor(
+      (c) => c
+        ..constant = true
+        ..optionalParameters.addAll([
+          Parameter(
+            (b) => b
+              ..name = 'key'
+              ..named = true
+              ..type = refer('Key?'),
+          ),
+        ])
+        ..initializers.addAll([
+          const Code('super(key: key)'),
+        ]),
+    ),
+  );
+
   for (var variant in variantNames) {
     final variantName = name + variant.asClassName();
     final dataName = '${variantName}Data';
@@ -90,6 +107,7 @@ ClassBuilder buildWidgetWithVariantFactories({
         (c) => c
           ..name = variant.asFieldName()
           ..factory = true
+          ..constant = true
           ..optionalParameters.addAll(
             [
               Parameter(
@@ -101,9 +119,7 @@ ClassBuilder buildWidgetWithVariantFactories({
               Parameter(
                 (b) => b
                   ..name = 'data'
-                  ..required = true
                   ..type = refer(dataName)
-                  ..defaultTo = Code('const $dataName()')
                   ..named = true,
               ),
               Parameter(
@@ -147,7 +163,7 @@ ClassBuilder buildInheritedWidget({
   builder.name = name.asClassName(isPrivate: isPrivate);
   builder.extend = refer('InheritedWidget');
 
-  final dataName = '${name}ThemeData'.asClassName();
+  final dataName = '${name}Data'.asClassName();
 
   builder.constructors.add(
     Constructor(
@@ -157,7 +173,7 @@ ClassBuilder buildInheritedWidget({
           [
             Parameter(
               (b) => b
-                ..name = 'Key'
+                ..name = 'key'
                 ..type = refer('Key?')
                 ..named = true,
             ),
@@ -203,7 +219,7 @@ ClassBuilder buildInheritedWidget({
           ),
         ])
         ..body = Code(
-            'return context.dependOnInheritedWidgetOfExactType<$name>()?.data ?? const $name();'),
+            'return context.dependOnInheritedWidgetOfExactType<$name>()?.data ?? const $dataName();'),
     ),
     Method(
       (b) => b
@@ -212,9 +228,9 @@ ClassBuilder buildInheritedWidget({
         ..requiredParameters.addAll([
           Parameter(
             (b) => b
-              ..name = 'context'
+              ..name = 'oldWidget'
               ..covariant = true
-              ..type = refer('oldWidget'),
+              ..type = refer(builder.name!),
           ),
         ])
         ..body = const Code(' return data != oldWidget.data;'),

@@ -79,7 +79,7 @@ Map<String, LocalWidgetBuilder> _coreWidgetsDefinitions(
             final pathData = source.v<String>(['geometry', i, 'path']);
             final windingRule =
                 source.v<String>(['geometry', i, 'windingRule']);
-            return _parseSvgPathData(pathData ?? '', windingRule);
+            return Geometry(pathData ?? '', windingRule: windingRule);
           })
         ];
 
@@ -230,19 +230,3 @@ abstract class _ArgumentDecoders {
     );
   },
   */
-
-Path _parseSvgPathData(String svg, String? windingRule) {
-  if (svg == '') {
-    return Path();
-  }
-
-  final SvgPathStringSource parser = SvgPathStringSource(svg);
-  final FlutterPathProxy path = FlutterPathProxy();
-  path.path.fillType =
-      windingRule == 'nonZero' ? PathFillType.nonZero : PathFillType.evenOdd;
-  final SvgPathNormalizer normalizer = SvgPathNormalizer();
-  for (PathSegmentData seg in parser.parseSegments()) {
-    normalizer.emitSegment(seg, path);
-  }
-  return path.path;
-}

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_figma/flutter_figma.dart';
 import 'package:flutter_figma_app/state/result.dart';
+import 'package:flutter_figma_app/widgets/resizable_view.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ResultPreview extends ConsumerWidget {
@@ -22,30 +23,21 @@ class ResultPreview extends ConsumerWidget {
     return ClipRect(
       child: () {
         if (selectedComponent is FigmaComponent) {
-          return RemoteWidgetPreview(
-            data: selectedComponent.defaultData,
-            fallbackBuilder: (context) => const Center(
-              child: CircularProgressIndicator(),
-            ),
-            remoteIdentifier: 'figma',
-            remoteWidgetName: selectedComponent.name,
-          );
-        }
-        if (selectedComponent is FigmaComponentSet) {
-          final selectedVariant = selectedComponent.variants.first;
-          return Center(
+          return Resizable(
+            initialSize: const Size(300, 300),
             child: RemoteWidgetPreview(
-              data: selectedVariant.defaultData,
+              data: selectedComponent.defaultData,
               fallbackBuilder: (context) => const Center(
                 child: CircularProgressIndicator(),
               ),
               remoteIdentifier: 'figma',
-              remoteWidgetName: selectedVariant.declaration.name,
+              remoteWidgetName: selectedComponent.name,
             ),
           );
         }
         if (selectedComponent is FigmaComponentVariant) {
-          return Center(
+          return Resizable(
+            initialSize: const Size(300, 300),
             child: RemoteWidgetPreview(
               data: selectedComponent.defaultData,
               fallbackBuilder: (context) => const Center(

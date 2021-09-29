@@ -11,28 +11,43 @@ List<Class> buildThemeData({
   builder.name = '${name}ThemeData'.asClassName();
 
   final colorClass = values is Map
-      ? buildThemeColorData(
+      ? _buildThemeColorData(
           name: name,
-          values: values['colors'],
+          values: values['color'],
         )
       : null;
-  builder.constructors.add(
-    Constructor(
-      (c) => c
-        ..constant = true
-        ..optionalParameters.addAll(
-          [
-            if (colorClass != null)
-              Parameter(
-                (b) => b
-                  ..name = 'this.color'
-                  ..named = true
-                  ..required = true
-                  ..defaultTo = Code('const ${colorClass.name}()'),
-              ),
-          ],
-        ),
-    ),
+
+  final spacingClass = values is Map
+      ? _buildThemeSpacingData(
+          name: name,
+          values: values['spacing'],
+        )
+      : null;
+  builder.constructors.addAll(
+    [
+      Constructor(
+        (c) => c
+          ..constant = true
+          ..optionalParameters.addAll(
+            [
+              if (colorClass != null)
+                Parameter(
+                  (b) => b
+                    ..name = 'this.color'
+                    ..named = true
+                    ..defaultTo = Code('const ${colorClass.name}()'),
+                ),
+              if (spacingClass != null)
+                Parameter(
+                  (b) => b
+                    ..name = 'this.spacing'
+                    ..named = true
+                    ..defaultTo = Code('const ${spacingClass.name}()'),
+                ),
+            ],
+          ),
+      ),
+    ],
   );
 
   builder.fields.addAll([
@@ -43,12 +58,23 @@ List<Class> buildThemeData({
           ..modifier = FieldModifier.final$
           ..type = refer(colorClass.name),
       ),
+    if (spacingClass != null)
+      Field(
+        (b) => b
+          ..name = 'spacing'
+          ..modifier = FieldModifier.final$
+          ..type = refer(spacingClass.name),
+      ),
   ]);
 
-  return [builder.build(), if (colorClass != null) colorClass];
+  return [
+    builder.build(),
+    if (colorClass != null) colorClass,
+    if (spacingClass != null) spacingClass,
+  ];
 }
 
-Class? buildThemeColorData({
+Class? _buildThemeColorData({
   required String name,
   required Object? values,
 }) {
@@ -69,8 +95,7 @@ Class? buildThemeColorData({
                   (b) => b
                     ..name = 'this.' + (entry.key as String).asFieldName()
                     ..named = true
-                    ..required = true
-                    ..defaultTo = Code(buildColor(entry.value)!),
+                    ..defaultTo = Code(ArgumentEncoders.color(entry.value)!),
                 ))
           ],
         ),
@@ -83,6 +108,46 @@ Class? buildThemeColorData({
             ..name = (entry.key as String).asFieldName()
             ..modifier = FieldModifier.final$
             ..type = refer('Color'),
+        )),
+  ]);
+
+  return builder.build();
+}
+
+Class? _buildThemeSpacingData({
+  required String name,
+  required Object? values,
+}) {
+  if (values is! Map) {
+    return null;
+  }
+
+  final builder = ClassBuilder();
+  builder.name = '${name}ThemeSpacingData'.asClassName();
+
+  builder.constructors.add(
+    Constructor(
+      (c) => c
+        ..constant = true
+        ..optionalParameters.addAll(
+          [
+            ...values.entries.map((entry) => Parameter(
+                  (b) => b
+                    ..name = 'this.' + (entry.key as String).asFieldName()
+                    ..named = true
+                    ..defaultTo = Code(ArgumentEncoders.size(entry.value)!),
+                ))
+          ],
+        ),
+    ),
+  );
+
+  builder.fields.addAll([
+    ...values.entries.map((entry) => Field(
+          (b) => b
+            ..name = (entry.key as String).asFieldName()
+            ..modifier = FieldModifier.final$
+            ..type = refer('double'),
         )),
   ]);
 

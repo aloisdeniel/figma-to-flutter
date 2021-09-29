@@ -2,10 +2,48 @@ import 'dart:math';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:path_drawing/path_drawing.dart';
+import 'package:path_parsing/path_parsing.dart';
+
+class Geometry {
+  const Geometry(
+    this.data, {
+    this.windingRule,
+  });
+
+  final String data;
+  final String? windingRule;
+
+  Path toPath() {
+    if (data == '') {
+      return Path();
+    }
+
+    final SvgPathStringSource parser = SvgPathStringSource(data);
+    final FlutterPathProxy path = FlutterPathProxy();
+    path.path.fillType =
+        windingRule == 'nonZero' ? PathFillType.nonZero : PathFillType.evenOdd;
+    final SvgPathNormalizer normalizer = SvgPathNormalizer();
+    for (PathSegmentData seg in parser.parseSegments()) {
+      normalizer.emitSegment(seg, path);
+    }
+    return path.path;
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is Geometry &&
+        data == other.data &&
+        windingRule == other.windingRule;
+  }
+
+  @override
+  int get hashCode => hashValues(data, windingRule);
+}
 
 /// Renders a [geomotry] which consists of multiple [Path] with the given
 /// [fills] and [strokes].
-class PathView extends StatelessWidget {
+class PathView extends StatefulWidget {
   const PathView({
     Key? key,
     required this.geometry,
@@ -15,9 +53,24 @@ class PathView extends StatelessWidget {
           key: key,
         );
 
-  final List<Path> geometry;
+  final List<Geometry> geometry;
   final List<Decoration> fills;
   final List<BorderSide> strokes;
+
+  @override
+  State<PathView> createState() => _PathViewState();
+}
+
+class _PathViewState extends State<PathView> {
+  late List<Path> geometry;
+
+  @override
+  void initState() {
+    geometry = [
+      ...widget.geometry.map((x) => x.toPath()),
+    ];
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,8 +87,8 @@ class PathView extends StatelessWidget {
         child: CustomPaint(
           painter: _Painter(
             geometry: geometry,
-            fills: fills,
-            strokes: strokes,
+            fills: widget.fills,
+            strokes: widget.strokes,
           ),
         ),
       ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_figma_generator/src/dart/helpers/arguments.dart';
 import 'package:rfw/dart/model.dart';
+import 'package:collection/collection.dart';
 
 String buildNode(BlobNode node) {
   if (node is ConstructorCall) {
@@ -28,6 +29,16 @@ String buildConstructorCall(ConstructorCall node) {
     if (value != null) result.writeln('$name: $value,');
   }
 
+  void listArg(String name, List<String>? items) {
+    if (items != null) {
+      result.writeln('$name: [');
+      for (var item in items) {
+        result.writeln('$item,');
+      }
+      result.writeln('],');
+    }
+  }
+
   void reqArg(String value) {
     result.writeln('$value,');
   }
@@ -40,20 +51,60 @@ String buildConstructorCall(ConstructorCall node) {
   void childrenArg() {
     final children = node.arguments['children'] as List?;
     if (children != null) {
-      result.writeln('children: [');
-      for (BlobNode? child in children) {
-        if (child != null) result.writeln('${buildNode(child)},');
-      }
-      result.writeln('],');
+      listArg(
+        'children',
+        [
+          ...children.map((child) => buildNode(child)),
+        ],
+      );
     }
   }
 
   switch (node.name) {
+    case 'PathView':
+      instance('PathView', () {
+        final geometry = node.arguments['geometry'] as List?;
+        if (geometry != null && geometry.isNotEmpty) {
+          listArg(
+            'geometry',
+            [
+              ...geometry
+                  .map((child) => ArgumentEncoders.geometry(child))
+                  .whereNotNull(),
+            ],
+          );
+        }
+
+        final fills = node.arguments['fills'] as List?;
+        if (fills != null && fills.isNotEmpty) {
+          listArg(
+            'fills',
+            [
+              ...fills
+                  .map((child) => ArgumentEncoders.decoration(child))
+                  .whereNotNull(),
+            ],
+          );
+        }
+
+        final strokes = node.arguments['strokes'] as List?;
+        if (strokes != null && strokes.isNotEmpty) {
+          listArg(
+            'strokes',
+            [
+              ...strokes
+                  .map((child) => ArgumentEncoders.borderSide(child))
+                  .whereNotNull(),
+            ],
+          );
+        }
+      });
+      break;
     case 'SmoothContainer':
       instance('Container', () {
         arg(
           'decoration',
-          buildDecoration(node.arguments['decoration']),
+          ArgumentEncoders.decoration(node.arguments['decoration']),
         );
 
         childArg();
@@ -64,15 +115,18 @@ String buildConstructorCall(ConstructorCall node) {
       instance(node.name, () {
         arg(
           'mainAxisSize',
-          buildEnum<MainAxisSize>(node.arguments['mainAxisSize']),
+          ArgumentEncoders.enumeration<MainAxisSize>(
+              node.arguments['mainAxisSize']),
         );
         arg(
           'crossAxisAlignment',
-          buildEnum<CrossAxisAlignment>(node.arguments['crossAxisAlignment']),
+          ArgumentEncoders.enumeration<CrossAxisAlignment>(
+              node.arguments['crossAxisAlignment']),
         );
         arg(
           'mainAxisAlignment',
-          buildEnum<MainAxisAlignment>(node.arguments['mainAxisAlignment']),
+          ArgumentEncoders.enumeration<MainAxisAlignment>(
+              node.arguments['mainAxisAlignment']),
         );
         childrenArg();
       });
@@ -80,7 +134,7 @@ String buildConstructorCall(ConstructorCall node) {
     case 'Text':
       instance(node.name, () {
         reqArg(
-          buildString(node.arguments['text']) ?? 'null',
+          ArgumentEncoders.string(node.arguments['text']) ?? 'null',
         );
         childArg();
       });
@@ -89,7 +143,7 @@ String buildConstructorCall(ConstructorCall node) {
       instance(node.name, () {
         arg(
           'padding',
-          buildEdgeInsets(node.arguments['padding']),
+          ArgumentEncoders.edgeInsets(node.arguments['padding']),
         );
         childArg();
       });
@@ -98,32 +152,32 @@ String buildConstructorCall(ConstructorCall node) {
       instance(node.name, () {
         arg(
           'width',
-          buildSize(node.arguments['width']),
+          ArgumentEncoders.size(node.arguments['width']),
         );
         arg(
           'height',
-          buildSize(node.arguments['height']),
+          ArgumentEncoders.size(node.arguments['height']),
         );
         childArg();
       });
       break;
     case 'Positioned':
-      instance(node.name, () {
+      instance('PositionedDirectional', () {
         arg(
           'start',
-          buildSize(node.arguments['start']),
+          ArgumentEncoders.size(node.arguments['start']),
         );
         arg(
           'end',
-          buildSize(node.arguments['end']),
+          ArgumentEncoders.size(node.arguments['end']),
         );
         arg(
           'top',
-          buildSize(node.arguments['top']),
+          ArgumentEncoders.size(node.arguments['top']),
         );
         arg(
           'bottom',
-          buildSize(node.arguments['bottom']),
+          ArgumentEncoders.size(node.arguments['bottom']),
         );
         childArg();
       });

@@ -20,6 +20,7 @@ class EnterToken extends ConsumerWidget {
       children: [
         fileId.map(
           data: (data) => AppTextField(
+            obscureText: true,
             initialText: data.value ?? '',
             onChanged: (v) => ref.read(figma.apiToken.value.notifier).update(v),
             hintText: 'Figma API Token',

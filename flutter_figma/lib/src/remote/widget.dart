@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_figma/flutter_figma.dart';
 import 'package:flutter_figma/src/helpers/deep_copy.dart';
-import 'package:flutter_figma/src/rfw_addons/widgets.dart';
+import 'package:flutter_figma/src/rfw/widgets.dart';
 import 'package:rfw/rfw.dart' as rfw;
 import 'package:rfw/rfw.dart';
 import 'package:collection/collection.dart';
@@ -83,7 +83,7 @@ class RemoteWidgetPreview extends StatefulWidget {
   final Map<String, Object?> data;
   final WidgetBuilder fallbackBuilder;
   final RemoteEventHandler? onRemoteEvent;
-  final ComponentRenderer? renderer;
+  final InstanceRenderer? renderer;
 
   @override
   _RemoteState createState() => _RemoteState();
@@ -130,8 +130,8 @@ class _RemoteState extends State<RemoteWidgetPreview> {
         createCoreWidgets(),
       );
       runtime.update(
-        const LibraryName(<String>['addons', 'widgets']),
-        createCoreAddonsWidgets(
+        const LibraryName(<String>['flutter_figma']),
+        createFlutterFigmaWidgets(
           widget.renderer ?? (render, name, variants, instanceName) => render(),
         ),
       );

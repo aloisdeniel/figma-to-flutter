@@ -48,7 +48,7 @@ class FigmaRemoteLibrary extends RemoteWidgetLibrary {
         LibraryName(<String>['core', 'widgets']),
       ),
       const Import(
-        LibraryName(<String>['addons', 'widgets']),
+        LibraryName(<String>['flutter_figma']),
       ),
     ];
 
@@ -81,6 +81,7 @@ class FigmaRemoteLibrary extends RemoteWidgetLibrary {
             variants.add(
               FigmaComponentVariant(
                 figmaNode: child,
+                componentName: componentName,
                 variants: properties,
                 defaultData: defaultData,
                 defaultTheme: defaultTheme,

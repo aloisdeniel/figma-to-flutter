@@ -38,15 +38,18 @@ class FigmaComponentTheme {
   FigmaComponentTheme(FigmaComponentContext context)
       : colors = FigmaResourceTheme<num>('color', context),
         spacing = FigmaResourceTheme<num>('spacing', context),
+        images = FigmaResourceTheme<String>('image', context),
         textStyles = FigmaResourceTheme<DynamicMap>('textStyles', context);
 
   final FigmaResourceTheme<num> colors;
+  final FigmaResourceTheme<String> images;
   final FigmaResourceTheme<num> spacing;
   final FigmaResourceTheme<DynamicMap> textStyles;
 
   DynamicMap toMap() {
     return {
       'color': colors.toMap(),
+      'image': images.toMap(),
       'spacing': spacing.toMap(),
       'textStyles': textStyles.toMap(),
     };

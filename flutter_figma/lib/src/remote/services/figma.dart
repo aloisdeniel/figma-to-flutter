@@ -35,10 +35,35 @@ class FigmaLibraryClient extends LibraryClient {
   }
 
   Future<figma.FileResponse> _refreshFile() async {
-    final uri = Uri.https(
+    /// 1. Get component set node ids to only get those ones
+    var uri = Uri.https(
+      figma.base,
+      '${_api.apiVersion}/files/$fileId/component_sets',
+      const figma.FigmaQuery(geometry: 'paths').params,
+    );
+    final componentSets = await _api.authenticatedGet(uri.toString());
+
+    /// 2. Get component node ids to only get those ones
+    uri = Uri.https(
+      figma.base,
+      '${_api.apiVersion}/files/$fileId/components',
+      const figma.FigmaQuery(geometry: 'paths').params,
+    );
+    final components = await _api.authenticatedGet(uri.toString());
+
+    final nodeIds = <String>[
+      ...componentSets['meta']['component_sets'].map((x) => x['node_id']),
+      ...components['meta']['components'].map((x) => x['node_id']),
+    ];
+
+    /// 2. Get components nodes with file info
+    uri = Uri.https(
       figma.base,
       '${_api.apiVersion}/files/$fileId',
-      const figma.FigmaQuery(geometry: 'paths').params,
+      figma.FigmaQuery(
+        geometry: 'paths',
+        ids: nodeIds,
+      ).params,
     );
     final json = await _api.authenticatedGet(uri.toString());
 

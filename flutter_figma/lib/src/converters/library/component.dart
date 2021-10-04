@@ -45,10 +45,12 @@ class FigmaComponentVariant extends FigmaComponentBase {
     required this.declaration,
     required this.defaultData,
     required this.defaultTheme,
+    required this.componentName,
   }) : super(figmaNode: figmaNode);
 
   @override
   String get name => declaration.name;
+  final String componentName;
   final Map<String, String> variants;
   final WidgetDeclaration declaration;
   final Map<String, Object?> defaultData;

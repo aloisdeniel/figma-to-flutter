@@ -1,0 +1,3 @@
+class RfwGeneratorOptions {
+  const RfwGeneratorOptions();
+}

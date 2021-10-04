@@ -6,69 +6,106 @@ import 'package:flutter_figma_generator/src/generator.dart';
 import 'package:flutter_figma_generator/src/helpers/naming.dart';
 import 'package:rfw/dart/model.dart';
 
+import 'encoders/nodes.dart';
 import 'helpers/data.dart';
-import 'helpers/nodes.dart';
+import 'helpers/read_dependencies.dart';
 import 'helpers/theme.dart';
 import 'helpers/widget.dart';
+import 'options.dart';
 
-class DartFigmaCodeGenerator extends FigmaCodeGenerator {
+class DartFigmaCodeGenerator extends FigmaCodeGenerator<DartGeneratorOptions> {
   @override
-  String generate(FigmaRemoteLibrary library) {
+  String generate({
+    required FigmaRemoteLibrary library,
+    required FigmaComponentBase component,
+    DartGeneratorOptions options = const DartGeneratorOptions(),
+  }) {
+    final fileName = component.name.asFileName();
     final dartLibrary = cb.Library(
       (b) => b
         ..body.addAll([
-          ..._widgetWithVariantsClasses(library.widgets),
-          ...library.widgets
-              .map(
-                (e) => _simpleWidgetClass(e),
-              )
-              .expand((element) => element),
+          if (component is FigmaComponentSet)
+            ..._widgetWithVariantsClasses(component.variants, component),
+          if (component is FigmaComponentVariant)
+            ..._simpleWidgetClass(component.declaration, component),
+          if (component is FigmaComponent)
+            ..._simpleWidgetClass(component.declaration, component),
         ])
         ..directives.addAll([
-          Directive.import('package:flutter/widgets.dart'),
-          Directive.import('package:flutter_figma/flutter_figma.dart'),
+          if (component is! FigmaComponentVariant) ...[
+            Directive.import('package:flutter/widgets.dart'),
+            Directive.import('package:flutter_figma/flutter_figma.dart'),
+          ],
+          if (component is FigmaComponentVariant) ...[
+            ...findComponentDependencies(component.declaration).map(
+              (e) => Directive.import('${e.asFileName()}.dart'),
+            ),
+            Directive.partOf('${component.componentName.asFileName()}.dart'),
+          ],
+          if (component is FigmaComponentSet) ...[
+            /// Files for components
+            ...component.variants
+                .map((e) => findComponentDependencies(e.declaration))
+                .expand((e) => e)
+                .toSet()
+                .map((e) => Directive.import('${e.asFileName()}.dart')),
+
+            /// Variant part files
+            ...component.variants.map(
+              (v) => Directive.part(
+                  '$fileName.${v.name.asVariantClassName().asFileName()}.dart'),
+            ),
+          ],
         ]),
     );
 
     final emitter = DartEmitter(useNullSafetySyntax: true);
+
     final source = '${dartLibrary.accept(emitter)}';
     return DartFormatter().format(source);
   }
 
-  List<Class> _widgetWithVariantsClasses(List<WidgetDeclaration> widgets) {
+  List<Class> _widgetWithVariantsClasses(
+      List<FigmaComponentVariant> widgets, FigmaComponentSet component) {
     final variantSets = <String, List<String>>{};
 
     for (var item in widgets) {
-      final splits = item.name.split('_');
-      if (splits.length > 2) {
-        final componentName = splits.first;
-        final variantClassname = splits.skip(1).join('_').asClassName();
-        final names = variantSets.putIfAbsent(componentName, () => <String>[]);
-        names.add(variantClassname);
-      }
+      final variantClassname = item.name.asVariantClassName();
+      final names =
+          variantSets.putIfAbsent(item.componentName, () => <String>[]);
+      names.add(variantClassname);
     }
 
     return [
       ...variantSets.entries.map(
-        (e) =>
-            buildWidgetWithVariantFactories(name: e.key, variantNames: e.value)
-                .build(),
+        (e) => buildWidgetWithVariantFactories(
+          name: e.key,
+          variantNames: e.value,
+          documentation: [
+            'Based on `${component.figmaName}` figma component',
+          ],
+        ).build(),
       ),
     ];
   }
 
   /// A stateless widget with no variants.
-  List<Class> _simpleWidgetClass(WidgetDeclaration declaration) {
+  List<Class> _simpleWidgetClass(
+      WidgetDeclaration declaration, FigmaComponentBase component) {
     final themeName = '${declaration.name}Theme'.asClassName();
     final block = BlockBuilder();
     block.statements
         .add(Code('final theme = this.theme ?? $themeName.of(context);'));
-    block.statements.add(Code('return ${buildNode(declaration.root)};'));
+    block.statements.add(Code('return ${NodeEncoder.node(declaration.root)};'));
 
     return [
       buildStatelessWidget(
         name: declaration.name,
+        initialState: declaration.initialState ?? {},
         buildBody: block.build(),
+        documentation: [
+          'Based on `${component.figmaName}` figma component',
+        ],
       ).build(),
       if (declaration.initialState != null) ...[
         ..._widgetDataClass(declaration),
@@ -78,10 +115,9 @@ class DartFigmaCodeGenerator extends FigmaCodeGenerator {
   }
 
   List<Class> _widgetDataClass(WidgetDeclaration declaration) {
-    final data = declaration.initialState!['data'];
     return buildWidgetData(
       name: declaration.name,
-      values: data,
+      initialState: declaration.initialState ?? {},
     );
   }
 

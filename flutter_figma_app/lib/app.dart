@@ -11,48 +11,53 @@ class EditorApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var theme = ThemeData.dark();
-    theme = theme.copyWith(
-      colorScheme: theme.colorScheme.copyWith(
-        primary: const MaterialColor(
-          0xFFFF4831,
-          {
-            50: Color(0xFFFF4831),
-            100: Color(0xFFFF4831),
-            200: Color(0xFFFF4831),
-            300: Color(0xFFFF4831),
-            400: Color(0xFFFF4831),
-            500: Color(0xFFFF4831),
-            600: Color(0xFFFF4831),
-            700: Color(0xFFFF4831),
-            800: Color(0xFFFF4831),
-            900: Color(0xFFFF4831),
-          },
-        ),
-        secondary: const MaterialColor(
-          0xFFFF4831,
-          {
-            50: Color(0xFFFF4831),
-            100: Color(0xFFFF4831),
-            200: Color(0xFFFF4831),
-            300: Color(0xFFFF4831),
-            400: Color(0xFFFF4831),
-            500: Color(0xFFFF4831),
-            600: Color(0xFFFF4831),
-            700: Color(0xFFFF4831),
-            800: Color(0xFFFF4831),
-            900: Color(0xFFFF4831),
-          },
-        ),
-      ),
-    );
     return AppTheme(
-      child: ProviderScope(
-        child: MaterialApp(
-          darkTheme: theme,
-          themeMode: ThemeMode.dark,
-          home: const HomeLayout(),
-        ),
+      child: Builder(
+        builder: (context) {
+          var theme = ThemeData.dark();
+          final appTheme = AppTheme.of(context);
+          theme = theme.copyWith(
+            colorScheme: theme.colorScheme.copyWith(
+              primary: MaterialColor(
+                appTheme.color.primary1.value,
+                {
+                  50: appTheme.color.primary1,
+                  100: appTheme.color.primary1,
+                  200: appTheme.color.primary1,
+                  300: appTheme.color.primary1,
+                  400: appTheme.color.primary1,
+                  500: appTheme.color.primary1,
+                  600: appTheme.color.primary1,
+                  700: appTheme.color.primary1,
+                  800: appTheme.color.primary1,
+                  900: appTheme.color.primary1,
+                },
+              ),
+              secondary: MaterialColor(
+                appTheme.color.primary1.value,
+                {
+                  50: appTheme.color.primary1,
+                  100: appTheme.color.primary1,
+                  200: appTheme.color.primary1,
+                  300: appTheme.color.primary1,
+                  400: appTheme.color.primary1,
+                  500: appTheme.color.primary1,
+                  600: appTheme.color.primary1,
+                  700: appTheme.color.primary1,
+                  800: appTheme.color.primary1,
+                  900: appTheme.color.primary1,
+                },
+              ),
+            ),
+          );
+          return ProviderScope(
+            child: MaterialApp(
+              darkTheme: theme,
+              themeMode: ThemeMode.dark,
+              home: const HomeLayout(),
+            ),
+          );
+        },
       ),
     );
   }

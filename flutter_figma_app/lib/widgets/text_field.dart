@@ -8,10 +8,12 @@ class AppTextField extends StatefulWidget {
     required this.initialText,
     required this.onChanged,
     this.hintText,
+    this.obscureText = false,
   }) : super(key: key);
 
   final String initialText;
   final String? hintText;
+  final bool obscureText;
   final ValueChanged<String> onChanged;
 
   @override
@@ -25,6 +27,7 @@ class _AppTextFieldState extends State<AppTextField> {
     final theme = AppTheme.of(context);
     return TextField(
       controller: controller,
+      obscureText: widget.obscureText,
       onChanged: widget.onChanged,
       style: theme.textStyle.code1,
       decoration: InputDecoration(

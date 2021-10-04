@@ -2,6 +2,8 @@ import 'package:collection/collection.dart';
 import 'package:figma/figma.dart' as figma;
 import 'package:flutter_figma/src/converters/context/context.dart';
 import 'package:flutter_figma/src/converters/library/library.dart';
+import 'package:flutter_figma/src/converters/wrappers/opacity.dart';
+import 'package:flutter_figma/src/converters/wrappers/transform.dart';
 import 'package:rfw/rfw.dart';
 
 import 'frame.dart' as frame;
@@ -39,8 +41,8 @@ BlobNode convert(FigmaComponentContext context, figma.Instance node) {
     }
   }
 
-  return ConstructorCall(
-    'ComponentRenderer',
+  BlobNode result = ConstructorCall(
+    'Instance',
     {
       'name': componentName,
       'instanceName': node.name,
@@ -53,4 +55,9 @@ BlobNode convert(FigmaComponentContext context, figma.Instance node) {
       'child': frame.convert(context, node, false),
     },
   );
+
+  result = wrapOpacity(result, node.opacity);
+  result = wrapTransform(result, node.relativeTransform);
+
+  return result;
 }

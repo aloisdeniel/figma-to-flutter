@@ -46,9 +46,12 @@ dependencies:
   flutter_svg: ^0.22.0
   path_icon: ^0.7.0
   freezed_annotation: ^0.14.3
+  flutter_spinkit: ^5.1.0
+  flutter_sticky_header: ^0.6.0
   gap: ^2.0.0
   highlight:
   flutter_highlight:
+  logging: ^1.0.2
 
 dependency_overrides:
   highlight:

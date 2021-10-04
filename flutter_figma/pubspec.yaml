@@ -20,6 +20,7 @@ dependencies:
     git: https://github.com/aloisdeniel/figma-1.git
   figma_squircle: ^0.5.3
   path_parsing: ^0.2.1
+  logging: ^1.0.2
 
 dev_dependencies:
   flutter_test:

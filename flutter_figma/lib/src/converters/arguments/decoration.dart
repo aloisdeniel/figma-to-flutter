@@ -23,17 +23,23 @@ Object? convertPaint(
       ? null
       : context.theme.colors
           .create(convertColor(stroke.color!, stroke.opacity ?? 1.0), name);
+
   final fillColorName =
       fill == null || fill.type != figma.PaintType.solid || fill.color == null
           ? null
           : context.theme.colors
               .create(convertColor(fill.color!, fill.opacity ?? 1.0), name);
 
+  final image = fill == null ||
+          fill.type != figma.PaintType.image ||
+          fill.imageRef == null
+      ? null
+      : context.theme.images.create('?', 'ref' + fill.imageRef!);
   return {
     if (fill != null) ...{
       if (fill.type == figma.PaintType.image && fill.imageRef != null)
         'image': {
-          'source': StateReference(['theme', 'images', fill.imageRef!]),
+          'source': image,
           'fit': () {
             switch (fill.scaleMode) {
               case figma.ScaleMode.fit:

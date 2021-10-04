@@ -25,13 +25,20 @@ class AppTabs extends StatelessWidget {
   Widget build(BuildContext context) {
     return MenuBar(
       children: [
-        ...items.asMap().entries.map(
-              (x) => AppTab(
-                title: x.value.title,
-                isSelected: x.key == selected,
-                onTap: () => onSelected(x.key),
-              ),
-            ),
+        Expanded(
+          child: ListView(
+            scrollDirection: Axis.horizontal,
+            children: [
+              ...items.asMap().entries.map(
+                    (x) => AppTab(
+                      title: x.value.title,
+                      isSelected: x.key == selected,
+                      onTap: () => onSelected(x.key),
+                    ),
+                  ),
+            ],
+          ),
+        ),
       ],
     );
   }

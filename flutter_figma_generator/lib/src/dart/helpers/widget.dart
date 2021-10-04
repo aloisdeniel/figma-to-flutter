@@ -3,11 +3,14 @@ import 'package:flutter_figma_generator/src/helpers/naming.dart';
 
 ClassBuilder buildStatelessWidget({
   required String name,
+  required Map<String, Object?> initialState,
   required Block buildBody,
+  List<String> documentation = const <String>[],
   bool isPrivate = false,
 }) {
   final builder = ClassBuilder();
   builder.name = name.asClassName(isPrivate: isPrivate);
+  builder.docs.addAll(documentation.map((x) => '/// $x'));
   // It has variants ? Then inherits from parent widget.
   final nameSpits = name.split('_');
   if (nameSpits.length > 1) {
@@ -16,8 +19,11 @@ ClassBuilder buildStatelessWidget({
     builder.extend = refer('StatelessWidget');
   }
 
-  final dataName = '${name}Data'.asClassName();
+  final dataTextName = '${name}TextData'.asClassName();
   final themeDataName = '${name}ThemeData'.asClassName();
+
+  final data = initialState['data'] as Map<String, Object?>?;
+  final text = data?['text'] as Map<String, Object?>?;
 
   builder.constructors.add(
     Constructor(
@@ -31,12 +37,13 @@ ClassBuilder buildStatelessWidget({
                 ..type = refer('Key?')
                 ..named = true,
             ),
-            Parameter(
-              (b) => b
-                ..name = 'this.data'
-                ..defaultTo = Code('const $dataName()')
-                ..named = true,
-            ),
+            if (text != null && text.isNotEmpty)
+              Parameter(
+                (b) => b
+                  ..name = 'this.text'
+                  ..defaultTo = Code('const $dataTextName()')
+                  ..named = true,
+              ),
             Parameter(
               (b) => b
                 ..name = 'this.theme'
@@ -55,12 +62,13 @@ ClassBuilder buildStatelessWidget({
         ..modifier = FieldModifier.final$
         ..type = refer(themeDataName + '?'),
     ),
-    Field(
-      (b) => b
-        ..name = 'data'
-        ..modifier = FieldModifier.final$
-        ..type = refer(dataName),
-    ),
+    if (text != null && text.isNotEmpty)
+      Field(
+        (b) => b
+          ..name = 'text'
+          ..modifier = FieldModifier.final$
+          ..type = refer(dataTextName),
+      ),
   ]);
 
   builder.methods.add(
@@ -73,11 +81,13 @@ ClassBuilder buildStatelessWidget({
 ClassBuilder buildWidgetWithVariantFactories({
   required String name,
   required List<String> variantNames,
+  List<String> documentation = const <String>[],
 }) {
   name = name.asClassName();
   final builder = ClassBuilder();
   builder.abstract = true;
   builder.name = name;
+  builder.docs.addAll(documentation.map((x) => '/// $x'));
   builder.extend = refer('StatelessWidget');
 
   builder.constructors.add(
@@ -157,10 +167,12 @@ Method buildWidgetBuildMethod(Block buildBody) {
 
 ClassBuilder buildInheritedWidget({
   required String name,
+  List<String> documentation = const <String>[],
   bool isPrivate = false,
 }) {
   final builder = ClassBuilder();
   builder.name = name.asClassName(isPrivate: isPrivate);
+  builder.docs.addAll(documentation.map((x) => '/// $x'));
   builder.extend = refer('InheritedWidget');
 
   final dataName = '${name}Data'.asClassName();

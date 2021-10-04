@@ -1,52 +1,20 @@
 import 'package:code_builder/code_builder.dart';
+import 'package:flutter_figma_generator/src/dart/encoders/arguments.dart';
 import 'package:flutter_figma_generator/src/helpers/naming.dart';
-
-import 'arguments.dart';
 
 List<Class> buildWidgetData({
   required String name,
-  required Object? values,
+  required Map<String, Object?> initialState,
 }) {
-  final builder = ClassBuilder();
-  builder.name = '${name}Data'.asClassName();
-
-  final textClass = values is Map
-      ? _buildTextData(
-          name: name,
-          values: values['text'],
-        )
-      : null;
-  builder.constructors.add(
-    Constructor(
-      (c) => c
-        ..constant = true
-        ..optionalParameters.addAll(
-          [
-            if (textClass != null)
-              Parameter(
-                (b) => b
-                  ..name = 'this.text'
-                  ..named = true
-                  ..defaultTo = Code('const ${textClass.name}()'),
-              ),
-          ],
-        ),
-    ),
-  );
-
-  builder.fields.addAll([
-    if (textClass != null)
-      Field(
-        (b) => b
-          ..name = 'text'
-          ..modifier = FieldModifier.final$
-          ..type = refer(textClass.name),
-      ),
-  ]);
+  final data = initialState['data'] as Map<String, Object?>?;
+  final text = data?['text'] as Map<String, Object?>?;
 
   return [
-    builder.build(),
-    if (textClass != null) textClass,
+    if (text != null && text.isNotEmpty)
+      _buildTextData(
+        name: name,
+        values: text,
+      )!,
   ];
 }
 

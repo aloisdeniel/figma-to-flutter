@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'loader.dart';
+
 class AsyncLayout<T> extends StatelessWidget {
   const AsyncLayout({
     Key? key,
@@ -17,7 +19,7 @@ class AsyncLayout<T> extends StatelessWidget {
     return value.map(
       data: (data) => builder(context, data.value, null),
       loading: (_) => const Center(
-        child: CircularProgressIndicator(),
+        child: AppLoader(),
       ),
       error: (error) => Center(
         child: Text(

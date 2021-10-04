@@ -1,7 +1,8 @@
 import 'package:figma/figma.dart' as figma;
 import 'package:flutter_figma/src/converters/arguments/text_style.dart';
 import 'package:flutter_figma/src/converters/context/context.dart';
-import 'package:flutter_figma/src/converters/helpers/opacity.dart';
+import 'package:flutter_figma/src/converters/wrappers/opacity.dart';
+import 'package:flutter_figma/src/converters/wrappers/transform.dart';
 import 'package:rfw/formats.dart';
 
 BlobNode convert(FigmaComponentContext context, figma.Text node) {
@@ -39,6 +40,7 @@ BlobNode convert(FigmaComponentContext context, figma.Text node) {
   );
 
   result = wrapOpacity(result, node.opacity);
+  result = wrapTransform(result, node.relativeTransform);
 
   return result;
 }

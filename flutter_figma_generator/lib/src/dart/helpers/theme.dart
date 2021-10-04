@@ -1,7 +1,6 @@
 import 'package:code_builder/code_builder.dart';
+import 'package:flutter_figma_generator/src/dart/encoders/arguments.dart';
 import 'package:flutter_figma_generator/src/helpers/naming.dart';
-
-import 'arguments.dart';
 
 List<Class> buildThemeData({
   required String name,

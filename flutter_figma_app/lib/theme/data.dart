@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_figma/flutter_figma.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'data.freezed.dart';
@@ -10,6 +11,7 @@ class AppThemeData with _$AppThemeData {
     required AppThemeColorData color,
     required AppThemeEdgeInsetsData edgeInsets,
     required AppThemeTextStyleData textStyle,
+    required AppThemeBorderRadiusData borderRadius,
   }) = _AppThemeData;
 
   factory AppThemeData.fallback() {
@@ -17,6 +19,7 @@ class AppThemeData with _$AppThemeData {
       color: AppThemeColorData(),
       edgeInsets: AppThemeEdgeInsetsData(),
       textStyle: AppThemeTextStyleData(),
+      borderRadius: AppThemeBorderRadiusData(),
     );
   }
 }
@@ -28,7 +31,7 @@ class AppThemeColorData with _$AppThemeColorData {
     @Default(Color(0xFF211F2D)) Color background2,
     @Default(Color(0xFF282536)) Color background3,
     @Default(Color(0xFFFFFFFF)) Color foreground1,
-    @Default(Color(0xFFFF4831)) Color primary1,
+    @Default(Color(0xFF37E5A5)) Color primary1,
     @Default(Color(0xFF6AB8FF)) Color secondary1,
     @Default(Color(0xFFAE6FFF)) Color thirdary1,
   }) = _AppThemeColorData;
@@ -44,6 +47,39 @@ class AppThemeEdgeInsetsData with _$AppThemeEdgeInsetsData {
 }
 
 @freezed
+class AppThemeBorderRadiusData with _$AppThemeBorderRadiusData {
+  const factory AppThemeBorderRadiusData({
+    @Default(
+      SmoothBorderRadius.all(
+        SmoothRadius(
+          cornerRadius: 2,
+          cornerSmoothing: 1,
+        ),
+      ),
+    )
+        SmoothBorderRadius small,
+    @Default(
+      SmoothBorderRadius.all(
+        SmoothRadius(
+          cornerRadius: 4,
+          cornerSmoothing: 1,
+        ),
+      ),
+    )
+        SmoothBorderRadius regular,
+    @Default(
+      SmoothBorderRadius.all(
+        SmoothRadius(
+          cornerRadius: 8,
+          cornerSmoothing: 1,
+        ),
+      ),
+    )
+        SmoothBorderRadius big,
+  }) = _AppThemeBorderRadiusData;
+}
+
+@freezed
 class AppThemeTextStyleData with _$AppThemeTextStyleData {
   const factory AppThemeTextStyleData({
     @Default(
@@ -55,6 +91,15 @@ class AppThemeTextStyleData with _$AppThemeTextStyleData {
       ),
     )
         TextStyle body1,
+    @Default(
+      TextStyle(
+        fontFamily: 'Poppins',
+        fontSize: 10,
+        decoration: TextDecoration.none,
+        fontWeight: FontWeight.w400,
+      ),
+    )
+        TextStyle body2,
     @Default(
       TextStyle(
         fontFamily: 'Poppins',

@@ -1,33 +1,57 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_figma/flutter_figma.dart';
+import 'package:flutter_figma_generator/src/dart/context.dart';
 import 'package:flutter_figma_generator/src/dart/helpers/instance_builder.dart';
 import 'package:flutter_figma_generator/src/helpers/naming.dart';
 import 'package:rfw/dart/model.dart';
 import 'package:collection/collection.dart';
 
+import '../options.dart';
 import 'arguments.dart';
 
 abstract class NodeEncoder {
-  static String node(BlobNode node) {
+  static String node(
+    DartGeneratorContext context,
+    BlobNode node,
+  ) {
     if (node is ConstructorCall) {
-      return constructorCall(node);
+      return constructorCall(
+        context,
+        node,
+      );
     }
     if (node is StateReference) {
-      return stateReference(node);
+      return stateReference(
+        context,
+        node,
+      );
     }
     return 'null';
   }
 
-  static String stateReference(StateReference node) {
+  static String stateReference(
+    DartGeneratorContext context,
+    StateReference node,
+  ) {
     return node.parts.join('.');
   }
 
-  static String constructorCall(ConstructorCall node) {
+  static String constructorCall(
+    DartGeneratorContext context,
+    ConstructorCall node,
+  ) {
     final builder = InstanceBuilder(node.name);
 
     void child() {
       final child = node.arguments['child'] as BlobNode?;
-      if (child != null) builder.named('child', NodeEncoder.node(child));
+      if (child != null) {
+        builder.named(
+            'child',
+            NodeEncoder.node(
+              context,
+              child,
+            ));
+      }
     }
 
     void children() {
@@ -36,7 +60,10 @@ abstract class NodeEncoder {
         builder.namedList(
           'children',
           [
-            ...children.map((child) => NodeEncoder.node(child)),
+            ...children.map((child) => NodeEncoder.node(
+                  context,
+                  child,
+                )),
           ],
         );
       }
@@ -50,7 +77,7 @@ abstract class NodeEncoder {
             'geometry',
             [
               ...geometry
-                  .map((child) => ArgumentEncoders.geometry(child))
+                  .map((child) => ArgumentEncoders.geometry(context, child))
                   .whereNotNull(),
             ],
           );
@@ -62,7 +89,7 @@ abstract class NodeEncoder {
             'fills',
             [
               ...fills
-                  .map((child) => ArgumentEncoders.decoration(child))
+                  .map((child) => ArgumentEncoders.decoration(context, child))
                   .whereNotNull(),
             ],
           );
@@ -74,7 +101,7 @@ abstract class NodeEncoder {
             'strokes',
             [
               ...strokes
-                  .map((child) => ArgumentEncoders.borderSide(child))
+                  .map((child) => ArgumentEncoders.borderSide(context, child))
                   .whereNotNull(),
             ],
           );
@@ -84,35 +111,40 @@ abstract class NodeEncoder {
         builder.name = 'Container';
         builder.named(
           'decoration',
-          ArgumentEncoders.decoration(node.arguments['decoration']),
+          ArgumentEncoders.decoration(context, node.arguments['decoration']),
         );
         child();
         break;
       case 'Container':
         builder.named(
           'decoration',
-          ArgumentEncoders.decoration(node.arguments['decoration']),
+          ArgumentEncoders.decoration(context, node.arguments['decoration']),
         );
         child();
         break;
       case 'ClipRRect':
         builder.named(
           'borderRadius',
-          ArgumentEncoders.borderRadius(node.arguments['borderRadius']),
+          ArgumentEncoders.borderRadius(
+              context, node.arguments['borderRadius']),
         );
         child();
         break;
       case 'BackdropFilter':
         builder.named(
           'filter',
-          ArgumentEncoders.imageFilter(node.arguments['filter']),
+          ArgumentEncoders.imageFilter(context, node.arguments['filter']),
         );
         child();
         break;
       case 'Transform':
         builder.named(
+          'alignment',
+          ArgumentEncoders.alignment(context, node.arguments['alignment']),
+        );
+        builder.named(
           'transform',
-          ArgumentEncoders.matrix4(node.arguments['transform']),
+          ArgumentEncoders.matrix4(context, node.arguments['transform']),
         );
         child();
         break;
@@ -135,34 +167,44 @@ abstract class NodeEncoder {
         builder.named(
           'mainAxisSize',
           ArgumentEncoders.enumeration<MainAxisSize>(
-              node.arguments['mainAxisSize']),
+              context, node.arguments['mainAxisSize']),
         );
         builder.named(
           'crossAxisAlignment',
           ArgumentEncoders.enumeration<CrossAxisAlignment>(
-              node.arguments['crossAxisAlignment']),
+              context, node.arguments['crossAxisAlignment']),
         );
         builder.named(
           'mainAxisAlignment',
           ArgumentEncoders.enumeration<MainAxisAlignment>(
-              node.arguments['mainAxisAlignment']),
+              context, node.arguments['mainAxisAlignment']),
         );
         children();
         break;
       case 'Text':
         builder.positional(
-          ArgumentEncoders.string(node.arguments['text']) ?? 'null',
+          ArgumentEncoders.string(context, node.arguments['text']) ?? 'null',
         );
         builder.named(
           'style',
-          ArgumentEncoders.textStyle(node.arguments['style']),
+          ArgumentEncoders.textStyle(context, node.arguments['style']),
+        );
+        child();
+        break;
+      case 'ColoredText':
+        builder.positional(
+          ArgumentEncoders.string(context, node.arguments['text']) ?? 'null',
+        );
+        builder.named(
+          'style',
+          '${ArgumentEncoders.textStyle(context, node.arguments['style']) ?? 'const TextStyle()'}.copyWith(color: ${ArgumentEncoders.color(context, node.arguments['color'])},)',
         );
         child();
         break;
       case 'Padding':
         builder.named(
           'padding',
-          ArgumentEncoders.edgeInsets(node.arguments['padding']),
+          ArgumentEncoders.edgeInsets(context, node.arguments['padding']),
         );
         child();
 
@@ -170,30 +212,30 @@ abstract class NodeEncoder {
       case 'SizedBox':
         builder.named(
           'width',
-          ArgumentEncoders.size(node.arguments['width']),
+          ArgumentEncoders.size(context, node.arguments['width']),
         );
         builder.named(
           'height',
-          ArgumentEncoders.size(node.arguments['height']),
+          ArgumentEncoders.size(context, node.arguments['height']),
         );
         child();
         break;
       case 'Positioned':
         builder.named(
           'start',
-          ArgumentEncoders.size(node.arguments['start']),
+          ArgumentEncoders.spacing(context, node.arguments['start']),
         );
         builder.named(
           'end',
-          ArgumentEncoders.size(node.arguments['end']),
+          ArgumentEncoders.spacing(context, node.arguments['end']),
         );
         builder.named(
           'top',
-          ArgumentEncoders.size(node.arguments['top']),
+          ArgumentEncoders.spacing(context, node.arguments['top']),
         );
         builder.named(
           'bottom',
-          ArgumentEncoders.size(node.arguments['bottom']),
+          ArgumentEncoders.spacing(context, node.arguments['bottom']),
         );
         child();
         break;

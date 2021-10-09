@@ -1,7 +1,9 @@
 import 'package:code_builder/code_builder.dart';
+import 'package:flutter_figma_generator/flutter_figma_generator.dart';
 import 'package:flutter_figma_generator/src/helpers/naming.dart';
 
-ClassBuilder buildStatelessWidget({
+ClassBuilder buildStatelessWidget(
+  DartGeneratorContext context, {
   required String name,
   required Map<String, Object?> initialState,
   required Block buildBody,
@@ -37,7 +39,7 @@ ClassBuilder buildStatelessWidget({
                 ..type = refer('Key?')
                 ..named = true,
             ),
-            if (text != null && text.isNotEmpty)
+            if (context.options.data.text && text != null && text.isNotEmpty)
               Parameter(
                 (b) => b
                   ..name = 'this.text'
@@ -62,7 +64,7 @@ ClassBuilder buildStatelessWidget({
         ..modifier = FieldModifier.final$
         ..type = refer(themeDataName + '?'),
     ),
-    if (text != null && text.isNotEmpty)
+    if (context.options.data.text && text != null && text.isNotEmpty)
       Field(
         (b) => b
           ..name = 'text'

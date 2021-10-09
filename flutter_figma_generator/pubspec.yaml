@@ -17,8 +17,12 @@ dependencies:
   code_builder: ^4.1.0
   dart_style: ^2.2.0
   recase: ^4.0.0
+  equatable: ^2.0.3
+  copy_with_extension: ^2.0.2
 
 dev_dependencies:
+  build_runner: ^2.0.0
+  copy_with_extension_gen: ^2.0.2
   flutter_test:
     sdk: flutter
   flutter_lints: ^1.0.0

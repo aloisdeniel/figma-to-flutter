@@ -14,16 +14,19 @@ class FigmaLibraryClient extends LibraryClient {
   Future<FigmaRemoteLibrary>? _figmaUpdate;
   late final figma.FigmaClient _api;
 
-  Future<FigmaRemoteLibrary> _refresh() async {
-    final file = await _refreshFile();
-    final images = await _refreshImages();
+  Future<FigmaRemoteLibrary> _refresh(
+    Library library, {
+    List<String>? componentsId,
+  }) async {
+    final file = await _refreshFile(library, componentsId: componentsId);
+    final images = await _refreshImages(library);
     return FigmaRemoteLibrary(
       file: file,
       images: images,
     );
   }
 
-  Future<Map<String, String>?> _refreshImages() async {
+  Future<Map<String, String>?> _refreshImages(Library library) async {
     final uri = Uri.https(
       figma.base,
       '${_api.apiVersion}/files/$fileId/images',
@@ -34,30 +37,15 @@ class FigmaLibraryClient extends LibraryClient {
     };
   }
 
-  Future<figma.FileResponse> _refreshFile() async {
-    /// 1. Get component set node ids to only get those ones
-    var uri = Uri.https(
-      figma.base,
-      '${_api.apiVersion}/files/$fileId/component_sets',
-      const figma.FigmaQuery(geometry: 'paths').params,
-    );
-    final componentSets = await _api.authenticatedGet(uri.toString());
-
-    /// 2. Get component node ids to only get those ones
-    uri = Uri.https(
-      figma.base,
-      '${_api.apiVersion}/files/$fileId/components',
-      const figma.FigmaQuery(geometry: 'paths').params,
-    );
-    final components = await _api.authenticatedGet(uri.toString());
-
-    final nodeIds = <String>[
-      ...componentSets['meta']['component_sets'].map((x) => x['node_id']),
-      ...components['meta']['components'].map((x) => x['node_id']),
-    ];
+  Future<figma.FileResponse> _refreshFile(
+    Library library, {
+    List<String>? componentsId,
+  }) async {
+    final nodeIds = componentsId ??
+        (await getComponents(library)).map((e) => e.id).toList();
 
     /// 2. Get components nodes with file info
-    uri = Uri.https(
+    final uri = Uri.https(
       figma.base,
       '${_api.apiVersion}/files/$fileId',
       figma.FigmaQuery(
@@ -78,9 +66,70 @@ class FigmaLibraryClient extends LibraryClient {
   }
 
   @override
-  Future<RemoteWidgetLibrary?> getLibrary(Library library) async {
-    _figmaUpdate ??= _refresh();
-    final library = await _figmaUpdate;
-    return library;
+  Future<RemoteWidgetLibrary?> getLibrary(
+    Library library, {
+    List<String>? componentsId,
+  }) async {
+    _figmaUpdate ??= _refresh(library, componentsId: componentsId);
+    final remote = await _figmaUpdate;
+    return remote;
+  }
+
+  @override
+  Future<List<LibraryComponent>> getComponents(Library library) async {
+    /// 1. Get component set node ids to only get those ones
+    var uri = Uri.https(
+      figma.base,
+      '${_api.apiVersion}/files/$fileId/component_sets',
+    );
+    final componentSets = await _api.authenticatedGet(uri.toString());
+
+    /// 2. Get component node ids to only get those ones
+    uri = Uri.https(
+      figma.base,
+      '${_api.apiVersion}/files/$fileId/components',
+    );
+    final components = await _api.authenticatedGet(uri.toString());
+
+    final result = <LibraryComponent>[
+      ...componentSets['meta']['component_sets'].map(
+        (x) => LibraryComponent(
+          x['node_id'],
+          x['name'],
+        ),
+      ),
+      ...components['meta']['components'].map(
+        (x) => LibraryComponent(
+          x['node_id'],
+          x['name'],
+        ),
+      ),
+    ];
+
+    if (result.isEmpty) {
+      // If no published component, then we load the entire file to extract
+      // components
+      final uri = Uri.https(
+        figma.base,
+        '${_api.apiVersion}/files/$fileId',
+      );
+      final json = await _api.authenticatedGet(uri.toString());
+      return <LibraryComponent>[
+        ...json['componentSets'].entries.map(
+              (x) => LibraryComponent(
+                x.key,
+                x.value['name'],
+              ),
+            ),
+        ...json['components'].entries.map(
+              (x) => LibraryComponent(
+                x.key,
+                x.value['name'],
+              ),
+            ),
+      ];
+    }
+
+    return result;
   }
 }

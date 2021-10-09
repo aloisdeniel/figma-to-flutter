@@ -72,7 +72,10 @@ class StorageClient extends LibraryClient {
   }
 
   @override
-  Future<RemoteWidgetLibrary> getLibrary(Library library) async {
+  Future<RemoteWidgetLibrary> getLibrary(
+    Library library, {
+    List<String>? componentsId,
+  }) async {
     final dir = await libraryDirectory(library.identifier);
     final filePath = path.joinAll([
       dir.path,
@@ -103,5 +106,11 @@ class StorageClient extends LibraryClient {
   Future<List<Library>> getLibraries() {
     return Future.value(
         _versions.entries.map((e) => Library(e.key, e.value)).toList());
+  }
+
+  @override
+  Future<List<LibraryComponent>> getComponents(Library library) {
+    // TODO: implement getComponents
+    throw UnimplementedError();
   }
 }

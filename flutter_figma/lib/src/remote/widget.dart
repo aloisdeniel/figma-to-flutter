@@ -112,11 +112,14 @@ class _RemoteState extends State<RemoteWidgetPreview> {
 
       final updatedStateDeclaration = WidgetDeclaration(
         declaration.name,
-        deepMergeMap(
-          declaration.initialState ?? const <String, dynamic>{},
-          {
-            'data': widget.data,
-          },
+        resolveStateReferences(
+          deepMergeMap(
+                declaration.initialState ?? const <String, dynamic>{},
+                {
+                  'data': widget.data,
+                },
+              ) ??
+              const <String, dynamic>{},
         ),
         declaration.root,
       );
@@ -171,4 +174,43 @@ class _RemoteState extends State<RemoteWidgetPreview> {
       return widget.fallbackBuilder(context);
     }
   }
+}
+
+Map<String, Object?> resolveStateReferences(Map<String, dynamic> state) {
+  return _resolveStateReferences(state, state);
+}
+
+Map<String, Object?> _resolveStateReferences(
+  Map<String, dynamic> state,
+  Map<String, dynamic> node,
+) {
+  final result = <String, Object?>{};
+  for (var entry in node.entries) {
+    final value = entry.value;
+    if (value is StateReference) {
+      result[entry.key] = _resolveReference(state, value.parts);
+    } else if (value is Map<String, dynamic>) {
+      result[entry.key] = _resolveStateReferences(state, value);
+    } else {
+      result[entry.key] = entry.value;
+    }
+  }
+
+  return result;
+}
+
+dynamic _resolveReference(Map<String, dynamic> state, List<Object> path) {
+  final res = state[path.first];
+
+  if (path.length == 1) {
+    return res;
+  }
+  if (res is Map<String, dynamic>) {
+    return _resolveReference(
+      res,
+      path.skip(1).toList(),
+    );
+  }
+
+  return null;
 }

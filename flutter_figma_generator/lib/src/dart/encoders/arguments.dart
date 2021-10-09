@@ -1,41 +1,45 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_figma/flutter_figma.dart';
+import 'package:flutter_figma_generator/src/dart/context.dart';
 import 'package:flutter_figma_generator/src/dart/helpers/instance_builder.dart';
 import 'package:flutter_figma_generator/src/helpers/round.dart';
 import 'package:rfw/dart/model.dart';
 
 abstract class ArgumentEncoders {
-  static String? string(Object? value) {
+  static String? string(DartGeneratorContext context, Object? value) {
+    if (value is StateReference && !context.options.data.text) {
+      value = context.resolveReference(value);
+    }
     if (value is String) return '\'$value\'';
     if (value is StateReference) return stateReference(value);
     return null;
   }
 
-  static String? boolean(Object? value) {
+  static String? boolean(DartGeneratorContext context, Object? value) {
     if (value is bool) return value ? 'true' : 'false';
     if (value is String) return value == 'true' ? 'true' : 'false';
     if (value is num) return value == 1 ? 'true' : 'false';
     return null;
   }
 
-  static String? rect(Object? value) {
+  static String? rect(DartGeneratorContext context, Object? value) {
     if (value is! Map) return null;
     final result = InstanceBuilder('Rect.fromLTWH');
-    result.positional(size(value['x']) ?? '0');
-    result.positional(size(value['y']) ?? '0');
-    result.positional(size(value['w']) ?? '0');
-    result.positional(size(value['h']) ?? '0');
+    result.positional(size(context, value['x']) ?? '0');
+    result.positional(size(context, value['y']) ?? '0');
+    result.positional(size(context, value['w']) ?? '0');
+    result.positional(size(context, value['h']) ?? '0');
     return result.build();
   }
 
   /// Returns an [Offset] from the specified map.
   ///
   /// The map must have an `x` key and a `y` key, doubles.
-  static String? offset(Object? value) {
+  static String? offset(DartGeneratorContext context, Object? value) {
     if (value is! Map) return null;
     final result = InstanceBuilder('Offset');
-    result.positional(size(value['x']) ?? '0');
-    result.positional(size(value['y']) ?? '0');
+    result.positional(size(context, value['x']) ?? '0');
+    result.positional(size(context, value['y']) ?? '0');
     return result.build();
   }
 
@@ -43,7 +47,10 @@ abstract class ArgumentEncoders {
   ///
   /// Returns null if it's not an integer; otherwise, passes it to the [new
   /// Color] constructor.
-  static String? color(Object? value) {
+  static String? color(DartGeneratorContext context, Object? value) {
+    if (value is StateReference && !context.options.theme.color) {
+      value = context.resolveReference(value);
+    }
     if (value is num) {
       return 'const Color(0x${value.toInt().toRadixString(16)})';
     }
@@ -51,11 +58,10 @@ abstract class ArgumentEncoders {
     return null;
   }
 
-  static String? fontWeight(Object? value) {
+  static String? fontWeight(DartGeneratorContext context, Object? value) {
     if (value is String) {
       return 'FontWeight.$value';
     }
-    if (value is StateReference) return stateReference(value);
     return null;
   }
 
@@ -71,19 +77,23 @@ abstract class ArgumentEncoders {
   ///  * top: second value, defaulting to same as start.
   ///  * end: third value, defaulting to same as start.
   ///  * bottom: fourth value, defaulting to same as top.
-  static String? edgeInsets(Object? value) {
+  static String? edgeInsets(DartGeneratorContext context, Object? value) {
     if (value is List) {
-      final left = size(value[0]);
-      final top = size(value[1]);
-      final right = size(value[2]);
-      final bottom = size(value[3]);
+      final left = spacing(context, value[0]);
+      final top = spacing(context, value[1]);
+      final right = spacing(context, value[2]);
+      final bottom = spacing(context, value[3]);
       return 'EdgeInsets.only(left:$left,top:$top,right:$right,bottom:$bottom,)';
     }
     if (value is StateReference) return stateReference(value);
     return null;
   }
 
-  static String? size(Object? value) {
+  static String? spacing(DartGeneratorContext context, Object? value) {
+    if (value is StateReference && !context.options.theme.spacing) {
+      value = context.resolveReference(value);
+    }
+
     if (value is num) {
       if (value == double.infinity) return 'double.infinity';
       value = value.roundFixed();
@@ -93,25 +103,35 @@ abstract class ArgumentEncoders {
     return null;
   }
 
-  static String? matrix4(Object? value) {
+  static String? size(DartGeneratorContext context, Object? value) {
+    if (value is num) {
+      if (value == double.infinity) return 'double.infinity';
+      value = value.roundFixed();
+      return '$value';
+    }
+    if (value is StateReference) return stateReference(value);
+    return null;
+  }
+
+  static String? matrix4(DartGeneratorContext context, Object? value) {
     if (value is List<num> && value.length >= 16) {
       final result = InstanceBuilder('Matrix4');
       for (var i = 0; i < 16; i++) {
-        result.positional(size(value[i]) ?? '');
+        result.positional(size(context, value[i]) ?? '');
       }
       return result.build();
     }
     return null;
   }
 
-  static String? enumeration<T>(Object? value) {
+  static String? enumeration<T>(DartGeneratorContext context, Object? value) {
     if (value is String) {
       return '$T.$value';
     }
     return null;
   }
 
-  static String? decoration(Object? value) {
+  static String? decoration(DartGeneratorContext context, Object? value) {
     if (value is! Map) return null;
 
     final result = InstanceBuilder('ShapeDecoration');
@@ -120,25 +140,25 @@ abstract class ArgumentEncoders {
       result.namedList(
         'shadows',
         [
-          ...shadows.map((e) => boxShadow(e)),
+          ...shadows.map((e) => boxShadow(context, e)),
         ],
       );
     }
     result.named(
       'color',
-      color(value['color']),
+      color(context, value['color']),
     );
     result.named(
       'gradient',
-      gradient(value['gradient']),
+      gradient(context, value['gradient']),
     );
     result.named(
       'shape',
-      shape(value['shape']),
+      shape(context, value['shape']),
     );
     result.named(
       'image',
-      decorationImage(value['image']),
+      decorationImage(context, value['image']),
     );
 
     return result.build();
@@ -157,45 +177,45 @@ abstract class ArgumentEncoders {
     return result.toString();
   }
 
-  static String? shape(Object? value) {
+  static String? shape(DartGeneratorContext context, Object? value) {
     if (value is! Map) return null;
 
     final result = InstanceBuilder('SmoothRectangleBorder');
 
     result.named(
       'borderRadius',
-      borderRadius(value['borderRadius']),
+      borderRadius(context, value['borderRadius']),
     );
     result.named(
       'side',
-      borderSide(value['side']),
+      borderSide(context, value['side']),
     );
     result.named(
       'borderAlign',
-      enumeration<BorderAlign>(value['borderAlign']),
+      enumeration<BorderAlign>(context, value['borderAlign']),
     );
 
     return result.build();
   }
 
-  static String? geometry(Object? value) {
+  static String? geometry(DartGeneratorContext context, Object? value) {
     if (value is! Map) return null;
-    final data = string(value['path']);
+    final data = string(context, value['path']);
     if (data == null) return null;
     return instance('const Geometry', [
       data,
     ], {
-      'windingRule': string(value['windingRule']),
+      'windingRule': string(context, value['windingRule']),
     });
   }
 
-  static String? borderRadius(Object? value) {
+  static String? borderRadius(DartGeneratorContext context, Object? value) {
     if (value is StateReference) return stateReference(value);
     if (value is! List || value.length < 4) return null;
-    final a = radius(value[0]);
-    final b = radius(value[1]);
-    final c = radius(value[2]);
-    final d = radius(value[3]);
+    final a = radius(context, value[0]);
+    final b = radius(context, value[1]);
+    final c = radius(context, value[2]);
+    final d = radius(context, value[3]);
 
     final result = InstanceBuilder('SmoothBorderRadius.only');
 
@@ -229,37 +249,40 @@ abstract class ArgumentEncoders {
     return result.build();
   }
 
-  static String? textStyle(Object? value) {
+  static String? textStyle(DartGeneratorContext context, Object? value) {
+    if (value is StateReference && !context.options.theme.textStyle) {
+      value = context.resolveReference(value);
+    }
     if (value is StateReference) return stateReference(value);
     if (value is! Map) return null;
 
-    final result = InstanceBuilder('TextStyle');
+    final result = InstanceBuilder('const TextStyle');
 
     result.named(
       'fontSize',
-      size(value['fontSize']),
+      size(context, value['fontSize']),
     );
     result.named(
       'fontFamily',
-      string(value['fontFamily']),
-    );
-    result.named(
-      'color',
-      color(value['color']),
+      string(context, value['fontFamily']),
     );
     result.named(
       'fontWeight',
-      fontWeight(value['fontWeight']),
+      fontWeight(context, value['fontWeight']),
+    );
+    result.named(
+      'height',
+      size(context, value['height']),
     );
     result.named(
       'textDecoration',
-      enumeration<TextDecoration>(value['textDecoration']),
+      enumeration<TextDecoration>(context, value['textDecoration']),
     );
 
     return result.build();
   }
 
-  static String? imageFilter(Object? value) {
+  static String? imageFilter(DartGeneratorContext context, Object? value) {
     if (value is StateReference) return stateReference(value);
     if (value is! Map) return null;
     final type = value['type'];
@@ -269,22 +292,22 @@ abstract class ArgumentEncoders {
 
       result.named(
         'sigmaX',
-        size(value['sigmaX']),
+        size(context, value['sigmaX']),
       );
       result.named(
         'sigmaY',
-        size(value['sigmaY']),
+        size(context, value['sigmaY']),
       );
       result.named(
         'tileMode',
-        enumeration<TileMode>(value['tileMode']),
+        enumeration<TileMode>(context, value['tileMode']),
       );
       return result.build();
     }
     return null;
   }
 
-  static String? radius(Object? value) {
+  static String? radius(DartGeneratorContext context, Object? value) {
     if (value is! Map) return null;
     if (value['x'] == 0 && value['smoothing'] == 0) return 'SmoothRadius.zero';
 
@@ -292,36 +315,33 @@ abstract class ArgumentEncoders {
 
     result.named(
       'cornerRadius',
-      size(value['x']) ?? '0',
+      size(context, value['x']) ?? '0',
     );
     result.named(
       'cornerSmoothing',
-      size(value['smoothing']) ?? '0',
+      size(context, value['smoothing']) ?? '0',
     );
     return result.build();
   }
 
-  static String? borderSide(Object? value) {
+  static String? borderSide(DartGeneratorContext context, Object? value) {
     if (value is! Map) return null;
 
     final result = InstanceBuilder('BorderSide');
 
     result.named(
-      'color',
-      color(value['color']),
-    );
-    result.named(
       'width',
-      size(value['width']),
+      size(context, value['width']),
     );
     result.named(
       'style',
-      enumeration<BorderStyle>(value['style']),
+      enumeration<BorderStyle>(context, value['style']),
     );
-    return result.build();
+    return result.build() +
+        '.copyWith(color: ${color(context, value['color'])},)';
   }
 
-  static String? gradient(Object? value) {
+  static String? gradient(DartGeneratorContext context, Object? value) {
     if (value is! Map) return null;
     final type = value['type'];
     final result = InstanceBuilder('LinearGradient');
@@ -329,81 +349,81 @@ abstract class ArgumentEncoders {
     if (type == 'linear') {
       result.named(
         'begin',
-        alignment(value['begin']),
+        alignment(context, value['begin']),
       );
 
       result.named(
         'end',
-        alignment(value['end']),
+        alignment(context, value['end']),
       );
     } else if (type == 'radial') {
       result.name = 'RadialGradient';
       result.named(
         'center',
-        alignment(value['center']),
+        alignment(context, value['center']),
       );
 
       result.named(
         'radius',
-        size(value['radius']),
+        size(context, value['radius']),
       );
 
       result.named(
         'focal',
-        alignment(value['focal']),
+        alignment(context, value['focal']),
       );
 
       result.named(
         'focalRadius',
-        size(value['focalRadius']),
+        size(context, value['focalRadius']),
       );
     } else if (type == 'sweep') {
       result.name = 'SweepGradient';
       result.named(
         'center',
-        alignment(value['center']),
+        alignment(context, value['center']),
       );
 
       result.named(
         'startAngle',
-        size(value['startAngle']),
+        size(context, value['startAngle']),
       );
 
       result.named(
         'endAngle',
-        size(value['endAngle']),
+        size(context, value['endAngle']),
       );
     }
 
     result.named(
       'tileMode',
-      enumeration<TileMode>(value['tileMode']),
+      enumeration<TileMode>(context, value['tileMode']),
     );
 
     final colors = value['colors'] as List?;
     if (colors != null) {
       result.namedList('colors', [
-        ...colors.map((e) => color(e)),
+        ...colors.map((e) => color(context, e)),
       ]);
     }
 
     final stops = value['stops'] as List?;
     if (stops != null) {
       result.namedList('stops', [
-        ...stops.map((e) => size(e)),
+        ...stops.map((e) => size(context, e)),
       ]);
     }
 
     return result.build();
   }
 
-  static String? alignment(Object? value) {
+  static String? alignment(DartGeneratorContext context, Object? value) {
     if (value is! Map) return null;
 
     final result = InstanceBuilder('Alignment');
-    final x = size(value['x']);
-    final y = size(value['y']);
-    final start = size(value['start']);
+    final x = size(context, value['x']);
+    final y = size(context, value['y']);
+    final start = size(context, value['start']);
     if (x == null && start == null) {
       return null;
     }
@@ -421,42 +441,42 @@ abstract class ArgumentEncoders {
     return result.build();
   }
 
-  static String? decorationImage(Object? value) {
+  static String? decorationImage(DartGeneratorContext context, Object? value) {
     if (value is! Map) return null;
     final result = InstanceBuilder('DecorationImage');
 
     result.named(
       'image',
-      imageProvider(value),
+      imageProvider(context, value),
     );
     result.named(
       'alignment',
-      alignment(value['alignment']),
+      alignment(context, value['alignment']),
     );
     result.named(
       'fit',
-      enumeration<BoxFit>(value['fit']),
+      enumeration<BoxFit>(context, value['fit']),
     );
     result.named(
       'fit',
-      enumeration<BoxFit>(value['fit']),
+      enumeration<BoxFit>(context, value['fit']),
     );
     result.named(
       'centerSlice',
-      rect(value['centerSlice']),
+      rect(context, value['centerSlice']),
     );
     result.named(
       'colorFilter',
-      colorFilter(value['colorFilter']),
+      colorFilter(context, value['colorFilter']),
     );
     result.named(
       'matchTextDirection',
-      boolean(value['matchTextDirection']),
+      boolean(context, value['matchTextDirection']),
     );
     return result.build();
   }
 
-  static String? imageProvider(Object? value) {
+  static String? imageProvider(DartGeneratorContext context, Object? value) {
     if (value is StateReference) return stateReference(value);
     if (value is! Map) return null;
     final source = value['source'];
@@ -471,16 +491,16 @@ abstract class ArgumentEncoders {
 
     if (!imageUrl.hasScheme) {
       final result = InstanceBuilder('AssetImage');
-      result.positional(string(source) ?? '?');
+      result.positional(string(context, source) ?? '?');
       return result.build();
     }
 
     final result = InstanceBuilder('NetworkImage');
-    result.positional(string(source) ?? '?');
+    result.positional(string(context, source) ?? '?');
     return result.build();
   }
 
-  static String? colorFilter(Object? value) {
+  static String? colorFilter(DartGeneratorContext context, Object? value) {
     if (value is! Map) return null;
     final type = value['type'];
     if (type == null) {
@@ -491,34 +511,35 @@ abstract class ArgumentEncoders {
     }
     if (type == 'mode') {
       final result = InstanceBuilder('ColorFilter.mode');
-      result.positional(color(value['color']) ?? 'const Color(0xFF000000)');
       result.positional(
-          enumeration<BlendMode>(value['blendMode']) ?? 'BlendMode.srcOver');
+          color(context, value['color']) ?? 'const Color(0xFF000000)');
+      result.positional(enumeration<BlendMode>(context, value['blendMode']) ??
+          'BlendMode.srcOver');
       return result.build();
     }
 
     return null;
   }
 
-  static String? boxShadow(Object? value) {
+  static String? boxShadow(DartGeneratorContext context, Object? value) {
     if (value is! Map) return null;
     final result = InstanceBuilder('BoxShadow');
 
     result.named(
       'color',
-      color(value['color']),
+      color(context, value['color']),
     );
     result.named(
       'offset',
-      offset(value['offset']),
+      offset(context, value['offset']),
     );
     result.named(
       'blurRadius',
-      size(value['blurRadius']),
+      size(context, value['blurRadius']),
     );
     result.named(
       'spreadRadius',
-      size(value['spreadRadius']),
+      size(context, value['spreadRadius']),
     );
     return result.build();
   }

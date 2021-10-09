@@ -2,6 +2,7 @@ import 'package:code_builder/code_builder.dart';
 import 'package:code_builder/code_builder.dart' as cb;
 import 'package:dart_style/dart_style.dart';
 import 'package:flutter_figma/flutter_figma.dart';
+import 'package:flutter_figma_generator/src/dart/context.dart';
 import 'package:flutter_figma_generator/src/generator.dart';
 import 'package:flutter_figma_generator/src/helpers/naming.dart';
 import 'package:rfw/dart/model.dart';
@@ -20,6 +21,10 @@ class DartFigmaCodeGenerator extends FigmaCodeGenerator<DartGeneratorOptions> {
     required FigmaComponentBase component,
     DartGeneratorOptions options = const DartGeneratorOptions(),
   }) {
+    final context = DartGeneratorContext(
+      component: component,
+      options: options,
+    );
     final fileName = component.name.asFileName();
     final dartLibrary = cb.Library(
       (b) => b
@@ -27,9 +32,9 @@ class DartFigmaCodeGenerator extends FigmaCodeGenerator<DartGeneratorOptions> {
           if (component is FigmaComponentSet)
             ..._widgetWithVariantsClasses(component.variants, component),
           if (component is FigmaComponentVariant)
-            ..._simpleWidgetClass(component.declaration, component),
+            ..._simpleWidgetClass(context, component.declaration, component),
           if (component is FigmaComponent)
-            ..._simpleWidgetClass(component.declaration, component),
+            ..._simpleWidgetClass(context, component.declaration, component),
         ])
         ..directives.addAll([
           if (component is! FigmaComponentVariant) ...[
@@ -90,16 +95,18 @@ class DartFigmaCodeGenerator extends FigmaCodeGenerator<DartGeneratorOptions> {
   }
 
   /// A stateless widget with no variants.
-  List<Class> _simpleWidgetClass(
+  List<Class> _simpleWidgetClass(DartGeneratorContext context,
       WidgetDeclaration declaration, FigmaComponentBase component) {
     final themeName = '${declaration.name}Theme'.asClassName();
     final block = BlockBuilder();
     block.statements
         .add(Code('final theme = this.theme ?? $themeName.of(context);'));
-    block.statements.add(Code('return ${NodeEncoder.node(declaration.root)};'));
+    block.statements
+        .add(Code('return ${NodeEncoder.node(context, declaration.root)};'));
 
     return [
       buildStatelessWidget(
+        context,
         name: declaration.name,
         initialState: declaration.initialState ?? {},
         buildBody: block.build(),
@@ -108,25 +115,29 @@ class DartFigmaCodeGenerator extends FigmaCodeGenerator<DartGeneratorOptions> {
         ],
       ).build(),
       if (declaration.initialState != null) ...[
-        ..._widgetDataClass(declaration),
-        ..._widgetThemeClass(declaration),
+        ..._widgetDataClass(context, declaration),
+        ..._widgetThemeClass(context, declaration),
       ],
     ];
   }
 
-  List<Class> _widgetDataClass(WidgetDeclaration declaration) {
+  List<Class> _widgetDataClass(
+      DartGeneratorContext context, WidgetDeclaration declaration) {
     return buildWidgetData(
+      context,
       name: declaration.name,
       initialState: declaration.initialState ?? {},
     );
   }
 
-  List<Class> _widgetThemeClass(WidgetDeclaration declaration) {
+  List<Class> _widgetThemeClass(
+      DartGeneratorContext context, WidgetDeclaration declaration) {
     final theme = declaration.initialState!['theme'];
 
     final builder =
         buildInheritedWidget(name: '${declaration.name}Theme'.asClassName());
-    final dataBuilder = buildThemeData(name: declaration.name, values: theme);
+    final dataBuilder =
+        buildThemeData(context, name: declaration.name, values: theme);
     return [
       builder.build(),
       ...dataBuilder,

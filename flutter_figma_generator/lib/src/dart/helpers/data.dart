@@ -1,8 +1,10 @@
 import 'package:code_builder/code_builder.dart';
+import 'package:flutter_figma_generator/src/dart/context.dart';
 import 'package:flutter_figma_generator/src/dart/encoders/arguments.dart';
 import 'package:flutter_figma_generator/src/helpers/naming.dart';
 
-List<Class> buildWidgetData({
+List<Class> buildWidgetData(
+  DartGeneratorContext context, {
   required String name,
   required Map<String, Object?> initialState,
 }) {
@@ -10,15 +12,17 @@ List<Class> buildWidgetData({
   final text = data?['text'] as Map<String, Object?>?;
 
   return [
-    if (text != null && text.isNotEmpty)
+    if (context.options.data.text && text != null && text.isNotEmpty)
       _buildTextData(
+        context,
         name: name,
         values: text,
       )!,
   ];
 }
 
-Class? _buildTextData({
+Class? _buildTextData(
+  DartGeneratorContext context, {
   required String name,
   required Object? values,
 }) {
@@ -39,7 +43,8 @@ Class? _buildTextData({
                   (b) => b
                     ..name = 'this.' + (entry.key as String).asFieldName()
                     ..named = true
-                    ..defaultTo = Code(ArgumentEncoders.string(entry.value)!),
+                    ..defaultTo =
+                        Code(ArgumentEncoders.string(context, entry.value)!),
                 ))
           ],
         ),

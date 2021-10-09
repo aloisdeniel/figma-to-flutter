@@ -69,12 +69,53 @@ Map<String, LocalWidgetBuilder> _coreWidgetsDefinitions(
       },
       'Transform': (BuildContext context, DataSource source) {
         final transform = ArgumentDecoders.matrix(source, ['transform']);
+        final alignment = ArgumentDecoders.alignment(source, ['alignment']);
+        final origin = ArgumentDecoders.offset(source, ['origin']);
         final child = source.child(['child']);
 
         if (transform == null) return child;
         return Transform(
           transform: transform,
+          alignment: alignment,
+          origin: origin,
           child: child,
+        );
+      },
+      'ColoredText': (BuildContext context, DataSource source) {
+        String? text = source.v<String>(['text']);
+        if (text == null) {
+          final StringBuffer builder = StringBuffer();
+          final int count = source.length(['text']);
+          for (int index = 0; index < count; index += 1) {
+            builder.write(source.v<String>(['text', index]) ?? '');
+          }
+          text = builder.toString();
+        }
+
+        var style = ArgumentDecoders.textStyle(source, ['style']);
+        final color = ArgumentDecoders.color(source, ['color']);
+        if (color != null) {
+          style = style!.copyWith(color: color);
+        }
+        return Text(
+          text,
+          style: style,
+          strutStyle: ArgumentDecoders.strutStyle(source, ['strutStyle']),
+          textAlign: ArgumentDecoders.enumValue<TextAlign>(
+              TextAlign.values, source, ['textAlign']),
+          textDirection: ArgumentDecoders.enumValue<TextDirection>(
+              TextDirection.values, source, ['textDirection']),
+          locale: ArgumentDecoders.locale(source, ['locale']),
+          softWrap: source.v<bool>(['softWrap']),
+          overflow: ArgumentDecoders.enumValue<TextOverflow>(
+              TextOverflow.values, source, ['overflow']),
+          textScaleFactor: source.v<double>(['textScaleFactor']),
+          maxLines: source.v<int>(['maxLines']),
+          semanticsLabel: source.v<String>(['semanticsLabel']),
+          textWidthBasis: ArgumentDecoders.enumValue<TextWidthBasis>(
+              TextWidthBasis.values, source, ['textWidthBasis']),
+          textHeightBehavior: ArgumentDecoders.textHeightBehavior(
+              source, ['textHeightBehavior']),
         );
       },
       'PathView': (BuildContext context, DataSource source) {

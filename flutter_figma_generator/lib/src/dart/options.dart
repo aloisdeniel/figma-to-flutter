@@ -1,14 +1,30 @@
-class DartGeneratorOptions {
+import 'package:copy_with_extension/copy_with_extension.dart';
+import 'package:equatable/equatable.dart';
+
+part 'options.g.dart';
+
+@CopyWith()
+class DartGeneratorOptions extends Equatable {
   const DartGeneratorOptions({
     this.global = const DartGeneratorGlobalOptions(),
     this.theme = const DartGeneratorThemeOptions(),
+    this.data = const DartGeneratorDataOptions(),
   });
 
   final DartGeneratorGlobalOptions global;
   final DartGeneratorThemeOptions theme;
+  final DartGeneratorDataOptions data;
+
+  @override
+  List<Object?> get props => [
+        global,
+        theme,
+        data,
+      ];
 }
 
-class DartGeneratorGlobalOptions {
+@CopyWith()
+class DartGeneratorGlobalOptions extends Equatable {
   const DartGeneratorGlobalOptions({
     this.forceHugTextHeight = false,
     this.preciseCornerSmoothing = false,
@@ -21,8 +37,15 @@ class DartGeneratorGlobalOptions {
   ///
   /// If disabled, then `ContinuousRectangleBorder` is used when corner smoothing is enabled.
   final bool preciseCornerSmoothing;
+
+  @override
+  List<Object?> get props => [
+        forceHugTextHeight,
+        preciseCornerSmoothing,
+      ];
 }
 
+@CopyWith()
 class DartGeneratorDataOptions {
   const DartGeneratorDataOptions({
     this.text = true,
@@ -34,7 +57,8 @@ class DartGeneratorDataOptions {
   final bool text;
 }
 
-class DartGeneratorThemeOptions {
+@CopyWith()
+class DartGeneratorThemeOptions extends Equatable {
   const DartGeneratorThemeOptions({
     this.color = true,
     this.textStyle = true,
@@ -61,4 +85,12 @@ class DartGeneratorThemeOptions {
   ///
   /// If disabled, spacing values are inlined in widget's code.
   final bool spacing;
+
+  @override
+  List<Object?> get props => [
+        color,
+        textStyle,
+        borderRadius,
+        spacing,
+      ];
 }

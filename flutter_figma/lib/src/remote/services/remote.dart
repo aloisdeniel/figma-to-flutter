@@ -43,7 +43,10 @@ class RemoteLibraryClient extends LibraryClient {
   }
 
   @override
-  Future<RemoteWidgetLibrary?> getLibrary(Library library) async {
+  Future<RemoteWidgetLibrary?> getLibrary(
+    Library library, {
+    List<String>? componentsId,
+  }) async {
     final lib = await _updateLibrary(library);
     return lib ?? await storage.getLibrary(library);
   }
@@ -55,5 +58,10 @@ class RemoteLibraryClient extends LibraryClient {
     } catch (e) {
       return await storage.getLibraries();
     }
+  }
+
+  @override
+  Future<List<LibraryComponent>> getComponents(Library library) {
+    throw UnimplementedError();
   }
 }

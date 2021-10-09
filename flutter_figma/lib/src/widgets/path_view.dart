@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'dart:ui';
 
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:path_drawing/path_drawing.dart';
 import 'package:path_parsing/path_parsing.dart';
@@ -73,6 +74,18 @@ class _PathViewState extends State<PathView> {
       ...widget.geometry.map((x) => x.toPath()),
     ];
     super.initState();
+  }
+
+  @override
+  void didUpdateWidget(covariant PathView oldWidget) {
+    if (!const ListEquality().equals(oldWidget.geometry, widget.geometry)) {
+      setState(() {
+        geometry = [
+          ...widget.geometry.map((x) => x.toPath()),
+        ];
+      });
+    }
+    super.didUpdateWidget(oldWidget);
   }
 
   @override

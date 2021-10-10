@@ -1,4 +1,4 @@
-import 'package:rfw/dart/model.dart';
+import 'package:rfw/rfw.dart';
 
 DynamicList convertBorderRadius(
     List<num>? rectangleCornerRadii, num? smoothing) {

@@ -76,7 +76,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "858bc057764431c5a56fee3918504fb9cae13c11"
+      resolved-ref: "395bebc6a03877e74f43d534e5e41162d7c5ae01"
       url: "https://github.com/aloisdeniel/figma-1.git"
     source: git
     version: "3.1.0"
@@ -118,6 +118,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.0"
+  http:
+    dependency: transitive
+    description:
+      name: http
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.13.4"
   http2:
     dependency: transitive
     description:
@@ -125,6 +132,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.0"
+  http_parser:
+    dependency: transitive
+    description:
+      name: http_parser
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "4.0.0"
   json_annotation:
     dependency: transitive
     description:
@@ -257,5 +271,5 @@ packages:
     source: hosted
     version: "2.1.0"
 sdks:
-  dart: ">=2.13.0 <3.0.0"
+  dart: ">=2.14.0 <3.0.0"
   flutter: ">=2.0.0"

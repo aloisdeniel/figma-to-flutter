@@ -1,5 +1,5 @@
 import 'package:figma/figma.dart';
-import 'package:rfw/dart/model.dart';
+import 'package:rfw/rfw.dart';
 
 abstract class FigmaComponentBase {
   const FigmaComponentBase({

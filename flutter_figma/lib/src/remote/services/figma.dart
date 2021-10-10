@@ -1,5 +1,6 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_figma/src/converters/library/library.dart';
-import 'package:rfw/dart/model.dart';
+import 'package:rfw/rfw.dart';
 import 'package:figma/figma.dart' as figma;
 
 import 'client.dart';
@@ -8,7 +9,10 @@ class FigmaLibraryClient extends LibraryClient {
   FigmaLibraryClient({
     required this.token,
     required this.fileId,
-  }) : _api = figma.FigmaClient(token);
+  }) : _api = figma.FigmaClient(
+          token,
+          useHttp2: !kIsWeb,
+        );
   final String token;
   final String fileId;
   Future<FigmaRemoteLibrary>? _figmaUpdate;

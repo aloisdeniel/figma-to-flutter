@@ -3,14 +3,17 @@ import 'package:flutter_figma/flutter_figma.dart';
 import 'package:flutter_figma_generator/src/dart/context.dart';
 import 'package:flutter_figma_generator/src/dart/helpers/instance_builder.dart';
 import 'package:flutter_figma_generator/src/helpers/round.dart';
-import 'package:rfw/dart/model.dart';
+import 'package:rfw/rfw.dart';
 
 abstract class ArgumentEncoders {
   static String? string(DartGeneratorContext context, Object? value) {
     if (value is StateReference && !context.options.data.text) {
       value = context.resolveReference(value);
     }
-    if (value is String) return '\'$value\'';
+    if (value is String) {
+      value = value.replaceAll('\'', '\\\'');
+      return '\'$value\'';
+    }
     if (value is StateReference) return stateReference(value);
     return null;
   }

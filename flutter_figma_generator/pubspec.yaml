@@ -13,6 +13,7 @@ dependencies:
       ../flutter_figma
   flutter:
     sdk: flutter
+  rfw: ^1.0.0
   analyzer: ^2.3.0
   code_builder: ^4.1.0
   dart_style: ^2.2.0

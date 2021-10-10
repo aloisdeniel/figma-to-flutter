@@ -4,7 +4,7 @@ import 'package:flutter_figma/src/converters/nodes/node.dart';
 import 'package:flutter_figma/src/helpers/api_extensions.dart';
 import 'package:flutter_figma/src/helpers/naming.dart';
 import 'package:flutter_figma/src/remote/figma.dart';
-import 'package:rfw/dart/model.dart';
+import 'package:rfw/rfw.dart';
 import 'package:collection/collection.dart';
 import 'package:rfw/rfw.dart';
 

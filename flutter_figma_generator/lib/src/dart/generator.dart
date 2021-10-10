@@ -5,7 +5,7 @@ import 'package:flutter_figma/flutter_figma.dart';
 import 'package:flutter_figma_generator/src/dart/context.dart';
 import 'package:flutter_figma_generator/src/generator.dart';
 import 'package:flutter_figma_generator/src/helpers/naming.dart';
-import 'package:rfw/dart/model.dart';
+import 'package:rfw/rfw.dart';
 
 import 'encoders/nodes.dart';
 import 'helpers/data.dart';

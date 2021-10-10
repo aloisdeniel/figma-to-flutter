@@ -1,6 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:flutter_figma/src/remote/services/storage.dart';
-import 'package:rfw/dart/model.dart';
+import 'package:rfw/rfw.dart';
 
 import 'client.dart';
 

@@ -1,4 +1,4 @@
-import 'package:rfw/dart/model.dart';
+import 'package:rfw/rfw.dart';
 
 List<String> findComponentDependencies(BlobNode node) {
   if (node is ConstructorCall) {

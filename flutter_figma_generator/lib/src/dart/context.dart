@@ -1,5 +1,5 @@
 import 'package:flutter_figma/flutter_figma.dart';
-import 'package:rfw/dart/model.dart';
+import 'package:rfw/rfw.dart';
 
 import 'options.dart';
 

@@ -1,6 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/widgets.dart';
-import 'package:rfw/dart/model.dart';
+import 'package:rfw/rfw.dart';
 
 import 'services/client.dart';
 

@@ -3,7 +3,7 @@ import 'package:flutter_figma/flutter_figma.dart';
 import 'package:flutter_figma_generator/src/dart/context.dart';
 import 'package:flutter_figma_generator/src/dart/helpers/instance_builder.dart';
 import 'package:flutter_figma_generator/src/helpers/naming.dart';
-import 'package:rfw/dart/model.dart';
+import 'package:rfw/rfw.dart';
 import 'package:collection/collection.dart';
 
 import '../options.dart';

@@ -4,7 +4,6 @@ import 'package:flutter_figma/src/widgets/path_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:figma_squircle/figma_squircle.dart';
-import 'package:rfw/flutter/argument_decoders.dart';
 import 'package:rfw/rfw.dart';
 
 typedef InstanceRenderer = Widget Function(
